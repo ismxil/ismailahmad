@@ -23,6 +23,24 @@
             font-display: swap;
         }
 
+        @font-face {
+            font-family: 'Reckless';
+            src: url('assets/Signifier-Light.ttf') format('truetype');
+            font-weight: 500 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --brand: #393bfe;
+            --text-primary: #09090b;
+            --text-secondary: #52525b;
+            --bg-cream: #f3f2ef;
+            --bg-white: #ffffff;
+            --font-display: 'Reckless', Georgia, serif;
+            --font-body: 'Uncut Sans', system-ui, sans-serif;
+        }
+
         *,
         *::before,
         *::after {
@@ -35,18 +53,18 @@
         }
 
         body {
-            background: #ffffff;
-            color: #111111;
+            background: var(--bg-white);
+            color: var(--text-primary);
             margin: 0;
             padding: 0;
             overflow: hidden;
-            font-family: 'Uncut Sans', sans-serif;
-            font-weight: 700;
+            font-family: var(--font-body);
+            font-weight: 500;
         }
 
-        body * {
-            font-family: 'Uncut Sans', sans-serif !important;
-            font-weight: 700 !important;
+        h1, h2, .font-display {
+            font-family: var(--font-display);
+            font-weight: 500;
         }
 
         button,
@@ -135,8 +153,8 @@
         }
 
         #welcome-ui h1 {
-            font-family: 'Uncut Sans', sans-serif;
-            color: #0011FF;
+            font-family: var(--font-display);
+            color: var(--brand);
             font-size: clamp(44px, 7.8vw, 112px);
             line-height: 0.88;
             letter-spacing: -0.01em;
@@ -215,46 +233,76 @@
         }
 
         .social-pill,
-        .top-pill {
-            font-family: 'Uncut Sans', sans-serif;
-            font-size: 14px;
-            color: #111;
-            border: 1.5px solid #bbb;
-            border-radius: 99px;
-            padding: 6px 16px;
+        .top-pill,
+        .pill {
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            color: var(--text-primary);
+            border-radius: 999px;
+            padding: 10px 16px;
             text-decoration: none;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(6px);
-            transition: border-color 0.18s, background 0.18s;
-            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, opacity 0.18s;
+            letter-spacing: 0;
+            border: none;
+            background: transparent;
+        }
+
+        .pill--cream {
+            background: var(--bg-cream);
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pill--outline {
+            border: 2px solid var(--text-primary);
+            background: transparent;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pill--dot {
+            gap: 8px;
+        }
+
+        .pill--dot .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--brand);
+            flex-shrink: 0;
         }
 
         .social-pill:hover,
         .top-pill:hover,
-        .top-pill.is-active {
-            border-color: #111;
-            background: #fff;
+        .pill:hover {
+            opacity: 0.75;
         }
 
-        #play-btn,
-        #open-contact {
-            width: 38px;
-            height: 38px;
+        #play-btn {
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: #0011FF;
+            background: var(--brand);
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: background 0.18s;
-            font-size: 14px;
+            transition: background 0.18s, transform 0.18s;
+            padding: 0;
         }
 
-        #play-btn:hover,
-        #open-contact:hover {
-            background: #0022ee;
+        #play-btn:hover {
+            background: #2b2ecc;
+            transform: scale(1.04);
         }
 
         #play-btn svg {
@@ -268,7 +316,7 @@
             width: min(360px, calc(100vw - 32px));
             padding: 22px;
             border-radius: 28px;
-            background: #0011FF;
+            background: var(--brand);
             color: #fff;
             box-shadow: 0 18px 50px rgba(0, 17, 255, 0.24);
             opacity: 0;
@@ -760,149 +808,188 @@
             }
         }
 
-        /* ── Top nav ── */
-        #top-nav nav {
+        /* ── Site header (Figma layout) ── */
+        #site-header {
+            position: fixed;
+            top: 25px;
+            left: 24px;
+            right: 24px;
+            z-index: 40;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            pointer-events: none;
+        }
+
+        #site-header * {
+            pointer-events: auto;
+        }
+
+        .site-header__left {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 554px;
+        }
+
+        .site-header__brand {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 16px;
         }
 
-        #top-nav a:hover,
-        #top-nav button:hover {
-            text-decoration: none;
+        .site-header__brand h1 {
+            margin: 0;
+            color: var(--brand);
+            font-size: clamp(48px, 8vw, 120px);
+            line-height: 0.95;
+            letter-spacing: -1.2px;
+            font-weight: 500;
         }
 
-        /* ── Gallery ── */
-        .gallery-wrap {
-            width: 100vw;
-            overflow-x: auto;
-            overflow-y: hidden;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+        .site-header__logo {
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+        }
+
+        .site-header__intro {
+            margin: 0;
+            font-size: clamp(18px, 2.2vw, 28px);
+            line-height: 1.43;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .site-header__nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        /* ── Carousel (WebGPU-style) ── */
+        .carousel-section {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .carousel {
+            position: absolute;
+            inset: 0;
+            perspective: 1400px;
             cursor: grab;
-            -webkit-user-select: none;
-            user-select: none;
-            flex: 1;
-            min-height: 0;
+            touch-action: none;
+            pointer-events: auto;
         }
 
-        .gallery-wrap::-webkit-scrollbar {
-            display: none;
-        }
-
-        .gallery-wrap.is-dragging {
+        .carousel.is-dragging {
             cursor: grabbing;
         }
 
-        .gallery-inner {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 56px 40px 0;
-            height: 100%;
+        .carousel-slot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--card-w, 400px);
+            height: var(--card-h, 400px);
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            will-change: transform;
+            transform-origin: center center;
         }
 
-        .g-item {
-            flex-shrink: 0;
-            overflow: visible;
-            cursor: pointer;
-            width: max(345px, calc((100vw - 144px) / 5));
-            min-width: 345px;
-            min-height: 345px;
-            position: relative;
+        .carousel-card {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 32px;
+            background: var(--card-color, var(--brand));
+            box-shadow: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .carousel-card-img {
+            display: none;
+        }
+
+        .carousel-slot.is-active .carousel-card {
+            box-shadow: 0 24px 64px rgba(9, 9, 11, 0.12);
+        }
+
+        .project-detail {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+            text-align: center;
+            width: min(440px, 90vw);
             display: flex;
             flex-direction: column;
-            gap: 22px;
-            padding-top: 34px;
-            padding-bottom: 60px;
-        }
-
-        .g-item img {
-            display: block;
-            width: 100%;
-            height: var(--cover-height, 345px);
-            max-height: 460px;
-            object-fit: cover;
+            align-items: center;
+            gap: 24px;
             pointer-events: none;
+            transition: opacity 0.35s ease;
         }
 
-        .g-item img,
-        .g-item .ph {
-            order: 2;
+        .project-detail.is-faded {
+            opacity: 0.35;
         }
 
-        .g-item .ph {
-            display: block;
-            width: 100%;
-            height: var(--cover-height, 345px);
-            max-height: 460px;
-            background: #e3e3e3;
-        }
-
-        .g-item .ph,
-        #modal-img-placeholder {
+        .project-detail__copy {
             display: flex;
-            align-items: flex-end;
-            justify-content: flex-start;
-            padding: 16px;
-            color: rgba(0, 0, 0, 0.48);
-            font-size: 13px;
-            line-height: 1;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+            width: 100%;
         }
 
-        /* Card hover overlays */
-        .card-num {
-            order: 1;
-            font-family: 'Uncut Sans', sans-serif;
-            font-size: 20px;
-            line-height: 1;
-            letter-spacing: 0;
-            color: #111;
-            opacity: 0;
-            transform: translateY(8px);
-            transition: opacity 0.22s ease, transform 0.22s ease;
-            pointer-events: none;
-        }
-
-        .card-brief {
-            order: 3;
-            font-family: 'Uncut Sans', sans-serif;
-            font-size: 20px;
-            line-height: 1.12;
-            color: #111;
-            opacity: 0;
-            transform: translateY(-8px);
-            transition: opacity 0.22s ease, transform 0.22s ease;
-            pointer-events: none;
+        .project-detail h2 {
             margin: 0;
-            max-width: 100%;
+            font-size: clamp(32px, 4vw, 40px);
+            line-height: 1.15;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
-        .g-item:hover .card-num,
-        .g-item:hover .card-brief {
-            opacity: 1;
-            transform: translateY(0);
+        .project-detail p {
+            margin: 0;
+            font-size: clamp(16px, 2vw, 20px);
+            line-height: 1.4;
+            font-weight: 500;
+            color: var(--text-primary);
         }
 
-        @media (max-width: 720px) {
-            .gallery-inner {
-                padding-left: 24px;
-                padding-right: 24px;
+        #active-view {
+            pointer-events: auto;
+            color: var(--text-secondary);
+        }
+
+        .gallery-wrap { display: none; }
+
+        @media (max-width: 900px) {
+            #site-header {
+                flex-direction: column;
+                top: 16px;
+                left: 16px;
+                right: 16px;
             }
 
-            .g-item {
-                width: min(78vw, 345px);
-                min-width: min(78vw, 345px);
+            .site-header__nav {
+                flex-wrap: wrap;
             }
 
-            .g-item img,
-            .g-item .ph {
-                height: min(78vw, var(--cover-height, 345px));
+            .site-header__brand h1 {
+                font-size: clamp(40px, 12vw, 72px);
             }
 
-            .card-num,
-            .card-brief {
-                font-size: 18px;
+            .carousel-slot {
+                transform-origin: center center;
             }
         }
 
@@ -1160,7 +1247,7 @@
         #modal-url {
             font-family: 'Uncut Sans', sans-serif;
             font-size: 14px;
-            color: #0011FF;
+            color: var(--brand);
             text-decoration: underline;
             text-underline-offset: 3px;
         }
@@ -1188,8 +1275,8 @@
         }
 
         #modal-next-project:hover {
-            background: #0011FF;
-            border-color: #0011FF;
+            background: var(--brand);
+            border-color: var(--brand);
         }
 
         #modal-next-project span:last-child {
@@ -1304,10 +1391,10 @@
          Bottom social + play bar
          ════════════════════════════════ -->
     <div id="bottom-bar">
-        <a class="social-pill" href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">Linkedin</a>
-        <a class="social-pill" href="https://github.com/ismxil" target="_blank" rel="noopener">Github</a>
-        <a class="social-pill" href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
-        <a class="social-pill" href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+        <a class="social-pill pill pill--outline" href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="social-pill pill pill--outline" href="https://github.com/ismxil" target="_blank" rel="noopener">Github</a>
+        <a class="social-pill pill pill--outline" href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
+        <a class="social-pill pill pill--outline" href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
         <button id="play-btn" aria-label="Play / Pause music">
             <svg id="icon-play" width="14" height="14" viewBox="0 0 24 24" fill="white">
                 <polygon points="6,3 20,12 6,21" />
@@ -1401,56 +1488,39 @@
     </aside>
 
     <!-- ════════════════════════════════
-         Top Navigation
+         Site Header — Figma layout
          ════════════════════════════════ -->
-    <header id="top-nav"
-        style="position:fixed; top:0; left:0; right:0; z-index:40; padding:18px 28px; background:rgba(255,255,255,0.96); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:space-between;">
-        <nav aria-label="Primary">
-            <a class="top-pill" href="about.html" data-page>About</a>
-            <a class="top-pill" href="thought.html" data-page>Opinion</a>
+    <header id="site-header">
+        <div class="site-header__left">
+            <div class="site-header__brand">
+                <h1>Ismail Ahmad</h1>
+                <img src="assets/logo.svg" alt="" class="site-header__logo" width="54" height="54">
+            </div>
+            <p class="site-header__intro">Cross-platform design. International brands. Experiences recognised by the industry's leading design awards.</p>
+            <button type="button" class="pill pill--cream" id="about-btn">About</button>
+        </div>
+        <nav class="site-header__nav" aria-label="Site navigation">
+            <a class="pill pill--cream" href="thought.html">Feeds</a>
+            <a class="pill pill--cream" href="expertise.html">Insights</a>
+            <button type="button" class="pill pill--cream pill--dot" id="more-btn">More<span class="dot" aria-hidden="true"></span></button>
         </nav>
-        <button id="open-contact" type="button">Contact</button>
     </header>
 
     <!-- ════════════════════════════════
-         Main Content
+         Project Carousel
          ════════════════════════════════ -->
-    <main>
-
-        <section style="padding:68px 20px 0; text-align:center; flex-shrink:0;">
-            <h1
-                style="font-family:'Uncut Sans',sans-serif; color:#0011FF; font-size:clamp(50px,8.2vw,118px); line-height:0.88; letter-spacing:-0.01em; margin:0 0 18px;">
-                Ismail Ahmad&#174;<br>PORTFOLIO 2026</h1>
-            <p
-                style="font-family:'Uncut Sans',sans-serif; font-size:clamp(21px,1.7vw,24px); font-weight:700; color:#111; line-height:1.28; margin:0 auto 28px; max-width:720px;">
-                Strategy, Identity, UX, Product, and Web Design for banks and financial institutions.</p>
-        </section>
-
-
-        <section class="gallery-section">
-            <div class="gallery-wrap" id="gallery-wrap">
-                <div class="gallery-inner">
-                    <div class="g-item" data-index="0" style="margin-top:32px; --cover-height:420px;"><img
-                            src="assets/lemfi.png" alt="Lemfi project preview"></div>
-                    <div class="g-item" data-index="1" style="margin-top:8px; --cover-height:360px;"><img
-                            src="assets/mezovest.png" alt="Mezovest project preview"></div>
-                    <div class="g-item" data-index="2" style="margin-top:0; --cover-height:460px;"><img
-                            src="assets/cadana.png" alt="Cadana project preview"></div>
-                    <div class="g-item" data-index="3" style="margin-top:100px; --cover-height:345px;"><img
-                            src="assets/motel-one.webp" alt="Motel One project preview"></div>
-                    <div class="g-item" data-index="4" style="margin-top:16px; --cover-height:395px;"><img
-                            src="assets/gomoney.png" alt="Gomoney project preview"></div>
-                    <div class="g-item" data-index="5" style="margin-top:24px; --cover-height:345px;"><img
-                            src="assets/commerze.png" alt="Commerz Bank project preview"></div>
-                    <div class="g-item" data-index="6" style="margin-top:56px; --cover-height:440px;"><img
-                            src="assets/ecb.png" alt="Etihad Credit Bureau project preview"></div>
-                </div>
+    <section class="carousel-section" aria-label="Featured projects">
+        <div class="carousel" id="project-carousel"></div>
+        <div class="project-detail" id="project-detail">
+            <div class="project-detail__copy">
+                <h2 id="active-title">Cadana</h2>
+                <p id="active-desc">Cross-platform work. International brands. Experiences recognised by the industry's leading design awards.</p>
             </div>
-        </section>
+            <button type="button" class="pill pill--cream" id="active-view">View</button>
+        </div>
+    </section>
 
-        <div style="flex-shrink:0; height:72px;"></div>
-
-    </main>
+    <!-- Legacy main hidden — gallery moved to carousel -->
 
     <!-- ════════════════════════════════
          Card Modal
@@ -2071,7 +2141,6 @@
         // Contact panel
         // ────────────────────────────────
         var panel = document.getElementById('contact-panel');
-        var openBtn = document.getElementById('open-contact');
         var closeBtn = document.getElementById('close-contact');
         var contactCard = document.querySelector('.contact-card');
 
@@ -2088,7 +2157,6 @@
             panel.classList.toggle('is-flipped');
         }
 
-        openBtn.addEventListener('click', openContactPanel);
         closeBtn.addEventListener('click', closeContactPanel);
         panel.addEventListener('click', function (e) {
             if (!e.target.closest('.contact-card')) return;
@@ -2102,30 +2170,32 @@
             }
         });
         // ────────────────────────────────
-        // Page modal (About, Blog, Work…)
+        // Header actions — contact panel, no iframe modals
         // ────────────────────────────────
-        var pageBackdrop = document.getElementById('page-backdrop');
-        var pageIframe = document.getElementById('page-iframe');
+        document.getElementById('about-btn').addEventListener('click', openContactPanel);
+        document.getElementById('more-btn').addEventListener('click', openContactPanel);
 
-        function openPageModal(url) {
-            pageIframe.src = url;
-            pageBackdrop.classList.add('is-open');
-            document.body.style.overflow = 'hidden';
+        // Carousel slots — Figma card sizes and colors
+        var carouselSlots = [
+            { color: '#66cb29', width: 400, height: 385, cardIndex: 0 },
+            { color: '#393bfe', width: 400, height: 485, cardIndex: 1 },
+            { color: '#ff4300', width: 450, height: 485, cardIndex: 2 },
+            { color: '#00db2e', width: 400, height: 325, cardIndex: 3 },
+            { color: '#393bfe', width: 400, height: 485, cardIndex: 4 },
+        ];
+
+        function updateActiveDetail(slotIndex) {
+            var cardIdx = carouselSlots[slotIndex].cardIndex;
+            var card = cards[cardIdx];
+            if (!card) return;
+            document.getElementById('active-title').textContent = card.title;
+            document.getElementById('active-desc').textContent = card.brief || card.desc;
+            document.getElementById('active-view').dataset.index = cardIdx;
         }
-        function closePageModal() {
-            pageBackdrop.classList.remove('is-open');
-            document.body.style.overflow = '';
-            setTimeout(function () { pageIframe.src = ''; }, 400);
-        }
 
-        document.getElementById('page-modal-close').addEventListener('click', closePageModal);
-
-        // Intercept nav links
-        document.querySelectorAll('a[data-page]').forEach(function (a) {
-            a.addEventListener('click', function (e) {
-                e.preventDefault();
-                openPageModal(this.getAttribute('href'));
-            });
+        document.getElementById('active-view').addEventListener('click', function () {
+            var idx = parseInt(this.dataset.index, 10);
+            if (!isNaN(idx)) openModal(idx);
         });
 
         // ────────────────────────────────
@@ -2412,109 +2482,21 @@
             }
         });
 
-        // ────────────────────────────────
-        // Gallery — infinite scroll + hover overlays + click
-        // ────────────────────────────────
-        (function () {
-            var wrap = document.getElementById('gallery-wrap');
-            var inner = wrap.querySelector('.gallery-inner');
-
-            // 1. Add hover overlays (number + brief) to each original item
-            Array.from(inner.querySelectorAll('.g-item')).forEach(function (item, i) {
-                var num = document.createElement('span');
-                num.className = 'card-num';
-                num.textContent = String(i + 1).padStart(2, '0');
-                item.appendChild(num);
-
-                var brief = document.createElement('p');
-                brief.className = 'card-brief';
-                brief.textContent = (cards[i] && cards[i].brief) ? cards[i].brief : '';
-                item.appendChild(brief);
-            });
-
-            // 2. Clone all items for seamless infinite loop
-            Array.from(inner.querySelectorAll('.g-item')).forEach(function (item) {
-                inner.appendChild(item.cloneNode(true));
-            });
-
-            // 3. Measure loop boundary after layout settles
-            var halfWidth = 0;
-            var pos = 0; // tracked in JS — never let browser clamp it
-            var dragging = false;
-            var dragMoved = false;
-            var dragStartX, dragStartPos, mouseDownX;
-
-            requestAnimationFrame(function () {
-                requestAnimationFrame(function () {
-                    halfWidth = inner.scrollWidth / 2;
-                    pos = halfWidth; // start mid-loop so both directions work
-                    wrap.scrollLeft = pos;
-                });
-            });
-
-            // Clean positive modulo — always returns a value in [0, halfWidth)
-            function wrapPos(v) {
-                if (halfWidth <= 0) return Math.max(0, v);
-                return ((v % halfWidth) + halfWidth) % halfWidth;
-            }
-
-            // Wheel / trackpad: listen on window so every scroll is captured
-            window.addEventListener('wheel', function (e) {
-                if (backdrop.classList.contains('is-open')) return;
-                e.preventDefault();
-                var now = Date.now();
-                if (now - lastWheelSound > 90) {
-                    playTone('wheel');
-                    lastWheelSound = now;
+        // WebGPU-style project carousel
+        import('./js/carousel.js').then(function (mod) {
+            var carousel = new mod.Carousel(
+                document.getElementById('project-carousel'),
+                carouselSlots,
+                {
+                    onActiveChange: function (i) { updateActiveDetail(i); },
+                    onSelect: function (i) {
+                        openModal(carouselSlots[i].cardIndex);
+                    },
                 }
-                pos = wrapPos(pos + e.deltaY + e.deltaX);
-                wrap.scrollLeft = pos;
-            }, { passive: false });
-
-            // 4. Drag interaction
-            wrap.addEventListener('mousedown', function (e) {
-                if (backdrop.classList.contains('is-open')) return;
-                dragging = true; dragMoved = false;
-                mouseDownX = e.pageX;
-                dragStartX = e.pageX;
-                dragStartPos = pos;
-                wrap.classList.add('is-dragging');
-                e.preventDefault();
-            });
-            document.addEventListener('mousemove', function (e) {
-                if (!dragging) return;
-                if (Math.abs(e.pageX - mouseDownX) > 5) dragMoved = true;
-                pos = wrapPos(dragStartPos - (e.pageX - dragStartX));
-                wrap.scrollLeft = pos;
-            });
-            document.addEventListener('mouseup', function () {
-                dragging = false;
-                wrap.classList.remove('is-dragging');
-            });
-
-            // 5. Click (event delegation — works on originals AND clones)
-            wrap.addEventListener('mouseup', function (e) {
-                if (backdrop.classList.contains('is-open')) return;
-                if (dragMoved) return;
-                var item = e.target.closest('.g-item');
-                if (!item) return;
-                var idx = parseInt(item.getAttribute('data-index'), 10);
-                if (!isNaN(idx)) openModal(idx);
-            });
-
-            // 6. Touch
-            var touchStartX, touchStartPos;
-            wrap.addEventListener('touchstart', function (e) {
-                if (backdrop.classList.contains('is-open')) return;
-                touchStartX = e.touches[0].clientX;
-                touchStartPos = pos;
-            }, { passive: true });
-            wrap.addEventListener('touchmove', function (e) {
-                if (backdrop.classList.contains('is-open')) return;
-                pos = wrapPos(touchStartPos + (touchStartX - e.touches[0].clientX));
-                wrap.scrollLeft = pos;
-            }, { passive: true });
-        })();
+            );
+            carousel.start(2);
+            updateActiveDetail(2);
+        });
     </script>
 
 </body>
