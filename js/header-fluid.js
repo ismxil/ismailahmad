@@ -167,16 +167,12 @@ const DISPLAY_FRAG = `
 precision highp float;
 varying vec2 v_uv;
 uniform sampler2D u_dye;
-uniform sampler2D u_mask;
 uniform vec3 u_brand;
 void main() {
-  float mask = texture2D(u_mask, v_uv).a;
-  if (mask < 0.004) discard;
   vec3 dye = texture2D(u_dye, v_uv).rgb;
-  float flow = clamp(length(dye) * 2.2, 0.0, 1.0);
-  if (flow < 0.01) discard;
-  vec3 tint = mix(u_brand, dye + u_brand * 0.45, 0.7);
-  gl_FragColor = vec4(tint, mask * flow);
+  float flow = clamp(length(dye) * 1.8, 0.0, 1.0);
+  vec3 fill = mix(u_brand, u_brand + dye * 1.35, flow);
+  gl_FragColor = vec4(fill, 1.0);
 }`;
 
 function createShader(gl, type, source) {
@@ -284,6 +280,15 @@ class HeaderFluidEffect {
     this.content = root.querySelector('.header-fluid__content') || root;
     this.title = this.content.querySelector('h1');
     this.logo = this.content.querySelector('img');
+    if (this.logo && !this.logo.parentElement.classList.contains('header-fluid__logo-wrap')) {
+      const wrap = document.createElement('span');
+      wrap.className = 'header-fluid__logo-wrap';
+      this.logo.parentNode.insertBefore(wrap, this.logo);
+      wrap.appendChild(this.logo);
+      this.logoWrap = wrap;
+    } else {
+      this.logoWrap = this.logo?.parentElement;
+    }
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'header-fluid__canvas';
     this.canvas.setAttribute('aria-hidden', 'true');
@@ -293,11 +298,9 @@ class HeaderFluidEffect {
     this.idleTimer = 0;
     this.raf = 0;
     this.lastTime = 0;
+    this.fillFrame = 0;
     this.pointer = { x: 0, y: 0, dx: 0, dy: 0, moved: false };
     this.hue = Math.random();
-    this.maskCanvas = document.createElement('canvas');
-    this.maskCtx = this.maskCanvas.getContext('2d');
-    this.maskTexture = null;
     this.brandColor = [0.224, 0.231, 0.996];
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -314,7 +317,14 @@ class HeaderFluidEffect {
     }
     window.addEventListener('resize', this.onResize);
     if (document.fonts) {
-      document.fonts.ready.then(() => this.resize());
+      document.fonts.ready.then(() => {
+        if (this.active) this.applyFill();
+      });
+    }
+    if (this.logo && !this.logo.complete) {
+      this.logo.addEventListener('load', () => {
+        if (this.active) this.applyFill();
+      }, { once: true });
     }
   }
 
@@ -328,7 +338,7 @@ class HeaderFluidEffect {
         depth: false,
         stencil: false,
         premultipliedAlpha: false,
-        preserveDrawingBuffer: false,
+        preserveDrawingBuffer: true,
       }) || null;
     if (!gl) return false;
 
@@ -433,88 +443,76 @@ class HeaderFluidEffect {
     this.canvas.style.width = `${rect.width + padX}px`;
     this.canvas.style.height = `${rect.height + padY}px`;
     this.aspect = w / h;
-    this.buildMask(w, h, padX * 0.5, padY * 0.5, dpr);
     this.initFramebuffers();
+    if (this.active) this.applyFill();
   }
 
-  uploadMaskTexture() {
-    const gl = this.gl;
-    if (!this.maskTexture) this.maskTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, this.maskTexture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.maskCanvas);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  canvasBackgroundStyles() {
+    return {
+      backgroundSize: this.canvas.style.width,
+      backgroundPosition: `${this.canvas.style.left} ${this.canvas.style.top}`,
+      backgroundRepeat: 'no-repeat',
+    };
   }
 
-  async buildMask(w, h, offsetX, offsetY, dpr) {
-    const titleStyle = this.title ? getComputedStyle(this.title) : null;
-    this.maskCanvas.width = w;
-    this.maskCanvas.height = h;
-    const ctx = this.maskCtx;
-    ctx.clearRect(0, 0, w, h);
+  applyFill() {
+    const url = this.canvas.toDataURL();
+    const bg = this.canvasBackgroundStyles();
 
-    const canvasRect = this.canvas.getBoundingClientRect();
-
-    if (this.title && titleStyle) {
-      await this.drawTitleMask(ctx, this.title, canvasRect, dpr);
+    if (this.title) {
+      this.title.style.color = 'transparent';
+      this.title.style.webkitTextFillColor = 'transparent';
+      this.title.style.backgroundImage = `url(${url})`;
+      this.title.style.webkitBackgroundClip = 'text';
+      this.title.style.backgroundClip = 'text';
+      this.title.style.backgroundSize = bg.backgroundSize;
+      this.title.style.backgroundPosition = bg.backgroundPosition;
+      this.title.style.backgroundRepeat = bg.backgroundRepeat;
     }
 
-    if (this.logo) {
-      const drawLogo = () => {
-        const rect = this.logo.getBoundingClientRect();
-        const x = (rect.left - canvasRect.left) * dpr;
-        const y = (rect.top - canvasRect.top) * dpr;
-        const lw = rect.width * dpr;
-        const lh = rect.height * dpr;
-        ctx.drawImage(this.logo, x, y, lw, lh);
-        this.uploadMaskTexture();
-      };
-      if (this.logo.complete) drawLogo();
-      else {
-        this.uploadMaskTexture();
-        this.logo.addEventListener('load', () => this.resize(), { once: true });
-      }
-      return;
+    if (this.logo && this.logoWrap) {
+      this.logo.style.opacity = '0';
+      this.logoWrap.style.backgroundImage = `url(${url})`;
+      this.logoWrap.style.backgroundSize = bg.backgroundSize;
+      this.logoWrap.style.backgroundPosition = bg.backgroundPosition;
+      this.logoWrap.style.backgroundRepeat = bg.backgroundRepeat;
+      this.logoWrap.style.webkitMaskImage = `url(${this.logo.src})`;
+      this.logoWrap.style.maskImage = `url(${this.logo.src})`;
+      this.logoWrap.style.webkitMaskSize = 'contain';
+      this.logoWrap.style.maskSize = 'contain';
+      this.logoWrap.style.webkitMaskRepeat = 'no-repeat';
+      this.logoWrap.style.maskRepeat = 'no-repeat';
+      this.logoWrap.style.webkitMaskPosition = 'center';
+      this.logoWrap.style.maskPosition = 'center';
     }
-
-    this.uploadMaskTexture();
   }
 
-  async drawTitleMask(ctx, title, canvasRect, dpr) {
-    if (document.fonts) {
-      const style = getComputedStyle(title);
-      const fontSize = style.fontSize;
-      const fontFamily = style.fontFamily;
-      const fontWeight = style.fontWeight;
-      try {
-        await document.fonts.load(`${fontWeight} ${fontSize} ${fontFamily}`);
-      } catch (_) {
-        /* ignore */
-      }
+  clearFill() {
+    if (this.title) {
+      this.title.style.color = '';
+      this.title.style.webkitTextFillColor = '';
+      this.title.style.backgroundImage = '';
+      this.title.style.webkitBackgroundClip = '';
+      this.title.style.backgroundClip = '';
+      this.title.style.backgroundSize = '';
+      this.title.style.backgroundPosition = '';
+      this.title.style.backgroundRepeat = '';
     }
 
-    ctx.fillStyle = 'rgba(255,255,255,1)';
-    const textNode = title.firstChild;
-    const text = title.textContent || '';
-    if (!textNode || textNode.nodeType !== Node.TEXT_NODE || !text.length) return;
-
-    const range = document.createRange();
-    for (let i = 0; i < text.length; i++) {
-      if (text[i] === ' ') continue;
-      range.setStart(textNode, i);
-      range.setEnd(textNode, i + 1);
-      const rect = range.getBoundingClientRect();
-      if (!rect.width || !rect.height) continue;
-      ctx.fillRect(
-        (rect.left - canvasRect.left) * dpr,
-        (rect.top - canvasRect.top) * dpr,
-        rect.width * dpr,
-        rect.height * dpr
-      );
+    if (this.logo && this.logoWrap) {
+      this.logo.style.opacity = '';
+      this.logoWrap.style.backgroundImage = '';
+      this.logoWrap.style.backgroundSize = '';
+      this.logoWrap.style.backgroundPosition = '';
+      this.logoWrap.style.backgroundRepeat = '';
+      this.logoWrap.style.webkitMaskImage = '';
+      this.logoWrap.style.maskImage = '';
+      this.logoWrap.style.webkitMaskSize = '';
+      this.logoWrap.style.maskSize = '';
+      this.logoWrap.style.webkitMaskRepeat = '';
+      this.logoWrap.style.maskRepeat = '';
+      this.logoWrap.style.webkitMaskPosition = '';
+      this.logoWrap.style.maskPosition = '';
     }
   }
 
@@ -556,17 +554,13 @@ class HeaderFluidEffect {
       return;
     }
     this.active = value;
-    this.root.classList.toggle('is-active', value);
     if (value) {
-      this.buildMask(
-        this.canvas.width,
-        this.canvas.height,
-        0,
-        0,
-        Math.min(window.devicePixelRatio || 1, 2)
-      ).then(() => this.seedFluid());
+      this.seedFluid();
+      this.applyFill();
       if (!this.raf) this.raf = requestAnimationFrame(this.loop);
+      return;
     }
+    this.clearFill();
   }
 
   seedFluid() {
@@ -681,7 +675,6 @@ class HeaderFluidEffect {
 
     this.blit(null, 'display', {
       u_dye: { texture: this.dyeFBO.read().texture, unit: 0 },
-      u_mask: { texture: this.maskTexture, unit: 1 },
       u_brand: this.brandColor,
     });
 
@@ -709,6 +702,10 @@ class HeaderFluidEffect {
 
     this.step(dt);
     this.render();
+
+    this.fillFrame += 1;
+    if (this.fillFrame % 2 === 0) this.applyFill();
+
     this.raf = requestAnimationFrame(this.loop);
   };
 

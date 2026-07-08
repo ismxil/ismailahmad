@@ -16,21 +16,33 @@
     display: inline-flex;
     align-items: center;
     gap: 16px;
+}
+
+.header-fluid__content h1,
+.header-fluid__content img {
+    position: relative;
+    z-index: 1;
     pointer-events: none;
+}
+
+.header-fluid__logo-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.header-fluid__logo-wrap img {
+    display: block;
 }
 
 .header-fluid__canvas {
     position: absolute;
-    z-index: 1;
+    z-index: 2;
+    opacity: 0;
     pointer-events: auto;
     touch-action: none;
-    opacity: 0;
     display: block;
-    mix-blend-mode: screen;
-}
-
-.header-fluid.is-active .header-fluid__canvas {
-    opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
