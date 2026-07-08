@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feeds — Ismail Ahmad</title>
+    <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+    </script>
+    <style>
+        @font-face {
+            font-family: 'Uncut Sans';
+            src: url('assets/Uncut Sans/Webfonts/UncutSans-Variable.woff2') format('woff2');
+            font-weight: 300 800;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --brand: #393bfe;
+            --text-primary: #09090b;
+            --bg-white: #ffffff;
+            --bg-cream: #f3f2ef;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-white);
+            font-family: 'Uncut Sans', system-ui, sans-serif;
+            color: var(--text-primary);
+        }
+
+        #feeds-webgl {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100dvh;
+            z-index: 0;
+            touch-action: none;
+        }
+
+        .feeds-chrome {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .feeds-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 24px;
+            pointer-events: none;
+        }
+
+        .feeds-top > * {
+            pointer-events: auto;
+        }
+
+        .feeds-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 999px;
+            background: var(--bg-cream);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.18s ease;
+        }
+
+        .feeds-back:hover {
+            opacity: 0.75;
+        }
+
+        .feeds-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            color: var(--text-primary);
+            opacity: 0.55;
+        }
+
+        .feeds-hint {
+            position: fixed;
+            left: 50%;
+            bottom: 28px;
+            transform: translateX(-50%);
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(243, 242, 239, 0.88);
+            backdrop-filter: blur(8px);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            opacity: 0.7;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="feeds-webgl" aria-label="Feeds visualizer"></canvas>
+
+    <div class="feeds-chrome">
+        <div class="feeds-top">
+            <a class="feeds-back" href="index.html">Back</a>
+            <p class="feeds-title">Feeds</p>
+        </div>
+        <p class="feeds-hint">Scroll and drag to explore</p>
+    </div>
+
+    <script type="module" src="js/feeds-visualizer.js"></script>
+</body>
+
+</html>
