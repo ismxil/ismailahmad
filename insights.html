@@ -8,6 +8,7 @@
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
+    <link rel="stylesheet" href="css/header-fluid.css">
     <style>
         @font-face {
             font-family: 'Uncut Sans';
@@ -434,9 +435,11 @@
 <body>
     <div class="page">
         <header class="topbar" aria-label="Insights header">
-            <div class="brand" aria-label="Insights title">
-                <h1>Insights</h1>
-                <img src="assets/logo.svg" alt="" />
+            <div class="brand header-fluid" data-header-fluid aria-label="Insights title">
+                <div class="header-fluid__content">
+                    <h1>Insights</h1>
+                    <img src="assets/logo.svg" alt="" width="54" height="54" />
+                </div>
             </div>
 
             <nav class="nav" aria-label="Site navigation">
@@ -631,7 +634,9 @@
 
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
+        import { initAllHeaderFluids } from './js/header-fluid.js';
         initBrandLogo3D(document.getElementById('insights-logo-c'));
+        initAllHeaderFluids();
     </script>
 </body>
 

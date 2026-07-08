@@ -8,6 +8,7 @@
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
+    <link rel="stylesheet" href="css/header-fluid.css">
     <style>
         @font-face {
             font-family: 'Uncut Sans';
@@ -208,9 +209,11 @@
 
     <div class="feeds-chrome">
         <header class="topbar" aria-label="Feed header">
-            <div class="brand" aria-label="Feed title">
-                <h1>Feed</h1>
-                <img src="assets/logo.svg" alt="" width="54" height="54" />
+            <div class="brand header-fluid" data-header-fluid aria-label="Feed title">
+                <div class="header-fluid__content">
+                    <h1>Feed</h1>
+                    <img src="assets/logo.svg" alt="" width="54" height="54" />
+                </div>
             </div>
 
             <nav class="nav" aria-label="Site navigation">
@@ -230,7 +233,9 @@
     <script type="module" src="js/feeds-visualizer.js"></script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
+        import { initAllHeaderFluids } from './js/header-fluid.js';
         initBrandLogo3D(document.getElementById('feeds-logo-c'));
+        initAllHeaderFluids();
     </script>
 </body>
 

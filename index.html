@@ -13,6 +13,7 @@
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="css/header-fluid.css">
 
     <style>
         @font-face {
@@ -2089,9 +2090,11 @@
          ════════════════════════════════ -->
     <div id="home-layout">
     <header id="site-header">
-        <div class="site-header__brand">
-            <h1>Ismail Ahmad</h1>
-            <img src="assets/logo.svg" alt="" class="site-header__logo" width="54" height="54">
+        <div class="site-header__brand header-fluid" data-header-fluid>
+            <div class="header-fluid__content">
+                <h1>Ismail Ahmad</h1>
+                <img src="assets/logo.svg" alt="" class="site-header__logo" width="54" height="54">
+            </div>
         </div>
         <nav class="site-header__nav" aria-label="Site navigation">
             <a class="pill pill--cream" href="feeds.html">Feeds</a>
@@ -3368,6 +3371,10 @@
             );
             carousel.start(2);
             updateActiveDetail(2);
+        });
+
+        import('./js/header-fluid.js').then(function (mod) {
+            mod.initAllHeaderFluids();
         });
     </script>
 
