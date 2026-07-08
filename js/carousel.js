@@ -3,7 +3,7 @@
  */
 
 const LERP = 0.1;
-const GAP_PX = 16;
+const GAP_PX = 48;
 const TILT_RAD_PER_PX = 0.004;
 const TILT_MAX_RAD = 0.06;
 const TILT_LERP = 0.09;
@@ -58,10 +58,35 @@ export class Carousel {
   measure() {
     const widths = this.slots.map((s) => s.width);
     const heights = this.slots.map((s) => s.height);
-    this.stepX = Math.max(...widths) + GAP_PX;
-    this.periodX = this.slots.reduce((sum, s) => sum + s.width + GAP_PX, 0);
     this.maxCardH = Math.max(...heights);
     this.maxCardW = Math.max(...widths);
+
+    this.baseOffsets = this.slots.map((_, i) => this._offsetBetween(this.centerIndex, i));
+    this.periodX = 0;
+    for (let i = 0; i < this.slots.length; i++) {
+      const next = (i + 1) % this.slots.length;
+      this.periodX += this.slots[i].width / 2 + GAP_PX + this.slots[next].width / 2;
+    }
+    this.stepX = this.maxCardW + GAP_PX;
+  }
+
+  get centerIndex() {
+    return Math.floor(this.slots.length / 2);
+  }
+
+  _spacingBetween(a, b) {
+    return this.slots[a].width / 2 + GAP_PX + this.slots[b].width / 2;
+  }
+
+  _offsetBetween(from, to) {
+    if (from === to) return 0;
+    let offset = 0;
+    if (to > from) {
+      for (let j = from; j < to; j++) offset += this._spacingBetween(j, j + 1);
+    } else {
+      for (let j = to; j < from; j++) offset -= this._spacingBetween(j, j + 1);
+    }
+    return offset;
   }
 
   start(initialIndex = 0) {
@@ -90,11 +115,7 @@ export class Carousel {
   }
 
   _indexToScroll(index) {
-    let offset = 0;
-    const c = Math.floor(this.slots.length / 2);
-    for (let i = c; i < index; i++) offset += this.slots[i].width + GAP_PX;
-    for (let i = index; i < c; i++) offset -= this.slots[i].width + GAP_PX;
-    return offset;
+    return this._offsetBetween(this.centerIndex, index);
   }
 
   _onResize() {
@@ -135,30 +156,24 @@ export class Carousel {
   }
 
   applyTransforms() {
-    const cw = this.root.offsetWidth;
-    const ch = this.root.offsetHeight;
-    if (!cw || !ch) return;
+    const stage = this.root.closest('.carousel-stage');
+    const stageRect = stage ? stage.getBoundingClientRect() : this.root.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const stageH = stageRect.height || this.root.offsetHeight;
+    if (!vw || !stageH) return;
 
-    const heightScale = (ch - 12) / this.maxCardH;
-    const widthScale = (cw - 24) / this.periodX;
-    this.fitScale = Math.min(1, heightScale, widthScale);
+    const heightScale = Math.min(1, (stageH - 12) / this.maxCardH);
+    this.fitScale = heightScale;
 
     const half = this.periodX / 2;
-    const c = Math.floor(this.slots.length / 2);
+    const centerY = stageRect.top + stageRect.height / 2;
 
     let closestIdx = 0;
     let closestDist = Infinity;
     let activeRelX = 0;
 
-    const offsets = this.slots.map((_, i) => {
-      let x = 0;
-      for (let j = c; j < i; j++) x += this.slots[j].width + GAP_PX;
-      for (let j = i; j < c; j++) x -= this.slots[j].width + GAP_PX;
-      return x;
-    });
-
     for (let i = 0; i < this.slots.length; i++) {
-      let relX = offsets[i] - this.scrollX;
+      let relX = this.baseOffsets[i] - this.scrollX;
       relX = ((relX % this.periodX) + this.periodX) % this.periodX;
       if (relX >= half) relX -= this.periodX;
 
@@ -173,19 +188,17 @@ export class Carousel {
       const fit = this.fitScale;
       const w = slot.width * fit;
       const h = slot.height * fit;
-      const x = cw / 2 + relX * fit - w / 2;
-      const y = ch / 2 - h / 2;
+      const x = vw / 2 + relX * fit - w / 2;
+      const y = centerY - h / 2;
 
-      const normDist = Math.min(dist / (this.stepX * 2.2), 1);
-      const scale = 1 - normDist * 0.12;
-      const opacity = 1 - normDist * 0.3;
+      const normDist = Math.min(dist / (this.stepX * 1.8), 1);
       const slotTilt = this.tilt * (1 - normDist * 0.5);
 
       const el = this.slotEls[i];
       el.style.width = `${w}px`;
       el.style.height = `${h}px`;
-      el.style.transform = `translate(${x}px, ${y}px) rotateY(${slotTilt}rad) scale(${scale})`;
-      el.style.opacity = String(opacity);
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) rotateY(${slotTilt}rad)`;
+      el.style.opacity = '1';
       el.style.zIndex = String(Math.round((1 - normDist) * 100));
       el.classList.toggle('is-active', i === closestIdx && closestDist < this.stepX * 0.55);
     }

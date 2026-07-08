@@ -816,7 +816,7 @@
             height: 100vh;
             height: 100dvh;
             padding: 25px 24px 88px;
-            overflow: hidden;
+            overflow: visible;
             position: relative;
             z-index: 5;
         }
@@ -905,6 +905,9 @@
             display: flex;
             flex-direction: column;
             z-index: 10;
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            overflow: visible;
         }
 
         .carousel-stage {
@@ -912,16 +915,20 @@
             flex: 1;
             width: 100%;
             min-height: 160px;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .carousel {
             position: absolute;
             inset: 0;
-            perspective: 1400px;
             cursor: grab;
             touch-action: none;
-            overflow: hidden;
+            overflow: visible;
+            pointer-events: none;
+        }
+
+        .carousel.is-ready {
+            pointer-events: auto;
         }
 
         .carousel.is-dragging {
@@ -929,7 +936,7 @@
         }
 
         .carousel-slot {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: var(--card-w, 400px);
@@ -941,6 +948,7 @@
             will-change: transform;
             transform-origin: center center;
             opacity: 0;
+            pointer-events: auto;
         }
 
         .carousel.is-ready .carousel-slot {
