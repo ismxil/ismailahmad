@@ -428,6 +428,8 @@ class HeaderFluidEffect {
     const h = Math.max(1, Math.ceil((rect.height + padY) * dpr));
     this.canvas.width = w;
     this.canvas.height = h;
+    this.canvas.style.left = `${-padX * 0.5}px`;
+    this.canvas.style.top = `${-padY * 0.5}px`;
     this.canvas.style.width = `${rect.width + padX}px`;
     this.canvas.style.height = `${rect.height + padY}px`;
     this.aspect = w / h;
@@ -448,7 +450,7 @@ class HeaderFluidEffect {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
   }
 
-  buildMask(w, h, offsetX, offsetY, dpr) {
+  async buildMask(w, h, offsetX, offsetY, dpr) {
     const titleStyle = this.title ? getComputedStyle(this.title) : null;
     this.maskCanvas.width = w;
     this.maskCanvas.height = h;
@@ -458,7 +460,7 @@ class HeaderFluidEffect {
     const canvasRect = this.canvas.getBoundingClientRect();
 
     if (this.title && titleStyle) {
-      this.drawTitleMask(ctx, this.title, titleStyle, canvasRect, dpr);
+      await this.drawTitleMask(ctx, this.title, canvasRect, dpr);
     }
 
     if (this.logo) {
@@ -472,32 +474,48 @@ class HeaderFluidEffect {
         this.uploadMaskTexture();
       };
       if (this.logo.complete) drawLogo();
-      else this.logo.addEventListener('load', () => this.resize(), { once: true });
+      else {
+        this.uploadMaskTexture();
+        this.logo.addEventListener('load', () => this.resize(), { once: true });
+      }
       return;
     }
 
     this.uploadMaskTexture();
   }
 
-  drawTitleMask(ctx, title, style, canvasRect, dpr) {
-    const text = title.textContent.trim();
-    const fontSize = parseFloat(style.fontSize) * dpr;
-    ctx.font = `${style.fontStyle} ${style.fontWeight} ${fontSize}px ${style.fontFamily}`;
-    ctx.textBaseline = 'alphabetic';
-    ctx.textAlign = 'left';
-    if (style.letterSpacing && 'letterSpacing' in ctx) {
-      ctx.letterSpacing = style.letterSpacing;
+  async drawTitleMask(ctx, title, canvasRect, dpr) {
+    if (document.fonts) {
+      const style = getComputedStyle(title);
+      const fontSize = style.fontSize;
+      const fontFamily = style.fontFamily;
+      const fontWeight = style.fontWeight;
+      try {
+        await document.fonts.load(`${fontWeight} ${fontSize} ${fontFamily}`);
+      } catch (_) {
+        /* ignore */
+      }
     }
-    ctx.fillStyle = 'rgba(255,255,255,1)';
 
-    const metrics = ctx.measureText(text);
+    ctx.fillStyle = 'rgba(255,255,255,1)';
+    const textNode = title.firstChild;
+    const text = title.textContent || '';
+    if (!textNode || textNode.nodeType !== Node.TEXT_NODE || !text.length) return;
+
     const range = document.createRange();
-    range.selectNodeContents(title);
-    const rects = range.getClientRects();
-    const textRect = rects.length ? rects[0] : title.getBoundingClientRect();
-    const x = (textRect.left - canvasRect.left) * dpr;
-    const y = (textRect.bottom - canvasRect.top) * dpr - metrics.actualBoundingBoxDescent;
-    ctx.fillText(text, x, y);
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === ' ') continue;
+      range.setStart(textNode, i);
+      range.setEnd(textNode, i + 1);
+      const rect = range.getBoundingClientRect();
+      if (!rect.width || !rect.height) continue;
+      ctx.fillRect(
+        (rect.left - canvasRect.left) * dpr,
+        (rect.top - canvasRect.top) * dpr,
+        rect.width * dpr,
+        rect.height * dpr
+      );
+    }
   }
 
   bindEvents() {
@@ -546,8 +564,7 @@ class HeaderFluidEffect {
         0,
         0,
         Math.min(window.devicePixelRatio || 1, 2)
-      );
-      this.seedFluid();
+      ).then(() => this.seedFluid());
       if (!this.raf) this.raf = requestAnimationFrame(this.loop);
     }
   }

@@ -21,9 +21,6 @@
 
 .header-fluid__canvas {
     position: absolute;
-    inset: -28px -20px;
-    width: calc(100% + 40px);
-    height: calc(100% + 56px);
     z-index: 1;
     pointer-events: auto;
     touch-action: none;
