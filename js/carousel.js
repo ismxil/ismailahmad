@@ -3,7 +3,7 @@
  */
 
 const LERP = 0.1;
-const GAP_PX = 48;
+const GAP_PX = 32;
 const TILT_RAD_PER_PX = 0.004;
 const TILT_MAX_RAD = 0.06;
 const TILT_LERP = 0.09;
