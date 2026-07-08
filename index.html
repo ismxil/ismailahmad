@@ -966,15 +966,14 @@
             border: none;
             background: transparent;
             cursor: pointer;
-            will-change: transform, width;
-            transform: translate3d(var(--slot-x, 0px), var(--slot-y, 0px), 0) rotateY(var(--slot-tilt, 0rad));
+            will-change: transform;
             opacity: 0;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             gap: 16px;
-            transition: width 0.42s cubic-bezier(0.32, 0.72, 0, 1), transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+            text-align: left;
         }
 
         .carousel.is-ready .carousel-slot {
@@ -984,9 +983,11 @@
         .carousel-card-wrap {
             position: relative;
             display: block;
-            width: 100%;
+            width: var(--card-w);
             height: var(--card-h, 400px);
             flex-shrink: 0;
+            margin-left: 0;
+            transition: width 0.42s cubic-bezier(0.32, 0.72, 0, 1), margin-left 0.42s cubic-bezier(0.32, 0.72, 0, 1);
         }
 
         .carousel-card {
@@ -1007,11 +1008,15 @@
             box-shadow: 0 24px 64px rgba(9, 9, 11, 0.12);
         }
 
-        .carousel-slot:hover,
-        .carousel-slot:focus-visible {
+        .carousel-slot.is-hovered .carousel-card-wrap,
+        .carousel-slot:focus-visible .carousel-card-wrap {
             width: var(--hover-w, var(--card-w));
-            transform: translate3d(calc(var(--slot-x) + (var(--card-w) - var(--hover-w)) / 2), var(--slot-y), 0) rotateY(var(--slot-tilt, 0rad));
-            z-index: 999;
+            margin-left: calc((var(--card-w) - var(--hover-w, var(--card-w))) / 2);
+        }
+
+        .carousel-slot.is-hovered .carousel-card,
+        .carousel-slot:focus-visible .carousel-card {
+            box-shadow: 0 24px 64px rgba(9, 9, 11, 0.16);
         }
 
         .carousel-meta {
@@ -1023,10 +1028,9 @@
             width: min(440px, 100%);
             text-align: left;
             pointer-events: none;
-            transition: gap 0.28s ease;
         }
 
-        .carousel-slot:hover .carousel-meta,
+        .carousel-slot.is-hovered .carousel-meta,
         .carousel-slot:focus-visible .carousel-meta {
             gap: 24px;
         }
@@ -1074,9 +1078,9 @@
             pointer-events: none;
         }
 
-        .carousel-slot:hover .carousel-meta__reveal,
+        .carousel-slot.is-hovered .carousel-meta__reveal,
         .carousel-slot:focus-visible .carousel-meta__reveal {
-            max-height: 160px;
+            max-height: 180px;
             opacity: 1;
         }
 

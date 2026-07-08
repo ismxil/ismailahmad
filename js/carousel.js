@@ -3,10 +3,7 @@
  */
 
 const LERP = 0.1;
-const GAP_PX = 32;
-const TILT_RAD_PER_PX = 0.004;
-const TILT_MAX_RAD = 0.06;
-const TILT_LERP = 0.09;
+const GAP_PX = 16;
 
 export class Carousel {
   constructor(rootEl, slots, { onActiveChange, onSelect } = {}) {
@@ -18,13 +15,13 @@ export class Carousel {
     this.scrollX = 0;
     this.targetScrollX = 0;
     this.periodX = 0;
-    this.velocity = 0;
-    this.tilt = 0;
     this.activeIndex = -1;
+    this.hoveredIndex = -1;
     this.isDragging = false;
     this.dragMoved = false;
     this.dragStartX = 0;
     this.dragStartScroll = 0;
+    this.fitScale = 1;
 
     this._onWheel = this._onWheel.bind(this);
     this._onPointerDown = this._onPointerDown.bind(this);
@@ -47,12 +44,12 @@ export class Carousel {
     this.root.innerHTML = this.slots
       .map(
         (slot, i) => `
-      <button type="button" class="carousel-slot" data-index="${i}" style="--card-w:${slot.width}px;--card-h:${slot.height}px;--card-color:${slot.color};--hover-w:${slot.hoverWidth || slot.width}px">
+      <button type="button" class="carousel-slot" data-index="${i}" aria-label="Open ${escapeHtml(slot.title)}">
         <span class="carousel-card-wrap" aria-hidden="true">
           <span class="carousel-card" aria-hidden="true"></span>
           ${slot.image ? `<img class="carousel-card-img" src="${slot.image}" alt="" loading="lazy">` : ''}
         </span>
-        <span class="carousel-meta" aria-hidden="true">
+        <span class="carousel-meta">
           <span class="carousel-meta__title">${escapeHtml(slot.title)}</span>
           <span class="carousel-meta__reveal">
             <span class="carousel-meta__desc">${escapeHtml(slot.metaDesc)}</span>
@@ -62,19 +59,39 @@ export class Carousel {
       </button>`
       )
       .join('');
+
     this.slotEls = Array.from(this.root.querySelectorAll('.carousel-slot'));
     this.slotEls.forEach((el) => {
+      const idx = parseInt(el.dataset.index, 10);
+
+      el.addEventListener('mouseenter', () => {
+        this.hoveredIndex = idx;
+        this.applyTransforms();
+      });
+      el.addEventListener('mouseleave', () => {
+        if (this.hoveredIndex === idx) this.hoveredIndex = -1;
+        this.applyTransforms();
+      });
+      el.addEventListener('focusin', () => {
+        this.hoveredIndex = idx;
+        this.applyTransforms();
+      });
+      el.addEventListener('focusout', (e) => {
+        if (!el.contains(e.relatedTarget)) {
+          if (this.hoveredIndex === idx) this.hoveredIndex = -1;
+          this.applyTransforms();
+        }
+      });
       el.addEventListener('click', () => {
         if (this.dragMoved) return;
-        const idx = parseInt(el.dataset.index, 10);
         this.onSelect(idx, this.slots[idx]);
       });
     });
   }
 
   measure() {
-    const widths = this.slots.map((s) => s.width);
     const heights = this.slots.map((s) => s.height);
+    const widths = this.slots.map((s) => s.width);
     this.maxCardH = Math.max(...heights);
     this.maxCardW = Math.max(...widths);
 
@@ -186,7 +203,8 @@ export class Carousel {
     this.fitScale = heightScale;
 
     const half = this.periodX / 2;
-    const centerY = stageRect.top + stageRect.height / 2;
+    const rowHeight = this.maxCardH * this.fitScale;
+    const rowTop = stageRect.top + (stageRect.height - rowHeight) * 0.5;
 
     let closestIdx = 0;
     let closestDist = Infinity;
@@ -210,21 +228,20 @@ export class Carousel {
       const cardH = slot.height * fit;
       const hoverW = (slot.hoverWidth || slot.width) * fit;
       const x = vw / 2 + relX * fit - cardW / 2;
-      const y = centerY - cardH / 2;
-
-      const normDist = Math.min(dist / (this.stepX * 1.8), 1);
-      const slotTilt = this.tilt * (1 - normDist * 0.5);
+      const y = rowTop;
+      const isHovered = i === this.hoveredIndex;
+      const isActive = i === closestIdx && closestDist < this.stepX * 0.55;
 
       const el = this.slotEls[i];
       el.style.setProperty('--card-w', `${cardW}px`);
       el.style.setProperty('--card-h', `${cardH}px`);
       el.style.setProperty('--hover-w', `${hoverW}px`);
-      el.style.setProperty('--slot-x', `${x}px`);
-      el.style.setProperty('--slot-y', `${y}px`);
-      el.style.setProperty('--slot-tilt', `${slotTilt}rad`);
+      el.style.setProperty('--card-color', slot.color);
+      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       el.style.opacity = '1';
-      el.style.zIndex = String(Math.round((1 - normDist) * 100));
-      el.classList.toggle('is-active', i === closestIdx && closestDist < this.stepX * 0.55);
+      el.style.zIndex = String(isHovered ? 999 : Math.round((1 - dist / (this.stepX * 1.8)) * 100));
+      el.classList.toggle('is-hovered', isHovered);
+      el.classList.toggle('is-active', isActive);
     }
 
     if (closestIdx !== this.activeIndex) {
@@ -239,13 +256,7 @@ export class Carousel {
   }
 
   _tick() {
-    const prev = this.scrollX;
     this.scrollX += (this.targetScrollX - this.scrollX) * LERP;
-    this.velocity = this.scrollX - prev;
-
-    const targetTilt = Math.max(-TILT_MAX_RAD, Math.min(TILT_MAX_RAD, this.velocity * TILT_RAD_PER_PX));
-    this.tilt += (targetTilt - this.tilt) * TILT_LERP;
-
     this.applyTransforms();
     this._raf = requestAnimationFrame(this._tick);
   }
