@@ -1534,7 +1534,7 @@
             }
 
             #modal-scroll {
-                padding: 88px 16px 72px;
+                padding: 88px 16px 0;
             }
 
             .project-modal__gallery,
@@ -1542,6 +1542,190 @@
                 margin: 0 -16px;
                 padding-left: 16px;
                 padding-right: 16px;
+            }
+        }
+
+        /* ── Story stack sheet (Figma 150:5649) ── */
+        #modal-backdrop.is-story-open #modal-panel {
+            transform: translateY(calc(-1 * min(72px, 10vh)));
+            transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        #story-sheet-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 70;
+            background: rgba(26, 26, 26, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.32s ease, visibility 0s linear 0.32s;
+        }
+
+        #story-sheet-backdrop.is-open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: opacity 0.32s ease, visibility 0s;
+        }
+
+        .story-sheet-peek {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            top: clamp(96px, 14vh, 120px);
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 48px 48px 0 0;
+            box-shadow: 0 40px 89px rgba(0, 0, 0, 0.12);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        #story-sheet-backdrop.is-open .story-sheet-peek {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #story-sheet {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: clamp(120px, 18vh, 160px);
+            background: #f8f8f7;
+            border-radius: 64px 64px 0 0;
+            box-shadow: 0 -43px 47px rgba(0, 0, 0, 0.2);
+            transform: translateY(100%);
+            transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #story-sheet-backdrop.is-open #story-sheet {
+            transform: translateY(0);
+        }
+
+        #story-close-btn {
+            position: absolute;
+            top: 21px;
+            right: 21px;
+            z-index: 5;
+            width: 64px;
+            height: 64px;
+            border: none;
+            border-radius: 50%;
+            background: #e4e4e7;
+            color: #09090b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s ease;
+        }
+
+        #story-close-btn:hover {
+            background: #d4d4d8;
+        }
+
+        #story-scroll {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            padding: 120px 24px 72px;
+        }
+
+        #story-scroll::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        .story-sheet__inner {
+            width: min(800px, 100%);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        #story-headline {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(32px, 5vw, 56px);
+            line-height: 1.21;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .story-sheet__sections {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .story-sheet__section {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .story-sheet__label {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(20px, 2.5vw, 24px);
+            line-height: 1.33;
+            font-weight: 600;
+            color: #71717a;
+        }
+
+        .story-sheet__content {
+            margin: 0;
+            font-size: clamp(22px, 3vw, 32px);
+            line-height: 1.375;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        #story-url {
+            font-family: var(--font-display);
+            font-size: 20px;
+            line-height: 28px;
+            font-weight: 600;
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        #story-url:hover {
+            opacity: 0.75;
+        }
+
+        @media (max-width: 900px) {
+            #story-sheet {
+                border-radius: 40px 40px 0 0;
+                top: clamp(96px, 14vh, 128px);
+            }
+
+            #story-scroll {
+                padding-top: 96px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #story-close-btn {
+                width: 52px;
+                height: 52px;
+                top: 16px;
+                right: 16px;
+            }
+
+            #story-scroll {
+                padding: 88px 16px 56px;
             }
         }
 
@@ -1826,14 +2010,13 @@
                         <div class="project-modal__meta" id="modal-meta"></div>
                         <div class="project-modal__copy">
                             <p id="modal-lead"></p>
-                            <a id="modal-story" class="project-modal__cta" href="#" target="_blank" rel="noopener"
-                                style="display:none">
+                            <button type="button" id="modal-story" class="project-modal__cta">
                                 Read the full story
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                     <path d="M7 17L17 7M17 7H7M17 7v10" />
                                 </svg>
-                            </a>
+                            </button>
                         </div>
                     </section>
 
@@ -1851,6 +2034,28 @@
                         <button type="button" class="project-modal__next-preview" id="modal-next-preview"
                             aria-label="Open next project"></button>
                     </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════
+         Story stack sheet
+         ════════════════════════════════ -->
+    <div id="story-sheet-backdrop" aria-hidden="true">
+        <div class="story-sheet-peek" aria-hidden="true"></div>
+        <div id="story-sheet" role="dialog" aria-modal="true" aria-labelledby="story-headline">
+            <button type="button" id="story-close-btn" aria-label="Close story">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div id="story-scroll">
+                <div class="story-sheet__inner">
+                    <h2 id="story-headline"></h2>
+                    <div class="story-sheet__sections" id="story-sections"></div>
+                    <a id="story-url" href="#" target="_blank" rel="noopener" style="display:none"></a>
                 </div>
             </div>
         </div>
@@ -2527,7 +2732,24 @@
                     { value: '-25%', text: 'Fewer customer complaints across platform related to spending, target was 45%', accent: '#059669' },
                     { value: '+32.1k', text: 'The number of new users onboarded to the card feature jumped — the target was 30K', accent: '#059669' },
                     { value: '£58m', text: 'Raised through the card feature strategy — a new revenue stream', accent: '#059669' }
-                ]
+                ],
+                story: {
+                    headline: 'Lemfi is a financial technology company offering remittance and money services designed for people in the diaspora. I worked across mobile, web, portal, and community touchpoints to shape a debit card program that could grow the product without losing trust.',
+                    sections: [
+                        {
+                            label: 'Challenges',
+                            content: 'The product needed to speak to a broader audience while keeping the experience consistent across several customer touchpoints — from mobile spending to website acquisition and portal management.'
+                        },
+                        {
+                            label: 'Role',
+                            content: 'I researched target audiences and user needs, shaped the product and brand touchpoints, and designed the website and connected digital experience across the card program launch.'
+                        },
+                        {
+                            label: 'Strategy',
+                            content: 'We focused on reducing spending-related complaints, onboarding a new cohort of card users, and opening a new revenue stream — while making the card feel like a natural extension of the remittance product.'
+                        }
+                    ]
+                }
             },
             {
                 title: 'Mezovest',
@@ -2699,7 +2921,15 @@
         var modalNextTitle = document.getElementById('modal-next-title');
         var modalNextSubtitle = document.getElementById('modal-next-subtitle');
         var modalNextPreview = document.getElementById('modal-next-preview');
+        var storyBackdrop = document.getElementById('story-sheet-backdrop');
+        var storySheet = document.getElementById('story-sheet');
+        var storyScroll = document.getElementById('story-scroll');
+        var storyClose = document.getElementById('story-close-btn');
+        var storyHeadline = document.getElementById('story-headline');
+        var storySections = document.getElementById('story-sections');
+        var storyUrl = document.getElementById('story-url');
         var currentIndex = 0;
+        var storyOpen = false;
 
         function getDetailText(card, title) {
             var section = (card.details || []).find(function (item) { return item.title === title; });
@@ -2707,6 +2937,88 @@
             if (section.text) return section.text;
             if (section.items && section.items.length) return section.items.join(' ');
             return '';
+        }
+
+        function getDetailItems(card, title) {
+            var section = (card.details || []).find(function (item) { return item.title === title; });
+            if (!section || !section.items || !section.items.length) return '';
+            return section.items.join('. ') + '.';
+        }
+
+        function buildStorySections(card) {
+            if (card.story && card.story.sections && card.story.sections.length) {
+                return card.story.sections;
+            }
+
+            var sections = [];
+            var challenges = getDetailText(card, 'Challenges');
+            var role = getDetailItems(card, 'My Role') || getDetailText(card, 'My Role');
+            var strategy = '';
+
+            if (card.sections && card.sections.length) {
+                strategy = card.sections.map(function (section) {
+                    return section.content;
+                }).join(' ');
+            }
+            if (!strategy) {
+                strategy = getDetailText(card, 'Stage');
+            }
+
+            if (challenges) sections.push({ label: 'Challenges', content: challenges });
+            if (role) sections.push({ label: 'Role', content: role });
+            if (strategy) sections.push({ label: 'Strategy', content: strategy });
+
+            return sections;
+        }
+
+        function renderStorySheet(idx) {
+            var card = cards[idx];
+            var headline = (card.story && card.story.headline) || card.desc;
+            storyHeadline.textContent = headline;
+            storySections.innerHTML = '';
+
+            buildStorySections(card).forEach(function (section) {
+                if (!section.content) return;
+                var block = document.createElement('section');
+                block.className = 'story-sheet__section';
+                var label = document.createElement('h3');
+                label.className = 'story-sheet__label';
+                label.textContent = section.label;
+                var content = document.createElement('p');
+                content.className = 'story-sheet__content';
+                content.textContent = section.content;
+                block.appendChild(label);
+                block.appendChild(content);
+                storySections.appendChild(block);
+            });
+
+            var link = card.storyUrl || card.url;
+            if (link) {
+                storyUrl.href = link;
+                storyUrl.textContent = link.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                storyUrl.style.display = '';
+            } else {
+                storyUrl.style.display = 'none';
+                storyUrl.removeAttribute('href');
+            }
+        }
+
+        function openStorySheet() {
+            if (storyOpen || !backdrop.classList.contains('is-open')) return;
+            renderStorySheet(currentIndex);
+            storyScroll.scrollTop = 0;
+            storyOpen = true;
+            backdrop.classList.add('is-story-open');
+            storyBackdrop.classList.add('is-open');
+            storyBackdrop.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeStorySheet() {
+            if (!storyOpen) return;
+            storyOpen = false;
+            backdrop.classList.remove('is-story-open');
+            storyBackdrop.classList.remove('is-open');
+            storyBackdrop.setAttribute('aria-hidden', 'true');
         }
 
         function createGalleryItems(card) {
@@ -2835,6 +3147,7 @@
 
         function goToModalProject(idx) {
             if (isNaN(idx)) return;
+            closeStorySheet();
             renderModal(idx);
             modalScroll.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -2868,13 +3181,7 @@
             renderModalMeta(card);
             modalLead.textContent = card.desc;
 
-            if (card.storyUrl || card.url) {
-                modalStory.href = card.storyUrl || card.url;
-                modalStory.style.display = 'inline-flex';
-            } else {
-                modalStory.removeAttribute('href');
-                modalStory.style.display = 'none';
-            }
+            modalStory.style.display = 'inline-flex';
 
             renderModalBlocks(card);
             renderModalMetrics(card);
@@ -2890,12 +3197,15 @@
         }
 
         function closeModal() {
-            backdrop.classList.remove('is-open');
+            closeStorySheet();
+            backdrop.classList.remove('is-open', 'is-story-open');
             backdrop.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
         }
 
         modalClose.addEventListener('click', closeModal);
+        modalStory.addEventListener('click', openStorySheet);
+        storyClose.addEventListener('click', closeStorySheet);
         modalNextProject.addEventListener('click', function () {
             goToModalProject(parseInt(this.dataset.index, 10));
         });
@@ -2911,18 +3221,29 @@
             if (!backdrop.classList.contains('is-open')) return;
             if (e.key === 'Escape') {
                 e.preventDefault();
+                if (storyOpen) closeStorySheet();
             }
         });
 
+        storyBackdrop.addEventListener('click', function (e) {
+            if (e.target === storyBackdrop) e.preventDefault();
+        });
+
+        function isInsideStorySheet(target) {
+            return storySheet.contains(target);
+        }
+
         document.addEventListener('wheel', function (e) {
             if (!backdrop.classList.contains('is-open')) return;
-            if (modalPanel.contains(e.target)) return;
+            if (storyOpen && isInsideStorySheet(e.target)) return;
+            if (!storyOpen && modalPanel.contains(e.target)) return;
             e.preventDefault();
         }, { capture: true, passive: false });
 
         document.addEventListener('touchmove', function (e) {
             if (!backdrop.classList.contains('is-open')) return;
-            if (modalPanel.contains(e.target)) return;
+            if (storyOpen && isInsideStorySheet(e.target)) return;
+            if (!storyOpen && modalPanel.contains(e.target)) return;
             e.preventDefault();
         }, { capture: true, passive: false });
 
