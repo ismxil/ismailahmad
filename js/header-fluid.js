@@ -168,11 +168,14 @@ precision highp float;
 varying vec2 v_uv;
 uniform sampler2D u_dye;
 uniform sampler2D u_mask;
+uniform vec3 u_brand;
 void main() {
   float mask = texture2D(u_mask, v_uv).a;
+  if (mask < 0.004) discard;
   vec3 dye = texture2D(u_dye, v_uv).rgb;
-  float energy = clamp(length(dye) * 2.2, 0.0, 1.0);
-  gl_FragColor = vec4(dye * 1.1, mask * energy);
+  float flow = clamp(length(dye) * 1.8, 0.0, 1.0);
+  vec3 fill = mix(u_brand, u_brand + dye * 1.35, flow);
+  gl_FragColor = vec4(fill, mask);
 }`;
 
 function createShader(gl, type, source) {
@@ -309,6 +312,9 @@ class HeaderFluidEffect {
       this.ro.observe(this.root);
     }
     window.addEventListener('resize', this.onResize);
+    if (document.fonts) {
+      document.fonts.ready.then(() => this.resize());
+    }
   }
 
   onResize = () => this.resize();
@@ -458,6 +464,9 @@ class HeaderFluidEffect {
       ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
       ctx.textBaseline = 'middle';
       ctx.textAlign = 'left';
+      if (titleStyle.letterSpacing && 'letterSpacing' in ctx) {
+        ctx.letterSpacing = titleStyle.letterSpacing;
+      }
       ctx.fillStyle = 'rgba(255,255,255,1)';
       const x = (rect.left - canvasRect.left) * dpr;
       const y = (rect.top + rect.height * 0.5 - canvasRect.top) * dpr;
@@ -522,7 +531,22 @@ class HeaderFluidEffect {
     this.active = value;
     this.root.classList.toggle('is-active', value);
     if (value) {
+      this.seedFluid();
       if (!this.raf) this.raf = requestAnimationFrame(this.loop);
+    }
+  }
+
+  seedFluid() {
+    for (let i = 0; i < 5; i++) {
+      const x = 0.12 + Math.random() * 0.76;
+      const y = 0.28 + Math.random() * 0.44;
+      this.splat(
+        x,
+        y,
+        (Math.random() - 0.5) * 0.03,
+        (Math.random() - 0.5) * 0.03,
+        this.brandColor
+      );
     }
   }
 
@@ -625,6 +649,7 @@ class HeaderFluidEffect {
     this.blit(null, 'display', {
       u_dye: { texture: this.dyeFBO.read().texture, unit: 0 },
       u_mask: { texture: this.maskTexture, unit: 1 },
+      u_brand: this.brandColor,
     });
 
     gl.disable(gl.BLEND);

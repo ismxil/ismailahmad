@@ -3,7 +3,6 @@
     display: inline-flex;
     align-items: center;
     max-width: 100%;
-    isolation: isolate;
 }
 
 .header-fluid.site-header__brand,
@@ -23,7 +22,12 @@
 
 .header-fluid__content h1,
 .header-fluid__content img {
-    transition: none;
+    transition: opacity 0.22s ease;
+}
+
+.header-fluid.is-active .header-fluid__content h1,
+.header-fluid.is-active .header-fluid__content img {
+    opacity: 0;
 }
 
 .header-fluid__canvas {
@@ -35,9 +39,8 @@
     pointer-events: auto;
     touch-action: none;
     opacity: 0;
-    transition: opacity 0.28s ease;
+    transition: opacity 0.22s ease;
     display: block;
-    mix-blend-mode: screen;
 }
 
 .header-fluid.is-active .header-fluid__canvas {
@@ -47,5 +50,10 @@
 @media (prefers-reduced-motion: reduce) {
     .header-fluid__canvas {
         display: none !important;
+    }
+
+    .header-fluid.is-active .header-fluid__content h1,
+    .header-fluid.is-active .header-fluid__content img {
+        opacity: 1;
     }
 }
