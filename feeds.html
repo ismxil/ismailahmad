@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feeds — Ismail Ahmad</title>
+    <title>Feed — Ismail Ahmad</title>
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
@@ -17,11 +17,21 @@
             font-display: swap;
         }
 
+        @font-face {
+            font-family: 'Reckless';
+            src: url('assets/Signifier-Light.ttf') format('truetype');
+            font-weight: 500 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
         :root {
             --brand: #393bfe;
             --text-primary: #09090b;
             --bg-white: #ffffff;
             --bg-cream: #f3f2ef;
+            --font-display: 'Reckless', Georgia, serif;
+            --font-body: 'Uncut Sans', system-ui, sans-serif;
         }
 
         *,
@@ -38,7 +48,7 @@
             height: 100%;
             overflow: hidden;
             background: var(--bg-white);
-            font-family: 'Uncut Sans', system-ui, sans-serif;
+            font-family: var(--font-body);
             color: var(--text-primary);
         }
 
@@ -58,65 +68,137 @@
             pointer-events: none;
         }
 
-        .feeds-top {
+        .topbar {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
+            gap: 24px;
             padding: 25px 24px;
-            pointer-events: none;
         }
 
-        .feeds-top > * {
+        .topbar > * {
             pointer-events: auto;
         }
 
-        .feeds-back {
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(56px, 8vw, 120px);
+            line-height: 0.95;
+            letter-spacing: -1.2px;
+            color: var(--brand);
+            font-weight: 600;
+        }
+
+        .brand img {
+            width: 54px;
+            height: 54px;
+            display: block;
+        }
+
+        .nav {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            color: var(--text-primary);
+            border-radius: 999px;
+            padding: 10px 16px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.18s ease, color 0.18s ease;
+            border: none;
+            background: transparent;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             height: 44px;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 999px;
-            background: var(--bg-cream);
-            color: var(--text-primary);
+            width: fit-content;
             font-family: inherit;
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 24px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: opacity 0.18s ease;
         }
 
-        .feeds-back:hover {
+        .pill--cream {
+            background: var(--bg-cream);
+        }
+
+        .pill--active {
+            color: var(--brand);
+        }
+
+        .pill--dot {
+            gap: 8px;
+        }
+
+        .pill--dot .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--brand);
+            flex-shrink: 0;
+        }
+
+        .pill:hover {
             opacity: 0.75;
         }
 
-        .feeds-title {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 24px;
-            color: var(--text-primary);
-            opacity: 0.55;
+        .page-footer {
+            position: fixed;
+            right: clamp(16px, 3vw, 32px);
+            bottom: clamp(16px, 3vw, 32px);
+            pointer-events: none;
         }
 
-        .feeds-hint {
-            position: fixed;
-            left: 50%;
-            bottom: 28px;
-            transform: translateX(-50%);
-            padding: 10px 16px;
-            border-radius: 999px;
-            background: rgba(243, 242, 239, 0.88);
-            backdrop-filter: blur(8px);
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-primary);
-            opacity: 0.7;
-            pointer-events: none;
-            white-space: nowrap;
+        .home-logo {
+            display: block;
+            width: clamp(112px, 14vw, 156px);
+            height: clamp(112px, 14vw, 156px);
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 50%;
+            pointer-events: auto;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .home-logo:hover {
+            transform: scale(1.04);
+            opacity: 0.9;
+        }
+
+        .home-logo canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        @media (max-width: 660px) {
+            .topbar {
+                padding: 18px 16px;
+            }
+
+            .brand img {
+                width: 44px;
+                height: 44px;
+            }
+
+            .nav {
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -125,14 +207,31 @@
     <canvas id="feeds-webgl" aria-label="Feeds visualizer"></canvas>
 
     <div class="feeds-chrome">
-        <div class="feeds-top">
-            <a class="feeds-back" href="index.html">Back</a>
-            <p class="feeds-title">Feeds</p>
-        </div>
-        <p class="feeds-hint">Scroll and drag to explore</p>
+        <header class="topbar" aria-label="Feed header">
+            <div class="brand" aria-label="Feed title">
+                <h1>Feed</h1>
+                <img src="assets/logo.svg" alt="" width="54" height="54" />
+            </div>
+
+            <nav class="nav" aria-label="Site navigation">
+                <a class="pill pill--cream pill--active" href="feeds.html" aria-current="page">Feeds</a>
+                <a class="pill pill--cream" href="insights.html">Insights</a>
+                <a class="pill pill--cream pill--dot" href="index.html">More<span class="dot" aria-hidden="true"></span></a>
+            </nav>
+        </header>
+
+        <footer class="page-footer">
+            <a class="home-logo" href="index.html" aria-label="Back to homepage">
+                <canvas id="feeds-logo-c" aria-hidden="true"></canvas>
+            </a>
+        </footer>
     </div>
 
     <script type="module" src="js/feeds-visualizer.js"></script>
+    <script type="module">
+        import { initBrandLogo3D } from './js/logo-3d.js';
+        initBrandLogo3D(document.getElementById('feeds-logo-c'));
+    </script>
 </body>
 
 </html>
