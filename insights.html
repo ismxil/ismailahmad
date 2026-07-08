@@ -207,6 +207,34 @@
             gap: 24px;
         }
 
+        .insight-card__title {
+            margin: 0;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 32px;
+            letter-spacing: 0;
+            color: var(--text-primary);
+            max-width: 520px;
+        }
+
+        .insight-card__meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            line-height: 20px;
+            color: var(--text-tertiary);
+        }
+
+        .insight-card__meta-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(113, 113, 122, 0.85);
+            display: inline-block;
+        }
+
         .insight-card__copy {
             margin: 0;
             font-size: 20px;
@@ -218,6 +246,118 @@
         .read-btn {
             align-self: flex-start;
             color: var(--text-secondary);
+        }
+
+        .insight-card__action-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .insight-card__open {
+            font-size: 14px;
+            line-height: 20px;
+            color: var(--brand);
+            text-decoration: none;
+            opacity: 0.75;
+        }
+
+        .insight-card__open:hover {
+            opacity: 0.55;
+        }
+
+        /* Modal (project-modal vibe) */
+        #insight-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            background: rgba(26, 26, 26, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+        }
+
+        #insight-backdrop.is-open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: opacity 0.28s ease, visibility 0s;
+        }
+
+        #insight-modal {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: clamp(96px, 14vh, 160px);
+            background: #f8f8f7;
+            border-radius: 64px 64px 0 0;
+            box-shadow: 0 -43px 47px rgba(0, 0, 0, 0.2);
+            transform: translateY(100%);
+            transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #insight-backdrop.is-open #insight-modal {
+            transform: translateY(0);
+        }
+
+        #insight-close {
+            position: absolute;
+            top: 21px;
+            right: 21px;
+            z-index: 5;
+            width: 64px;
+            height: 64px;
+            border: none;
+            border-radius: 50%;
+            background: #e4e4e7;
+            color: #09090b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s ease;
+        }
+
+        #insight-close:hover {
+            background: #d4d4d8;
+        }
+
+        #insight-frame-wrap {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+
+        #insight-loading {
+            position: absolute;
+            left: 24px;
+            right: 24px;
+            top: 24px;
+            z-index: 2;
+            background: rgba(243, 242, 239, 0.88);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 999px;
+            padding: 10px 14px;
+            font-size: 14px;
+            line-height: 20px;
+            color: var(--text-secondary);
+            width: fit-content;
+        }
+
+        #insight-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
         }
 
         @media (max-width: 1040px) {
@@ -252,6 +392,18 @@
                 height: 360px;
                 border-radius: 28px;
             }
+
+            #insight-close {
+                width: 52px;
+                height: 52px;
+                top: 16px;
+                right: 16px;
+            }
+
+            #insight-modal {
+                border-radius: 40px 40px 0 0;
+                top: clamp(88px, 12vh, 128px);
+            }
         }
     </style>
 </head>
@@ -281,76 +433,186 @@
             </section>
 
             <section aria-label="Insights list">
-                <div class="grid">
-                    <article class="insight-card">
-                        <div class="insight-card__thumb" style="background:#00db2e"></div>
-                        <div class="insight-card__body">
-                            <p class="insight-card__copy">
-                                Cross-platform work. International brands. Experiences recognised by the industry's
-                                leading design awards.
-                            </p>
-                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
-                        </div>
-                    </article>
-
-                    <article class="insight-card">
-                        <div class="insight-card__thumb" style="background:#ff4300"></div>
-                        <div class="insight-card__body">
-                            <p class="insight-card__copy">
-                                Cross-platform work. International brands. Experiences recognised by the industry's
-                                leading design awards.
-                            </p>
-                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
-                        </div>
-                    </article>
-
-                    <article class="insight-card">
-                        <div class="insight-card__thumb" style="background:#393bfe"></div>
-                        <div class="insight-card__body">
-                            <p class="insight-card__copy">
-                                Cross-platform work. International brands. Experiences recognised by the industry's
-                                leading design awards.
-                            </p>
-                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
-                        </div>
-                    </article>
-
-                    <article class="insight-card">
-                        <div class="insight-card__thumb" style="background:#ff4300"></div>
-                        <div class="insight-card__body">
-                            <p class="insight-card__copy">
-                                Cross-platform work. International brands. Experiences recognised by the industry's
-                                leading design awards.
-                            </p>
-                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
-                        </div>
-                    </article>
-
-                    <article class="insight-card">
-                        <div class="insight-card__thumb" style="background:#00db2e"></div>
-                        <div class="insight-card__body">
-                            <p class="insight-card__copy">
-                                Cross-platform work. International brands. Experiences recognised by the industry's
-                                leading design awards.
-                            </p>
-                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
-                        </div>
-                    </article>
-
-                    <article class="insight-card">
-                        <div class="insight-card__thumb" style="background:#393bfe"></div>
-                        <div class="insight-card__body">
-                            <p class="insight-card__copy">
-                                Cross-platform work. International brands. Experiences recognised by the industry's
-                                leading design awards.
-                            </p>
-                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
-                        </div>
-                    </article>
-                </div>
+                <div class="grid" id="insights-grid"></div>
             </section>
         </main>
     </div>
+
+    <!-- ════════════════════════════════
+         Insights modal (renders Wandarer posts inside site)
+         ════════════════════════════════ -->
+    <div id="insight-backdrop" aria-hidden="true">
+        <div id="insight-modal" role="dialog" aria-modal="true" aria-label="Insight article">
+            <button type="button" id="insight-close" aria-label="Close insight">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div id="insight-frame-wrap">
+                <div id="insight-loading" style="display:none">Loading…</div>
+                <iframe id="insight-frame" title="Insight article" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var INSIGHTS = [
+            {
+                title: 'Offboarding, in product.',
+                subtitle: 'The risk, approach and what to look out for in your offboarding.',
+                date: 'Feb 20, 2025',
+                url: 'https://wandarer.com/p/off-boarding-is-as-important-as-onboarding',
+                color: '#00db2e'
+            },
+            {
+                title: 'Product and souls.',
+                subtitle: 'Why are products lacking soul.',
+                date: 'Feb 17, 2025',
+                url: 'https://wandarer.com/p/why-are-we-doing-this',
+                color: '#ff4300'
+            },
+            {
+                title: 'AI panic.',
+                subtitle: 'Enough of the doomsaying amplification, tune out and start focusing on the fundamental of everything technology',
+                date: 'Jan 03, 2025',
+                url: 'https://wandarer.com/p/tune-out-the-ai-doomsayer-envagelist',
+                color: '#393bfe'
+            },
+            {
+                title: 'Scrolljacking',
+                subtitle: 'It seem appealing, but can be deadly.',
+                date: 'Nov 28, 2024',
+                url: 'https://wandarer.com/p/scrolljacking',
+                color: '#ff4300'
+            },
+            {
+                title: 'UX is not UI',
+                subtitle: 'If we only deliver the UI then what is UX.',
+                date: 'Jun 04, 2022',
+                url: 'https://wandarer.com/p/ux-is-not-ui',
+                color: '#00db2e'
+            },
+            {
+                title: 'Starting your design journey.',
+                subtitle: 'Getting started with UX, UI or Product Design in 2024.',
+                date: 'Oct 14, 2024',
+                url: 'https://wandarer.com/p/get-started-with-uxui-design',
+                color: '#393bfe'
+            }
+        ];
+
+        var grid = document.getElementById('insights-grid');
+        var insightBackdrop = document.getElementById('insight-backdrop');
+        var insightFrame = document.getElementById('insight-frame');
+        var insightClose = document.getElementById('insight-close');
+        var insightLoading = document.getElementById('insight-loading');
+        var insightOpen = false;
+
+        function renderInsights() {
+            grid.innerHTML = '';
+            INSIGHTS.forEach(function (item, idx) {
+                var card = document.createElement('article');
+                card.className = 'insight-card';
+
+                var thumb = document.createElement('div');
+                thumb.className = 'insight-card__thumb';
+                thumb.style.background = item.color;
+
+                var body = document.createElement('div');
+                body.className = 'insight-card__body';
+
+                var title = document.createElement('h3');
+                title.className = 'insight-card__title';
+                title.textContent = item.title;
+
+                var meta = document.createElement('div');
+                meta.className = 'insight-card__meta';
+                var metaSite = document.createElement('span');
+                metaSite.textContent = 'Wandarer';
+                var metaDot = document.createElement('span');
+                metaDot.className = 'insight-card__meta-dot';
+                var metaDate = document.createElement('span');
+                metaDate.textContent = item.date;
+                meta.appendChild(metaSite);
+                meta.appendChild(metaDot);
+                meta.appendChild(metaDate);
+
+                var copy = document.createElement('p');
+                copy.className = 'insight-card__copy';
+                copy.textContent = item.subtitle;
+
+                var actionRow = document.createElement('div');
+                actionRow.className = 'insight-card__action-row';
+
+                var read = document.createElement('button');
+                read.type = 'button';
+                read.className = 'pill pill--cream read-btn';
+                read.textContent = 'Read';
+                read.addEventListener('click', function () { openInsight(idx); });
+
+                var source = document.createElement('a');
+                source.className = 'insight-card__open';
+                source.href = item.url;
+                source.target = '_blank';
+                source.rel = 'noopener';
+                source.textContent = 'Open source';
+                source.addEventListener('click', function (e) { e.stopPropagation(); });
+
+                actionRow.appendChild(read);
+                actionRow.appendChild(source);
+
+                body.appendChild(title);
+                body.appendChild(meta);
+                body.appendChild(copy);
+                body.appendChild(actionRow);
+
+                card.appendChild(thumb);
+                card.appendChild(body);
+
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function () { openInsight(idx); });
+                grid.appendChild(card);
+            });
+        }
+
+        function openInsight(idx) {
+            var item = INSIGHTS[idx];
+            if (!item) return;
+            if (insightOpen) closeInsight();
+            insightOpen = true;
+            insightBackdrop.classList.add('is-open');
+            insightBackdrop.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            insightLoading.style.display = '';
+            insightFrame.src = item.url;
+        }
+
+        function closeInsight() {
+            if (!insightOpen) return;
+            insightOpen = false;
+            insightBackdrop.classList.remove('is-open');
+            insightBackdrop.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            insightLoading.style.display = 'none';
+            insightFrame.src = 'about:blank';
+        }
+
+        insightClose.addEventListener('click', closeInsight);
+        insightBackdrop.addEventListener('click', function (e) {
+            if (e.target === insightBackdrop) e.preventDefault();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (!insightOpen) return;
+            if (e.key === 'Escape') e.preventDefault();
+        });
+        insightFrame.addEventListener('load', function () {
+            if (!insightOpen) return;
+            insightLoading.style.display = 'none';
+        });
+
+        renderInsights();
+    </script>
 </body>
 
 </html>
