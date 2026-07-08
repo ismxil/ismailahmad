@@ -20,16 +20,6 @@
     pointer-events: none;
 }
 
-.header-fluid__content h1,
-.header-fluid__content img {
-    transition: opacity 0.22s ease;
-}
-
-.header-fluid.is-active .header-fluid__content h1,
-.header-fluid.is-active .header-fluid__content img {
-    opacity: 0;
-}
-
 .header-fluid__canvas {
     position: absolute;
     inset: -28px -20px;
@@ -39,7 +29,6 @@
     pointer-events: auto;
     touch-action: none;
     opacity: 0;
-    transition: opacity 0.22s ease;
     display: block;
 }
 
@@ -50,10 +39,5 @@
 @media (prefers-reduced-motion: reduce) {
     .header-fluid__canvas {
         display: none !important;
-    }
-
-    .header-fluid.is-active .header-fluid__content h1,
-    .header-fluid.is-active .header-fluid__content img {
-        opacity: 1;
     }
 }

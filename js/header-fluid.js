@@ -457,20 +457,7 @@ class HeaderFluidEffect {
     const canvasRect = this.canvas.getBoundingClientRect();
 
     if (this.title && titleStyle) {
-      const rect = this.title.getBoundingClientRect();
-      const fontSize = parseFloat(titleStyle.fontSize) * dpr;
-      const fontFamily = titleStyle.fontFamily;
-      const fontWeight = titleStyle.fontWeight;
-      ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-      ctx.textBaseline = 'middle';
-      ctx.textAlign = 'left';
-      if (titleStyle.letterSpacing && 'letterSpacing' in ctx) {
-        ctx.letterSpacing = titleStyle.letterSpacing;
-      }
-      ctx.fillStyle = 'rgba(255,255,255,1)';
-      const x = (rect.left - canvasRect.left) * dpr;
-      const y = (rect.top + rect.height * 0.5 - canvasRect.top) * dpr;
-      ctx.fillText(this.title.textContent.trim(), x, y);
+      this.drawTitleMask(ctx, this.title, titleStyle, canvasRect, dpr);
     }
 
     if (this.logo) {
@@ -489,6 +476,27 @@ class HeaderFluidEffect {
     }
 
     this.uploadMaskTexture();
+  }
+
+  drawTitleMask(ctx, title, style, canvasRect, dpr) {
+    const text = title.textContent.trim();
+    const fontSize = parseFloat(style.fontSize) * dpr;
+    ctx.font = `${style.fontStyle} ${style.fontWeight} ${fontSize}px ${style.fontFamily}`;
+    ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'left';
+    if (style.letterSpacing && 'letterSpacing' in ctx) {
+      ctx.letterSpacing = style.letterSpacing;
+    }
+    ctx.fillStyle = 'rgba(255,255,255,1)';
+
+    const metrics = ctx.measureText(text);
+    const range = document.createRange();
+    range.selectNodeContents(title);
+    const rects = range.getClientRects();
+    const textRect = rects.length ? rects[0] : title.getBoundingClientRect();
+    const x = (textRect.left - canvasRect.left) * dpr;
+    const y = (textRect.bottom - canvasRect.top) * dpr - metrics.actualBoundingBoxDescent;
+    ctx.fillText(text, x, y);
   }
 
   bindEvents() {
@@ -531,6 +539,13 @@ class HeaderFluidEffect {
     this.active = value;
     this.root.classList.toggle('is-active', value);
     if (value) {
+      this.buildMask(
+        this.canvas.width,
+        this.canvas.height,
+        0,
+        0,
+        Math.min(window.devicePixelRatio || 1, 2)
+      );
       this.seedFluid();
       if (!this.raf) this.raf = requestAnimationFrame(this.loop);
     }
