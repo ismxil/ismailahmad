@@ -318,7 +318,7 @@ class HeaderFluidEffect {
     window.addEventListener('resize', this.onResize);
     if (document.fonts) {
       document.fonts.ready.then(() => {
-        if (this.active) this.applyFill();
+        this.resize();
       });
     }
     if (this.logo && !this.logo.complete) {
@@ -447,31 +447,29 @@ class HeaderFluidEffect {
     if (this.active) this.applyFill();
   }
 
-  canvasBackgroundStyles() {
+  canvasBackgroundStyles(targetEl) {
+    const canvasRect = this.canvas.getBoundingClientRect();
+    const targetRect = targetEl.getBoundingClientRect();
     return {
-      backgroundSize: this.canvas.style.width,
-      backgroundPosition: `${this.canvas.style.left} ${this.canvas.style.top}`,
+      backgroundSize: `${canvasRect.width}px ${canvasRect.height}px`,
+      backgroundPosition: `${canvasRect.left - targetRect.left}px ${canvasRect.top - targetRect.top}px`,
       backgroundRepeat: 'no-repeat',
     };
   }
 
   applyFill() {
     const url = this.canvas.toDataURL();
-    const bg = this.canvasBackgroundStyles();
 
     if (this.title) {
-      this.title.style.color = 'transparent';
-      this.title.style.webkitTextFillColor = 'transparent';
+      const bg = this.canvasBackgroundStyles(this.title);
       this.title.style.backgroundImage = `url(${url})`;
-      this.title.style.webkitBackgroundClip = 'text';
-      this.title.style.backgroundClip = 'text';
       this.title.style.backgroundSize = bg.backgroundSize;
       this.title.style.backgroundPosition = bg.backgroundPosition;
       this.title.style.backgroundRepeat = bg.backgroundRepeat;
     }
 
     if (this.logo && this.logoWrap) {
-      this.logo.style.opacity = '0';
+      const bg = this.canvasBackgroundStyles(this.logoWrap);
       this.logoWrap.style.backgroundImage = `url(${url})`;
       this.logoWrap.style.backgroundSize = bg.backgroundSize;
       this.logoWrap.style.backgroundPosition = bg.backgroundPosition;
@@ -489,18 +487,13 @@ class HeaderFluidEffect {
 
   clearFill() {
     if (this.title) {
-      this.title.style.color = '';
-      this.title.style.webkitTextFillColor = '';
       this.title.style.backgroundImage = '';
-      this.title.style.webkitBackgroundClip = '';
-      this.title.style.backgroundClip = '';
       this.title.style.backgroundSize = '';
       this.title.style.backgroundPosition = '';
       this.title.style.backgroundRepeat = '';
     }
 
-    if (this.logo && this.logoWrap) {
-      this.logo.style.opacity = '';
+    if (this.logoWrap) {
       this.logoWrap.style.backgroundImage = '';
       this.logoWrap.style.backgroundSize = '';
       this.logoWrap.style.backgroundPosition = '';
@@ -555,11 +548,13 @@ class HeaderFluidEffect {
     }
     this.active = value;
     if (value) {
+      this.root.classList.add('is-active');
       this.seedFluid();
       this.applyFill();
       if (!this.raf) this.raf = requestAnimationFrame(this.loop);
       return;
     }
+    this.root.classList.remove('is-active');
     this.clearFill();
   }
 
