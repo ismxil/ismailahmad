@@ -1120,7 +1120,7 @@
             overflow-y: auto;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
-            padding: 120px 24px 48px;
+            padding: 120px 24px 0;
         }
 
         #modal-scroll::-webkit-scrollbar {
@@ -1131,6 +1131,7 @@
         .project-modal__inner {
             width: min(991px, 100%);
             margin: 0 auto;
+            min-height: 100%;
             display: flex;
             flex-direction: column;
             gap: 120px;
@@ -1397,11 +1398,13 @@
         }
 
         .project-modal__next {
-            flex: 0 0 auto;
             display: flex;
             flex-direction: column;
             gap: 72px;
-            width: 100%;
+            width: calc(100% + 48px);
+            margin-left: -24px;
+            margin-right: -24px;
+            margin-top: auto;
             padding: 0;
         }
 
@@ -1465,7 +1468,7 @@
 
         .project-modal__next-preview {
             width: 100%;
-            height: clamp(220px, 38vh, 545px);
+            height: clamp(280px, 42vw, 545px);
             border: none;
             border-radius: 32px 32px 0 0;
             overflow: hidden;
@@ -1836,20 +1839,20 @@
 
                     <div class="project-modal__blocks" id="modal-blocks"></div>
                     <div class="project-modal__metrics" id="modal-metrics" hidden></div>
+
+                    <section class="project-modal__next">
+                        <div class="project-modal__next-row">
+                            <span class="project-modal__next-label">See other work</span>
+                            <button type="button" id="modal-next-project">
+                                <span id="modal-next-title"></span>
+                                <span id="modal-next-subtitle"></span>
+                            </button>
+                        </div>
+                        <button type="button" class="project-modal__next-preview" id="modal-next-preview"
+                            aria-label="Open next project"></button>
+                    </section>
                 </div>
             </div>
-
-            <section class="project-modal__next">
-                <div class="project-modal__next-row">
-                    <span class="project-modal__next-label">See other work</span>
-                    <button type="button" id="modal-next-project">
-                        <span id="modal-next-title"></span>
-                        <span id="modal-next-subtitle"></span>
-                    </button>
-                </div>
-                <button type="button" class="project-modal__next-preview" id="modal-next-preview"
-                    aria-label="Open next project"></button>
-            </section>
         </div>
     </div>
 
