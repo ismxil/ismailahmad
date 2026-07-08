@@ -5,6 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Insights — Ismail Ahmad</title>
+    <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+    </script>
     <style>
         @font-face {
             font-family: 'Uncut Sans';
@@ -95,6 +98,15 @@
             color: var(--brand);
         }
 
+        .pill--nav-active {
+            background: var(--brand);
+            color: #fff;
+        }
+
+        .pill--nav-active:hover {
+            opacity: 0.88;
+        }
+
         .pill--dot {
             gap: 8px;
         }
@@ -161,8 +173,8 @@
 
         .intro {
             display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 32px;
+            grid-template-columns: minmax(180px, 1fr) minmax(0, 2fr);
+            gap: clamp(24px, 4vw, 48px);
             align-items: start;
         }
 
@@ -180,6 +192,7 @@
             line-height: 1.15;
             letter-spacing: 0;
             color: #000;
+            max-width: 900px;
         }
 
         .grid {
@@ -196,7 +209,9 @@
         }
 
         .insight-card__thumb {
-            height: 484.85px;
+            width: 100%;
+            aspect-ratio: 434 / 485;
+            max-height: 485px;
             border-radius: 32px;
             background: var(--brand);
         }
@@ -207,64 +222,72 @@
             gap: 24px;
         }
 
-        .insight-card__title {
+        .insight-card__kicker {
+            margin: 0;
+            font-size: 20px;
+            line-height: 28px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .insight-card__headline {
             margin: 0;
             font-family: var(--font-display);
             font-weight: 600;
             font-size: 24px;
             line-height: 32px;
-            letter-spacing: 0;
             color: var(--text-primary);
             max-width: 520px;
         }
 
-        .insight-card__meta {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            line-height: 20px;
-            color: var(--text-tertiary);
-        }
-
-        .insight-card__meta-dot {
-            width: 4px;
-            height: 4px;
-            border-radius: 999px;
-            background: rgba(113, 113, 122, 0.85);
-            display: inline-block;
-        }
-
-        .insight-card__copy {
-            margin: 0;
-            font-size: 20px;
-            line-height: 28px;
-            color: var(--text-primary);
-            max-width: 440px;
-        }
-
-        .read-btn {
-            align-self: flex-start;
-            color: var(--text-secondary);
-        }
-
-        .insight-card__action-row {
+        .insight-card__footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            width: 100%;
         }
 
-        .insight-card__open {
+        .insight-card__date {
             font-size: 14px;
             line-height: 20px;
-            color: var(--brand);
-            text-decoration: none;
-            opacity: 0.75;
+            color: var(--text-tertiary);
+            white-space: nowrap;
         }
 
-        .insight-card__open:hover {
-            opacity: 0.55;
+        .read-btn {
+            color: var(--text-secondary);
+        }
+
+        .page-footer {
+            width: min(1334px, 100%);
+            margin: clamp(56px, 8vh, 96px) auto 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .home-logo {
+            display: block;
+            width: clamp(112px, 14vw, 156px);
+            height: clamp(112px, 14vw, 156px);
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 50%;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .home-logo:hover {
+            transform: scale(1.04);
+            opacity: 0.9;
+        }
+
+        .home-logo canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         /* Modal (project-modal vibe) */
@@ -370,7 +393,7 @@
             }
 
             .insight-card__thumb {
-                height: 420px;
+                max-height: 420px;
             }
         }
 
@@ -389,7 +412,7 @@
             }
 
             .insight-card__thumb {
-                height: 360px;
+                max-height: 360px;
                 border-radius: 28px;
             }
 
@@ -418,7 +441,7 @@
 
             <nav class="nav" aria-label="Site navigation">
                 <a class="pill pill--cream" href="feeds.html">Feeds</a>
-                <a class="pill pill--cream pill--active" href="insights.html" aria-current="page">Insights</a>
+                <a class="pill pill--nav-active" href="insights.html" aria-current="page">Insights</a>
                 <a class="pill pill--cream pill--dot" href="index.html">More<span class="dot" aria-hidden="true"></span></a>
             </nav>
         </header>
@@ -436,6 +459,12 @@
                 <div class="grid" id="insights-grid"></div>
             </section>
         </main>
+
+        <footer class="page-footer">
+            <a class="home-logo" href="index.html" aria-label="Back to homepage">
+                <canvas id="insights-logo-c" aria-hidden="true"></canvas>
+            </a>
+        </footer>
     </div>
 
     <!-- ════════════════════════════════
@@ -522,50 +551,36 @@
                 var body = document.createElement('div');
                 body.className = 'insight-card__body';
 
-                var title = document.createElement('h3');
-                title.className = 'insight-card__title';
-                title.textContent = item.title;
+                var kicker = document.createElement('p');
+                kicker.className = 'insight-card__kicker';
+                kicker.textContent = item.title;
 
-                var meta = document.createElement('div');
-                meta.className = 'insight-card__meta';
-                var metaSite = document.createElement('span');
-                metaSite.textContent = 'Wandarer';
-                var metaDot = document.createElement('span');
-                metaDot.className = 'insight-card__meta-dot';
-                var metaDate = document.createElement('span');
-                metaDate.textContent = item.date;
-                meta.appendChild(metaSite);
-                meta.appendChild(metaDot);
-                meta.appendChild(metaDate);
+                var headline = document.createElement('h3');
+                headline.className = 'insight-card__headline';
+                headline.textContent = item.subtitle;
 
-                var copy = document.createElement('p');
-                copy.className = 'insight-card__copy';
-                copy.textContent = item.subtitle;
-
-                var actionRow = document.createElement('div');
-                actionRow.className = 'insight-card__action-row';
+                var footer = document.createElement('div');
+                footer.className = 'insight-card__footer';
 
                 var read = document.createElement('button');
                 read.type = 'button';
                 read.className = 'pill pill--cream read-btn';
                 read.textContent = 'Read';
-                read.addEventListener('click', function () { openInsight(idx); });
+                read.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    openInsight(idx);
+                });
 
-                var source = document.createElement('a');
-                source.className = 'insight-card__open';
-                source.href = item.url;
-                source.target = '_blank';
-                source.rel = 'noopener';
-                source.textContent = 'Open source';
-                source.addEventListener('click', function (e) { e.stopPropagation(); });
+                var date = document.createElement('span');
+                date.className = 'insight-card__date';
+                date.textContent = item.date;
 
-                actionRow.appendChild(read);
-                actionRow.appendChild(source);
+                footer.appendChild(read);
+                footer.appendChild(date);
 
-                body.appendChild(title);
-                body.appendChild(meta);
-                body.appendChild(copy);
-                body.appendChild(actionRow);
+                body.appendChild(kicker);
+                body.appendChild(headline);
+                body.appendChild(footer);
 
                 card.appendChild(thumb);
                 card.appendChild(body);
@@ -612,6 +627,11 @@
         });
 
         renderInsights();
+    </script>
+
+    <script type="module">
+        import { initBrandLogo3D } from './js/logo-3d.js';
+        initBrandLogo3D(document.getElementById('insights-logo-c'));
     </script>
 </body>
 
