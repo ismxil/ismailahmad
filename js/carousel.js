@@ -4,6 +4,8 @@
 
 const LERP = 0.1;
 const GAP_PX = 16;
+const DISPLAY_SCALE = 0.74;
+const DRAG_THRESHOLD_PX = 8;
 
 export class Carousel {
   constructor(rootEl, slots, { onActiveChange, onSelect } = {}) {
@@ -17,7 +19,7 @@ export class Carousel {
     this.periodX = 0;
     this.activeIndex = -1;
     this.hoveredIndex = -1;
-    this.isDragging = false;
+    this.pointerActive = false;
     this.dragMoved = false;
     this.dragStartX = 0;
     this.dragStartScroll = 0;
@@ -123,6 +125,38 @@ export class Carousel {
     return offset;
   }
 
+  _relOffsets() {
+    const half = this.periodX / 2;
+    return this.slots.map((_, i) => {
+      let relX = this.baseOffsets[i] - this.scrollX;
+      relX = ((relX % this.periodX) + this.periodX) % this.periodX;
+      if (relX >= half) relX -= this.periodX;
+      return relX;
+    });
+  }
+
+  _spreadForHover(relXs) {
+    if (this.hoveredIndex < 0) return relXs;
+
+    const spread = relXs.slice();
+    const h = this.hoveredIndex;
+    const hSlot = this.slots[h];
+    const halfExtra = ((hSlot.hoverWidth || hSlot.width) - hSlot.width) / 2;
+    const hRelX = relXs[h];
+
+    for (let i = 0; i < this.slots.length; i++) {
+      if (i === h) continue;
+      const delta = relXs[i] - hRelX;
+      const dist = Math.abs(delta);
+      if (dist < 1) continue;
+      const influence = Math.max(0, 1 - dist / (this.stepX * 0.95));
+      if (!influence) continue;
+      spread[i] += (delta > 0 ? 1 : -1) * halfExtra * (0.55 + 0.45 * influence);
+    }
+
+    return spread;
+  }
+
   start(initialIndex = 0) {
     this.build();
     this.measure();
@@ -171,24 +205,28 @@ export class Carousel {
 
   _onPointerDown(e) {
     if (e.button !== 0) return;
-    this.isDragging = true;
+    this.pointerActive = true;
     this.dragMoved = false;
     this.dragStartX = e.clientX;
     this.dragStartScroll = this.targetScrollX;
-    this.root.classList.add('is-dragging');
-    this.root.setPointerCapture(e.pointerId);
   }
 
   _onPointerMove(e) {
-    if (!this.isDragging) return;
+    if (!this.pointerActive) return;
     const dx = e.clientX - this.dragStartX;
-    if (Math.abs(dx) > 4) this.dragMoved = true;
+    if (Math.abs(dx) <= DRAG_THRESHOLD_PX) return;
+    if (!this.dragMoved) {
+      this.dragMoved = true;
+      this.root.classList.add('is-dragging');
+    }
     this.targetScrollX = this.dragStartScroll - dx / (this.fitScale || 1);
   }
 
-  _onPointerUp() {
-    if (!this.isDragging) return;
-    this.isDragging = false;
+  _onPointerUp(e) {
+    if (!this.pointerActive) return;
+    const dx = e.clientX - this.dragStartX;
+    if (Math.abs(dx) < DRAG_THRESHOLD_PX) this.dragMoved = false;
+    this.pointerActive = false;
     this.root.classList.remove('is-dragging');
   }
 
@@ -200,21 +238,18 @@ export class Carousel {
     if (!vw || !stageH) return;
 
     const heightScale = Math.min(1, (stageH - 12) / this.maxCardH);
-    this.fitScale = heightScale;
+    this.fitScale = heightScale * DISPLAY_SCALE;
 
-    const half = this.periodX / 2;
+    const relXs = this._spreadForHover(this._relOffsets());
     const rowHeight = this.maxCardH * this.fitScale;
-    const rowTop = stageRect.top + (stageRect.height - rowHeight) * 0.5;
+    const rowTop = stageRect.top + (stageRect.height - rowHeight) * 0.42;
 
     let closestIdx = 0;
     let closestDist = Infinity;
     let activeRelX = 0;
 
     for (let i = 0; i < this.slots.length; i++) {
-      let relX = this.baseOffsets[i] - this.scrollX;
-      relX = ((relX % this.periodX) + this.periodX) % this.periodX;
-      if (relX >= half) relX -= this.periodX;
-
+      const relX = relXs[i];
       const dist = Math.abs(relX);
       if (dist < closestDist) {
         closestDist = dist;
@@ -224,22 +259,24 @@ export class Carousel {
 
       const slot = this.slots[i];
       const fit = this.fitScale;
+      const isHovered = i === this.hoveredIndex;
       const cardW = slot.width * fit;
       const cardH = slot.height * fit;
       const hoverW = (slot.hoverWidth || slot.width) * fit;
-      const x = vw / 2 + relX * fit - cardW / 2;
+      const layoutW = isHovered ? hoverW : cardW;
+      const x = vw / 2 + relX * fit - layoutW / 2;
       const y = rowTop;
-      const isHovered = i === this.hoveredIndex;
       const isActive = i === closestIdx && closestDist < this.stepX * 0.55;
 
       const el = this.slotEls[i];
       el.style.setProperty('--card-w', `${cardW}px`);
       el.style.setProperty('--card-h', `${cardH}px`);
       el.style.setProperty('--hover-w', `${hoverW}px`);
+      el.style.width = `${layoutW}px`;
       el.style.setProperty('--card-color', slot.color);
       el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       el.style.opacity = '1';
-      el.style.zIndex = String(isHovered ? 999 : Math.round((1 - dist / (this.stepX * 1.8)) * 100));
+      el.style.zIndex = String(isHovered ? 200 : Math.round((1 - dist / (this.stepX * 1.8)) * 100));
       el.classList.toggle('is-hovered', isHovered);
       el.classList.toggle('is-active', isActive);
     }
