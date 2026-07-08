@@ -173,9 +173,10 @@ void main() {
   float mask = texture2D(u_mask, v_uv).a;
   if (mask < 0.004) discard;
   vec3 dye = texture2D(u_dye, v_uv).rgb;
-  float flow = clamp(length(dye) * 1.8, 0.0, 1.0);
-  vec3 fill = mix(u_brand, u_brand + dye * 1.35, flow);
-  gl_FragColor = vec4(fill, mask);
+  float flow = clamp(length(dye) * 2.2, 0.0, 1.0);
+  if (flow < 0.01) discard;
+  vec3 tint = mix(u_brand, dye + u_brand * 0.45, 0.7);
+  gl_FragColor = vec4(tint, mask * flow);
 }`;
 
 function createShader(gl, type, source) {
@@ -286,7 +287,7 @@ class HeaderFluidEffect {
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'header-fluid__canvas';
     this.canvas.setAttribute('aria-hidden', 'true');
-    this.root.appendChild(this.canvas);
+    this.content.appendChild(this.canvas);
 
     this.active = false;
     this.idleTimer = 0;
@@ -309,7 +310,7 @@ class HeaderFluidEffect {
     this.bindEvents();
     if (window.ResizeObserver) {
       this.ro = new ResizeObserver(() => this.resize());
-      this.ro.observe(this.root);
+      this.ro.observe(this.content);
     }
     window.addEventListener('resize', this.onResize);
     if (document.fonts) {
@@ -419,7 +420,7 @@ class HeaderFluidEffect {
 
   resize() {
     if (!this.gl) return;
-    const rect = this.root.getBoundingClientRect();
+    const rect = this.content.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const padX = 40;
     const padY = 56;

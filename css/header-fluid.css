@@ -13,7 +13,6 @@
 
 .header-fluid__content {
     position: relative;
-    z-index: 1;
     display: inline-flex;
     align-items: center;
     gap: 16px;
@@ -25,11 +24,12 @@
     inset: -28px -20px;
     width: calc(100% + 40px);
     height: calc(100% + 56px);
-    z-index: 2;
+    z-index: 1;
     pointer-events: auto;
     touch-action: none;
     opacity: 0;
     display: block;
+    mix-blend-mode: screen;
 }
 
 .header-fluid.is-active .header-fluid__canvas {
