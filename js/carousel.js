@@ -36,12 +36,27 @@ export class Carousel {
   }
 
   build() {
+    const escapeHtml = (value) =>
+      String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
     this.root.innerHTML = this.slots
       .map(
         (slot, i) => `
-      <button type="button" class="carousel-slot" data-index="${i}" style="--card-w:${slot.width}px;--card-h:${slot.height}px;--card-color:${slot.color}">
-        <span class="carousel-card" aria-hidden="true"></span>
-        ${slot.image ? `<img class="carousel-card-img" src="${slot.image}" alt="" loading="lazy">` : ''}
+      <button type="button" class="carousel-slot" data-index="${i}" style="--card-w:${slot.width}px;--card-h:${slot.height}px;--card-color:${slot.color};--hover-scale-x:${slot.hoverScaleX || ''}">
+        <span class="carousel-visual" aria-hidden="true">
+          <span class="carousel-card" aria-hidden="true"></span>
+          ${slot.image ? `<img class="carousel-card-img" src="${slot.image}" alt="" loading="lazy">` : ''}
+        </span>
+        <span class="carousel-meta" aria-hidden="true">
+          <span class="carousel-meta__title">${escapeHtml(slot.title)}</span>
+          <span class="carousel-meta__desc">${escapeHtml(slot.metaDesc)}</span>
+          <span class="carousel-meta__view">View</span>
+        </span>
       </button>`
       )
       .join('');
@@ -125,7 +140,10 @@ export class Carousel {
 
   _onWheel(e) {
     if (e.target.closest('#modal-backdrop.is-open')) return;
-    if (!e.target.closest('.carousel-section')) return;
+    if (e.target.closest('#story-sheet-backdrop.is-open')) return;
+    if (e.target.closest('#page-backdrop.is-open')) return;
+    if (e.target.closest('#insight-backdrop.is-open')) return;
+    if (e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;

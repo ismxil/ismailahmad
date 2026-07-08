@@ -223,13 +223,31 @@
         #bottom-bar {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 24px;
+            right: 24px;
+            transform: none;
             z-index: 45;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            gap: 16px;
             white-space: nowrap;
+        }
+
+        .bottom-bar__socials {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .bottom-bar__music {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-shrink: 0;
         }
 
         .social-pill,
@@ -949,10 +967,22 @@
             transform-origin: center center;
             opacity: 0;
             pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .carousel.is-ready .carousel-slot {
             opacity: 1;
+        }
+
+        .carousel-visual {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 100%;
+            transform-origin: center center;
+            transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
         }
 
         .carousel-card {
@@ -971,6 +1001,79 @@
 
         .carousel-slot.is-active .carousel-card {
             box-shadow: 0 24px 64px rgba(9, 9, 11, 0.12);
+        }
+
+        .carousel-slot:hover,
+        .carousel-slot:focus-visible {
+            z-index: 999;
+        }
+
+        .carousel-slot:hover .carousel-visual,
+        .carousel-slot:focus-visible .carousel-visual {
+            transform: scaleX(var(--hover-scale-x, 1.66));
+        }
+
+        .carousel-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            padding-left: 16px;
+            width: min(440px, 100%);
+            text-align: left;
+            pointer-events: none;
+        }
+
+        .carousel-meta__title {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 32px;
+            color: var(--text-primary);
+        }
+
+        .carousel-meta__desc {
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 24px;
+            color: var(--text-primary);
+            opacity: 0;
+            transform: translateY(-6px);
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.28s ease, transform 0.28s ease, max-height 0.3s ease;
+        }
+
+        .carousel-meta__view {
+            background: var(--bg-cream);
+            border-radius: 999px;
+            padding: 10px 16px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            opacity: 0;
+            transform: translateY(-6px);
+            pointer-events: none;
+            transition: opacity 0.28s ease, transform 0.28s ease;
+        }
+
+        .carousel-slot:hover .carousel-meta__desc,
+        .carousel-slot:focus-visible .carousel-meta__desc {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 120px;
+        }
+
+        .carousel-slot:hover .carousel-meta__view,
+        .carousel-slot:focus-visible .carousel-meta__view {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .project-detail {
@@ -1850,36 +1953,40 @@
          Bottom social + play bar
          ════════════════════════════════ -->
     <div id="bottom-bar">
-        <a class="social-pill pill pill--outline" href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="social-pill pill pill--outline" href="https://github.com/ismxil" target="_blank" rel="noopener">Github</a>
-        <a class="social-pill pill pill--outline" href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
-        <a class="social-pill pill pill--outline" href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
-        <button id="play-btn" aria-label="Play / Pause music">
-            <svg id="icon-play" width="14" height="14" viewBox="0 0 24 24" fill="white">
-                <polygon points="6,3 20,12 6,21" />
-            </svg>
-            <svg id="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="white" style="display:none">
-                <rect x="5" y="4" width="4" height="16" />
-                <rect x="15" y="4" width="4" height="16" />
-            </svg>
-        </button>
-        <div id="music-popover" aria-hidden="true">
-            <div id="music-queue"></div>
-            <div class="music-now">
-                <button class="music-current-cover" id="music-current-control" type="button"
-                    aria-label="Play Current Track">
-                    <span class="music-current-art" id="music-current-art" aria-hidden="true"></span>
-                    <svg id="music-current-icon-play" width="24" height="28" viewBox="0 0 24 24" fill="white">
-                        <polygon points="7,4 20,12 7,20" />
-                    </svg>
-                    <svg id="music-current-icon-pause" width="26" height="28" viewBox="0 0 24 24" fill="white"
-                        style="display:none">
-                        <rect x="5" y="4" width="5" height="16" rx="2" />
-                        <rect x="14" y="4" width="5" height="16" rx="2" />
-                    </svg>
-                </button>
-                <p class="music-current-title">Alan Watts</p>
-                <p class="music-current-subtitle" id="music-current-track">Dream</p>
+        <div class="bottom-bar__socials" aria-label="Social links">
+            <a class="social-pill pill pill--outline" href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="social-pill pill pill--outline" href="https://github.com/ismxil" target="_blank" rel="noopener">Github</a>
+            <a class="social-pill pill pill--outline" href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
+            <a class="social-pill pill pill--outline" href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+        </div>
+        <div class="bottom-bar__music" aria-label="Music controls">
+            <button id="play-btn" aria-label="Play / Pause music">
+                <svg id="icon-play" width="14" height="14" viewBox="0 0 24 24" fill="white">
+                    <polygon points="6,3 20,12 6,21" />
+                </svg>
+                <svg id="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="white" style="display:none">
+                    <rect x="5" y="4" width="4" height="16" />
+                    <rect x="15" y="4" width="4" height="16" />
+                </svg>
+            </button>
+            <div id="music-popover" aria-hidden="true">
+                <div id="music-queue"></div>
+                <div class="music-now">
+                    <button class="music-current-cover" id="music-current-control" type="button"
+                        aria-label="Play Current Track">
+                        <span class="music-current-art" id="music-current-art" aria-hidden="true"></span>
+                        <svg id="music-current-icon-play" width="24" height="28" viewBox="0 0 24 24" fill="white">
+                            <polygon points="7,4 20,12 7,20" />
+                        </svg>
+                        <svg id="music-current-icon-pause" width="26" height="28" viewBox="0 0 24 24" fill="white"
+                            style="display:none">
+                            <rect x="5" y="4" width="5" height="16" rx="2" />
+                            <rect x="14" y="4" width="5" height="16" rx="2" />
+                        </svg>
+                    </button>
+                    <p class="music-current-title">Alan Watts</p>
+                    <p class="music-current-subtitle" id="music-current-track">Dream</p>
+                </div>
             </div>
         </div>
     </div>
@@ -1972,7 +2079,7 @@
         </div>
     </section>
 
-    <div class="project-detail" id="project-detail">
+    <div class="project-detail" id="project-detail" hidden>
         <div class="project-detail__copy">
             <h2 id="active-title">Cadana</h2>
             <p id="active-desc">Cross-platform work. International brands. Experiences recognised by the industry's leading design awards.</p>
@@ -2860,6 +2967,15 @@
                 ]
             }
         ];
+
+        // Attach hover meta for carousel cards (Figma 160:9035)
+        carouselSlots.forEach(function (slot) {
+            var card = cards[slot.cardIndex];
+            if (!card) return;
+            slot.title = card.title;
+            slot.metaDesc = card.brief || card.desc || '';
+            slot.hoverScaleX = slot.width ? Math.min(1.75, Math.max(1.3, 750 / slot.width)) : 1.66;
+        });
 
         // ────────────────────────────────
         // Project modal — Figma template
