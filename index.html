@@ -985,11 +985,10 @@
         .carousel-card-wrap {
             position: relative;
             display: block;
-            width: var(--card-w);
+            width: var(--layout-w, var(--card-w));
             height: var(--card-h, 400px);
             flex-shrink: 0;
-            margin-left: 0;
-            transition: width 0.42s cubic-bezier(0.32, 0.72, 0, 1), margin-left 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+            margin-left: var(--wrap-margin, 0);
         }
 
         .carousel-card {
@@ -999,7 +998,6 @@
             border-radius: 32px;
             background: var(--card-color, var(--brand));
             box-shadow: none;
-            transition: box-shadow 0.3s ease;
         }
 
         .carousel-card-img {
@@ -1008,12 +1006,6 @@
 
         .carousel-slot.is-active .carousel-card {
             box-shadow: 0 24px 64px rgba(9, 9, 11, 0.12);
-        }
-
-        .carousel-slot.is-hovered .carousel-card-wrap,
-        .carousel-slot:focus-visible .carousel-card-wrap {
-            width: var(--hover-w, var(--card-w));
-            margin-left: calc((var(--card-w) - var(--hover-w, var(--card-w))) / 2);
         }
 
         .carousel-slot.is-hovered .carousel-card,
@@ -1034,7 +1026,7 @@
 
         .carousel-slot.is-hovered .carousel-meta,
         .carousel-slot:focus-visible .carousel-meta {
-            gap: 24px;
+            gap: calc(16px + var(--hover-t, 0) * 8px);
         }
 
         .carousel-meta__title {
@@ -1050,10 +1042,9 @@
             flex-direction: column;
             align-items: flex-start;
             gap: 24px;
-            max-height: 0;
-            opacity: 0;
+            max-height: calc(var(--hover-t, 0) * 180px);
+            opacity: var(--hover-t, 0);
             overflow: hidden;
-            transition: max-height 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.28s ease;
         }
 
         .carousel-meta__desc {
@@ -1082,8 +1073,7 @@
 
         .carousel-slot.is-hovered .carousel-meta__reveal,
         .carousel-slot:focus-visible .carousel-meta__reveal {
-            max-height: 180px;
-            opacity: 1;
+            pointer-events: none;
         }
 
         .project-detail {

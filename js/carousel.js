@@ -3,6 +3,7 @@
  */
 
 const LERP = 0.1;
+const HOVER_LERP = 0.14;
 const GAP_PX = 16;
 const DISPLAY_SCALE = 0.74;
 const DRAG_THRESHOLD_PX = 8;
@@ -19,6 +20,7 @@ export class Carousel {
     this.periodX = 0;
     this.activeIndex = -1;
     this.hoveredIndex = -1;
+    this.hoverProgress = 0;
     this.pointerActive = false;
     this.dragMoved = false;
     this.dragStartX = 0;
@@ -68,24 +70,23 @@ export class Carousel {
 
       el.addEventListener('mouseenter', () => {
         this.hoveredIndex = idx;
-        this.applyTransforms();
       });
       el.addEventListener('mouseleave', () => {
         if (this.hoveredIndex === idx) this.hoveredIndex = -1;
-        this.applyTransforms();
       });
       el.addEventListener('focusin', () => {
         this.hoveredIndex = idx;
-        this.applyTransforms();
       });
       el.addEventListener('focusout', (e) => {
         if (!el.contains(e.relatedTarget)) {
           if (this.hoveredIndex === idx) this.hoveredIndex = -1;
-          this.applyTransforms();
         }
       });
       el.addEventListener('click', () => {
-        if (this.dragMoved) return;
+        if (this.dragMoved) {
+          this.dragMoved = false;
+          return;
+        }
         this.onSelect(idx, this.slots[idx]);
       });
     });
@@ -135,8 +136,8 @@ export class Carousel {
     });
   }
 
-  _spreadForHover(relXs) {
-    if (this.hoveredIndex < 0) return relXs;
+  _spreadForHover(relXs, progress) {
+    if (this.hoveredIndex < 0 || progress <= 0.001) return relXs;
 
     const spread = relXs.slice();
     const h = this.hoveredIndex;
@@ -149,12 +150,19 @@ export class Carousel {
       const delta = relXs[i] - hRelX;
       const dist = Math.abs(delta);
       if (dist < 1) continue;
-      const influence = Math.max(0, 1 - dist / (this.stepX * 0.95));
+      const influence = Math.max(0, 1 - dist / (this.stepX * 0.9));
       if (!influence) continue;
-      spread[i] += (delta > 0 ? 1 : -1) * halfExtra * (0.55 + 0.45 * influence);
+      spread[i] += (delta > 0 ? 1 : -1) * halfExtra * influence * progress;
     }
 
     return spread;
+  }
+
+  _tickHover() {
+    const target = this.hoveredIndex >= 0 && !this.dragMoved ? 1 : 0;
+    this.hoverProgress += (target - this.hoverProgress) * HOVER_LERP;
+    if (target === 0 && this.hoverProgress < 0.004) this.hoverProgress = 0;
+    if (target === 1 && this.hoverProgress > 0.996) this.hoverProgress = 1;
   }
 
   start(initialIndex = 0) {
@@ -217,6 +225,7 @@ export class Carousel {
     if (Math.abs(dx) <= DRAG_THRESHOLD_PX) return;
     if (!this.dragMoved) {
       this.dragMoved = true;
+      this.hoveredIndex = -1;
       this.root.classList.add('is-dragging');
     }
     this.targetScrollX = this.dragStartScroll - dx / (this.fitScale || 1);
@@ -231,6 +240,8 @@ export class Carousel {
   }
 
   applyTransforms() {
+    this._tickHover();
+
     const stage = this.root.closest('.carousel-stage');
     const stageRect = stage ? stage.getBoundingClientRect() : this.root.getBoundingClientRect();
     const vw = window.innerWidth;
@@ -240,7 +251,8 @@ export class Carousel {
     const heightScale = Math.min(1, (stageH - 12) / this.maxCardH);
     this.fitScale = heightScale * DISPLAY_SCALE;
 
-    const relXs = this._spreadForHover(this._relOffsets());
+    const hoverT = this.hoverProgress;
+    const relXs = this._spreadForHover(this._relOffsets(), hoverT);
     const rowHeight = this.maxCardH * this.fitScale;
     const rowTop = stageRect.top + (stageRect.height - rowHeight) * 0.42;
 
@@ -263,21 +275,30 @@ export class Carousel {
       const cardW = slot.width * fit;
       const cardH = slot.height * fit;
       const hoverW = (slot.hoverWidth || slot.width) * fit;
-      const layoutW = isHovered ? hoverW : cardW;
+      const t = isHovered ? hoverT : 0;
+      const layoutW = cardW + (hoverW - cardW) * t;
       const x = vw / 2 + relX * fit - layoutW / 2;
       const y = rowTop;
       const isActive = i === closestIdx && closestDist < this.stepX * 0.55;
+      const neighborFade =
+        hoverT > 0 && !isHovered
+          ? Math.max(0, 1 - dist / (this.stepX * 1.1)) * hoverT * 0.07
+          : 0;
 
       const el = this.slotEls[i];
       el.style.setProperty('--card-w', `${cardW}px`);
       el.style.setProperty('--card-h', `${cardH}px`);
-      el.style.setProperty('--hover-w', `${hoverW}px`);
+      el.style.setProperty('--layout-w', `${layoutW}px`);
+      el.style.setProperty('--wrap-margin', `${(cardW - layoutW) / 2}px`);
+      el.style.setProperty('--hover-t', String(t));
       el.style.width = `${layoutW}px`;
       el.style.setProperty('--card-color', slot.color);
       el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      el.style.opacity = '1';
-      el.style.zIndex = String(isHovered ? 200 : Math.round((1 - dist / (this.stepX * 1.8)) * 100));
-      el.classList.toggle('is-hovered', isHovered);
+      el.style.opacity = String(1 - neighborFade);
+      el.style.zIndex = String(
+        isHovered && hoverT > 0.05 ? 200 : Math.round((1 - dist / (this.stepX * 1.8)) * 100)
+      );
+      el.classList.toggle('is-hovered', isHovered && hoverT > 0.04);
       el.classList.toggle('is-active', isActive);
     }
 
