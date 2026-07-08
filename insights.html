@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Insights — Ismail Ahmad</title>
+    <style>
+        @font-face {
+            font-family: 'Uncut Sans';
+            src: url('assets/Uncut Sans/Webfonts/UncutSans-Variable.woff2') format('woff2');
+            font-weight: 300 800;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Reckless';
+            src: url('assets/Signifier-Light.ttf') format('truetype');
+            font-weight: 500 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --brand: #393bfe;
+            --text-primary: #09090b;
+            --text-secondary: #52525b;
+            --text-tertiary: #71717a;
+            --bg-cream: #f3f2ef;
+            --bg-white: #ffffff;
+            --font-display: 'Reckless', Georgia, serif;
+            --font-body: 'Uncut Sans', system-ui, sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-white);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-weight: 500;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-display {
+            font-family: var(--font-display);
+            font-weight: 600;
+        }
+
+        a,
+        button {
+            font: inherit;
+        }
+
+        /* Pills (shared with home) */
+        .pill {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            color: var(--text-primary);
+            border-radius: 999px;
+            padding: 10px 16px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.18s ease, color 0.18s ease;
+            border: none;
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            width: fit-content;
+        }
+
+        .pill--cream {
+            background: var(--bg-cream);
+        }
+
+        .pill--active {
+            color: var(--brand);
+        }
+
+        .pill--dot {
+            gap: 8px;
+        }
+
+        .pill--dot .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--brand);
+            flex-shrink: 0;
+        }
+
+        .pill:hover {
+            opacity: 0.75;
+        }
+
+        /* Layout */
+        .page {
+            padding: 25px 24px 88px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: clamp(56px, 8vw, 120px);
+            line-height: 0.95;
+            letter-spacing: -1.2px;
+            color: var(--brand);
+        }
+
+        .brand img {
+            width: 54px;
+            height: 54px;
+            display: block;
+        }
+
+        .nav {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .content {
+            width: min(1334px, 100%);
+            margin: clamp(32px, 7vh, 120px) auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 72px;
+        }
+
+        .intro {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .intro .kicker {
+            margin: 0;
+            color: var(--text-tertiary);
+            font-size: 24px;
+            line-height: 32px;
+            font-weight: 600;
+        }
+
+        .intro .headline {
+            margin: 0;
+            font-size: clamp(28px, 3.2vw, 40px);
+            line-height: 1.15;
+            letter-spacing: 0;
+            color: #000;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .insight-card {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-width: 0;
+        }
+
+        .insight-card__thumb {
+            height: 484.85px;
+            border-radius: 32px;
+            background: var(--brand);
+        }
+
+        .insight-card__body {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .insight-card__copy {
+            margin: 0;
+            font-size: 20px;
+            line-height: 28px;
+            color: var(--text-primary);
+            max-width: 440px;
+        }
+
+        .read-btn {
+            align-self: flex-start;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 1040px) {
+            .intro {
+                grid-template-columns: 1fr;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .insight-card__thumb {
+                height: 420px;
+            }
+        }
+
+        @media (max-width: 660px) {
+            .page {
+                padding: 18px 16px 72px;
+            }
+
+            .brand img {
+                width: 44px;
+                height: 44px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insight-card__thumb {
+                height: 360px;
+                border-radius: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header class="topbar" aria-label="Insights header">
+            <div class="brand" aria-label="Insights title">
+                <h1>Insights</h1>
+                <img src="assets/logo.svg" alt="" />
+            </div>
+
+            <nav class="nav" aria-label="Site navigation">
+                <a class="pill pill--cream" href="feeds.html">Feeds</a>
+                <a class="pill pill--cream pill--active" href="insights.html" aria-current="page">Insights</a>
+                <a class="pill pill--cream pill--dot" href="index.html">More<span class="dot" aria-hidden="true"></span></a>
+            </nav>
+        </header>
+
+        <main class="content">
+            <section class="intro" aria-label="Insights introduction">
+                <p class="kicker font-display">Things from my view</p>
+                <h2 class="headline font-display">
+                    Notes on designing for banks, neobanks, and regulated financial products, written for the people
+                    building them, not for a general design audience.
+                </h2>
+            </section>
+
+            <section aria-label="Insights list">
+                <div class="grid">
+                    <article class="insight-card">
+                        <div class="insight-card__thumb" style="background:#00db2e"></div>
+                        <div class="insight-card__body">
+                            <p class="insight-card__copy">
+                                Cross-platform work. International brands. Experiences recognised by the industry's
+                                leading design awards.
+                            </p>
+                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
+                        </div>
+                    </article>
+
+                    <article class="insight-card">
+                        <div class="insight-card__thumb" style="background:#ff4300"></div>
+                        <div class="insight-card__body">
+                            <p class="insight-card__copy">
+                                Cross-platform work. International brands. Experiences recognised by the industry's
+                                leading design awards.
+                            </p>
+                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
+                        </div>
+                    </article>
+
+                    <article class="insight-card">
+                        <div class="insight-card__thumb" style="background:#393bfe"></div>
+                        <div class="insight-card__body">
+                            <p class="insight-card__copy">
+                                Cross-platform work. International brands. Experiences recognised by the industry's
+                                leading design awards.
+                            </p>
+                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
+                        </div>
+                    </article>
+
+                    <article class="insight-card">
+                        <div class="insight-card__thumb" style="background:#ff4300"></div>
+                        <div class="insight-card__body">
+                            <p class="insight-card__copy">
+                                Cross-platform work. International brands. Experiences recognised by the industry's
+                                leading design awards.
+                            </p>
+                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
+                        </div>
+                    </article>
+
+                    <article class="insight-card">
+                        <div class="insight-card__thumb" style="background:#00db2e"></div>
+                        <div class="insight-card__body">
+                            <p class="insight-card__copy">
+                                Cross-platform work. International brands. Experiences recognised by the industry's
+                                leading design awards.
+                            </p>
+                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
+                        </div>
+                    </article>
+
+                    <article class="insight-card">
+                        <div class="insight-card__thumb" style="background:#393bfe"></div>
+                        <div class="insight-card__body">
+                            <p class="insight-card__copy">
+                                Cross-platform work. International brands. Experiences recognised by the industry's
+                                leading design awards.
+                            </p>
+                            <a class="pill pill--cream read-btn" href="#" aria-label="Read insight">Read</a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
+
