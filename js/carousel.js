@@ -57,17 +57,20 @@ export class Carousel {
 
   measure() {
     const widths = this.slots.map((s) => s.width);
+    const heights = this.slots.map((s) => s.height);
     this.stepX = Math.max(...widths) + GAP_PX;
     this.periodX = this.slots.reduce((sum, s) => sum + s.width + GAP_PX, 0);
+    this.maxCardH = Math.max(...heights);
+    this.maxCardW = Math.max(...widths);
   }
 
   start(initialIndex = 0) {
     this.build();
     this.measure();
-    const c = Math.floor(this.slots.length / 2);
-    const offset = this._indexToScroll(initialIndex);
-    this.scrollX = offset;
-    this.targetScrollX = offset;
+    this.scrollX = this._indexToScroll(initialIndex);
+    this.targetScrollX = this.scrollX;
+    this.applyTransforms();
+    this.root.classList.add('is-ready');
 
     window.addEventListener('wheel', this._onWheel, { capture: true, passive: false });
     this.root.addEventListener('pointerdown', this._onPointerDown);
@@ -101,10 +104,11 @@ export class Carousel {
 
   _onWheel(e) {
     if (e.target.closest('#modal-backdrop.is-open')) return;
+    if (!e.target.closest('.carousel-section')) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    this.targetScrollX += delta;
+    this.targetScrollX += delta / (this.fitScale || 1);
   }
 
   _onPointerDown(e) {
@@ -121,7 +125,7 @@ export class Carousel {
     if (!this.isDragging) return;
     const dx = e.clientX - this.dragStartX;
     if (Math.abs(dx) > 4) this.dragMoved = true;
-    this.targetScrollX = this.dragStartScroll - dx;
+    this.targetScrollX = this.dragStartScroll - dx / (this.fitScale || 1);
   }
 
   _onPointerUp() {
@@ -131,8 +135,14 @@ export class Carousel {
   }
 
   applyTransforms() {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+    const cw = this.root.offsetWidth;
+    const ch = this.root.offsetHeight;
+    if (!cw || !ch) return;
+
+    const heightScale = (ch - 12) / this.maxCardH;
+    const widthScale = (cw - 24) / this.periodX;
+    this.fitScale = Math.min(1, heightScale, widthScale);
+
     const half = this.periodX / 2;
     const c = Math.floor(this.slots.length / 2);
 
@@ -160,10 +170,11 @@ export class Carousel {
       }
 
       const slot = this.slots[i];
-      const w = slot.width;
-      const h = slot.height;
-      const x = vw / 2 + relX - w / 2;
-      const y = vh * 0.38 - h / 2;
+      const fit = this.fitScale;
+      const w = slot.width * fit;
+      const h = slot.height * fit;
+      const x = cw / 2 + relX * fit - w / 2;
+      const y = ch / 2 - h / 2;
 
       const normDist = Math.min(dist / (this.stepX * 2.2), 1);
       const scale = 1 - normDist * 0.12;
@@ -171,9 +182,11 @@ export class Carousel {
       const slotTilt = this.tilt * (1 - normDist * 0.5);
 
       const el = this.slotEls[i];
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
       el.style.transform = `translate(${x}px, ${y}px) rotateY(${slotTilt}rad) scale(${scale})`;
-      el.style.opacity = opacity;
-      el.style.zIndex = Math.round((1 - normDist) * 100);
+      el.style.opacity = String(opacity);
+      el.style.zIndex = String(Math.round((1 - normDist) * 100));
       el.classList.toggle('is-active', i === closestIdx && closestDist < this.stepX * 0.55);
     }
 
@@ -184,8 +197,6 @@ export class Carousel {
 
     const detail = document.getElementById('project-detail');
     if (detail) {
-      const activeH = this.slots[closestIdx]?.height || 400;
-      detail.style.top = `${vh * 0.38 + activeH / 2 + 40}px`;
       detail.classList.toggle('is-faded', Math.abs(activeRelX) > this.stepX * 0.7);
     }
   }
