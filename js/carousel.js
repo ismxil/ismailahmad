@@ -168,9 +168,7 @@ export class Carousel {
 
     for (let i = 0; i < this.slots.length; i++) {
       if (i === h) continue;
-      const delta = relXs[i] - hRelX;
-      if (delta <= 0) continue;
-      if (delta <= this.stepX * 1.45) spread[i] += extraW;
+      if (relXs[i] > hRelX) spread[i] += extraW;
     }
 
     return spread;
