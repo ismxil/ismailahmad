@@ -47,15 +47,17 @@ export class Carousel {
     this.root.innerHTML = this.slots
       .map(
         (slot, i) => `
-      <button type="button" class="carousel-slot" data-index="${i}" style="--card-w:${slot.width}px;--card-h:${slot.height}px;--card-color:${slot.color};--hover-scale-x:${slot.hoverScaleX || ''}">
-        <span class="carousel-visual" aria-hidden="true">
+      <button type="button" class="carousel-slot" data-index="${i}" style="--card-w:${slot.width}px;--card-h:${slot.height}px;--card-color:${slot.color};--hover-w:${slot.hoverWidth || slot.width}px">
+        <span class="carousel-card-wrap" aria-hidden="true">
           <span class="carousel-card" aria-hidden="true"></span>
           ${slot.image ? `<img class="carousel-card-img" src="${slot.image}" alt="" loading="lazy">` : ''}
         </span>
         <span class="carousel-meta" aria-hidden="true">
           <span class="carousel-meta__title">${escapeHtml(slot.title)}</span>
-          <span class="carousel-meta__desc">${escapeHtml(slot.metaDesc)}</span>
-          <span class="carousel-meta__view">View</span>
+          <span class="carousel-meta__reveal">
+            <span class="carousel-meta__desc">${escapeHtml(slot.metaDesc)}</span>
+            <span class="carousel-meta__view">View</span>
+          </span>
         </span>
       </button>`
       )
@@ -204,18 +206,22 @@ export class Carousel {
 
       const slot = this.slots[i];
       const fit = this.fitScale;
-      const w = slot.width * fit;
-      const h = slot.height * fit;
-      const x = vw / 2 + relX * fit - w / 2;
-      const y = centerY - h / 2;
+      const cardW = slot.width * fit;
+      const cardH = slot.height * fit;
+      const hoverW = (slot.hoverWidth || slot.width) * fit;
+      const x = vw / 2 + relX * fit - cardW / 2;
+      const y = centerY - cardH / 2;
 
       const normDist = Math.min(dist / (this.stepX * 1.8), 1);
       const slotTilt = this.tilt * (1 - normDist * 0.5);
 
       const el = this.slotEls[i];
-      el.style.width = `${w}px`;
-      el.style.height = `${h}px`;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0) rotateY(${slotTilt}rad)`;
+      el.style.setProperty('--card-w', `${cardW}px`);
+      el.style.setProperty('--card-h', `${cardH}px`);
+      el.style.setProperty('--hover-w', `${hoverW}px`);
+      el.style.setProperty('--slot-x', `${x}px`);
+      el.style.setProperty('--slot-y', `${y}px`);
+      el.style.setProperty('--slot-tilt', `${slotTilt}rad`);
       el.style.opacity = '1';
       el.style.zIndex = String(Math.round((1 - normDist) * 100));
       el.classList.toggle('is-active', i === closestIdx && closestDist < this.stepX * 0.55);
