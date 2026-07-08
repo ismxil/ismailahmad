@@ -168,12 +168,11 @@ precision highp float;
 varying vec2 v_uv;
 uniform sampler2D u_dye;
 uniform sampler2D u_mask;
-uniform vec3 u_brand;
 void main() {
   float mask = texture2D(u_mask, v_uv).a;
   vec3 dye = texture2D(u_dye, v_uv).rgb;
-  vec3 fluid = mix(u_brand, dye, clamp(length(dye) * 2.4, 0.0, 1.0));
-  gl_FragColor = vec4(fluid, mask);
+  float energy = clamp(length(dye) * 2.2, 0.0, 1.0);
+  gl_FragColor = vec4(dye * 1.1, mask * energy);
 }`;
 
 function createShader(gl, type, source) {
@@ -284,7 +283,7 @@ class HeaderFluidEffect {
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'header-fluid__canvas';
     this.canvas.setAttribute('aria-hidden', 'true');
-    this.root.insertBefore(this.canvas, this.root.firstChild);
+    this.root.appendChild(this.canvas);
 
     this.active = false;
     this.idleTimer = 0;
@@ -429,6 +428,19 @@ class HeaderFluidEffect {
     this.initFramebuffers();
   }
 
+  uploadMaskTexture() {
+    const gl = this.gl;
+    if (!this.maskTexture) this.maskTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, this.maskTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.maskCanvas);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  }
+
   buildMask(w, h, offsetX, offsetY, dpr) {
     const titleStyle = this.title ? getComputedStyle(this.title) : null;
     this.maskCanvas.width = w;
@@ -460,28 +472,14 @@ class HeaderFluidEffect {
         const lw = rect.width * dpr;
         const lh = rect.height * dpr;
         ctx.drawImage(this.logo, x, y, lw, lh);
-        const gl = this.gl;
-        if (!this.maskTexture) this.maskTexture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, this.maskTexture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.maskCanvas);
+        this.uploadMaskTexture();
       };
       if (this.logo.complete) drawLogo();
       else this.logo.addEventListener('load', () => this.resize(), { once: true });
       return;
     }
 
-    const gl = this.gl;
-    if (!this.maskTexture) this.maskTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, this.maskTexture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.maskCanvas);
+    this.uploadMaskTexture();
   }
 
   bindEvents() {
@@ -627,7 +625,6 @@ class HeaderFluidEffect {
     this.blit(null, 'display', {
       u_dye: { texture: this.dyeFBO.read().texture, unit: 0 },
       u_mask: { texture: this.maskTexture, unit: 1 },
-      u_brand: this.brandColor,
     });
 
     gl.disable(gl.BLEND);
@@ -641,9 +638,14 @@ class HeaderFluidEffect {
     this.lastTime = time;
 
     if (this.pointer.moved) {
-      this.hue = (this.hue + 0.006) % 1;
-      const rgb = hsvToRgb(this.hue, 0.85, 1.0);
-      this.splat(this.pointer.x, this.pointer.y, this.pointer.dx, this.pointer.dy, rgb);
+      this.hue = (this.hue + 0.008) % 1;
+      const rgb = hsvToRgb(this.hue, 0.42, 1.0);
+      const blend = [
+        this.brandColor[0] * 0.35 + rgb[0] * 0.65,
+        this.brandColor[1] * 0.35 + rgb[1] * 0.65,
+        this.brandColor[2] * 0.35 + rgb[2] * 0.65,
+      ];
+      this.splat(this.pointer.x, this.pointer.y, this.pointer.dx, this.pointer.dy, blend);
       this.pointer.moved = false;
     }
 
