@@ -1075,6 +1075,7 @@
         #modal-panel {
             position: relative;
             width: 100%;
+            height: calc(100dvh - 48px);
             max-height: calc(100dvh - 48px);
             background: #f8f8f7;
             border-radius: 64px 64px 0 0;
@@ -1114,10 +1115,12 @@
         }
 
         #modal-scroll {
+            flex: 1 1 0;
+            min-height: 0;
             overflow-y: auto;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
-            padding: 120px 24px 96px;
+            padding: 120px 24px 48px;
         }
 
         #modal-scroll::-webkit-scrollbar {
@@ -1394,9 +1397,12 @@
         }
 
         .project-modal__next {
+            flex: 0 0 auto;
             display: flex;
             flex-direction: column;
             gap: 72px;
+            width: 100%;
+            padding: 0;
         }
 
         .project-modal__next-row {
@@ -1404,6 +1410,9 @@
             justify-content: space-between;
             align-items: flex-start;
             gap: 32px;
+            width: min(991px, 100%);
+            margin: 0 auto;
+            padding: 0 24px;
         }
 
         .project-modal__next-label {
@@ -1455,12 +1464,21 @@
         }
 
         .project-modal__next-preview {
-            width: min(999px, 100%);
-            height: clamp(280px, 42vw, 545px);
+            width: 100%;
+            height: clamp(220px, 38vh, 545px);
+            border: none;
             border-radius: 32px 32px 0 0;
             overflow: hidden;
-            margin: 0 auto;
+            margin: 0;
+            padding: 0;
             background: #e4e4e7;
+            cursor: pointer;
+            display: block;
+            transition: opacity 0.18s ease;
+        }
+
+        .project-modal__next-preview:hover {
+            opacity: 0.92;
         }
 
         .project-modal__next-preview img {
@@ -1473,6 +1491,7 @@
         @media (max-width: 900px) {
             #modal-panel {
                 border-radius: 40px 40px 0 0;
+                height: calc(100dvh - 24px);
                 max-height: calc(100dvh - 24px);
             }
 
@@ -1817,19 +1836,20 @@
 
                     <div class="project-modal__blocks" id="modal-blocks"></div>
                     <div class="project-modal__metrics" id="modal-metrics" hidden></div>
-
-                    <section class="project-modal__next">
-                        <div class="project-modal__next-row">
-                            <span class="project-modal__next-label">See other work</span>
-                            <button type="button" id="modal-next-project">
-                                <span id="modal-next-title"></span>
-                                <span id="modal-next-subtitle"></span>
-                            </button>
-                        </div>
-                        <div class="project-modal__next-preview" id="modal-next-preview"></div>
-                    </section>
                 </div>
             </div>
+
+            <section class="project-modal__next">
+                <div class="project-modal__next-row">
+                    <span class="project-modal__next-label">See other work</span>
+                    <button type="button" id="modal-next-project">
+                        <span id="modal-next-title"></span>
+                        <span id="modal-next-subtitle"></span>
+                    </button>
+                </div>
+                <button type="button" class="project-modal__next-preview" id="modal-next-preview"
+                    aria-label="Open next project"></button>
+            </section>
         </div>
     </div>
 
@@ -2810,12 +2830,21 @@
             });
         }
 
+        function goToModalProject(idx) {
+            if (isNaN(idx)) return;
+            renderModal(idx);
+            modalScroll.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function renderModalNext(idx) {
-            var nextCard = cards[(idx + 1) % cards.length];
+            var nextIdx = (idx + 1) % cards.length;
+            var nextCard = cards[nextIdx];
             modalNextTitle.textContent = nextCard.title;
             modalNextSubtitle.textContent = nextCard.subtitle || nextCard.brief || '';
             renderVisual(modalNextPreview, (nextCard.images && nextCard.images[0]) || { color: nextCard.accentColor || '#e4e4e7' }, nextCard);
-            modalNextProject.dataset.index = String((idx + 1) % cards.length);
+            modalNextProject.dataset.index = String(nextIdx);
+            modalNextPreview.dataset.index = String(nextIdx);
+            modalNextPreview.setAttribute('aria-label', 'Open ' + nextCard.title);
         }
 
         function renderModal(idx) {
@@ -2865,11 +2894,10 @@
 
         modalClose.addEventListener('click', closeModal);
         modalNextProject.addEventListener('click', function () {
-            var idx = parseInt(this.dataset.index, 10);
-            if (!isNaN(idx)) {
-                renderModal(idx);
-                modalScroll.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            goToModalProject(parseInt(this.dataset.index, 10));
+        });
+        modalNextPreview.addEventListener('click', function () {
+            goToModalProject(parseInt(this.dataset.index, 10));
         });
 
         backdrop.addEventListener('click', function (e) {
