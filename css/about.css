@@ -1,7 +1,10 @@
 /* About page — Figma node 213:475 */
 
 .about-page {
-    padding: 25px 24px 120px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 24px 0;
 }
 
 .about-topbar {
@@ -41,10 +44,14 @@
 }
 
 .about-panel {
-    width: min(1334px, 100%);
-    margin: clamp(48px, 8vh, 120px) auto 0;
-    border-radius: 64px 64px 0 0;
-    overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    width: 100%;
+    max-width: none;
+    margin: clamp(48px, 8vh, 120px) 0 0;
+    min-height: calc(100vh - 180px);
 }
 
 .about-stack {
@@ -52,6 +59,9 @@
     flex-direction: column;
     align-items: center;
     gap: 120px;
+    width: min(1334px, 100%);
+    margin: 0 auto;
+    flex: 1;
 }
 
 .about-intro {
@@ -208,11 +218,14 @@
 
 .about-cta {
     width: min(999px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 31px;
-    padding: 72px 24px 80px;
+    padding: 72px 24px calc(96px + env(safe-area-inset-bottom, 0px));
     border-radius: 32px 32px 0 0;
     background: #f8f8f7;
     text-align: center;
@@ -342,11 +355,11 @@
 
 @media (max-width: 660px) {
     .about-page {
-        padding: 18px 16px 100px;
+        padding: 18px 16px 0;
     }
 
     .about-panel {
-        border-radius: 40px 40px 0 0;
+        min-height: calc(100vh - 140px);
     }
 
     .about-brand img {
