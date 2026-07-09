@@ -209,8 +209,6 @@
     flex-shrink: 0;
     display: block;
     object-fit: contain;
-    background: #fff;
-    border-radius: 4px;
 }
 
 @media (max-width: 720px) {
