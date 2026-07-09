@@ -251,7 +251,65 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+        }
+
+        .social-stack {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .social-stack__toggle {
+            flex-shrink: 0;
+        }
+
+        .social-stack__menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+            max-width: 0;
+            opacity: 0;
+            margin-left: 0;
+            pointer-events: none;
+            transition:
+                max-width 0.38s cubic-bezier(0.32, 0.72, 0, 1),
+                opacity 0.28s ease,
+                margin-left 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .social-stack:hover .social-stack__menu,
+            .social-stack:focus-within .social-stack__menu {
+                max-width: 520px;
+                opacity: 1;
+                margin-left: 8px;
+                pointer-events: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .social-stack__menu {
+                position: absolute;
+                bottom: calc(100% + 8px);
+                left: 0;
+                flex-direction: column;
+                align-items: flex-start;
+                max-width: none;
+                width: max-content;
+                margin-left: 0;
+                visibility: hidden;
+                transform: translateY(6px);
+                transition: opacity 0.22s ease, transform 0.28s ease, visibility 0.22s;
+            }
+
+            .social-stack.is-open .social-stack__menu {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+                transform: translateY(0);
+            }
         }
 
         .bottom-bar__music {
@@ -1998,11 +2056,19 @@
          Bottom social + play bar
          ════════════════════════════════ -->
     <div id="bottom-bar">
-        <div class="bottom-bar__socials" aria-label="Social links">
-            <a class="social-pill pill pill--cream pill--muted" href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
-            <a class="social-pill pill pill--cream pill--muted" href="https://github.com/ismxil" target="_blank" rel="noopener">Github</a>
-            <a class="social-pill pill pill--cream pill--muted" href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
-            <a class="social-pill pill pill--cream pill--muted" href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+        <div class="bottom-bar__socials social-stack" aria-label="Social links">
+            <button type="button" class="social-stack__toggle pill pill--cream pill--muted" aria-expanded="false"
+                aria-controls="social-stack-menu">Social</button>
+            <div class="social-stack__menu" id="social-stack-menu" aria-hidden="true">
+                <a class="social-pill pill pill--cream pill--muted" href="https://linkedin.com/in/ismxil" target="_blank"
+                    rel="noopener">LinkedIn</a>
+                <a class="social-pill pill pill--cream pill--muted" href="https://github.com/ismxil" target="_blank"
+                    rel="noopener">Github</a>
+                <a class="social-pill pill pill--cream pill--muted" href="https://www.behance.net/ismxil" target="_blank"
+                    rel="noopener">Behance</a>
+                <a class="social-pill pill pill--cream pill--muted" href="https://instagram.com/ismxilahmad"
+                    target="_blank" rel="noopener">Instagram</a>
+            </div>
         </div>
         <div class="bottom-bar__music" aria-label="Music controls">
             <button id="play-btn" aria-label="Play / Pause music">
@@ -2726,6 +2792,34 @@
         playBtn.addEventListener('blur', hideMusicPopoverSoon);
         musicPopover.addEventListener('mouseenter', showMusicPopover);
         musicPopover.addEventListener('mouseleave', hideMusicPopoverSoon);
+
+        (function initSocialStack() {
+            var socialStack = document.querySelector('.social-stack');
+            if (!socialStack) return;
+            var toggle = socialStack.querySelector('.social-stack__toggle');
+            var menu = socialStack.querySelector('.social-stack__menu');
+            var mq = window.matchMedia('(max-width: 768px)');
+
+            function setExpanded(open) {
+                socialStack.classList.toggle('is-open', open);
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                if (menu) menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+            }
+
+            toggle.addEventListener('click', function () {
+                if (!mq.matches) return;
+                setExpanded(!socialStack.classList.contains('is-open'));
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!mq.matches || !socialStack.classList.contains('is-open')) return;
+                if (!socialStack.contains(e.target)) setExpanded(false);
+            });
+
+            mq.addEventListener('change', function () {
+                setExpanded(false);
+            });
+        })();
 
         // ── Enter with sound ──
         document.getElementById('enter-sound').addEventListener('click', function () {
