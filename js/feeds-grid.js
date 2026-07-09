@@ -7,6 +7,9 @@ import InfiniteGrid from './infinite-grid.js';
 import { openFeedModal } from './feed-modal.js';
 import { getFeedItems, loadFeedItems } from './feed-items.js';
 
+const VISUAL_SCALE = 2;
+const ITEM_GAP = 56;
+
 const BASE_LAYOUT = [
   { x: 71, y: 58, w: 400, h: 270 },
   { x: 211, y: 255, w: 540, h: 360 },
@@ -19,8 +22,8 @@ const BASE_LAYOUT = [
   { x: 71, y: 922, w: 350, h: 260 },
 ];
 
-const TILE_W = 1522;
-const TILE_H = 1238;
+const TILE_W = 1522 * VISUAL_SCALE + ITEM_GAP * 2;
+const TILE_H = 1238 * VISUAL_SCALE + ITEM_GAP * 2;
 const TILES_PER_ROW = 3;
 
 function buildLayout(count) {
@@ -31,10 +34,10 @@ function buildLayout(count) {
     const blockCol = block % TILES_PER_ROW;
     const blockRow = Math.floor(block / TILES_PER_ROW);
     data.push({
-      x: base.x + blockCol * TILE_W,
-      y: base.y + blockRow * TILE_H,
-      w: base.w,
-      h: base.h,
+      x: base.x * VISUAL_SCALE + ITEM_GAP + blockCol * TILE_W,
+      y: base.y * VISUAL_SCALE + ITEM_GAP + blockRow * TILE_H,
+      w: base.w * VISUAL_SCALE,
+      h: base.h * VISUAL_SCALE,
     });
   }
 

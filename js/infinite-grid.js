@@ -1,7 +1,5 @@
 import gsap from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/+esm';
 
-const CLICK_DRAG_THRESHOLD = 14;
-
 export default class InfiniteGrid {
   constructor({ el, sources, data, originalSize, onItemClick }) {
     this.$container = el;
@@ -18,15 +16,11 @@ export default class InfiniteGrid {
       delta: { x: { c: 0, t: 0 }, y: { c: 0, t: 0 } },
     };
 
-    this.isDragging = false;
     this.isDisabled = false;
-    this.didDrag = false;
-    this.drag = { startX: 0, startY: 0, scrollX: 0, scrollY: 0 };
 
     this.mouse = {
       x: { t: 0.5, c: 0.5 },
       y: { t: 0.5, c: 0.5 },
-      press: { t: 0, c: 0 },
     };
 
     this.items = [];
@@ -35,17 +29,13 @@ export default class InfiniteGrid {
     this.onResize = this.onResize.bind(this);
     this.onWheel = this.onWheel.bind(this);
     this.onPointerMove = this.onPointerMove.bind(this);
-    this.onPointerDown = this.onPointerDown.bind(this);
-    this.onPointerUp = this.onPointerUp.bind(this);
     this.render = this.render.bind(this);
-    this.onModalOpen = () => { this.isDisabled = true; this.isDragging = false; };
+    this.onModalOpen = () => { this.isDisabled = true; };
     this.onModalClose = () => { this.isDisabled = false; };
 
     window.addEventListener('resize', this.onResize);
     window.addEventListener('wheel', this.onWheel, { passive: false });
     window.addEventListener('pointermove', this.onPointerMove);
-    this.$container.addEventListener('pointerdown', this.onPointerDown);
-    window.addEventListener('pointerup', this.onPointerUp);
     window.addEventListener('feed-modal-open', this.onModalOpen);
     window.addEventListener('feed-modal-close', this.onModalClose);
 
@@ -62,7 +52,7 @@ export default class InfiniteGrid {
   }
 
   initIntro() {
-    this.introItems = [...this.$container.querySelectorAll('.item-wrapper')].filter((item) => {
+    this.introItems = [...this.$container.querySelectorAll('.feed-grid__item-wrapper')].filter((item) => {
       const rect = item.getBoundingClientRect();
       return (
         rect.x > -rect.width &&
@@ -80,6 +70,7 @@ export default class InfiniteGrid {
   }
 
   intro() {
+    if (!this.introItems.length) return;
     gsap.to([...this.introItems].reverse(), {
       duration: 1.6,
       ease: 'expo.inOut',
@@ -126,10 +117,12 @@ export default class InfiniteGrid {
     baseItems.forEach((base) => {
       repsX.forEach((offsetX) => {
         repsY.forEach((offsetY) => {
-          const el = document.createElement('div');
+          const el = document.createElement('button');
+          el.type = 'button';
           el.classList.add('feed-grid__item');
           el.style.width = `${base.w}px`;
           el.dataset.feedIndex = String(base.feedIndex);
+          el.setAttribute('aria-label', 'Open project details');
 
           const wrapper = document.createElement('div');
           wrapper.classList.add('feed-grid__item-wrapper');
@@ -153,6 +146,12 @@ export default class InfiniteGrid {
           caption.innerHTML = base.caption;
           wrapper.appendChild(caption);
           this.observer.observe(caption);
+
+          el.addEventListener('click', (e) => {
+            if (this.isDisabled || !this.onItemClick) return;
+            e.stopPropagation();
+            this.onItemClick(base.feedIndex);
+          });
 
           this.$container.appendChild(el);
 
@@ -185,57 +184,14 @@ export default class InfiniteGrid {
   onWheel(e) {
     if (this.isDisabled) return;
     e.preventDefault();
-    const factor = 0.45;
+    const factor = 0.55;
     this.scroll.target.x -= e.deltaX * factor;
     this.scroll.target.y -= e.deltaY * factor;
-  }
-
-  onPointerDown(e) {
-    if (this.isDisabled) return;
-    if (e.button !== 0) return;
-    e.preventDefault();
-    this.isDragging = true;
-    this.didDrag = false;
-    document.documentElement.classList.add('feed-grid-dragging');
-    this.mouse.press.t = 1;
-    this.drag.startX = e.clientX;
-    this.drag.startY = e.clientY;
-    this.drag.scrollX = this.scroll.target.x;
-    this.drag.scrollY = this.scroll.target.y;
-    this.$container.setPointerCapture(e.pointerId);
-  }
-
-  onPointerUp(e) {
-    if (!this.isDragging) return;
-    this.isDragging = false;
-    document.documentElement.classList.remove('feed-grid-dragging');
-    this.mouse.press.t = 0;
-
-    try {
-      this.$container.releasePointerCapture(e.pointerId);
-    } catch (_) {}
-
-    const moved = Math.hypot(e.clientX - this.drag.startX, e.clientY - this.drag.startY);
-    if (!this.didDrag && moved < CLICK_DRAG_THRESHOLD && this.onItemClick) {
-      const target = e.target.closest('[data-feed-index]');
-      if (target) {
-        const index = parseInt(target.dataset.feedIndex, 10);
-        if (!Number.isNaN(index)) this.onItemClick(index);
-      }
-    }
   }
 
   onPointerMove(e) {
     this.mouse.x.t = e.clientX / this.winW;
     this.mouse.y.t = e.clientY / this.winH;
-
-    if (!this.isDragging || this.isDisabled) return;
-
-    const dx = e.clientX - this.drag.startX;
-    const dy = e.clientY - this.drag.startY;
-    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) this.didDrag = true;
-    this.scroll.target.x = this.drag.scrollX + dx;
-    this.scroll.target.y = this.drag.scrollY + dy;
   }
 
   render() {
@@ -248,14 +204,13 @@ export default class InfiniteGrid {
     this.scroll.delta.y.c += (this.scroll.delta.y.t - this.scroll.delta.y.c) * 0.04;
     this.mouse.x.c += (this.mouse.x.t - this.mouse.x.c) * 0.04;
     this.mouse.y.c += (this.mouse.y.t - this.mouse.y.c) * 0.04;
-    this.mouse.press.c += (this.mouse.press.t - this.mouse.press.c) * 0.04;
 
     const dirX = this.scroll.current.x > this.scroll.last.x ? 'right' : 'left';
     const dirY = this.scroll.current.y > this.scroll.last.y ? 'down' : 'up';
 
     this.items.forEach((item) => {
-      const newX = 5 * this.scroll.delta.x.c * item.ease + (this.mouse.x.c - 0.5) * item.rect.width * 0.6;
-      const newY = 5 * this.scroll.delta.y.c * item.ease + (this.mouse.y.c - 0.5) * item.rect.height * 0.6;
+      const newX = 5 * this.scroll.delta.x.c * item.ease + (this.mouse.x.c - 0.5) * item.rect.width * 0.35;
+      const newY = 5 * this.scroll.delta.y.c * item.ease + (this.mouse.y.c - 0.5) * item.rect.height * 0.35;
       const scrollX = this.scroll.current.x;
       const scrollY = this.scroll.current.y;
       const posX = item.x + scrollX + item.extraX + newX;
@@ -274,7 +229,7 @@ export default class InfiniteGrid {
       const fx = item.x + scrollX + item.extraX + newX;
       const fy = item.y + scrollY + item.extraY + newY;
       item.el.style.transform = `translate(${fx}px, ${fy}px)`;
-      item.img.style.transform = `scale(${1.2 + 0.2 * this.mouse.press.c * item.ease}) translate(${-this.mouse.x.c * item.ease * 10}%, ${-this.mouse.y.c * item.ease * 10}%)`;
+      item.img.style.transform = `scale(1.2) translate(${-this.mouse.x.c * item.ease * 8}%, ${-this.mouse.y.c * item.ease * 8}%)`;
     });
 
     this.scroll.last.x = this.scroll.current.x;
@@ -288,8 +243,6 @@ export default class InfiniteGrid {
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('wheel', this.onWheel);
     window.removeEventListener('pointermove', this.onPointerMove);
-    this.$container.removeEventListener('pointerdown', this.onPointerDown);
-    window.removeEventListener('pointerup', this.onPointerUp);
     window.removeEventListener('feed-modal-open', this.onModalOpen);
     window.removeEventListener('feed-modal-close', this.onModalClose);
     this.observer.disconnect();
