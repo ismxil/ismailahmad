@@ -1,6 +1,5 @@
 /**
- * Site loader — white screen + logo immediately, fonts in parallel, then animate out.
- * Feed grid intro (infinite-grid.js) is unchanged — it runs after this resolves.
+ * Site loader — inner pages only. Index uses welcome + site-ready.js.
  */
 import { runSiteLoaderLogo } from './site-loader-logo.js';
 
@@ -24,28 +23,31 @@ function shouldSkipLogoAnim() {
   return !window.gsap || !document.getElementById('site-loader-canvas');
 }
 
-function revealContent() {
-  const root = document.documentElement;
+function clearLoadingState() {
+  document.documentElement.classList.remove('is-loading');
+}
+
+function removeLoader() {
   const loader = document.getElementById('site-loader');
-
-  root.classList.add('is-ready');
-  root.classList.remove('is-loading');
-
-  if (loader) loader.classList.add('is-revealing');
+  if (loader) loader.remove();
 }
 
 function finishLoader() {
   const loader = document.getElementById('site-loader');
-  if (!loader) return;
+  if (!loader) {
+    clearLoadingState();
+    return;
+  }
 
-  loader.classList.add('is-done');
+  loader.classList.add('is-done', 'is-revealing');
+  clearLoadingState();
 
-  const removeLoader = () => {
+  const cleanup = () => {
     loader.remove();
   };
 
-  loader.addEventListener('transitionend', removeLoader, { once: true });
-  window.setTimeout(removeLoader, 700);
+  loader.addEventListener('transitionend', cleanup, { once: true });
+  window.setTimeout(cleanup, 600);
 }
 
 function holdAssembled() {
@@ -53,30 +55,20 @@ function holdAssembled() {
 }
 
 async function boot() {
-  let revealed = false;
-
-  function revealOnce() {
-    if (revealed) return;
-    revealed = true;
-    revealContent();
-  }
+  const fonts = waitForFonts();
+  const canvas = document.getElementById('site-loader-canvas');
 
   try {
-    const fonts = waitForFonts();
-    const canvas = document.getElementById('site-loader-canvas');
-
     if (!shouldSkipLogoAnim()) {
       await runSiteLoaderLogo(canvas, {
         beforeDeconstruct: () => Promise.all([fonts, holdAssembled()]),
-        onDeconstructStart: revealOnce,
       });
     } else {
       await fonts;
-      revealOnce();
     }
   } catch (err) {
     console.error('Site loader failed:', err);
-    revealOnce();
+    await fonts.catch(() => {});
   } finally {
     finishLoader();
   }

@@ -161,7 +161,7 @@ function playDeconstruct(gsap, pieces, piecesFinalPos, camera, mat, group) {
   });
 }
 
-export async function runSiteLoaderLogo(canvas, { beforeDeconstruct, onDeconstructStart } = {}) {
+export async function runSiteLoaderLogo(canvas, { beforeDeconstruct } = {}) {
   const gsap = window.gsap;
   if (!canvas || !gsap) return;
 
@@ -235,12 +235,9 @@ export async function runSiteLoaderLogo(canvas, { beforeDeconstruct, onDeconstru
   renderer.render(scene, camera);
   raf = requestAnimationFrame(tick);
 
-  window._loaderLogoPlayed = true;
-
   try {
     await playConstruct(gsap, pieces, piecesFinalPos, camera);
     await beforeDeconstruct?.();
-    await onDeconstructStart?.();
     await playDeconstruct(gsap, pieces, piecesFinalPos, camera, mat, group);
   } finally {
     running = false;
