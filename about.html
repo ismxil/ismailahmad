@@ -153,10 +153,13 @@
                     <div class="about-gallery">
                         <div class="about-gallery__track">
                             <div class="about-gallery__item image-hover">
-                                <img src="assets/about/gallery-1.jpg" alt="" loading="lazy" />
+                                <img src="assets/about/gallery-1.jpg" alt="" loading="lazy" width="800" height="597" />
                             </div>
                             <div class="about-gallery__item image-hover">
-                                <img src="assets/about/gallery-2.jpg" alt="" loading="lazy" />
+                                <img src="assets/about/gallery-2.jpg" alt="" loading="lazy" width="800" height="597" />
+                            </div>
+                            <div class="about-gallery__item image-hover">
+                                <img src="assets/about/gallery-3.jpg" alt="" loading="lazy" width="800" height="597" />
                             </div>
                         </div>
                     </div>
@@ -164,36 +167,51 @@
 
                 <section class="about-section" aria-labelledby="about-expertise-label">
                     <p id="about-expertise-label" class="about-section__label">Expertise</p>
-                    <div>
+                    <div class="about-section__stack">
                         <h3 class="about-section__title">Focused on Financial Tech.</h3>
                         <p class="about-section__body">Since 2017, I have helped financial banks startups, scaleups, and global financial companies stand out, build trust, and accelerate adoption.</p>
+                        <a class="about-cv-btn" href="cv.pdf" download>
+                            Download CV
+                            <img src="assets/about/icon-download.svg" alt="" width="24" height="24" />
+                        </a>
                     </div>
                 </section>
 
-                <section class="about-section" aria-labelledby="about-process-label">
-                    <p id="about-process-label" class="about-section__label">Process</p>
-                    <div>
-                        <p class="about-section__body">I follow these simple framework to ensure we deliver the best possible results.</p>
+                <section class="about-section about-section--cards" aria-labelledby="about-approach-label">
+                    <p id="about-approach-label" class="about-section__label">Approach</p>
+                    <div class="about-section__stack about-section__stack--tight">
+                        <p class="about-section__subtitle">Quality execution that feel cohesive</p>
+                        <p class="about-section__body">I follow these simple framework to ensure I deliver the best possible results.</p>
                     </div>
                     <div class="about-cards">
-                        <article class="about-card">
-                            <h4 class="about-card__title">Strategy</h4>
-                            <p class="about-card__text">I immerse myself into your goals, users, and constraints, questioning, and synthesizing insights into a clear, defensible position grounding all design decisions.</p>
+                        <article class="about-card about-card--icon">
+                            <div class="about-card__content">
+                                <h4 class="about-card__title">Strategy</h4>
+                                <p class="about-card__text">I immerse myself into your goals, users, and constraints, questioning, and synthesizing insights into a clear, defensible position grounding all design decisions.</p>
+                            </div>
+                            <img class="about-card__icon" src="assets/about/icon-strategy.svg" alt="" width="64" height="64" />
                         </article>
-                        <article class="about-card">
-                            <h4 class="about-card__title">Design</h4>
-                            <p class="about-card__text">I design within strategic guardrails to solve for conversion, comprehension, and trust, testing and refining until the experience works flawlessly at scale.</p>
+                        <article class="about-card about-card--icon">
+                            <div class="about-card__content">
+                                <h4 class="about-card__title">Design</h4>
+                                <p class="about-card__text">I design within strategic guardrails to solve for conversion, comprehension, and trust, testing and refining until the experience works flawlessly at scale.</p>
+                            </div>
+                            <img class="about-card__icon" src="assets/about/icon-design.svg" alt="" width="64" height="64" />
                         </article>
-                        <article class="about-card">
-                            <h4 class="about-card__title">Build</h4>
-                            <p class="about-card__text">I work in the space between design and development, I design with code in mind, and partner with developers to ensure the final product matches what was design.</p>
+                        <article class="about-card about-card--icon">
+                            <div class="about-card__content">
+                                <h4 class="about-card__title">Build</h4>
+                                <p class="about-card__text">I work in the space between design and development, I design with code in mind, and partner with developers to ensure the final product matches what was design.</p>
+                            </div>
+                            <img class="about-card__icon" src="assets/about/icon-build.svg" alt="" width="64" height="64" />
                         </article>
                     </div>
                 </section>
 
-                <section class="about-section" aria-labelledby="about-capabilities-label">
+                <section class="about-section about-section--cards" aria-labelledby="about-capabilities-label">
                     <p id="about-capabilities-label" class="about-section__label">Capabilities</p>
-                    <div>
+                    <div class="about-section__stack about-section__stack--tight">
+                        <p class="about-section__subtitle">T-Shaped industry experience</p>
                         <p class="about-section__body">Turning brief into trust. Without sucking out the creativity side of it.</p>
                     </div>
                     <div class="about-cards">
@@ -230,6 +248,25 @@
                                 <li>Design Systems</li>
                             </ul>
                         </article>
+                    </div>
+                </section>
+
+                <section class="about-section about-section--clients" aria-labelledby="about-clients-label">
+                    <p id="about-clients-label" class="about-section__label">Clients</p>
+                    <div class="about-section__stack about-section__stack--tight">
+                        <p class="about-section__subtitle">Spotting the patterns that matter.</p>
+                        <p class="about-section__body">Making financial infrastructure feel intuitive, reliable, and ready to scale.</p>
+                    </div>
+                    <div class="about-clients" aria-label="Client logos">
+                        <img src="assets/about/client-1.svg" alt="Accenture" loading="lazy" />
+                        <img src="assets/about/client-2.svg" alt="Lemfi" loading="lazy" />
+                        <img src="assets/about/client-3.svg" alt="Sterling" loading="lazy" />
+                        <img src="assets/about/client-4.svg" alt="Commerzbank" loading="lazy" />
+                        <img src="assets/about/client-5.svg" alt="Cadana" loading="lazy" />
+                        <img src="assets/about/client-6.svg" alt="Deutsche Bank" loading="lazy" />
+                        <img src="assets/about/client-7.svg" alt="Gomoney" loading="lazy" />
+                        <img src="assets/about/client-8.svg" alt="Landor" loading="lazy" />
+                        <img src="assets/about/client-9.svg" alt="Client" loading="lazy" />
                     </div>
                 </section>
             </div>
