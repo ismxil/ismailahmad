@@ -4,11 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.classList.add('is-loading');</script>
+    <style>html.is-loading,html.is-loading body{background:#fff}</style>
     <title>Feed — Ismail Ahmad</title>
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/site-loader.css">
+    <link rel="modulepreload" href="js/site-loader.js">
+    <link rel="modulepreload" href="js/site-loader-logo.js">
+    <script type="module" src="js/site-loader.js"></script>
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
@@ -185,6 +192,12 @@
 </head>
 
 <body>
+    <div id="site-loader" class="site-loader" role="status" aria-label="Loading">
+        <div class="site-loader__mark">
+            <canvas id="site-loader-canvas" aria-hidden="true"></canvas>
+        </div>
+    </div>
+
     <div id="feeds-grid-wrap" aria-label="Feeds grid">
         <div id="feeds-grid"></div>
     </div>
