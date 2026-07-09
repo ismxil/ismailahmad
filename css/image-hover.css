@@ -1,0 +1,21 @@
+/* Subtle image scale on hover — default for image containers site-wide */
+
+@media (hover: hover) and (pointer: fine) {
+    :is(
+        .image-hover,
+        .feed-grid__item-image,
+        .feed-modal__hero,
+        .project-modal__image,
+        .contact-polaroid,
+        .music-player__thumb
+    ) > img {
+        transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    :is(.image-hover:hover, .image-hover:focus-within) > img,
+    :is(button, a):hover :is(.image-hover, .feed-grid__item-image) > img,
+    :is(button, a):focus-visible :is(.image-hover, .feed-grid__item-image) > img,
+    :is(.feed-modal__hero, .project-modal__image, .contact-polaroid, .music-player__thumb):hover > img {
+        transform: scale(1.04);
+    }
+}

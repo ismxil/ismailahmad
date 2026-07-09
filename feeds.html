@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/contact-panel.css">
     <link rel="stylesheet" href="css/feed-modal.css">
     <link rel="stylesheet" href="css/feeds-grid.css">
+    <link rel="stylesheet" href="css/image-hover.css">
     <style>
         :root {
             --brand: #393bfe;
@@ -129,6 +130,15 @@
             color: var(--brand);
         }
 
+        .pill--nav-active {
+            background: var(--brand);
+            color: #fff;
+        }
+
+        .pill--nav-active:hover {
+            opacity: 0.88;
+        }
+
         .pill:hover {
             opacity: 0.75;
         }
@@ -199,7 +209,7 @@
 
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
                 <div class="site-header__nav-pills" id="header-nav-pills">
-                    <a class="pill pill--cream pill--active" href="feeds.html" aria-current="page">Feeds</a>
+                    <a class="pill pill--nav-active" href="feeds.html" aria-current="page">Feeds</a>
                     <a class="pill pill--cream" href="insights.html">Insights</a>
                     <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
                         aria-controls="header-nav-menu" aria-label="Open menu">
