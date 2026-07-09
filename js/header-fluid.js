@@ -278,7 +278,7 @@ class HeaderFluidEffect {
   constructor(root) {
     this.root = root;
     this.content = root.querySelector('.header-fluid__content') || root;
-    this.title = this.content.querySelector('h1');
+    this.title = this.content.querySelector('h1, h2');
     this.logo = this.content.querySelector('img');
     if (this.logo && !this.logo.parentElement.classList.contains('header-fluid__logo-wrap')) {
       const wrap = document.createElement('span');

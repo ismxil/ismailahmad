@@ -5,6 +5,8 @@
 }
 
 .about-topbar {
+    position: relative;
+    z-index: 50;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -12,7 +14,8 @@
 }
 
 .about-topbar .site-header__nav {
-    z-index: 10;
+    position: relative;
+    z-index: 51;
 }
 
 .about-brand {
@@ -215,6 +218,17 @@
     text-align: center;
 }
 
+.about-cta__title-fluid {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 760px;
+}
+
+.about-cta__title-fluid .header-fluid__content {
+    justify-content: center;
+}
+
 .about-cta__title {
     margin: 0;
     max-width: 760px;
@@ -223,6 +237,7 @@
     line-height: 1.08;
     font-weight: 600;
     color: var(--brand, #393bfe);
+    text-align: center;
 }
 
 .about-cta__btn {
@@ -267,6 +282,10 @@
     align-items: center;
     justify-content: space-between;
     pointer-events: none;
+}
+
+.about-footer .home-logo {
+    margin-left: auto;
 }
 
 .about-footer > * {

@@ -5,6 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About — Ismail Ahmad</title>
+    <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+    </script>
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
@@ -214,7 +217,11 @@
                 </section>
 
                 <section class="about-cta" aria-labelledby="about-cta-title">
-                    <h2 id="about-cta-title" class="about-cta__title">Is this the start of something beautiful?</h2>
+                    <div class="about-cta__title-fluid header-fluid" data-header-fluid>
+                        <div class="header-fluid__content">
+                            <h2 id="about-cta-title" class="about-cta__title">Is this the start of something beautiful?</h2>
+                        </div>
+                    </div>
                     <button type="button" class="about-cta__btn" id="about-talk-btn">
                         <span class="about-cta__btn-dot" aria-hidden="true"></span>
                         Talk to Ahmad
@@ -273,18 +280,19 @@
 
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
+    <script>
+        initContactPanel();
+        initSiteNav();
+    </script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
         import { initAllHeaderFluids } from './js/header-fluid.js';
 
         initBrandLogo3D(document.getElementById('about-logo-c'));
         initAllHeaderFluids();
-        initContactPanel();
 
         const talkBtn = document.getElementById('about-talk-btn');
         if (talkBtn) talkBtn.addEventListener('click', () => window.openContactPanel?.());
-
-        initSiteNav();
     </script>
 </body>
 

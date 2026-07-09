@@ -19,13 +19,15 @@
 }
 
 .header-fluid__content h1,
+.header-fluid__content h2,
 .header-fluid__content img {
     position: relative;
     z-index: 1;
     pointer-events: none;
 }
 
-.header-fluid.is-active .header-fluid__content h1 {
+.header-fluid.is-active .header-fluid__content h1,
+.header-fluid.is-active .header-fluid__content h2 {
     color: transparent !important;
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
@@ -62,7 +64,8 @@
         display: none !important;
     }
 
-    .header-fluid.is-active .header-fluid__content h1 {
+    .header-fluid.is-active .header-fluid__content h1,
+    .header-fluid.is-active .header-fluid__content h2 {
         color: inherit !important;
         -webkit-text-fill-color: inherit !important;
         background-image: none !important;
