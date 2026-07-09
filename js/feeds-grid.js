@@ -7,8 +7,10 @@ import InfiniteGrid from './infinite-grid.js';
 import { openFeedModal } from './feed-modal.js';
 import { getFeedItems, loadFeedItems } from './feed-items.js';
 
-const VISUAL_SCALE = 2;
-const ITEM_GAP = 56;
+const VISUAL_SCALE = 4;
+const ITEM_GAP = 64;
+// Render tiles larger than the Codrops default (smaller originalSize → bigger on screen)
+const SIZE_BOOST = 1.55;
 
 const BASE_LAYOUT = [
   { x: 71, y: 58, w: 400, h: 270 },
@@ -22,8 +24,9 @@ const BASE_LAYOUT = [
   { x: 71, y: 922, w: 350, h: 260 },
 ];
 
-const TILE_W = 1522 * VISUAL_SCALE + ITEM_GAP * 2;
-const TILE_H = 1238 * VISUAL_SCALE + ITEM_GAP * 2;
+// One repeating tile unit — used for screen scaling (matches Codrops tutorial)
+const UNIT_W = 1522 * VISUAL_SCALE + ITEM_GAP * 2;
+const UNIT_H = 1238 * VISUAL_SCALE + ITEM_GAP * 2;
 const TILES_PER_ROW = 3;
 
 function buildLayout(count) {
@@ -34,19 +37,19 @@ function buildLayout(count) {
     const blockCol = block % TILES_PER_ROW;
     const blockRow = Math.floor(block / TILES_PER_ROW);
     data.push({
-      x: base.x * VISUAL_SCALE + ITEM_GAP + blockCol * TILE_W,
-      y: base.y * VISUAL_SCALE + ITEM_GAP + blockRow * TILE_H,
+      x: base.x * VISUAL_SCALE + ITEM_GAP + blockCol * UNIT_W,
+      y: base.y * VISUAL_SCALE + ITEM_GAP + blockRow * UNIT_H,
       w: base.w * VISUAL_SCALE,
       h: base.h * VISUAL_SCALE,
     });
   }
 
-  const blockRows = Math.floor((Math.max(0, count - 1)) / BASE_LAYOUT.length / TILES_PER_ROW) + 1;
   return {
     data,
+    // One repeating unit for scaling — not the full multi-block canvas (which shrinks tiles)
     originalSize: {
-      w: TILE_W * TILES_PER_ROW,
-      h: TILE_H * blockRows,
+      w: UNIT_W / SIZE_BOOST,
+      h: UNIT_H / SIZE_BOOST,
     },
   };
 }

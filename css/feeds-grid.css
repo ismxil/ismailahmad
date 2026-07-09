@@ -50,7 +50,7 @@
 
 .feed-grid__item-image {
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #f3f2ef;
     transition: box-shadow 0.22s ease;
 }
@@ -68,10 +68,10 @@
     width: 100%;
     display: block;
     font-family: var(--font-body, system-ui, sans-serif);
-    font-size: 13px;
+    font-size: 17px;
     line-height: 1.4;
     font-weight: 500;
-    margin-top: 14px;
+    margin-top: 18px;
     color: var(--text-primary, #09090b);
     overflow: hidden;
     opacity: 0;
@@ -87,7 +87,7 @@
 
 @media (max-width: 720px) {
     .feed-grid__caption {
-        font-size: 11px;
-        margin-top: 10px;
+        font-size: 14px;
+        margin-top: 12px;
     }
 }
