@@ -4,7 +4,10 @@
 
 const LERP = 0.12;
 const GAP_PX = 16;
+const MOBILE_GAP_PX = 12;
 const DISPLAY_SCALE = 0.74;
+const MOBILE_DISPLAY_SCALE = 0.42;
+const MOBILE_BREAKPOINT = 768;
 const DRAG_THRESHOLD_PX = 8;
 const SCROLL_EPSILON = 0.25;
 
@@ -107,11 +110,12 @@ export class Carousel {
 
     this.baseOffsets = this.slots.map((_, i) => this._offsetBetween(this.centerIndex, i));
     this.periodX = 0;
+    const gap = this._gapPx();
     for (let i = 0; i < this.slots.length; i++) {
       const next = (i + 1) % this.slots.length;
-      this.periodX += this.slots[i].width / 2 + GAP_PX + this.slots[next].width / 2;
+      this.periodX += this.slots[i].width / 2 + gap + this.slots[next].width / 2;
     }
-    this.stepX = this.maxCardW + GAP_PX;
+    this.stepX = this.maxCardW + gap;
     this._layoutCache = this.slots.map(() => ({
       x: 0,
       y: 0,
@@ -129,8 +133,21 @@ export class Carousel {
     return Math.floor(this.slots.length / 2);
   }
 
+  _isMobile() {
+    return window.innerWidth <= MOBILE_BREAKPOINT;
+  }
+
+  _gapPx() {
+    return this._isMobile() ? MOBILE_GAP_PX : GAP_PX;
+  }
+
+  _displayScale() {
+    return this._isMobile() ? MOBILE_DISPLAY_SCALE : DISPLAY_SCALE;
+  }
+
   _spacingBetween(a, b) {
-    return this.slots[a].width / 2 + GAP_PX + this.slots[b].width / 2;
+    const gap = this._gapPx();
+    return this.slots[a].width / 2 + gap + this.slots[b].width / 2;
   }
 
   _offsetBetween(from, to) {
@@ -175,6 +192,7 @@ export class Carousel {
   }
 
   _setHovered(idx) {
+    if (this._isMobile() || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     if (this.hoveredIndex === idx) return;
     this.hoveredIndex = idx;
     this.root.classList.add('is-hover-animating');
@@ -284,12 +302,16 @@ export class Carousel {
     if (!vw || !stageH) return;
 
     const heightScale = Math.min(1, (stageH - 12) / this.maxCardH);
-    this.fitScale = heightScale * DISPLAY_SCALE;
+    this.fitScale = heightScale * this._displayScale();
 
     const baseRelXs = this._relOffsets();
-    const spreadRelXs = this._spreadForHover(baseRelXs);
+    const spreadRelXs = this._isMobile() ? baseRelXs : this._spreadForHover(baseRelXs);
     const rowHeight = this.maxCardH * this.fitScale;
-    const rowTop = this.stageTop + (stageH - rowHeight) * 0.42;
+    const labelSpace = this._isMobile() ? 31 : 0;
+    const bodyHeight = rowHeight + labelSpace;
+    const rowTop = this._isMobile()
+      ? this.stageTop + Math.max(0, (stageH - bodyHeight) * 0.42)
+      : this.stageTop + (stageH - rowHeight) * 0.42;
     const fit = this.fitScale;
 
     let closestIdx = 0;
@@ -368,7 +390,7 @@ export class Carousel {
     }
 
     const detail = document.getElementById('project-detail');
-    if (detail) {
+    if (detail && !this._isMobile()) {
       detail.classList.toggle('is-faded', Math.abs(activeRelX) > this.stepX * 0.7);
     }
   }

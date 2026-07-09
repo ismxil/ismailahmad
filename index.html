@@ -361,6 +361,10 @@
             pointer-events: none;
         }
 
+        .site-header__lead {
+            display: contents;
+        }
+
         #site-header * {
             pointer-events: auto;
         }
@@ -668,6 +672,145 @@
 
             .site-header__brand h1 {
                 font-size: clamp(40px, 12vw, 72px);
+            }
+        }
+
+        /* Mobile index — Figma 127:2139 */
+        @media (max-width: 768px) {
+            #home-layout {
+                padding: 16px 12px 72px;
+            }
+
+            #site-header {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .site-header__lead {
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .site-header__brand {
+                align-items: center;
+            }
+
+            .site-header__brand .header-fluid__content {
+                gap: 6px;
+                align-items: center;
+            }
+
+            .site-header__brand h1 {
+                font-size: 40px;
+                line-height: 46px;
+                font-weight: 600;
+                letter-spacing: 0;
+            }
+
+            .site-header__logo {
+                width: 19px;
+                height: 19px;
+            }
+
+            .site-header__nav {
+                flex-shrink: 0;
+                margin-left: auto;
+            }
+
+            #header-nav-pills .pill {
+                display: none;
+            }
+
+            .nav-dot-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .nav-dot-btn .dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .site-header__meta {
+                max-width: none;
+            }
+
+            .site-header__intro {
+                font-family: var(--font-body);
+                font-size: 16px;
+                line-height: 24px;
+                font-weight: 500;
+            }
+
+            .carousel-section {
+                width: 100%;
+                margin-left: 0;
+                padding-bottom: 0;
+            }
+
+            .carousel-stage {
+                max-height: none;
+            }
+
+            .carousel-card {
+                border-radius: 16px;
+            }
+
+            .carousel-slot__body {
+                gap: 7px;
+            }
+
+            .carousel-meta {
+                padding-left: 0;
+                width: 100%;
+            }
+
+            .carousel-meta__title {
+                font-size: 16px;
+                line-height: 24px;
+                font-weight: 500;
+            }
+
+            .carousel-meta__reveal {
+                display: none !important;
+            }
+
+            .carousel-slot.is-hovered .carousel-card-wrap,
+            .carousel-slot:focus-visible .carousel-card-wrap,
+            .carousel-slot.is-hovered,
+            .carousel-slot:focus-visible {
+                width: var(--card-w) !important;
+            }
+
+            .project-detail {
+                display: none !important;
+            }
+
+            #bottom-bar {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+            }
+
+            #open-contact {
+                height: 40px;
+                font-size: 14px;
+                line-height: 22px;
+                padding: 10px 14px;
+            }
+
+            #play-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            #play-btn svg {
+                width: 22px;
+                height: 22px;
             }
         }
 
@@ -1637,11 +1780,16 @@
          ════════════════════════════════ -->
     <div id="home-layout">
     <header id="site-header">
+        <div class="site-header__lead">
         <div class="site-header__brand header-fluid" data-header-fluid>
             <div class="header-fluid__content">
                 <h1>Ismail Ahmad</h1>
                 <img src="assets/logo.svg" alt="" class="site-header__logo" width="54" height="54">
             </div>
+        </div>
+        <div class="site-header__meta">
+            <p class="site-header__intro">A financial product designer and UX enthusiast shaping the brands, websites, and products of the world's most ambitious financial companies.</p>
+        </div>
         </div>
         <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
             <div class="site-header__nav-pills" id="header-nav-pills">
@@ -1676,9 +1824,6 @@
                 </div>
             </div>
         </nav>
-        <div class="site-header__meta">
-            <p class="site-header__intro">A financial product designer and UX enthusiast shaping the brands, websites, and products of the world's most ambitious financial companies.</p>
-        </div>
     </header>
 
     <section class="carousel-section" aria-label="Featured projects">
