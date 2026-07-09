@@ -251,65 +251,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            flex-wrap: nowrap;
-        }
-
-        .social-stack {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .social-stack__toggle {
-            flex-shrink: 0;
-        }
-
-        .social-stack__menu {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow: hidden;
-            max-width: 0;
-            opacity: 0;
-            margin-left: 0;
-            pointer-events: none;
-            transition:
-                max-width 0.38s cubic-bezier(0.32, 0.72, 0, 1),
-                opacity 0.28s ease,
-                margin-left 0.38s cubic-bezier(0.32, 0.72, 0, 1);
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-            .social-stack:hover .social-stack__menu,
-            .social-stack:focus-within .social-stack__menu {
-                max-width: 520px;
-                opacity: 1;
-                margin-left: 8px;
-                pointer-events: auto;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .social-stack__menu {
-                position: absolute;
-                bottom: calc(100% + 8px);
-                left: 0;
-                flex-direction: column;
-                align-items: flex-start;
-                max-width: none;
-                width: max-content;
-                margin-left: 0;
-                visibility: hidden;
-                transform: translateY(6px);
-                transition: opacity 0.22s ease, transform 0.28s ease, visibility 0.22s;
-            }
-
-            .social-stack.is-open .social-stack__menu {
-                opacity: 1;
-                visibility: visible;
-                pointer-events: auto;
-                transform: translateY(0);
-            }
+            flex-wrap: wrap;
         }
 
         .bottom-bar__music {
@@ -943,10 +885,162 @@
             grid-column: 2;
             grid-row: 1;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
+            justify-content: flex-end;
             gap: 16px;
             flex-shrink: 0;
             align-self: start;
+            position: relative;
+        }
+
+        .site-header__nav-pills {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: opacity 0.22s ease, visibility 0.22s ease;
+        }
+
+        .site-header__nav.is-menu-open .site-header__nav-pills {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+        }
+
+        .nav-dot-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            background: var(--bg-cream);
+            border: none;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: opacity 0.18s ease;
+        }
+
+        .nav-dot-btn:hover {
+            opacity: 0.75;
+        }
+
+        .nav-dot-btn .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--brand);
+            flex-shrink: 0;
+        }
+
+        .header-nav-menu {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: min(220px, calc(100vw - 48px));
+            min-height: 280px;
+            background: var(--bg-cream);
+            border-radius: 16px;
+            padding: 12px 12px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(-6px) scale(0.98);
+            transform-origin: top right;
+            transition:
+                opacity 0.26s ease,
+                visibility 0.26s ease,
+                transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 5;
+        }
+
+        .site-header__nav.is-menu-open .header-nav-menu {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+
+        .header-nav-menu__top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .header-nav-menu__links {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            align-items: flex-start;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .header-nav-menu__links a,
+        .header-nav-menu__links button {
+            font-family: var(--font-display);
+            font-size: 20px;
+            line-height: 28px;
+            font-weight: 500;
+            color: #1e40af;
+            text-decoration: none;
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+            text-align: left;
+            transition: opacity 0.18s ease;
+        }
+
+        .header-nav-menu__links a:hover,
+        .header-nav-menu__links button:hover {
+            opacity: 0.72;
+        }
+
+        .header-nav-menu__close {
+            width: 28px;
+            height: 28px;
+            border-radius: 35px;
+            border: none;
+            background: #e4e4e7;
+            color: #1e40af;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            padding: 0;
+            transition: opacity 0.18s ease;
+        }
+
+        .header-nav-menu__close:hover {
+            opacity: 0.8;
+        }
+
+        .header-nav-menu__close svg {
+            width: 12px;
+            height: 12px;
+            display: block;
+        }
+
+        .header-nav-menu__clock {
+            font-family: var(--font-body);
+            font-size: 20px;
+            line-height: 24px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        .header-nav-menu__tz {
+            color: rgba(26, 26, 26, 0.36);
         }
 
         .site-header__meta {
@@ -982,13 +1076,6 @@
             line-height: 1.43;
             font-weight: 400;
             color: var(--text-primary);
-        }
-
-        .site-header__nav {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-shrink: 0;
         }
 
         /* ── Carousel (WebGPU-style) ── */
@@ -2099,19 +2186,15 @@
          Bottom social + play bar
          ════════════════════════════════ -->
     <div id="bottom-bar">
-        <div class="bottom-bar__socials social-stack" aria-label="Social links">
-            <button type="button" class="social-stack__toggle pill pill--cream pill--muted" aria-expanded="false"
-                aria-controls="social-stack-menu">Social</button>
-            <div class="social-stack__menu" id="social-stack-menu" aria-hidden="true">
-                <a class="social-pill pill pill--cream pill--muted" href="https://linkedin.com/in/ismxil" target="_blank"
-                    rel="noopener">LinkedIn</a>
-                <a class="social-pill pill pill--cream pill--muted" href="https://github.com/ismxil" target="_blank"
-                    rel="noopener">Github</a>
-                <a class="social-pill pill pill--cream pill--muted" href="https://www.behance.net/ismxil" target="_blank"
-                    rel="noopener">Behance</a>
-                <a class="social-pill pill pill--cream pill--muted" href="https://instagram.com/ismxilahmad"
-                    target="_blank" rel="noopener">Instagram</a>
-            </div>
+        <div class="bottom-bar__socials" aria-label="Social links">
+            <a class="social-pill pill pill--cream pill--muted" href="https://linkedin.com/in/ismxil" target="_blank"
+                rel="noopener">LinkedIn</a>
+            <a class="social-pill pill pill--cream pill--muted" href="https://github.com/ismxil" target="_blank"
+                rel="noopener">Github</a>
+            <a class="social-pill pill pill--cream pill--muted" href="https://www.behance.net/ismxil" target="_blank"
+                rel="noopener">Behance</a>
+            <a class="social-pill pill pill--cream pill--muted" href="https://instagram.com/ismxilahmad"
+                target="_blank" rel="noopener">Instagram</a>
         </div>
         <div class="bottom-bar__music" aria-label="Music controls">
             <button id="play-btn" aria-label="Play / Pause music">
@@ -2218,10 +2301,37 @@
                 <img src="assets/logo.svg" alt="" class="site-header__logo" width="54" height="54">
             </div>
         </div>
-        <nav class="site-header__nav" aria-label="Site navigation">
-            <a class="pill pill--cream" href="feeds.html">Feeds</a>
-            <a class="pill pill--cream" href="insights.html">Insights</a>
-            <button type="button" class="pill pill--cream pill--dot" id="more-btn">More<span class="dot" aria-hidden="true"></span></button>
+        <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
+            <div class="site-header__nav-pills" id="header-nav-pills">
+                <a class="pill pill--cream nav-pill-feeds" href="feeds.html">Feeds</a>
+                <a class="pill pill--cream nav-pill-insights" href="insights.html">Insights</a>
+                <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
+                    aria-controls="header-nav-menu" aria-label="Open menu">
+                    <span class="dot" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
+                <div class="header-nav-menu__top">
+                    <div class="header-nav-menu__links">
+                        <a href="index.html">Index</a>
+                        <button type="button" id="nav-menu-about">About</button>
+                        <a href="insights.html">Insights</a>
+                        <a href="feeds.html">Feeds</a>
+                        <button type="button" id="nav-menu-contact">Contact</button>
+                    </div>
+                    <button type="button" class="header-nav-menu__close" id="header-nav-menu-close" aria-label="Close menu">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
+                    <span id="nav-clock-month"></span><br>
+                    <span id="nav-clock-weekday"></span><br>
+                    <span id="nav-clock-time"></span><br>
+                    <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
+                </div>
+            </div>
         </nav>
         <div class="site-header__meta">
             <p class="site-header__intro">A financial product designer and UX enthusiast shaping the brands, websites, and products of the world's most ambitious financial companies.</p>
@@ -2836,34 +2946,6 @@
         musicPopover.addEventListener('mouseenter', showMusicPopover);
         musicPopover.addEventListener('mouseleave', hideMusicPopoverSoon);
 
-        (function initSocialStack() {
-            var socialStack = document.querySelector('.social-stack');
-            if (!socialStack) return;
-            var toggle = socialStack.querySelector('.social-stack__toggle');
-            var menu = socialStack.querySelector('.social-stack__menu');
-            var mq = window.matchMedia('(max-width: 768px)');
-
-            function setExpanded(open) {
-                socialStack.classList.toggle('is-open', open);
-                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-                if (menu) menu.setAttribute('aria-hidden', open ? 'false' : 'true');
-            }
-
-            toggle.addEventListener('click', function () {
-                if (!mq.matches) return;
-                setExpanded(!socialStack.classList.contains('is-open'));
-            });
-
-            document.addEventListener('click', function (e) {
-                if (!mq.matches || !socialStack.classList.contains('is-open')) return;
-                if (!socialStack.contains(e.target)) setExpanded(false);
-            });
-
-            mq.addEventListener('change', function () {
-                setExpanded(false);
-            });
-        })();
-
         // ── Enter with sound ──
         document.getElementById('enter-sound').addEventListener('click', function () {
             startMusic();
@@ -2926,7 +3008,91 @@
         // Header actions — contact panel, no iframe modals
         // ────────────────────────────────
         document.getElementById('about-btn').addEventListener('click', openContactPanel);
-        document.getElementById('more-btn').addEventListener('click', openContactPanel);
+
+        (function initHeaderNavMenu() {
+            var nav = document.getElementById('site-header-nav');
+            var moreBtn = document.getElementById('more-btn');
+            var menu = document.getElementById('header-nav-menu');
+            var closeBtn = document.getElementById('header-nav-menu-close');
+            var monthEl = document.getElementById('nav-clock-month');
+            var weekdayEl = document.getElementById('nav-clock-weekday');
+            var timeEl = document.getElementById('nav-clock-time');
+            var tzEl = document.getElementById('nav-clock-tz');
+            var clockTimer = null;
+
+            if (!nav || !moreBtn || !menu) return;
+
+            function updateClock() {
+                var now = new Date();
+                monthEl.textContent = now.toLocaleString(undefined, { month: 'long' });
+                weekdayEl.textContent = now.toLocaleString(undefined, { weekday: 'long' });
+                timeEl.textContent = now.toLocaleString(undefined, {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+                var parts = new Intl.DateTimeFormat(undefined, {
+                    timeZoneName: 'short'
+                }).formatToParts(now);
+                var tzName = '';
+                for (var i = 0; i < parts.length; i++) {
+                    if (parts[i].type === 'timeZoneName') {
+                        tzName = parts[i].value;
+                        break;
+                    }
+                }
+                tzEl.textContent = tzName || Intl.DateTimeFormat().resolvedOptions().timeZone;
+            }
+
+            function setMenuOpen(open) {
+                nav.classList.toggle('is-menu-open', open);
+                moreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+                if (open) {
+                    updateClock();
+                    if (!clockTimer) clockTimer = setInterval(updateClock, 1000);
+                    closeBtn.focus();
+                } else if (clockTimer) {
+                    clearInterval(clockTimer);
+                    clockTimer = null;
+                }
+            }
+
+            moreBtn.addEventListener('click', function () {
+                setMenuOpen(true);
+            });
+
+            closeBtn.addEventListener('click', function () {
+                setMenuOpen(false);
+                moreBtn.focus();
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && nav.classList.contains('is-menu-open')) {
+                    e.preventDefault();
+                    setMenuOpen(false);
+                    moreBtn.focus();
+                }
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!nav.classList.contains('is-menu-open')) return;
+                if (nav.contains(e.target)) return;
+                setMenuOpen(false);
+            });
+
+            document.getElementById('nav-menu-about').addEventListener('click', function () {
+                setMenuOpen(false);
+                openContactPanel();
+            });
+
+            document.getElementById('nav-menu-contact').addEventListener('click', function () {
+                setMenuOpen(false);
+                openContactPanel();
+            });
+
+            updateClock();
+        })();
 
         // Carousel slots — Figma card sizes and colors
         var carouselSlots = [
@@ -3112,7 +3278,7 @@
                 desc: 'A mobile banking design effort for Commerz Bank focused on research, audit, and app experience improvements across key banking flows.',
                 brief: 'Banking app research, audit, and redesign',
                 url: 'https://commerzbank.com',
-                images: [{ color: '#d8d8d8', label: 'Commerz Bank' }],
+                images: [{ color: '#d8d8d8', label: 'Commerzbank' }],
                 details: [
                     { title: 'Services', items: ['Competitor Research', 'Design Audit', 'App Design'] },
                     { title: 'Industries', items: ['Business Banking', 'Financial Services'] },
