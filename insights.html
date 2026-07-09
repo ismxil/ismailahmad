@@ -261,16 +261,17 @@
         }
 
         .page-footer {
-            width: min(1334px, 100%);
-            margin: clamp(56px, 8vh, 96px) auto 0;
-            display: flex;
-            justify-content: flex-end;
+            position: fixed;
+            bottom: 20px;
+            right: 24px;
+            z-index: 45;
+            pointer-events: none;
         }
 
         .home-logo {
             display: block;
-            width: clamp(56px, 7vw, 78px);
-            height: clamp(56px, 7vw, 78px);
+            width: 44px;
+            height: 44px;
             border: none;
             background: transparent;
             padding: 0;
@@ -278,6 +279,7 @@
             text-decoration: none;
             border-radius: 50%;
             transition: transform 0.25s ease, opacity 0.25s ease;
+            pointer-events: auto;
         }
 
         .home-logo:hover {
