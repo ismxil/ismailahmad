@@ -1,12 +1,14 @@
 import gsap from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/+esm';
 
+const ASPECTS = [1.2, 0.82, 1.05, 0.72, 1.28, 0.9, 1.15, 0.78, 1.35, 0.88];
+
 export default class InfiniteGrid {
-  constructor({ el, sources, data, originalSize, onItemClick }) {
+  constructor({ el, sources, onItemClick, gap = 56, captionSpace = 76 }) {
     this.$container = el;
     this.sources = sources;
-    this.data = data;
-    this.originalSize = originalSize;
     this.onItemClick = onItemClick || null;
+    this.gap = gap;
+    this.captionSpace = captionSpace;
 
     this.scroll = {
       ease: 0.06,
@@ -17,33 +19,19 @@ export default class InfiniteGrid {
     };
 
     this.isDisabled = false;
-
-    this.mouse = {
-      x: { t: 0.5, c: 0.5 },
-      y: { t: 0.5, c: 0.5 },
-    };
-
     this.items = [];
     this.introItems = [];
 
     this.onResize = this.onResize.bind(this);
     this.onWheel = this.onWheel.bind(this);
-    this.onPointerMove = this.onPointerMove.bind(this);
     this.render = this.render.bind(this);
     this.onModalOpen = () => { this.isDisabled = true; };
     this.onModalClose = () => { this.isDisabled = false; };
 
     window.addEventListener('resize', this.onResize);
     window.addEventListener('wheel', this.onWheel, { passive: false });
-    window.addEventListener('pointermove', this.onPointerMove);
     window.addEventListener('feed-modal-open', this.onModalOpen);
     window.addEventListener('feed-modal-close', this.onModalClose);
-
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        entry.target.classList.toggle('visible', entry.isIntersecting);
-      });
-    });
 
     this.onResize();
     this.render();
@@ -51,31 +39,81 @@ export default class InfiniteGrid {
     this.intro();
   }
 
+  getColumns() {
+    if (this.winW >= 1280) return 3;
+    if (this.winW >= 768) return 2;
+    return 1;
+  }
+
+  getPadding() {
+    return Math.max(28, Math.round(this.winW * 0.045));
+  }
+
+  buildMasonry() {
+    const columns = this.getColumns();
+    const padding = this.getPadding();
+    const layoutW = this.winW - padding * 2;
+    const colWidth = (layoutW - this.gap * (columns - 1)) / columns;
+    const colHeights = Array.from({ length: columns }, () => padding);
+    const placed = [];
+
+    this.sources.forEach((source, index) => {
+      let column = 0;
+      let minHeight = colHeights[0];
+      for (let c = 1; c < columns; c += 1) {
+        if (colHeights[c] < minHeight) {
+          minHeight = colHeights[c];
+          column = c;
+        }
+      }
+
+      const aspect = ASPECTS[index % ASPECTS.length];
+      const imageH = colWidth / aspect;
+      const x = padding + column * (colWidth + this.gap);
+      const y = colHeights[column];
+
+      placed.push({
+        source,
+        x,
+        y,
+        w: colWidth,
+        h: imageH,
+        blockH: imageH + this.captionSpace,
+      });
+
+      colHeights[column] = y + imageH + this.captionSpace + this.gap;
+    });
+
+    const totalH = Math.max(...colHeights) + padding;
+
+    return {
+      items: placed,
+      originalSize: { w: this.winW, h: totalH },
+    };
+  }
+
   initIntro() {
-    this.introItems = [...this.$container.querySelectorAll('.feed-grid__item-wrapper')].filter((item) => {
+    this.introItems = [...this.$container.querySelectorAll('.feed-grid__item')].filter((item) => {
       const rect = item.getBoundingClientRect();
       return (
-        rect.x > -rect.width &&
-        rect.x < window.innerWidth + rect.width &&
-        rect.y > -rect.height &&
-        rect.y < window.innerHeight + rect.height
+        rect.x > -rect.width
+        && rect.x < window.innerWidth + rect.width
+        && rect.y > -rect.height
+        && rect.y < window.innerHeight + rect.height
       );
     });
+
     this.introItems.forEach((item) => {
-      const rect = item.getBoundingClientRect();
-      const x = -rect.x + window.innerWidth * 0.5 - rect.width * 0.5;
-      const y = -rect.y + window.innerHeight * 0.5 - rect.height * 0.5;
-      gsap.set(item, { x, y });
+      gsap.set(item, { opacity: 0 });
     });
   }
 
   intro() {
     if (!this.introItems.length) return;
-    gsap.to([...this.introItems].reverse(), {
-      duration: 1.6,
-      ease: 'expo.inOut',
-      x: 0,
-      y: 0,
+    gsap.to(this.introItems, {
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power2.out',
       stagger: 0.04,
     });
   }
@@ -83,6 +121,9 @@ export default class InfiniteGrid {
   onResize() {
     this.winW = window.innerWidth;
     this.winH = window.innerHeight;
+
+    const { items, originalSize } = this.buildMasonry();
+    this.originalSize = originalSize;
 
     this.tileSize = {
       w: this.winW,
@@ -94,33 +135,21 @@ export default class InfiniteGrid {
     this.scroll.last = { x: 0, y: 0 };
 
     this.$container.innerHTML = '';
-
-    const baseItems = this.data.map((d, i) => {
-      const scaleX = this.tileSize.w / this.originalSize.w;
-      const scaleY = this.tileSize.h / this.originalSize.h;
-      return {
-        slotIndex: i,
-        x: d.x * scaleX,
-        y: d.y * scaleY,
-        w: d.w * scaleX,
-        h: d.h * scaleY,
-      };
-    });
-
     this.items = [];
+
     const repsX = [0, this.tileSize.w];
     const repsY = [0, this.tileSize.h];
-    const slotsPerTile = this.data.length;
 
-    baseItems.forEach((base) => {
+    items.forEach((item, slotIndex) => {
       repsX.forEach((offsetX, repX) => {
         repsY.forEach((offsetY, repY) => {
           const repIndex = repX + repY * repsX.length;
-          const source = this.sources[(base.slotIndex + repIndex * slotsPerTile) % this.sources.length];
+          const source = this.sources[(slotIndex + repIndex * items.length) % this.sources.length];
+
           const el = document.createElement('button');
           el.type = 'button';
           el.classList.add('feed-grid__item');
-          el.style.width = `${base.w}px`;
+          el.style.width = `${item.w}px`;
           el.dataset.feedIndex = String(source.feedIndex);
           el.setAttribute('aria-label', 'Open project details');
 
@@ -130,8 +159,8 @@ export default class InfiniteGrid {
 
           const itemImage = document.createElement('div');
           itemImage.classList.add('feed-grid__item-image');
-          itemImage.style.width = `${base.w}px`;
-          itemImage.style.height = `${base.h}px`;
+          itemImage.style.width = `${item.w}px`;
+          itemImage.style.height = `${item.h}px`;
           wrapper.appendChild(itemImage);
 
           const img = document.createElement('img');
@@ -142,10 +171,9 @@ export default class InfiniteGrid {
           itemImage.appendChild(img);
 
           const caption = document.createElement('small');
-          caption.classList.add('feed-grid__caption');
+          caption.classList.add('feed-grid__caption', 'visible');
           caption.innerHTML = source.caption;
           wrapper.appendChild(caption);
-          this.observer.observe(caption);
 
           el.addEventListener('click', (e) => {
             if (this.isDisabled || !this.onItemClick) return;
@@ -157,18 +185,13 @@ export default class InfiniteGrid {
 
           this.items.push({
             el,
-            container: itemImage,
-            wrapper,
-            img,
             feedIndex: source.feedIndex,
-            x: base.x + offsetX,
-            y: base.y + offsetY,
-            w: base.w,
-            h: base.h,
+            x: item.x + offsetX,
+            y: item.y + offsetY,
+            w: item.w,
+            blockH: item.blockH,
             extraX: 0,
             extraY: 0,
-            rect: el.getBoundingClientRect(),
-            ease: Math.random() * 0.5 + 0.5,
           });
         });
       });
@@ -177,21 +200,16 @@ export default class InfiniteGrid {
     this.tileSize.w *= 2;
     this.tileSize.h *= 2;
 
-    this.scroll.current.x = this.scroll.target.x = this.scroll.last.x = -this.winW * 0.1;
-    this.scroll.current.y = this.scroll.target.y = this.scroll.last.y = -this.winH * 0.1;
+    this.scroll.current.x = this.scroll.target.x = this.scroll.last.x = 0;
+    this.scroll.current.y = this.scroll.target.y = this.scroll.last.y = -this.winH * 0.04;
   }
 
   onWheel(e) {
     if (this.isDisabled) return;
     e.preventDefault();
-    const factor = 0.55;
+    const factor = 0.65;
     this.scroll.target.x -= e.deltaX * factor;
     this.scroll.target.y -= e.deltaY * factor;
-  }
-
-  onPointerMove(e) {
-    this.mouse.x.t = e.clientX / this.winW;
-    this.mouse.y.t = e.clientY / this.winH;
   }
 
   render() {
@@ -202,35 +220,29 @@ export default class InfiniteGrid {
     this.scroll.delta.y.t = this.scroll.current.y - this.scroll.last.y;
     this.scroll.delta.x.c += (this.scroll.delta.x.t - this.scroll.delta.x.c) * 0.04;
     this.scroll.delta.y.c += (this.scroll.delta.y.t - this.scroll.delta.y.c) * 0.04;
-    this.mouse.x.c += (this.mouse.x.t - this.mouse.x.c) * 0.04;
-    this.mouse.y.c += (this.mouse.y.t - this.mouse.y.c) * 0.04;
 
     const dirX = this.scroll.current.x > this.scroll.last.x ? 'right' : 'left';
     const dirY = this.scroll.current.y > this.scroll.last.y ? 'down' : 'up';
 
     this.items.forEach((item) => {
-      const newX = 5 * this.scroll.delta.x.c * item.ease + (this.mouse.x.c - 0.5) * item.rect.width * 0.35;
-      const newY = 5 * this.scroll.delta.y.c * item.ease + (this.mouse.y.c - 0.5) * item.rect.height * 0.35;
       const scrollX = this.scroll.current.x;
       const scrollY = this.scroll.current.y;
-      const posX = item.x + scrollX + item.extraX + newX;
-      const posY = item.y + scrollY + item.extraY + newY;
+      const posX = item.x + scrollX + item.extraX;
+      const posY = item.y + scrollY + item.extraY;
 
       const beforeX = posX > this.winW;
-      const afterX = posX + item.rect.width < 0;
+      const afterX = posX + item.w < 0;
       if (dirX === 'right' && beforeX) item.extraX -= this.tileSize.w;
       if (dirX === 'left' && afterX) item.extraX += this.tileSize.w;
 
       const beforeY = posY > this.winH;
-      const afterY = posY + item.rect.height < 0;
+      const afterY = posY + item.blockH < 0;
       if (dirY === 'down' && beforeY) item.extraY -= this.tileSize.h;
       if (dirY === 'up' && afterY) item.extraY += this.tileSize.h;
 
-      const fx = item.x + scrollX + item.extraX + newX;
-      const fy = item.y + scrollY + item.extraY + newY;
-      item.el.style.transform = `translate(${fx}px, ${fy}px)`;
-      item.el.style.zIndex = String(Math.round(fy));
-      item.img.style.transform = `scale(1.2) translate(${-this.mouse.x.c * item.ease * 8}%, ${-this.mouse.y.c * item.ease * 8}%)`;
+      const fx = item.x + scrollX + item.extraX;
+      const fy = item.y + scrollY + item.extraY;
+      item.el.style.transform = `translate3d(${fx}px, ${fy}px, 0)`;
     });
 
     this.scroll.last.x = this.scroll.current.x;
@@ -243,9 +255,7 @@ export default class InfiniteGrid {
     cancelAnimationFrame(this._raf);
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('wheel', this.onWheel);
-    window.removeEventListener('pointermove', this.onPointerMove);
     window.removeEventListener('feed-modal-open', this.onModalOpen);
     window.removeEventListener('feed-modal-close', this.onModalClose);
-    this.observer.disconnect();
   }
 }
