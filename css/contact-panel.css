@@ -24,7 +24,8 @@
     width: 326px;
     max-width: calc(100vw - 48px);
     max-height: calc(100vh - 100px);
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     background: #1e40af;
     border-radius: 17px;
     padding: 26px 13px 17px;
@@ -118,6 +119,7 @@
     width: 100%;
     min-height: 220px;
     margin: 0 auto;
+    overflow: hidden;
 }
 
 .contact-polaroid {
@@ -163,9 +165,9 @@
 }
 
 .contact-polaroid--coffee {
-    right: 8px;
+    right: 16px;
     top: 36px;
-    width: 103px;
+    width: 96px;
     transform: rotate(23deg);
     z-index: 2;
 }
@@ -180,6 +182,7 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: 16px;
+    min-width: 0;
 }
 
 .contact-modal__links {
