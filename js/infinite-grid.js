@@ -98,11 +98,8 @@ export default class InfiniteGrid {
     const baseItems = this.data.map((d, i) => {
       const scaleX = this.tileSize.w / this.originalSize.w;
       const scaleY = this.tileSize.h / this.originalSize.h;
-      const source = this.sources[i % this.sources.length];
       return {
-        src: source.src,
-        caption: source.caption,
-        feedIndex: source.feedIndex,
+        slotIndex: i,
         x: d.x * scaleX,
         y: d.y * scaleY,
         w: d.w * scaleX,
@@ -113,15 +110,18 @@ export default class InfiniteGrid {
     this.items = [];
     const repsX = [0, this.tileSize.w];
     const repsY = [0, this.tileSize.h];
+    const slotsPerTile = this.data.length;
 
     baseItems.forEach((base) => {
-      repsX.forEach((offsetX) => {
-        repsY.forEach((offsetY) => {
+      repsX.forEach((offsetX, repX) => {
+        repsY.forEach((offsetY, repY) => {
+          const repIndex = repX + repY * repsX.length;
+          const source = this.sources[(base.slotIndex + repIndex * slotsPerTile) % this.sources.length];
           const el = document.createElement('button');
           el.type = 'button';
           el.classList.add('feed-grid__item');
           el.style.width = `${base.w}px`;
-          el.dataset.feedIndex = String(base.feedIndex);
+          el.dataset.feedIndex = String(source.feedIndex);
           el.setAttribute('aria-label', 'Open project details');
 
           const wrapper = document.createElement('div');
@@ -135,7 +135,7 @@ export default class InfiniteGrid {
           wrapper.appendChild(itemImage);
 
           const img = document.createElement('img');
-          img.src = base.src;
+          img.src = source.src;
           img.alt = '';
           img.loading = 'lazy';
           img.draggable = false;
@@ -143,14 +143,14 @@ export default class InfiniteGrid {
 
           const caption = document.createElement('small');
           caption.classList.add('feed-grid__caption');
-          caption.innerHTML = base.caption;
+          caption.innerHTML = source.caption;
           wrapper.appendChild(caption);
           this.observer.observe(caption);
 
           el.addEventListener('click', (e) => {
             if (this.isDisabled || !this.onItemClick) return;
             e.stopPropagation();
-            this.onItemClick(base.feedIndex);
+            this.onItemClick(source.feedIndex);
           });
 
           this.$container.appendChild(el);
@@ -160,7 +160,7 @@ export default class InfiniteGrid {
             container: itemImage,
             wrapper,
             img,
-            feedIndex: base.feedIndex,
+            feedIndex: source.feedIndex,
             x: base.x + offsetX,
             y: base.y + offsetY,
             w: base.w,
@@ -229,6 +229,7 @@ export default class InfiniteGrid {
       const fx = item.x + scrollX + item.extraX + newX;
       const fy = item.y + scrollY + item.extraY + newY;
       item.el.style.transform = `translate(${fx}px, ${fy}px)`;
+      item.el.style.zIndex = String(Math.round(fy));
       item.img.style.transform = `scale(1.2) translate(${-this.mouse.x.c * item.ease * 8}%, ${-this.mouse.y.c * item.ease * 8}%)`;
     });
 

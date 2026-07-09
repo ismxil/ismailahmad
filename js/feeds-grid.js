@@ -9,8 +9,6 @@ import { getFeedItems, loadFeedItems } from './feed-items.js';
 
 const VISUAL_SCALE = 4;
 const ITEM_GAP = 64;
-// Render tiles larger than the Codrops default (smaller originalSize → bigger on screen)
-const SIZE_BOOST = 1.55;
 
 const BASE_LAYOUT = [
   { x: 71, y: 58, w: 400, h: 270 },
@@ -24,33 +22,26 @@ const BASE_LAYOUT = [
   { x: 71, y: 922, w: 350, h: 260 },
 ];
 
-// One repeating tile unit — used for screen scaling (matches Codrops tutorial)
-const UNIT_W = 1522 * VISUAL_SCALE + ITEM_GAP * 2;
-const UNIT_H = 1238 * VISUAL_SCALE + ITEM_GAP * 2;
-const TILES_PER_ROW = 3;
+// Codrops layout bounds (one repeating tile)
+const LAYOUT_W = 1522;
+const LAYOUT_H = 1238;
+const UNIT_W = LAYOUT_W * VISUAL_SCALE + ITEM_GAP * 2;
+const UNIT_H = LAYOUT_H * VISUAL_SCALE + ITEM_GAP * 2;
 
-function buildLayout(count) {
-  const data = [];
-  for (let i = 0; i < count; i++) {
-    const base = BASE_LAYOUT[i % BASE_LAYOUT.length];
-    const block = Math.floor(i / BASE_LAYOUT.length);
-    const blockCol = block % TILES_PER_ROW;
-    const blockRow = Math.floor(block / TILES_PER_ROW);
-    data.push({
-      x: base.x * VISUAL_SCALE + ITEM_GAP + blockCol * UNIT_W,
-      y: base.y * VISUAL_SCALE + ITEM_GAP + blockRow * UNIT_H,
-      w: base.w * VISUAL_SCALE,
-      h: base.h * VISUAL_SCALE,
-    });
-  }
+/** One tile of positioned slots — infinite-grid repeats this via repsX/repsY */
+function buildTileData() {
+  return BASE_LAYOUT.map((base) => ({
+    x: base.x * VISUAL_SCALE + ITEM_GAP,
+    y: base.y * VISUAL_SCALE + ITEM_GAP,
+    w: base.w * VISUAL_SCALE,
+    h: base.h * VISUAL_SCALE,
+  }));
+}
 
+function buildOriginalSize() {
   return {
-    data,
-    // One repeating unit for scaling — not the full multi-block canvas (which shrinks tiles)
-    originalSize: {
-      w: UNIT_W / SIZE_BOOST,
-      h: UNIT_H / SIZE_BOOST,
-    },
+    w: UNIT_W,
+    h: UNIT_H,
   };
 }
 
@@ -73,7 +64,8 @@ export async function initFeedsGrid(container) {
   const items = getFeedItems();
   if (!items.length) return null;
 
-  const { data, originalSize } = buildLayout(items.length);
+  const data = buildTileData();
+  const originalSize = buildOriginalSize();
   const sources = buildSources(items);
 
   return new InfiniteGrid({
