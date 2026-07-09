@@ -20,18 +20,8 @@
         }
     ];
 
-    function clamp(v, min, max) {
-        return Math.max(min, Math.min(max, v));
-    }
-
-    function lerp(a, b, t) {
-        return a + (b - a) * t;
-    }
-
     window.initMusicPlayer = function () {
         var audio = document.getElementById('site-audio');
-        var glow = document.getElementById('music-glow');
-        var glowImg = document.getElementById('music-glow-bg');
         var player = document.getElementById('music-player');
         var playBtn = document.getElementById('play-btn');
         var iconPlay = document.getElementById('icon-play');
@@ -46,21 +36,13 @@
         var mainIconPlay = document.getElementById('music-main-icon-play');
         var mainIconPause = document.getElementById('music-main-icon-pause');
 
-        if (!audio || !glow || !player || !playBtn) return null;
+        if (!audio || !player || !playBtn) return null;
 
         audio.preload = 'auto';
 
         var index = 0;
         var playing = false;
         var open = false;
-        var graphReady = false;
-        var audioCtx = null;
-        var analyser = null;
-        var sourceNode = null;
-        var freqData = null;
-        var rafId = null;
-        var smoothEnergy = 0;
-        var prevTotal = 0;
 
         function trackAt(i) {
             return TRACKS[((i % TRACKS.length) + TRACKS.length) % TRACKS.length];
@@ -112,86 +94,6 @@
             player.setAttribute('aria-hidden', open ? 'false' : 'true');
         }
 
-        function setGlow(next) {
-            glow.classList.toggle('is-active', next);
-            glow.setAttribute('aria-hidden', next ? 'false' : 'true');
-            if (next) startPulse();
-            else stopPulse();
-        }
-
-        function connectAudioGraph() {
-            if (graphReady) return true;
-            var Ctx = window.AudioContext || window.webkitAudioContext;
-            if (!Ctx) return false;
-            try {
-                audioCtx = new Ctx();
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 512;
-                analyser.smoothingTimeConstant = 0.72;
-                freqData = new Uint8Array(analyser.frequencyBinCount);
-                sourceNode = audioCtx.createMediaElementSource(audio);
-                sourceNode.connect(analyser);
-                sourceNode.connect(audioCtx.destination);
-                graphReady = true;
-                return true;
-            } catch (err) {
-                graphReady = false;
-                audioCtx = null;
-                analyser = null;
-                sourceNode = null;
-                freqData = null;
-                return false;
-            }
-        }
-
-        function resumeContext() {
-            if (!audioCtx) return Promise.resolve();
-            if (audioCtx.state === 'suspended') return audioCtx.resume();
-            return Promise.resolve();
-        }
-
-        function readEnergy() {
-            var t = performance.now() * 0.001;
-            var total = 0;
-            if (analyser && freqData && playing && !audio.paused) {
-                analyser.getByteFrequencyData(freqData);
-                var sum = 0;
-                for (var i = 0; i < freqData.length; i++) sum += freqData[i];
-                total = sum / freqData.length / 255;
-            } else if (playing) {
-                total = 0.22 + Math.sin(t * 2.4) * 0.1 + Math.sin(t * 5.3) * 0.05;
-            }
-            var beat = Math.max(0, total - prevTotal);
-            prevTotal = lerp(prevTotal, total, 0.35);
-            smoothEnergy = lerp(smoothEnergy, total + beat * 0.35, 0.14);
-            return smoothEnergy;
-        }
-
-        function pulseFrame() {
-            if (!glow.classList.contains('is-active') || !glowImg) {
-                rafId = null;
-                return;
-            }
-            var energy = readEnergy();
-            var scale = 1 + energy * 0.05;
-            var opacity = clamp(0.72 + energy * 0.22, 0.55, 0.96);
-            glowImg.style.transform = 'scale(' + scale.toFixed(3) + ')';
-            glow.style.opacity = String(opacity);
-            rafId = requestAnimationFrame(pulseFrame);
-        }
-
-        function startPulse() {
-            if (rafId) return;
-            rafId = requestAnimationFrame(pulseFrame);
-        }
-
-        function stopPulse() {
-            if (rafId) cancelAnimationFrame(rafId);
-            rafId = null;
-            if (glowImg) glowImg.style.transform = '';
-            glow.style.opacity = '';
-        }
-
         function currentAudioSrc() {
             var raw = audio.currentSrc || audio.src || '';
             if (!raw) return '';
@@ -216,16 +118,11 @@
         function beginPlayback() {
             setOpen(true);
             if (!audio.src) loadTrack(index);
-            connectAudioGraph();
-            return resumeContext().then(function () {
-                return audio.play();
-            }).then(function () {
+            return audio.play().then(function () {
                 playing = true;
-                setGlow(true);
                 updateUI();
             }).catch(function () {
                 playing = false;
-                setGlow(false);
                 updateUI();
                 return Promise.reject(new Error('Playback failed'));
             });
@@ -239,7 +136,6 @@
         function pause() {
             audio.pause();
             playing = false;
-            setGlow(false);
             updateUI();
         }
 
@@ -286,21 +182,18 @@
         audio.addEventListener('playing', function () {
             playing = true;
             setOpen(true);
-            setGlow(true);
             updateUI();
         });
 
         audio.addEventListener('pause', function () {
             if (!audio.ended) {
                 playing = false;
-                setGlow(false);
                 updateUI();
             }
         });
 
         audio.addEventListener('error', function () {
             playing = false;
-            setGlow(false);
             updateUI();
         });
 
