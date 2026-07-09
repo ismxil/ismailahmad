@@ -34,7 +34,7 @@ Each item in `items`:
 
 ## Add or change images
 
-1. Add JPG/PNG files to `assets/feeds/covers/`
+1. Add JPG/PNG files to `assets/feeds/` (e.g. `image_0.jpg`, `image_1.jpg`, …)
 2. Set each item's `cover` to that path
 3. Keep one JSON entry per card you want in the feed
 
