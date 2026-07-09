@@ -142,7 +142,7 @@ body.feed-modal-open {
     overflow: hidden;
 }
 
-body.feed-modal-open #feeds-webgl,
+body.feed-modal-open #feeds-grid-wrap,
 body.feed-modal-open .feeds-chrome {
     filter: blur(12px);
     transition: filter 0.32s ease;
