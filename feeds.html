@@ -10,10 +10,12 @@
     </script>
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/header-fluid.css">
+    <link rel="stylesheet" href="css/feed-modal.css">
     <style>
         :root {
             --brand: #393bfe;
             --text-primary: #09090b;
+            --text-tertiary: #71717a;
             --bg-white: #ffffff;
             --bg-cream: #f3f2ef;
             --font-display: 'Reckless', Georgia, serif;
@@ -46,6 +48,7 @@
             height: 100dvh;
             z-index: 0;
             touch-action: none;
+            transition: filter 0.32s ease;
         }
 
         .feeds-chrome {
@@ -217,12 +220,40 @@
         </footer>
     </div>
 
+    <div id="feed-modal-backdrop" class="feed-modal-backdrop" aria-hidden="true">
+        <div id="feed-modal" class="feed-modal" role="dialog" aria-modal="true" tabindex="-1">
+            <div class="feed-modal__grid">
+                <div id="feed-modal-hero" class="feed-modal__hero">
+                    <img id="feed-modal-hero-img" src="" alt="" />
+                    <button type="button" id="feed-modal-close" class="feed-modal__close" aria-label="Close project details">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="feed-modal__left">
+                    <div>
+                        <p id="feed-modal-client" class="feed-modal__client"></p>
+                        <h2 id="feed-modal-headline" class="feed-modal__headline"></h2>
+                    </div>
+                    <div>
+                        <p id="feed-modal-category" class="feed-modal__meta"></p>
+                        <p id="feed-modal-years" class="feed-modal__meta"></p>
+                    </div>
+                </div>
+                <p id="feed-modal-description" class="feed-modal__description"></p>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="js/feeds-visualizer.js"></script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
         import { initAllHeaderFluids } from './js/header-fluid.js';
+        import { initFeedModal } from './js/feed-modal.js';
         initBrandLogo3D(document.getElementById('feeds-logo-c'));
         initAllHeaderFluids();
+        initFeedModal();
     </script>
 </body>
 

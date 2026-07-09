@@ -4,9 +4,13 @@
  */
 
 import * as THREE from 'three';
+import { openFeedModal } from './feed-modal.js';
 
 const COVER_COUNT = 30;
 const MESH_COUNT = 400;
+const PLANE_WIDTH = 2;
+const PLANE_HEIGHT = 3.38;
+const CLICK_DRAG_THRESHOLD = 8;
 
 const vertexShader = `
 varying vec2 vUv;
@@ -98,6 +102,46 @@ function lerp(current, target, ease) {
   return current + (target - current) * ease;
 }
 
+function glslMod(x, y) {
+  return ((x % y) + y) % y;
+}
+
+function getInstanceCenter(i, planes) {
+  const initPos = planes.geometry.attributes.aInitialPosition;
+  const meshSpeed = planes.geometry.attributes.aMeshSpeed;
+  const ax = initPos.getX(i);
+  const ay = initPos.getY(i);
+  const az = initPos.getZ(i);
+  const speed = meshSpeed.getX(i);
+
+  const maxX = planes.shaderParameters.maxX;
+  const maxY = planes.shaderParameters.maxY;
+  const drag = planes.material.uniforms.uDrag.value;
+  const time = planes.material.uniforms.uTime.value;
+  const scrollY = planes.material.uniforms.uScrollY.value;
+
+  const maxYoffset = Math.abs(ay - maxY);
+  const minYoffset = Math.abs(ay + maxY);
+  const maxXoffset = Math.abs(ax - maxX);
+  const minXoffset = Math.abs(ax + maxX);
+
+  const xDisplacement = glslMod(minXoffset - drag.x + time * speed, maxXoffset + minXoffset) - minXoffset;
+  const yDisplacement = glslMod(minYoffset - drag.y, maxYoffset + minYoffset) - minYoffset;
+
+  const maxZ = 12.0;
+  const minZ = -30.0;
+  const maxZoffset = Math.abs(az - maxZ);
+  const minZoffset = Math.abs(az - minZ);
+  const zDisplacement = glslMod(scrollY + minZoffset, maxZoffset + minZoffset) - minZoffset;
+
+  return new THREE.Vector3(ax + xDisplacement, ay + yDisplacement, az + zDisplacement);
+}
+
+function getInstanceVisibility(worldZ) {
+  const minZ = -30.0;
+  return Math.max(0, Math.min(1, (worldZ - minZ) / 5.0));
+}
+
 class FeedsPlanes {
   constructor(scene, sizes) {
     this.scene = scene;
@@ -118,6 +162,7 @@ class FeedsPlanes {
     this.scrollY = { target: 0, current: 0 };
     this.dragSensitivity = 1;
     this.dragDamping = 0.1;
+    this.isModalOpen = false;
     this.shaderParameters = {
       maxX: sizes.width * 2,
       maxY: sizes.height * 2,
@@ -257,15 +302,20 @@ class FeedsPlanes {
   }
 
   bindDrag(element) {
+    const pointerStart = { x: 0, y: 0 };
+
     const onPointerDown = (e) => {
+      if (this.isModalOpen) return;
       this.drag.isDown = true;
       this.drag.lastX = e.clientX;
       this.drag.lastY = e.clientY;
+      pointerStart.x = e.clientX;
+      pointerStart.y = e.clientY;
       element.setPointerCapture(e.pointerId);
     };
 
     const onPointerMove = (e) => {
-      if (!this.drag.isDown) return;
+      if (!this.drag.isDown || this.isModalOpen) return;
       const dx = e.clientX - this.drag.lastX;
       const dy = e.clientY - this.drag.lastY;
       this.drag.lastX = e.clientX;
@@ -277,10 +327,21 @@ class FeedsPlanes {
     };
 
     const onPointerUp = (e) => {
+      const wasDown = this.drag.isDown;
       this.drag.isDown = false;
       try {
         element.releasePointerCapture(e.pointerId);
       } catch (_) {}
+
+      if (!wasDown || this.isModalOpen) return;
+
+      const moved = Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y);
+      if (moved > CLICK_DRAG_THRESHOLD) return;
+
+      const pick = this.pickInstance(e.clientX, e.clientY);
+      if (pick) {
+        openFeedModal(pick.imageIndex);
+      }
     };
 
     element.addEventListener('pointerdown', onPointerDown);
@@ -288,7 +349,60 @@ class FeedsPlanes {
     window.addEventListener('pointerup', onPointerUp);
   }
 
+  pickInstance(clientX, clientY) {
+    if (!this.imageInfos.length) return null;
+
+    const camera = this.camera;
+    const temp = new THREE.Vector3();
+    let best = null;
+
+    for (let i = 0; i < this.meshCount; i++) {
+      const center = getInstanceCenter(i, this);
+      const visibility = getInstanceVisibility(center.z);
+      if (visibility < 0.12) continue;
+
+      temp.copy(center);
+      temp.project(camera);
+
+      if (temp.z > 1) continue;
+
+      const screenX = (temp.x * 0.5 + 0.5) * window.innerWidth;
+      const screenY = (-temp.y * 0.5 + 0.5) * window.innerHeight;
+      const distance = camera.position.distanceTo(center);
+      const visibleHeight = 2 * Math.tan((camera.fov * Math.PI) / 180 / 2) * distance;
+      const screenH = (PLANE_HEIGHT / visibleHeight) * window.innerHeight;
+      const screenW = (PLANE_WIDTH / visibleHeight) * window.innerHeight;
+
+      const halfW = screenW * 0.5;
+      const halfH = screenH * 0.5;
+
+      if (
+        clientX < screenX - halfW ||
+        clientX > screenX + halfW ||
+        clientY < screenY - halfH ||
+        clientY > screenY + halfH
+      ) {
+        continue;
+      }
+
+      const imageIndex = i % this.imageInfos.length;
+      if (!best || center.z > best.center.z) {
+        best = { instanceId: i, imageIndex, center };
+      }
+    }
+
+    return best;
+  }
+
+  setModalOpen(isOpen) {
+    this.isModalOpen = isOpen;
+    if (isOpen) {
+      this.drag.isDown = false;
+    }
+  }
+
   onWheel(event) {
+    if (this.isModalOpen) return;
     event.preventDefault();
     const normalized = normalizeWheel(event);
     const scrollY = (normalized.pixelY * this.sizes.height) / window.innerHeight;
@@ -334,10 +448,17 @@ class FeedsVisualizer {
 
     this.sizes = this.getSizes();
     this.planes = new FeedsPlanes(this.scene, this.sizes);
+    this.planes.camera = this.camera;
     this.planes.bindDrag(this.renderer.domElement);
 
     this._onResize = this.onResize.bind(this);
     window.addEventListener('resize', this._onResize);
+
+    this._onModalOpen = () => this.planes.setModalOpen(true);
+    this._onModalClose = () => this.planes.setModalOpen(false);
+    window.addEventListener('feed-modal-open', this._onModalOpen);
+    window.addEventListener('feed-modal-close', this._onModalClose);
+
     this.animate();
   }
 
@@ -369,6 +490,8 @@ class FeedsVisualizer {
   destroy() {
     cancelAnimationFrame(this._raf);
     window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('feed-modal-open', this._onModalOpen);
+    window.removeEventListener('feed-modal-close', this._onModalClose);
     this.planes.dispose();
     this.renderer.dispose();
   }
