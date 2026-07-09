@@ -1,10 +1,17 @@
 /* About page — Figma node 213:475 */
 
 .about-page {
+    --about-pad: 24px;
+    --about-frame: min(991px, calc(100vw - 2 * var(--about-pad)));
+    --about-label: clamp(120px, 22vw, 320px);
+    --about-gap: 32px;
+    --about-side: max(var(--about-pad), calc((100vw - var(--about-frame)) / 2));
+    --about-content-start: calc(var(--about-side) + var(--about-label) + var(--about-gap));
+
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 25px 24px 0;
+    padding: 25px var(--about-pad) 0;
 }
 
 .about-topbar {
@@ -57,18 +64,31 @@
 .about-stack {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 120px;
-    width: min(1334px, 100%);
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
     flex: 1;
 }
 
-.about-intro {
-    width: min(999px, 100%);
+.about-section {
+    width: var(--about-frame);
+    margin-inline: auto;
     display: grid;
-    grid-template-columns: minmax(0, 2fr);
-    gap: 24px;
+    grid-template-columns: var(--about-label) minmax(0, 1fr);
+    gap: 16px var(--about-gap);
+    align-items: start;
+}
+
+.about-section__label--spacer {
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.about-section__content {
+    min-width: 0;
 }
 
 .about-intro__title {
@@ -81,17 +101,21 @@
 }
 
 .about-intro__lead {
-    margin: 0;
+    margin: 16px 0 0;
     font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
     font-size: clamp(22px, 2.8vw, 32px);
     line-height: 1.375;
     font-weight: 500;
     color: var(--text-secondary, #52525b);
-    max-width: 900px;
+}
+
+.about-gallery-breakout {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow: hidden;
 }
 
 .about-gallery {
-    width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
@@ -107,12 +131,14 @@
     display: flex;
     gap: 24px;
     width: max-content;
-    padding: 0 max(24px, calc((100vw - 999px) / 2));
+    min-width: 100%;
+    padding-left: var(--about-content-start);
+    padding-right: 0;
 }
 
 .about-gallery__item {
-    flex: 0 0 min(999px, calc(100vw - 48px));
-    height: clamp(280px, 42vw, 545px);
+    flex: 0 0 clamp(280px, 52vw, 640px);
+    height: clamp(240px, 36vw, 545px);
     border-radius: 32px;
     background: #e4e4e7;
     overflow: hidden;
@@ -123,18 +149,6 @@
     height: 100%;
     object-fit: cover;
     display: block;
-}
-
-.about-section {
-    width: min(991px, 100%);
-    display: grid;
-    grid-template-columns: minmax(120px, 320px) minmax(0, 1fr);
-    gap: 16px 32px;
-    align-items: start;
-}
-
-.about-section--wide {
-    width: min(1332px, 100%);
 }
 
 .about-section__label {
@@ -217,9 +231,8 @@
 }
 
 .about-cta {
-    width: min(999px, 100%);
-    margin-left: auto;
-    margin-right: auto;
+    width: var(--about-frame);
+    margin-inline: auto;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -333,10 +346,20 @@
     display: block;
 }
 
+@media (min-width: 1041px) {
+    .about-cards {
+        grid-column: 2 / -1;
+    }
+}
+
 @media (max-width: 1040px) {
     .about-section {
         grid-template-columns: 1fr;
         gap: 16px;
+    }
+
+    .about-section__label--spacer {
+        display: none;
     }
 
     .about-section__title {
@@ -344,6 +367,7 @@
     }
 
     .about-cards {
+        grid-column: 1 / -1;
         grid-template-columns: 1fr;
     }
 
@@ -351,11 +375,16 @@
         min-height: auto;
         gap: 32px;
     }
+
+    .about-gallery__track {
+        padding-left: var(--about-pad);
+    }
 }
 
 @media (max-width: 660px) {
     .about-page {
-        padding: 18px 16px 0;
+        --about-pad: 16px;
+        padding: 18px var(--about-pad) 0;
     }
 
     .about-panel {
@@ -373,6 +402,7 @@
 
     .about-gallery__item {
         border-radius: 24px;
+        flex-basis: min(85vw, 520px);
     }
 
     .about-footer {
