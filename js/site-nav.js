@@ -88,6 +88,10 @@
 
         if (contactMenuBtn) contactMenuBtn.addEventListener('click', openContactFromMenu);
 
+        document.querySelectorAll('[data-nav-home], .home-logo, .brand-home, .site-header__home').forEach(function (link) {
+            link.setAttribute('href', 'index.html');
+        });
+
         updateClock();
     };
 })();

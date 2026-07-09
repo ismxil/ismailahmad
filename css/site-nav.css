@@ -164,3 +164,14 @@
 .header-nav-menu__tz {
     color: rgba(26, 26, 26, 0.36);
 }
+
+.brand-home {
+    display: inline-flex;
+    color: inherit;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.brand-home img {
+    display: block;
+}

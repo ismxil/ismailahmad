@@ -39,5 +39,6 @@ export async function initFeedsGrid(container) {
 
 const container = document.getElementById('feeds-grid');
 if (container) {
-  initFeedsGrid(container);
+  const ready = window.siteReady ?? Promise.resolve();
+  ready.then(() => initFeedsGrid(container));
 }

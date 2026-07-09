@@ -14,6 +14,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
+    <script type="module" src="js/site-ready.js"></script>
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
@@ -394,6 +395,11 @@
             line-height: 0.95;
             letter-spacing: -1.2px;
             font-weight: 500;
+        }
+
+        .site-header__home {
+            color: inherit;
+            text-decoration: none;
         }
 
         .site-header__logo {
@@ -1782,10 +1788,12 @@
     <header id="site-header">
         <div class="site-header__lead">
         <div class="site-header__brand header-fluid" data-header-fluid>
+            <a class="site-header__home" href="index.html" aria-label="Back to homepage">
             <div class="header-fluid__content">
                 <h1>Ismail Ahmad</h1>
                 <img src="assets/logo.svg" alt="" class="site-header__logo" width="54" height="54">
             </div>
+            </a>
         </div>
         <div class="site-header__meta">
             <p class="site-header__intro">A financial product designer and UX enthusiast shaping the brands, websites, and products of the world's most ambitious financial companies.</p>
@@ -1804,7 +1812,7 @@
             <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
                 <div class="header-nav-menu__top">
                     <div class="header-nav-menu__links">
-                        <a href="index.html">Index</a>
+                        <a href="index.html" data-nav-home>Index</a>
                         <a href="about.html">About</a>
                         <a href="insights.html">Insights</a>
                         <a href="feeds.html">Feeds</a>
@@ -2067,7 +2075,6 @@
 
             // ── After intro: fade logo to ghost, reveal welcome UI ──
             intro.call(() => {
-                // Reduce logo to subtle ghost on white
                 gsap.to(mat, {
                     opacity: 0.32, duration: 1.3, ease: 'power2.out',
                     onStart: () => { mat.transparent = true; },
@@ -2082,7 +2089,7 @@
                 }, 600);
             }, [], 1.55);
 
-            // ── Continuous float + rotation (same as logo-3d.html) ──
+            // ── Continuous float + rotation ──
             const LOOP_DELAY = 1.85;
             gsap.to(group.position, { y: 4.5, duration: 2.9, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: LOOP_DELAY });
             gsap.to(group.rotation, { y: `+=${Math.PI * 2}`, duration: 11, repeat: -1, ease: 'none', delay: LOOP_DELAY });
@@ -2799,24 +2806,26 @@
             e.preventDefault();
         }, { capture: true, passive: false });
 
-        // WebGPU-style project carousel
-        import('./js/carousel.js').then(function (mod) {
-            var carousel = new mod.Carousel(
-                document.getElementById('project-carousel'),
-                carouselSlots,
-                {
-                    onActiveChange: function (i) { updateActiveDetail(i); },
-                    onSelect: function (i) {
-                        openModal(carouselSlots[i].cardIndex);
-                    },
-                }
-            );
-            carousel.start(2);
-            updateActiveDetail(2);
-        });
+        // WebGPU-style project carousel — after fonts are ready
+        (window.siteReady ?? Promise.resolve()).then(function () {
+            import('./js/carousel.js').then(function (mod) {
+                var carousel = new mod.Carousel(
+                    document.getElementById('project-carousel'),
+                    carouselSlots,
+                    {
+                        onActiveChange: function (i) { updateActiveDetail(i); },
+                        onSelect: function (i) {
+                            openModal(carouselSlots[i].cardIndex);
+                        },
+                    }
+                );
+                carousel.start(2);
+                updateActiveDetail(2);
+            });
 
-        import('./js/header-fluid.js').then(function (mod) {
-            mod.initAllHeaderFluids();
+            import('./js/header-fluid.js').then(function (mod) {
+                mod.initAllHeaderFluids();
+            });
         });
     </script>
 
