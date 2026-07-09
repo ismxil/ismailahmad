@@ -9,6 +9,7 @@ import { getFeedItems, loadFeedItems } from './feed-items.js';
 
 const MESH_COUNT = 400;
 const CLICK_DRAG_THRESHOLD = 18;
+const AUTO_SCROLL_SPEED = 0.05;
 
 const vertexShader = `
 varying vec2 vUv;
@@ -161,6 +162,7 @@ class FeedsPlanes {
     this.dragSensitivity = 1;
     this.dragDamping = 0.1;
     this.isModalOpen = false;
+    this.autoAnimate = true;
     this.shaderParameters = {
       maxX: sizes.width * 2,
       maxY: sizes.height * 2,
@@ -319,6 +321,10 @@ class FeedsPlanes {
     this.mesh.geometry.setAttribute('aTextureCoords', new THREE.InstancedBufferAttribute(aTextureCoords, 4));
   }
 
+  stopAutoAnimate() {
+    this.autoAnimate = false;
+  }
+
   bindDrag(element) {
     const pointerStart = { x: 0, y: 0 };
     let didDrag = false;
@@ -328,6 +334,7 @@ class FeedsPlanes {
 
     const onPointerDown = (e) => {
       if (this.isModalOpen) return;
+      this.stopAutoAnimate();
       this.drag.isDown = true;
       didDrag = false;
       this.drag.lastX = e.clientX;
@@ -339,6 +346,7 @@ class FeedsPlanes {
 
     const onPointerMove = (e) => {
       if (!this.drag.isDown || this.isModalOpen) return;
+      this.stopAutoAnimate();
       const dx = e.clientX - this.drag.lastX;
       const dy = e.clientY - this.drag.lastY;
       if (Math.abs(dx) > 1 || Math.abs(dy) > 1) didDrag = true;
@@ -417,12 +425,14 @@ class FeedsPlanes {
   setModalOpen(isOpen) {
     this.isModalOpen = isOpen;
     if (isOpen) {
+      this.stopAutoAnimate();
       this.drag.isDown = false;
     }
   }
 
   onWheel(event) {
     if (this.isModalOpen) return;
+    this.stopAutoAnimate();
     event.preventDefault();
     const normalized = normalizeWheel(event);
     const scrollY = (normalized.pixelY * this.sizes.height) / window.innerHeight;
@@ -438,7 +448,9 @@ class FeedsPlanes {
   }
 
   render(delta) {
-    this.material.uniforms.uTime.value += delta * 0.015;
+    if (this.autoAnimate) {
+      this.material.uniforms.uTime.value += delta * AUTO_SCROLL_SPEED;
+    }
     this.drag.xCurrent += (this.drag.xTarget - this.drag.xCurrent) * this.dragDamping;
     this.drag.yCurrent += (this.drag.yTarget - this.drag.yCurrent) * this.dragDamping;
     this.material.uniforms.uDrag.value.set(this.drag.xCurrent, this.drag.yCurrent);
