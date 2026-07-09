@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
+    <link rel="stylesheet" href="css/music-visualizer.css">
 
     <style>
         :root {
@@ -361,7 +362,7 @@
             transform: translateY(14px) scale(0.98);
             transform-origin: right bottom;
             pointer-events: none;
-            transition: opacity 0.22s ease, transform 0.22s ease;
+            transition: opacity 0.22s ease, transform 0.22s ease, background 0.45s ease, backdrop-filter 0.45s ease, box-shadow 0.45s ease;
         }
 
         #play-btn:hover+#music-popover,
@@ -403,6 +404,8 @@
         .music-cover {
             width: 48px;
             height: 48px;
+            position: relative;
+            overflow: hidden;
         }
 
         .music-cover,
@@ -1729,6 +1732,41 @@
         </div>
     </div>
 
+    <!-- SVG filters — music visualizer goo + grain -->
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+        <defs>
+            <filter id="music-goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 55 -8" result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+            <filter id="music-grain-fine" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" seed="2" />
+                <feColorMatrix type="saturate" values="0" />
+            </filter>
+            <filter id="music-grain-coarse" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="2" stitchTiles="stitch" seed="7" />
+                <feColorMatrix type="saturate" values="0" />
+            </filter>
+            <filter id="music-paper-texture" x="0%" y="0%" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65 0.55" numOctaves="5" stitchTiles="stitch" seed="3" result="noise" />
+                <feColorMatrix in="noise" type="saturate" values="0" result="gray" />
+                <feComponentTransfer in="gray" result="crumple">
+                    <feFuncR type="linear" slope="0.12" intercept="0.04" />
+                    <feFuncG type="linear" slope="0.11" intercept="0.035" />
+                    <feFuncB type="linear" slope="0.10" intercept="0.03" />
+                </feComponentTransfer>
+                <feBlend in="crumple" in2="SourceGraphic" mode="screen" />
+            </filter>
+        </defs>
+    </svg>
+
+    <div id="music-visualizer" aria-hidden="true">
+        <div class="music-lava-bg"></div>
+        <div class="music-grain-overlay music-grain-overlay--fine"></div>
+        <div class="music-grain-overlay music-grain-overlay--coarse"></div>
+    </div>
+
     <!-- ════════════════════════════════
          Bottom social + play bar
          ════════════════════════════════ -->
@@ -2159,6 +2197,7 @@
          ════════════════════════════════ -->
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
+    <script src="js/music-visualizer.js"></script>
     <script>
         // ── Show welcome only once per session ──
         window._skipWelcome = !!sessionStorage.getItem('pv');
@@ -2172,9 +2211,9 @@
         // Add full audio files at these paths, or update src/cover per track.
         // ────────────────────────────────
         var MUSIC_TRACKS = [
-            { title: 'Dream', artist: 'Alan Watts', src: 'assets/audio/Alan Watts - Dream.flac', cover: 'assets/audio/dream cover.jpg' },
-            { title: 'Beautiful Error', artist: 'Alan Watts', src: 'assets/audio/Alan Watts - Beautiful Error.flac', cover: 'assets/audio/beautiful error cover.jpg' },
-            { title: 'Burgs', artist: 'Mt. Wolf', src: 'assets/audio/Mt. Wolf - Burgs.flac', cover: 'assets/audio/burgs cover.jpg' },
+            { title: 'Dream', artist: 'Alan Watts', src: 'assets/audio/Alan Watts - Dream.flac', cover: 'assets/audio/dream cover.jpg', colors: ['#4220c8', '#ff5c9f', '#0b163f', '#6b4cff', '#ff8f6b'] },
+            { title: 'Beautiful Error', artist: 'Alan Watts', src: 'assets/audio/Alan Watts - Beautiful Error.flac', cover: 'assets/audio/beautiful error cover.jpg', colors: ['#ff4300', '#393bfe', '#ffb347', '#1e40af', '#ff7a45'] },
+            { title: 'Burgs', artist: 'Mt. Wolf', src: 'assets/audio/Mt. Wolf - Burgs.flac', cover: 'assets/audio/burgs cover.jpg', colors: ['#00db2e', '#393bfe', '#66cb29', '#0b163f', '#7ef29a'] },
         ];
 
         var siteAudio = document.getElementById('site-audio');
@@ -2193,6 +2232,21 @@
         var musicPopover = document.getElementById('music-popover');
         var musicQueue = document.getElementById('music-queue');
         var musicStatusMessage = '';
+        var musicVisualizer = initMusicVisualizer(siteAudio, {
+            getColors: function () {
+                return (currentTrack && currentTrack.colors) ? currentTrack.colors : ['#4220c8', '#ff5c9f', '#0b163f'];
+            }
+        });
+
+        function syncMusicVisualizer() {
+            if (!musicVisualizer) return;
+            if (musicOn) {
+                musicVisualizer.onTrackChange();
+                musicVisualizer.onPlay();
+            } else {
+                musicVisualizer.onPause();
+            }
+        }
 
         function updatePlayIcon() {
             iconPlay.style.display = musicOn ? 'none' : 'block';
@@ -2206,6 +2260,7 @@
             currentCover.setAttribute('aria-label', musicOn ? 'Pause Current Track' : 'Play Current Track');
             currentArt.style.backgroundImage = currentTrack.cover ? 'url("' + currentTrack.cover + '")' : '';
             renderMusicQueue();
+            syncMusicVisualizer();
         }
 
         function renderMusicQueue() {
