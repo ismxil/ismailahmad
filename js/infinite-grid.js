@@ -1,5 +1,3 @@
-import gsap from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/+esm';
-
 const ASPECTS = [1.2, 0.82, 1.05, 0.72, 1.28, 0.9, 1.15, 0.78, 1.35, 0.88];
 
 export default class InfiniteGrid {
@@ -113,6 +111,9 @@ export default class InfiniteGrid {
       );
     });
 
+    const gsap = window.gsap;
+    if (!gsap) return;
+
     this.introItems.forEach((item) => {
       gsap.set(item, { opacity: 0 });
     });
@@ -120,12 +121,22 @@ export default class InfiniteGrid {
 
   intro() {
     if (!this.introItems.length) return;
+
+    const gsap = window.gsap;
+    if (!gsap) return;
+
     gsap.to(this.introItems, {
       opacity: 1,
       duration: 0.8,
       ease: 'power2.out',
       stagger: 0.04,
     });
+
+    window.setTimeout(() => {
+      this.introItems.forEach((item) => {
+        item.style.opacity = '1';
+      });
+    }, 2500);
   }
 
   onResize() {

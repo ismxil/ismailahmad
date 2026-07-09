@@ -21,6 +21,14 @@ export function getFeedItemCount() {
   return feedItems.length;
 }
 
+/** Resolve cover URL — prefers item.cover, falls back to index in assets/feeds/ */
+export function resolveFeedCover(item, index) {
+  if (item?.cover) {
+    return item.cover.replace('assets/feeds/covers/', 'assets/feeds/');
+  }
+  return `assets/feeds/image_${index}.jpg`;
+}
+
 export async function loadFeedItems() {
   if (loadPromise) return loadPromise;
 

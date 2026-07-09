@@ -4,14 +4,14 @@
 
 import InfiniteGrid from './infinite-grid.js';
 import { openFeedModal } from './feed-modal.js';
-import { getFeedItems, loadFeedItems } from './feed-items.js';
+import { getFeedItems, loadFeedItems, resolveFeedCover } from './feed-items.js';
 
 const GAP = 64;
 const CAPTION_SPACE = 80;
 
 function buildSources(items) {
   return items.map((item, feedIndex) => ({
-    src: item.cover,
+    src: resolveFeedCover(item, feedIndex),
     feedIndex,
     caption: [
       item.client,
@@ -40,5 +40,9 @@ export async function initFeedsGrid(container) {
 const container = document.getElementById('feeds-grid');
 if (container) {
   const ready = window.siteReady ?? Promise.resolve();
-  ready.then(() => initFeedsGrid(container));
+  const withTimeout = Promise.race([
+    ready,
+    new Promise((resolve) => { window.setTimeout(resolve, 4000); }),
+  ]);
+  withTimeout.then(() => initFeedsGrid(container));
 }

@@ -14,7 +14,7 @@ Each item in `items`:
 | `category` | e.g. Concepts, App Design |
 | `years` | e.g. `(2021 - 2024)` |
 | `description` | Right-column body copy |
-| `cover` | Image path, usually under `assets/feeds/covers/` |
+| `cover` | Image path under `assets/feeds/` (e.g. `image_0.jpg`) |
 | `accent` | Hex color behind the hero image |
 
 ### Example
@@ -27,7 +27,7 @@ Each item in `items`:
   "category": "Concepts",
   "years": "(2021 - 2024)",
   "description": "Researched target audiences and user needs…",
-  "cover": "assets/feeds/covers/image_0.jpg",
+  "cover": "assets/feeds/image_0.jpg",
   "accent": "#393bfe"
 }
 ```

@@ -1,4 +1,4 @@
-import { loadFeedItems, getFeedItem } from './feed-items.js';
+import { loadFeedItems, getFeedItem, resolveFeedCover } from './feed-items.js';
 
 let backdrop;
 let modal;
@@ -25,10 +25,11 @@ function cacheElements() {
   closeBtn = document.getElementById('feed-modal-close');
 }
 
-function populate(data) {
+function populate(data, index) {
   if (!data) return;
+  const cover = resolveFeedCover(data, index);
   hero.style.backgroundColor = data.accent || '#393bfe';
-  heroImg.src = data.cover;
+  heroImg.src = cover;
   heroImg.alt = data.client + ' project preview';
   clientEl.textContent = data.client;
   headlineEl.textContent = data.headline;
@@ -46,7 +47,7 @@ export async function openFeedModal(itemIndex) {
   const item = getFeedItem(itemIndex);
   if (!item) return;
 
-  populate(item);
+  populate(item, itemIndex);
   isOpen = true;
   backdrop.classList.add('is-open');
   backdrop.setAttribute('aria-hidden', 'false');
