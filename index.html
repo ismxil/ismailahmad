@@ -532,10 +532,7 @@
         }
 
         #open-contact {
-            color: #fff;
-            width: auto;
-            padding: 0 16px;
-            border-radius: 99px;
+            font-family: var(--font-body);
         }
 
         /* Hidden native audio player */
@@ -551,296 +548,224 @@
         }
 
         /* ════════════════════════════════
-           Contact panel
+           Contact panel — Figma modal
            ════════════════════════════════ */
         #contact-panel {
             position: fixed;
             inset: 0;
             z-index: 90;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 72px 28px;
-            color: #ffffff;
-            background:
-                radial-gradient(circle at 25% 16%, rgba(255, 255, 255, 0.22), transparent 22%),
-                radial-gradient(circle at 78% 72%, rgba(255, 255, 255, 0.12), transparent 26%),
-                linear-gradient(135deg, #0011ff 0%, #0010d4 42%, #000a73 100%);
+            pointer-events: none;
             visibility: hidden;
             opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.34s ease, visibility 0s linear 0.34s;
-            overflow: hidden;
-        }
-
-        #contact-panel::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            opacity: 0.26;
-            background-image:
-                linear-gradient(0deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 0, 0, 0.16) 1px, transparent 1px);
-            background-size: 5px 5px, 7px 7px;
-            mix-blend-mode: overlay;
-            pointer-events: none;
-        }
-
-        #contact-panel::after {
-            content: "";
-            position: absolute;
-            inset: -30%;
-            background:
-                repeating-linear-gradient(112deg, rgba(255, 255, 255, 0.09) 0 1px, transparent 1px 9px);
-            opacity: 0.16;
-            transform: rotate(-8deg);
-            pointer-events: none;
+            transition: opacity 0.28s ease, visibility 0s linear 0.28s;
         }
 
         #contact-panel.is-open {
+            pointer-events: auto;
             visibility: visible;
             opacity: 1;
-            pointer-events: auto;
             transition-delay: 0s;
         }
 
-        #close-contact {
-            position: absolute;
-            top: 22px;
-            right: 28px;
-            z-index: 3;
-            height: 38px;
-            padding: 0 16px;
-            border: 1.5px solid rgba(255, 255, 255, 0.44);
-            border-radius: 99px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            cursor: pointer;
-            backdrop-filter: blur(8px);
-        }
-
-        #close-contact:hover {
-            background: rgba(255, 255, 255, 0.18);
-        }
-
-        .contact-scene {
-            position: relative;
-            z-index: 2;
-            width: min(635px, 88vw);
-            aspect-ratio: 475 / 288;
-            perspective: 1400px;
-            animation: contactFloat 5.6s ease-in-out infinite;
-        }
-
-        .contact-card {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            color: #0011ff;
-            transform-style: preserve-3d;
-            transition: transform 0.42s cubic-bezier(0.2, 0.72, 0.16, 1), box-shadow 0.42s ease;
-            cursor: pointer;
-        }
-
-        .contact-card:hover {
-            transform: rotateX(9deg) rotateY(-12deg) translateY(-8px);
-        }
-
-        #contact-panel.is-flipped .contact-card {
-            transform: rotateY(180deg);
-        }
-
-        #contact-panel.is-flipped .contact-card:hover {
-            transform: rotateY(180deg) rotateX(9deg) translateY(-8px);
-        }
-
-        .contact-face {
-            position: absolute;
-            inset: 0;
+        .contact-modal {
+            position: fixed;
+            left: 24px;
+            bottom: 76px;
+            width: 326px;
+            max-width: calc(100vw - 48px);
+            max-height: calc(100vh - 100px);
+            overflow: auto;
+            background: #1e40af;
+            border-radius: 17px;
+            padding: 26px 13px 17px;
+            color: var(--bg-cream);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: clamp(18px, 2.6vw, 26px);
-            border-radius: 20px;
-            background:
-                radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.42), transparent 30%),
-                linear-gradient(135deg, #e7e5db 0%, #d8d6cb 100%);
-            box-shadow:
-                12px 28px 28px rgba(0, 0, 0, 0.25),
-                0 44px 90px rgba(0, 0, 0, 0.2);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            overflow: hidden;
+            gap: 24px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.22);
+            transform: translateY(12px) scale(0.98);
+            opacity: 0;
+            transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
         }
 
-        .contact-card:hover .contact-face {
-            box-shadow:
-                18px 38px 36px rgba(0, 0, 0, 0.28),
-                0 60px 110px rgba(0, 0, 0, 0.24);
+        #contact-panel.is-open .contact-modal {
+            transform: translateY(0) scale(1);
+            opacity: 1;
         }
 
-        .contact-face::before {
-            content: "";
+        .contact-modal__close {
             position: absolute;
-            inset: 0;
-            background:
-                linear-gradient(112deg, rgba(255, 255, 255, 0.45), transparent 28%, rgba(0, 0, 0, 0.06) 72%, transparent),
-                repeating-linear-gradient(0deg, rgba(0, 17, 255, 0.025) 0 1px, transparent 1px 4px),
-                repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.028) 0 1px, transparent 1px 5px);
-            opacity: 0.55;
-            pointer-events: none;
-        }
-
-        .contact-front {
-            transform: rotateY(0deg);
-        }
-
-        .contact-back {
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 40px;
+            background: var(--bg-cream);
+            color: #1e40af;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            transform: rotateY(180deg);
+            cursor: pointer;
+            padding: 0;
+            z-index: 2;
+            transition: opacity 0.18s ease;
         }
 
-        .contact-logo-mark {
-            position: relative;
-            z-index: 1;
-            width: clamp(92px, 12vw, 148px);
-            height: clamp(92px, 12vw, 148px);
-            transform: translateZ(22px) rotateX(8deg) rotateY(-10deg);
-            pointer-events: none;
+        .contact-modal__close:hover {
+            opacity: 0.82;
         }
 
-        .contact-front>* {
-            position: relative;
-            z-index: 1;
-            opacity: 0;
-            transform: translateY(8px);
-        }
-
-        #contact-panel.is-open .contact-front>* {
-            animation: contactStagger 0.62s cubic-bezier(0.2, 0.72, 0.16, 1) forwards;
-        }
-
-        #contact-panel.is-open .contact-front>*:nth-child(1) {
-            animation-delay: 0.08s;
-        }
-
-        #contact-panel.is-open .contact-front>*:nth-child(2) {
-            animation-delay: 0.18s;
-        }
-
-        .contact-card-top,
-        .contact-card-bottom {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            width: 100%;
-            align-items: start;
-        }
-
-        .contact-card-bottom {
-            align-items: end;
-        }
-
-        .contact-name {
-            font-size: clamp(58px, 6.4vw, 92px);
-            line-height: 0.86;
-            letter-spacing: 0;
-            color: #0011ff;
-        }
-
-        .contact-description {
-            justify-self: end;
-            width: min(210px, 100%);
-            padding-top: 8px;
-            text-align: right;
-            font-size: clamp(14px, 1.2vw, 18px);
-            line-height: 1.08;
-            color: #0011ff;
-        }
-
-        .contact-links {
-            font-size: clamp(15px, 1.35vw, 20px);
-            line-height: 1.05;
-            color: #0011ff;
-        }
-
-        .contact-links a,
-        .contact-socials a {
-            color: #0011ff;
-            text-decoration: none;
-        }
-
-        .contact-links a:hover {
-            text-decoration: underline;
-            text-underline-offset: 4px;
-        }
-
-        .contact-socials {
-            justify-self: end;
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
-
-        .contact-socials a {
-            display: inline-flex;
-            color: #0011ff;
-        }
-
-        .contact-socials svg {
-            width: 26px;
-            height: 26px;
+        .contact-modal__close svg {
+            width: 14px;
+            height: 14px;
             display: block;
         }
 
-        @keyframes contactStagger {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .contact-modal__intro {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+            padding-right: 36px;
         }
 
-        @keyframes contactFloat {
+        .contact-modal__bio {
+            margin: 0;
+            max-width: 255px;
+            font-family: var(--font-display);
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            color: var(--bg-cream);
+        }
 
-            0%,
-            100% {
-                transform: translate3d(0, 0, 0) rotate(-1.2deg);
-            }
+        .contact-modal__more {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: var(--bg-cream);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: opacity 0.18s ease;
+        }
 
-            50% {
-                transform: translate3d(0, -14px, 0) rotate(1.1deg);
-            }
+        .contact-modal__more:hover {
+            opacity: 0.82;
+        }
+
+        .contact-modal__polaroids {
+            position: relative;
+            width: 100%;
+            min-height: 220px;
+            margin: 0 auto;
+        }
+
+        .contact-polaroid {
+            position: absolute;
+            margin: 0;
+            background: var(--bg-cream);
+            box-shadow: 0 6px 7px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        .contact-polaroid img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .contact-polaroid__caption {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-family: var(--font-body);
+            font-size: 10px;
+            line-height: 1.2;
+            font-weight: 500;
+            color: #1e40af;
+            padding: 0 2px 2px;
+        }
+
+        .contact-polaroid--profile {
+            left: 0;
+            top: 0;
+            width: 148px;
+            transform: rotate(-11deg);
+            z-index: 1;
+        }
+
+        .contact-polaroid--profile img {
+            height: 164px;
+        }
+
+        .contact-polaroid--coffee {
+            right: 8px;
+            top: 36px;
+            width: 103px;
+            transform: rotate(23deg);
+            z-index: 2;
+        }
+
+        .contact-polaroid--coffee img {
+            height: 114px;
+            filter: blur(1.5px);
+        }
+
+        .contact-modal__footer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .contact-modal__links {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: flex-start;
+        }
+
+        .contact-modal__links a {
+            font-family: var(--font-display);
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            color: var(--bg-cream);
+            text-decoration: none;
+            transition: opacity 0.18s ease;
+        }
+
+        .contact-modal__links a:hover {
+            opacity: 0.75;
+        }
+
+        .contact-modal__qr {
+            width: 67px;
+            height: 67px;
+            flex-shrink: 0;
+            display: block;
+            object-fit: contain;
         }
 
         @media (max-width: 720px) {
-            #contact-panel {
-                padding: 76px 18px 56px;
-            }
-
-            .contact-scene {
-                width: min(94vw, 520px);
-                aspect-ratio: 1.05 / 1;
-            }
-
-            .contact-card {
-                min-height: 460px;
-            }
-
-            .contact-card-top,
-            .contact-card-bottom {
-                grid-template-columns: 1fr;
-                gap: 18px;
-            }
-
-            .contact-description,
-            .contact-socials {
-                justify-self: start;
-                text-align: left;
-            }
-
-            .contact-name {
-                font-size: clamp(60px, 18vw, 92px);
+            .contact-modal {
+                left: 16px;
+                right: 16px;
+                bottom: 72px;
+                width: auto;
+                max-width: none;
             }
         }
 
@@ -2186,16 +2111,7 @@
          Bottom social + play bar
          ════════════════════════════════ -->
     <div id="bottom-bar">
-        <div class="bottom-bar__socials" aria-label="Social links">
-            <a class="social-pill pill pill--cream pill--muted" href="https://linkedin.com/in/ismxil" target="_blank"
-                rel="noopener">LinkedIn</a>
-            <a class="social-pill pill pill--cream pill--muted" href="https://github.com/ismxil" target="_blank"
-                rel="noopener">Github</a>
-            <a class="social-pill pill pill--cream pill--muted" href="https://www.behance.net/ismxil" target="_blank"
-                rel="noopener">Behance</a>
-            <a class="social-pill pill pill--cream pill--muted" href="https://instagram.com/ismxilahmad"
-                target="_blank" rel="noopener">Instagram</a>
-        </div>
+        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
         <div class="bottom-bar__music" aria-label="Music controls">
             <button id="play-btn" aria-label="Play / Pause music">
                 <svg id="icon-play" width="14" height="14" viewBox="0 0 24 24" fill="white">
@@ -2234,58 +2150,41 @@
          Contact Panel
          ════════════════════════════════ -->
     <aside id="contact-panel" aria-label="Contact" aria-hidden="true">
-        <button id="close-contact" type="button">Close</button>
-        <div class="contact-scene">
-            <div class="contact-card" role="button" tabindex="0" aria-label="Flip Contact Card">
-                <div class="contact-face contact-front">
-                    <div class="contact-card-top">
-                        <div class="contact-name">Ismail<br>Ahmad</div>
-                        <div class="contact-description">Designing Services, Web, Product, Brand For Financial
-                            Institutions</div>
-                    </div>
-                    <div class="contact-card-bottom">
-                        <div class="contact-links">
-                            <a href="mailto:info@ismailahmad.com">Info@IsmailAhmad.Com</a><br>
-                            <a href="https://ismailahmad.com">IsmailAhmad.Com</a>
-                        </div>
-                        <div class="contact-socials" aria-label="Social Links">
-                            <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener"
-                                aria-label="Linkedin">
-                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                                    <path
-                                        d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM.28 8.1h4.43V23H.28V8.1ZM7.6 8.1h4.25v2.04h.06c.59-1.12 2.04-2.3 4.2-2.3 4.49 0 5.32 2.96 5.32 6.8V23H17v-7.42c0-1.77-.03-4.05-2.47-4.05-2.48 0-2.86 1.93-2.86 3.92V23H7.6V8.1Z" />
-                                </svg>
-                            </a>
-                            <a href="https://dribbble.com/ismxil" target="_blank" rel="noopener" aria-label="Dribbble">
-                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
-                                    stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="9.4" />
-                                    <path d="M4.1 7.3c3.4 2.1 8.7 2.6 15.5.1" />
-                                    <path d="M8.1 21.1c1.3-5.7 5.1-9.4 13.2-9.8" />
-                                    <path d="M8.2 3.2c3.6 4.2 5.6 9.5 6.5 17.4" />
-                                </svg>
-                            </a>
-                            <a href="https://github.com/ismxil" target="_blank" rel="noopener" aria-label="Github">
-                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                                    <path
-                                        d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.1c-3.1.67-3.75-1.32-3.75-1.32-.5-1.28-1.24-1.62-1.24-1.62-1.02-.7.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1 2.61.4 3.25-.3.1-.73.39-1.22.7-1.5-2.47-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.23-5.1 5.51.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8Z" />
-                                </svg>
-                            </a>
-                            <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener"
-                                aria-label="Instagram">
-                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
-                                    stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" />
-                                    <circle cx="12" cy="12" r="4.2" />
-                                    <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
+        <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+            <button type="button" id="close-contact" class="contact-modal__close" aria-label="Close contact">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="contact-modal__intro">
+                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and business. I love working in condition where decisions have real impact and good work actually ships.</p>
+                <a class="contact-modal__more" href="about.html">More</a>
+            </div>
+            <div class="contact-modal__polaroids" aria-hidden="true">
+                <figure class="contact-polaroid contact-polaroid--profile">
+                    <img src="assets/contact/profile.jpg" alt="" width="137" height="164" />
+                    <figcaption class="contact-polaroid__caption">
+                        <span>ID</span>
+                        <span>PROFILE PICTURE</span>
+                    </figcaption>
+                </figure>
+                <figure class="contact-polaroid contact-polaroid--coffee">
+                    <img src="assets/contact/coffee.jpg" alt="" width="95" height="114" />
+                    <figcaption class="contact-polaroid__caption">
+                        <span>ID</span>
+                        <span>☕ coffeeeee...</span>
+                    </figcaption>
+                </figure>
+            </div>
+            <div class="contact-modal__footer">
+                <div class="contact-modal__links" aria-label="Social links">
+                    <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
+                    <a href="https://github.com/ismxil" target="_blank" rel="noopener">Github</a>
+                    <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
+                    <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+                    <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
                 </div>
-                <div class="contact-face contact-back" aria-hidden="true">
-                    <canvas id="contact-logo-c" class="contact-logo-mark" aria-hidden="true"></canvas>
-                </div>
+                <img class="contact-modal__qr" src="assets/contact/qr.png" alt="Contact QR code" width="67" height="67" />
             </div>
         </div>
     </aside>
@@ -2631,136 +2530,6 @@
             })();
 
         } // end if (!window._skipWelcome)
-
-        function initContactLogo3D() {
-            const canvas = document.getElementById('contact-logo-c');
-            if (!canvas) return;
-
-            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.setClearColor(0x000000, 0);
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.35;
-            renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 500);
-            camera.position.z = 82;
-
-            const pmrem = new THREE.PMREMGenerator(renderer);
-            scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-            pmrem.dispose();
-
-            scene.add(new THREE.AmbientLight(0xffffff, 0.82));
-            const keyLight = new THREE.DirectionalLight(0xffffff, 2.9);
-            keyLight.position.set(-22, 30, 34);
-            scene.add(keyLight);
-            const fillLight = new THREE.DirectionalLight(0x9fb1ff, 1.2);
-            fillLight.position.set(24, -16, 22);
-            scene.add(fillLight);
-            const rimLight = new THREE.DirectionalLight(0x0011ff, 1.6);
-            rimLight.position.set(0, 8, -36);
-            scene.add(rimLight);
-
-            const mat = new THREE.MeshPhysicalMaterial({
-                color: 0x0011ff,
-                metalness: 0.72,
-                roughness: 0.16,
-                envMapIntensity: 1.65,
-                clearcoat: 0.35,
-                clearcoatRoughness: 0.18,
-            });
-
-            const pivot = new THREE.Group();
-            scene.add(pivot);
-            const group = new THREE.Group();
-            pivot.add(group);
-
-            const CX = 19.8924, CY = 19.8924, DEPTH = 3.5;
-            const BEVEL = { depth: DEPTH, bevelEnabled: true, bevelThickness: 0.5, bevelSize: 0.35, bevelSegments: 4 };
-
-            const ring = new THREE.Mesh(new THREE.TorusGeometry(18.6475, 2.48974 / 2, 24, 120), mat);
-            ring.position.z = DEPTH / 2;
-            group.add(ring);
-
-            const thinLine = (() => {
-                const r = 2.48974 / 2;
-                const a = new THREE.Vector3(19.703 - CX, -(1.3706 - CY), 0);
-                const b = new THREE.Vector3(7.38959 - CX, -(33.6143 - CY), 0);
-                const dir = b.clone().sub(a);
-                const mid = a.clone().lerp(b, 0.5);
-                const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, dir.length(), 20), mat);
-                m.position.set(mid.x, mid.y, DEPTH / 2);
-                m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
-                group.add(m);
-                return m;
-            })();
-
-            const thickLine = (() => {
-                const r = 6.90648 / 2;
-                const a = new THREE.Vector3(18.6145 - CX, -(7.31771 - CY), 0);
-                const b = new THREE.Vector3(33.1972 - CX, -(32.5316 - CY), 0);
-                const dir = b.clone().sub(a);
-                const mid = a.clone().lerp(b, 0.5);
-                const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, dir.length(), 20), mat);
-                m.position.set(mid.x, mid.y, DEPTH / 2);
-                m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
-                group.add(m);
-                return m;
-            })();
-
-            const orbit = (() => {
-                const rx = (38.5398 - 1.24487) / 2;
-                const ry = (25.3316 - 14.4531) / 2;
-                class EllipseCurve extends THREE.Curve {
-                    getPoint(t, out) {
-                        const v = out || new THREE.Vector3();
-                        return v.set(rx * Math.cos(t * Math.PI * 2), ry * Math.sin(t * Math.PI * 2), 0);
-                    }
-                }
-                const m = new THREE.Mesh(new THREE.TubeGeometry(new EllipseCurve(), 120, 2.48974 / 2, 16, true), mat);
-                m.position.z = DEPTH / 2;
-                group.add(m);
-                return m;
-            })();
-
-            const star = (() => {
-                const pts = [[20.8605, 30.2672], [22.5437, 30.4788], [21.4593, 32.1087], [21.7782, 33.7749], [19.8929, 33.2469], [18.4066, 34.0652], [18.0076, 33.7752], [18.3265, 32.1089], [17.0891, 30.948], [17.2421, 30.4788], [18.9253, 30.2672], [19.6464, 28.7322], [20.1395, 28.7322]];
-                const shape = new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2(x - CX, -(y - CY))));
-                const m = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, BEVEL), mat);
-                group.add(m);
-                return m;
-            })();
-
-            group.rotation.x = 0.16;
-            group.rotation.y = -0.36;
-            group.position.y = -1.5;
-            const pieces = [ring, thinLine, thickLine, orbit, star];
-            pieces.forEach((piece, index) => { piece.position.z += index === 4 ? 0.9 : 0; });
-
-            function resizeContactLogo() {
-                const rect = canvas.getBoundingClientRect();
-                const width = Math.max(1, Math.floor(rect.width));
-                const height = Math.max(1, Math.floor(rect.height));
-                renderer.setSize(width, height, false);
-                camera.aspect = width / height;
-                camera.updateProjectionMatrix();
-            }
-
-            if (window.ResizeObserver) {
-                new ResizeObserver(resizeContactLogo).observe(canvas);
-            }
-            resizeContactLogo();
-
-            (function animateContactLogo() {
-                requestAnimationFrame(animateContactLogo);
-                group.rotation.y += 0.008;
-                group.position.y = -1.5 + Math.sin(performance.now() * 0.0016) * 1.1;
-                renderer.render(scene, camera);
-            })();
-        }
-
-        initContactLogo3D();
     </script>
 
     <!-- ════════════════════════════════
@@ -2977,31 +2746,27 @@
         // ────────────────────────────────
         var panel = document.getElementById('contact-panel');
         var closeBtn = document.getElementById('close-contact');
-        var contactCard = document.querySelector('.contact-card');
+        var openContactBtn = document.getElementById('open-contact');
 
         function openContactPanel() {
             panel.classList.add('is-open');
             panel.setAttribute('aria-hidden', 'false');
+            closeBtn.focus();
         }
         function closeContactPanel() {
-            panel.classList.remove('is-open', 'is-flipped');
+            panel.classList.remove('is-open');
             panel.setAttribute('aria-hidden', 'true');
         }
 
-        function toggleContactCard() {
-            panel.classList.toggle('is-flipped');
-        }
-
         closeBtn.addEventListener('click', closeContactPanel);
+        if (openContactBtn) openContactBtn.addEventListener('click', openContactPanel);
         panel.addEventListener('click', function (e) {
-            if (!e.target.closest('.contact-card')) return;
-            if (e.target.closest('a')) return;
-            toggleContactCard();
+            if (e.target === panel) closeContactPanel();
         });
-        contactCard.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && panel.classList.contains('is-open')) {
                 e.preventDefault();
-                toggleContactCard();
+                closeContactPanel();
             }
         });
         // ────────────────────────────────
