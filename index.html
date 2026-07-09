@@ -1535,41 +1535,43 @@
         </defs>
     </svg>
 
-    <div id="music-glow" aria-hidden="true">
-        <img id="music-glow-bg" class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="836" height="735" />
-        <div class="music-glow__grain music-glow__grain--fine"></div>
-        <div class="music-glow__grain music-glow__grain--coarse"></div>
-    </div>
+    <div id="music-stack" aria-hidden="true">
+        <div id="music-glow" aria-hidden="true">
+            <img id="music-glow-bg" class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="260" height="220" />
+            <div class="music-glow__grain music-glow__grain--fine"></div>
+            <div class="music-glow__grain music-glow__grain--coarse"></div>
+        </div>
 
-    <div id="music-player" aria-hidden="true" aria-label="Music player">
-        <div class="music-player__thumbs" id="music-player-thumbs"></div>
-        <div class="music-player__art">
-            <img id="music-player-art" src="assets/music/dream-cover-opt.jpg" alt="Dream cover art" width="200" height="200" />
-        </div>
-        <div class="music-player__meta">
-            <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
-            <p class="music-player__title" id="music-player-title">Dream</p>
-        </div>
-        <div class="music-player__controls">
-            <button type="button" class="music-player__btn music-player__btn--side" id="music-prev" aria-label="Previous track">
-                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
-                    <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
-            <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause" aria-label="Play">
-                <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true">
-                    <path d="M1 1L9 6L1 11V1Z" />
-                </svg>
-                <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" style="display:none">
-                    <rect x="1" y="1" width="2.5" height="10" rx="0.5" />
-                    <rect x="6.5" y="1" width="2.5" height="10" rx="0.5" />
-                </svg>
-            </button>
-            <button type="button" class="music-player__btn music-player__btn--side" id="music-next" aria-label="Next track">
-                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
-                    <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
+        <div id="music-player" aria-hidden="true" aria-label="Music player">
+            <div class="music-player__thumbs" id="music-player-thumbs"></div>
+            <div class="music-player__art">
+                <img id="music-player-art" src="assets/music/dream-cover-opt.jpg" alt="Dream cover art" width="200" height="200" />
+            </div>
+            <div class="music-player__meta">
+                <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
+                <p class="music-player__title" id="music-player-title">Dream</p>
+            </div>
+            <div class="music-player__controls">
+                <button type="button" class="music-player__btn music-player__btn--side" id="music-prev" aria-label="Previous track">
+                    <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
+                        <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause" aria-label="Play">
+                    <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true">
+                        <path d="M1 1L9 6L1 11V1Z" />
+                    </svg>
+                    <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" style="display:none">
+                        <rect x="1" y="1" width="2.5" height="10" rx="0.5" />
+                        <rect x="6.5" y="1" width="2.5" height="10" rx="0.5" />
+                    </svg>
+                </button>
+                <button type="button" class="music-player__btn music-player__btn--side" id="music-next" aria-label="Next track">
+                    <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
+                        <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1591,7 +1593,7 @@
         </div>
     </div>
 
-    <audio id="site-audio" preload="metadata"></audio>
+    <audio id="site-audio" preload="auto" crossorigin="anonymous"></audio>
 
     <!-- ════════════════════════════════
          Contact Panel
@@ -1997,8 +1999,8 @@
 
         // ── Enter with sound ──
         document.getElementById('enter-sound').addEventListener('click', function () {
-            if (musicPlayer) musicPlayer.start();
             enterPortfolio();
+            if (musicPlayer) musicPlayer.start().catch(function () { /* blocked or unavailable */ });
         });
 
         // ── Enter without sound ──

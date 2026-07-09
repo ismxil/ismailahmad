@@ -4,22 +4,19 @@
             title: 'Dream',
             artist: 'Alan Watts',
             src: 'assets/audio/Alan Watts - Dream.flac',
-            cover: 'assets/music/dream-cover-opt.jpg',
-            colors: ['#4220c8', '#ff5c9f', '#0b163f']
+            cover: 'assets/music/dream-cover-opt.jpg'
         },
         {
             title: 'Beautiful Error',
             artist: 'Alan Watts',
             src: 'assets/audio/Alan Watts - Beautiful Error.flac',
-            cover: 'assets/music/dream-cover-opt.jpg',
-            colors: ['#ff4300', '#393bfe', '#ffb347']
+            cover: 'assets/music/dream-cover-opt.jpg'
         },
         {
             title: 'Burgs',
             artist: 'Mt. Wolf',
             src: 'assets/audio/Mt. Wolf - Burgs.flac',
-            cover: 'assets/music/thumb-next.jpg',
-            colors: ['#00db2e', '#393bfe', '#66cb29']
+            cover: 'assets/music/thumb-next.jpg'
         }
     ];
 
@@ -51,9 +48,12 @@
 
         if (!audio || !glow || !player || !playBtn) return null;
 
+        audio.preload = 'auto';
+
         var index = 0;
         var playing = false;
         var open = false;
+        var graphReady = false;
         var audioCtx = null;
         var analyser = null;
         var sourceNode = null;
@@ -64,6 +64,10 @@
 
         function trackAt(i) {
             return TRACKS[((i % TRACKS.length) + TRACKS.length) % TRACKS.length];
+        }
+
+        function trackUrl(track) {
+            return new URL(track.src, window.location.href).href;
         }
 
         function renderThumbs() {
@@ -115,8 +119,8 @@
             else stopPulse();
         }
 
-        function ensureAudioGraph() {
-            if (audioCtx) return true;
+        function connectAudioGraph() {
+            if (graphReady) return true;
             var Ctx = window.AudioContext || window.webkitAudioContext;
             if (!Ctx) return false;
             try {
@@ -127,28 +131,39 @@
                 freqData = new Uint8Array(analyser.frequencyBinCount);
                 sourceNode = audioCtx.createMediaElementSource(audio);
                 sourceNode.connect(analyser);
-                analyser.connect(audioCtx.destination);
+                sourceNode.connect(audioCtx.destination);
+                graphReady = true;
                 return true;
-            } catch (e) {
+            } catch (err) {
+                graphReady = false;
                 audioCtx = null;
+                analyser = null;
+                sourceNode = null;
+                freqData = null;
                 return false;
             }
+        }
+
+        function resumeContext() {
+            if (!audioCtx) return Promise.resolve();
+            if (audioCtx.state === 'suspended') return audioCtx.resume();
+            return Promise.resolve();
         }
 
         function readEnergy() {
             var t = performance.now() * 0.001;
             var total = 0;
-            if (analyser && freqData && !audio.paused) {
+            if (analyser && freqData && playing && !audio.paused) {
                 analyser.getByteFrequencyData(freqData);
                 var sum = 0;
                 for (var i = 0; i < freqData.length; i++) sum += freqData[i];
                 total = sum / freqData.length / 255;
-            } else {
-                total = 0.28 + Math.sin(t * 2.4) * 0.12 + Math.sin(t * 5.3) * 0.06;
+            } else if (playing) {
+                total = 0.22 + Math.sin(t * 2.4) * 0.1 + Math.sin(t * 5.3) * 0.05;
             }
             var beat = Math.max(0, total - prevTotal);
             prevTotal = lerp(prevTotal, total, 0.35);
-            smoothEnergy = lerp(smoothEnergy, total + beat * 0.45, 0.14);
+            smoothEnergy = lerp(smoothEnergy, total + beat * 0.35, 0.14);
             return smoothEnergy;
         }
 
@@ -158,12 +173,10 @@
                 return;
             }
             var energy = readEnergy();
-            var scale = 1 + energy * 0.14;
-            var blur = 0.5 + energy * 2.5;
-            var bright = 1 + energy * 0.22;
-            var saturate = 1 + energy * 0.35;
+            var scale = 1 + energy * 0.05;
+            var opacity = clamp(0.72 + energy * 0.22, 0.55, 0.96);
             glowImg.style.transform = 'scale(' + scale.toFixed(3) + ')';
-            glowImg.style.filter = 'blur(' + blur.toFixed(2) + 'px) brightness(' + bright.toFixed(3) + ') saturate(' + saturate.toFixed(3) + ')';
+            glow.style.opacity = String(opacity);
             rafId = requestAnimationFrame(pulseFrame);
         }
 
@@ -175,60 +188,71 @@
         function stopPulse() {
             if (rafId) cancelAnimationFrame(rafId);
             rafId = null;
-            if (glowImg) {
-                glowImg.style.transform = '';
-                glowImg.style.filter = '';
+            if (glowImg) glowImg.style.transform = '';
+            glow.style.opacity = '';
+        }
+
+        function currentAudioSrc() {
+            var raw = audio.currentSrc || audio.src || '';
+            if (!raw) return '';
+            try {
+                return new URL(raw, window.location.href).href;
+            } catch (err) {
+                return raw;
             }
         }
 
-        function loadTrack(i, autoplay) {
+        function loadTrack(i) {
             index = ((i % TRACKS.length) + TRACKS.length) % TRACKS.length;
             var track = trackAt(index);
-            var resolved = new URL(track.src, window.location.href).href;
-            if (audio.src !== resolved) {
+            var resolved = trackUrl(track);
+            if (currentAudioSrc() !== resolved) {
                 audio.src = track.src;
                 audio.load();
             }
             updateUI();
-            if (autoplay) return play();
+        }
+
+        function beginPlayback() {
+            setOpen(true);
+            if (!audio.src) loadTrack(index);
+            connectAudioGraph();
+            return resumeContext().then(function () {
+                return audio.play();
+            }).then(function () {
+                playing = true;
+                setGlow(true);
+                updateUI();
+            }).catch(function () {
+                playing = false;
+                setGlow(false);
+                updateUI();
+                return Promise.reject(new Error('Playback failed'));
+            });
         }
 
         function play() {
-            setOpen(true);
-            setGlow(true);
-            ensureAudioGraph();
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume().catch(function () { /* ignore */ });
-            }
-            playing = true;
-            updateUI();
-            return audio.play().then(function () {
-                playing = true;
-                updateUI();
-                startPulse();
-            }).catch(function () {
-                playing = false;
-                updateUI();
-                return Promise.reject();
-            });
+            if (!audio.src) loadTrack(index);
+            return beginPlayback();
         }
 
         function pause() {
             audio.pause();
             playing = false;
+            setGlow(false);
             updateUI();
         }
 
         function playTrack(i, keepPlaying) {
-            var shouldPlay = keepPlaying !== false;
-            loadTrack(i, false);
-            if (shouldPlay) return play();
+            loadTrack(i);
+            if (keepPlaying) return beginPlayback();
             updateUI();
             return Promise.resolve();
         }
 
         function toggle() {
             if (!open) {
+                setOpen(true);
                 return play();
             }
             if (playing) {
@@ -238,10 +262,22 @@
             return play();
         }
 
-        playBtn.addEventListener('click', function () { toggle(); });
-        btnMain.addEventListener('click', function () { toggle(); });
-        btnPrev.addEventListener('click', function () { playTrack(index - 1, playing); });
-        btnNext.addEventListener('click', function () { playTrack(index + 1, playing); });
+        playBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggle();
+        });
+        btnMain.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggle();
+        });
+        btnPrev.addEventListener('click', function (e) {
+            e.stopPropagation();
+            playTrack(index - 1, playing);
+        });
+        btnNext.addEventListener('click', function (e) {
+            e.stopPropagation();
+            playTrack(index + 1, playing);
+        });
 
         audio.addEventListener('ended', function () {
             playTrack(index + 1, true);
@@ -257,10 +293,18 @@
         audio.addEventListener('pause', function () {
             if (!audio.ended) {
                 playing = false;
+                setGlow(false);
                 updateUI();
             }
         });
 
+        audio.addEventListener('error', function () {
+            playing = false;
+            setGlow(false);
+            updateUI();
+        });
+
+        loadTrack(0);
         updateUI();
 
         return {
