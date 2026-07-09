@@ -9,6 +9,8 @@
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
     <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/site-loader.css">
+    <script>document.documentElement.classList.add('is-loading');</script>
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
@@ -185,6 +187,10 @@
 </head>
 
 <body>
+    <div id="site-loader" class="site-loader" role="status" aria-label="Loading">
+        <div class="site-loader__mark"><span class="site-loader__dot"></span></div>
+    </div>
+
     <div id="feeds-grid-wrap" aria-label="Feeds grid">
         <div id="feeds-grid"></div>
     </div>
@@ -306,6 +312,7 @@
         </div>
     </aside>
 
+    <script src="js/site-loader.js"></script>
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script type="module" src="js/feeds-grid.js"></script>

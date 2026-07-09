@@ -14,6 +14,8 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/site-loader.css">
+    <script>document.documentElement.classList.add('is-loading');</script>
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
@@ -1625,6 +1627,10 @@
 
 <body>
 
+    <div id="site-loader" class="site-loader" role="status" aria-label="Loading">
+        <div class="site-loader__mark"><span class="site-loader__dot"></span></div>
+    </div>
+
     <!-- ════════════════════════════════
          Welcome Overlay
          ════════════════════════════════ -->
@@ -2123,6 +2129,7 @@
     <!-- ════════════════════════════════
          Welcome interactions + portfolio JS
          ════════════════════════════════ -->
+    <script src="js/site-loader.js"></script>
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
@@ -2799,24 +2806,26 @@
             e.preventDefault();
         }, { capture: true, passive: false });
 
-        // WebGPU-style project carousel
-        import('./js/carousel.js').then(function (mod) {
-            var carousel = new mod.Carousel(
-                document.getElementById('project-carousel'),
-                carouselSlots,
-                {
-                    onActiveChange: function (i) { updateActiveDetail(i); },
-                    onSelect: function (i) {
-                        openModal(carouselSlots[i].cardIndex);
-                    },
-                }
-            );
-            carousel.start(2);
-            updateActiveDetail(2);
-        });
+        // WebGPU-style project carousel — after fonts are ready
+        (window.siteReady ?? Promise.resolve()).then(function () {
+            import('./js/carousel.js').then(function (mod) {
+                var carousel = new mod.Carousel(
+                    document.getElementById('project-carousel'),
+                    carouselSlots,
+                    {
+                        onActiveChange: function (i) { updateActiveDetail(i); },
+                        onSelect: function (i) {
+                            openModal(carouselSlots[i].cardIndex);
+                        },
+                    }
+                );
+                carousel.start(2);
+                updateActiveDetail(2);
+            });
 
-        import('./js/header-fluid.js').then(function (mod) {
-            mod.initAllHeaderFluids();
+            import('./js/header-fluid.js').then(function (mod) {
+                mod.initAllHeaderFluids();
+            });
         });
     </script>
 
