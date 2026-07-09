@@ -9,7 +9,7 @@ import { getFeedItems, loadFeedItems } from './feed-items.js';
 
 const MESH_COUNT = 400;
 const CLICK_DRAG_THRESHOLD = 18;
-const AUTO_SCROLL_SPEED = 0.05;
+const AUTO_SCROLL_RATE = 0.14;
 
 const vertexShader = `
 varying vec2 vUv;
@@ -163,6 +163,7 @@ class FeedsPlanes {
     this.dragDamping = 0.1;
     this.isModalOpen = false;
     this.autoAnimate = true;
+    this.autoScrollSpeed = 0;
     this.shaderParameters = {
       maxX: sizes.width * 2,
       maxY: sizes.height * 2,
@@ -322,6 +323,7 @@ class FeedsPlanes {
   }
 
   stopAutoAnimate() {
+    if (!this.autoAnimate) return;
     this.autoAnimate = false;
   }
 
@@ -334,7 +336,6 @@ class FeedsPlanes {
 
     const onPointerDown = (e) => {
       if (this.isModalOpen) return;
-      this.stopAutoAnimate();
       this.drag.isDown = true;
       didDrag = false;
       this.drag.lastX = e.clientX;
@@ -346,10 +347,12 @@ class FeedsPlanes {
 
     const onPointerMove = (e) => {
       if (!this.drag.isDown || this.isModalOpen) return;
-      this.stopAutoAnimate();
       const dx = e.clientX - this.drag.lastX;
       const dy = e.clientY - this.drag.lastY;
-      if (Math.abs(dx) > 1 || Math.abs(dy) > 1) didDrag = true;
+      if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+        didDrag = true;
+        this.stopAutoAnimate();
+      }
       this.drag.lastX = e.clientX;
       this.drag.lastY = e.clientY;
       const worldPerPixelX = (this.sizes.width / window.innerWidth) * this.dragSensitivity;
@@ -432,9 +435,11 @@ class FeedsPlanes {
 
   onWheel(event) {
     if (this.isModalOpen) return;
-    this.stopAutoAnimate();
-    event.preventDefault();
     const normalized = normalizeWheel(event);
+    if (Math.abs(normalized.pixelY) > 2 || Math.abs(normalized.pixelX) > 2) {
+      this.stopAutoAnimate();
+    }
+    event.preventDefault();
     const scrollY = (normalized.pixelY * this.sizes.height) / window.innerHeight;
     this.scrollY.target += scrollY;
     this.material.uniforms.uSpeedY.value += scrollY;
@@ -444,12 +449,14 @@ class FeedsPlanes {
     this.sizes = sizes;
     this.shaderParameters.maxX = sizes.width * 2;
     this.shaderParameters.maxY = sizes.height * 2;
+    this.autoScrollSpeed = this.shaderParameters.maxX * AUTO_SCROLL_RATE;
     this.material.uniforms.uMaxXdisplacement.value.set(this.shaderParameters.maxX, this.shaderParameters.maxY);
   }
 
-  render(delta) {
+  render(deltaSeconds) {
     if (this.autoAnimate) {
-      this.material.uniforms.uTime.value += delta * AUTO_SCROLL_SPEED;
+      this.drag.xTarget -= this.autoScrollSpeed * deltaSeconds;
+      this.material.uniforms.uTime.value += deltaSeconds * 0.35;
     }
     this.drag.xCurrent += (this.drag.xTarget - this.drag.xCurrent) * this.dragDamping;
     this.drag.yCurrent += (this.drag.yTarget - this.drag.yCurrent) * this.dragDamping;
@@ -468,7 +475,6 @@ class FeedsVisualizer {
   constructor(canvas) {
     this.canvas = canvas;
     this.clock = new THREE.Clock();
-    this.time = 0;
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
     this.camera.position.z = 10;
@@ -479,6 +485,7 @@ class FeedsVisualizer {
 
     this.sizes = this.getSizes();
     this.planes = new FeedsPlanes(this.scene, this.sizes);
+    this.planes.resize(this.sizes);
     this.planes.camera = this.camera;
     this.planes.bindDrag(this.renderer.domElement);
 
@@ -510,10 +517,8 @@ class FeedsVisualizer {
   }
 
   animate() {
-    const now = this.clock.getElapsedTime();
-    const delta = now - this.time;
-    this.time = now;
-    this.planes.render(delta / (1 / 60));
+    const deltaSeconds = this.clock.getDelta();
+    this.planes.render(deltaSeconds);
     this.renderer.render(this.scene, this.camera);
     this._raf = requestAnimationFrame(() => this.animate());
   }
