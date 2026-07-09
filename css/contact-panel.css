@@ -209,7 +209,7 @@
     flex-shrink: 0;
     display: block;
     object-fit: contain;
-    background: #fff;
+    background: #000;
     border-radius: 4px;
 }
 
