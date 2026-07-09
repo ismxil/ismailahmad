@@ -8,31 +8,17 @@
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
+    <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/header-fluid.css">
     <style>
-        @font-face {
-            font-family: 'Uncut Sans';
-            src: url('assets/Uncut Sans/Webfonts/UncutSans-Variable.woff2') format('woff2');
-            font-weight: 300 800;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'Reckless';
-            src: url('assets/Signifier-Light.ttf') format('truetype');
-            font-weight: 500 600;
-            font-style: normal;
-            font-display: swap;
-        }
-
         :root {
             --brand: #393bfe;
             --text-primary: #09090b;
             --bg-white: #ffffff;
             --bg-cream: #f3f2ef;
             --font-display: 'Reckless', Georgia, serif;
-            --font-body: 'Uncut Sans', system-ui, sans-serif;
+            --font-serif: 'Reckless', Georgia, serif;
+            --font-body: 'Suisse Intl', system-ui, sans-serif;
         }
 
         *,
@@ -94,7 +80,7 @@
             line-height: 0.95;
             letter-spacing: -1.2px;
             color: var(--brand);
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .brand img {

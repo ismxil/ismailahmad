@@ -1,0 +1,58 @@
+/* Portfolio typography — Reckless (serif) + Suisse Intl (sans) */
+
+@font-face {
+    font-family: 'Reckless';
+    src: url('../assets/fonts/reckless/Reckless-Regular.woff2') format('woff2'),
+        url('../assets/fonts/reckless/Reckless-Regular.woff') format('woff'),
+        url('../assets/fonts/reckless/Reckless-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Reckless';
+    src: url('../assets/fonts/reckless/Reckless-Medium.woff2') format('woff2'),
+        url('../assets/fonts/reckless/Reckless-Medium.woff') format('woff'),
+        url('../assets/fonts/reckless/Reckless-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Suisse Intl';
+    src: url('../assets/fonts/suisse/SuisseIntl-Regular.woff2') format('woff2'),
+        url('../assets/fonts/suisse/SuisseIntl-Regular.woff') format('woff'),
+        url('../assets/fonts/suisse/SuisseIntl-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Suisse Intl';
+    src: url('../assets/fonts/suisse/SuisseIntl-Medium.woff2') format('woff2'),
+        url('../assets/fonts/suisse/SuisseIntl-Medium.woff') format('woff'),
+        url('../assets/fonts/suisse/SuisseIntl-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Temporary fallbacks until licensed files are added to assets/fonts/ */
+@font-face {
+    font-family: 'Reckless';
+    src: url('../assets/Signifier-Light.ttf') format('truetype');
+    font-weight: 400 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Suisse Intl';
+    src: url('../assets/Uncut Sans/Webfonts/UncutSans-Variable.woff2') format('woff2');
+    font-weight: 300 800;
+    font-style: normal;
+    font-display: swap;
+}

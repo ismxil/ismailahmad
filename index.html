@@ -13,25 +13,10 @@
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/header-fluid.css">
 
     <style>
-        @font-face {
-            font-family: 'Uncut Sans';
-            src: url('assets/Uncut Sans/Webfonts/UncutSans-Variable.woff2') format('woff2');
-            font-weight: 300 800;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'Reckless';
-            src: url('assets/Signifier-Light.ttf') format('truetype');
-            font-weight: 500 600;
-            font-style: normal;
-            font-display: swap;
-        }
-
         :root {
             --brand: #393bfe;
             --text-primary: #09090b;
@@ -39,7 +24,8 @@
             --bg-cream: #f3f2ef;
             --bg-white: #ffffff;
             --font-display: 'Reckless', Georgia, serif;
-            --font-body: 'Uncut Sans', system-ui, sans-serif;
+            --font-serif: 'Reckless', Georgia, serif;
+            --font-body: 'Suisse Intl', system-ui, sans-serif;
         }
 
         *,
@@ -66,6 +52,11 @@
         h1, h2, .font-display {
             font-family: var(--font-display);
             font-weight: 500;
+        }
+
+        .font-serif {
+            font-family: var(--font-serif);
+            font-weight: 400;
         }
 
         button,
@@ -163,7 +154,7 @@
         }
 
         #welcome-socials {
-            font-family: 'Uncut Sans', sans-serif;
+            font-family: var(--font-body);
             font-size: 14px;
             color: #111;
             margin: 0 0 36px;
@@ -185,7 +176,7 @@
             gap: 8px;
             background: #111;
             color: #fff;
-            font-family: 'Uncut Sans', sans-serif;
+            font-family: var(--font-body);
             font-size: 14px;
             border: none;
             border-radius: 4px;
@@ -202,7 +193,7 @@
 
         #enter-silent {
             display: block;
-            font-family: 'Uncut Sans', sans-serif;
+            font-family: var(--font-body);
             font-size: 14px;
             color: #666;
             background: none;
@@ -907,9 +898,10 @@
         .site-header__intro {
             margin: 0;
             max-width: 554px;
+            font-family: var(--font-serif);
             font-size: clamp(18px, 2.2vw, 28px);
             line-height: 1.43;
-            font-weight: 500;
+            font-weight: 400;
             color: var(--text-primary);
         }
 
