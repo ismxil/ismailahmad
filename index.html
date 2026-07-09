@@ -2935,6 +2935,7 @@
             { color: '#ff4300', width: 450, height: 485, cardIndex: 2 },
             { color: '#00db2e', width: 400, height: 325, cardIndex: 3 },
             { color: '#393bfe', width: 400, height: 485, cardIndex: 4 },
+            { color: '#393bfe', width: 400, height: 385, cardIndex: 5 },
         ];
 
         function updateActiveDetail(slotIndex) {
@@ -3102,7 +3103,7 @@
                 ]
             },
             {
-                title: 'Commerz Bank',
+                title: 'Commerzbank',
                 subtitle: 'Banking app research, audit, and redesign',
                 year: '2026',
                 tags: ['App Design', '2026'],
@@ -3494,7 +3495,7 @@
             function show(e) {
                 active += 1;
                 var title = modalNextTitle.textContent || 'Project';
-                label.textContent = 'View "' + title + '"';
+                label.textContent = 'View ' + title;
                 pill.classList.add('is-visible');
                 targets.forEach(function (el) {
                     if (el) el.classList.add('is-custom-cursor');
