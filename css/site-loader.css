@@ -1,15 +1,24 @@
-/* Site loader — logo construct / deconstruct on white */
+/* Site loader — instant white, logo construct / deconstruct */
+
+html.is-loading {
+    background: #ffffff;
+}
 
 html.is-loading body {
     overflow: hidden;
+    background: #ffffff;
 }
 
 html.is-loading body > :not(#site-loader) {
+    visibility: hidden;
     opacity: 0;
+    pointer-events: none;
 }
 
 html.is-ready body > :not(#site-loader) {
+    visibility: visible;
     opacity: 1;
+    pointer-events: auto;
     transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 

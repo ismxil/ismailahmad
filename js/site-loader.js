@@ -1,10 +1,10 @@
 /**
- * Site loader — fonts + logo construct/deconstruct before first paint.
+ * Site loader — white screen + logo immediately, fonts in parallel, then animate out.
  * Feed grid intro (infinite-grid.js) is unchanged — it runs after this resolves.
  */
 import { runSiteLoaderLogo } from './site-loader-logo.js';
 
-const MIN_MS = 320;
+const HOLD_MS = 180;
 const FONTS = [
   '400 1em "Reckless"',
   '500 1em "Reckless"',
@@ -19,13 +19,7 @@ function waitForFonts() {
   ).then(() => document.fonts.ready);
 }
 
-function minDelay() {
-  return new Promise((resolve) => { window.setTimeout(resolve, MIN_MS); });
-}
-
 function shouldSkipLogoAnim() {
-  const welcome = document.getElementById('welcome');
-  if (welcome && !sessionStorage.getItem('pv')) return true;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
   return !window.gsap || !document.getElementById('site-loader-canvas');
 }
@@ -46,17 +40,21 @@ function finishLoader() {
   }, { once: true });
 }
 
+function holdAssembled() {
+  return new Promise((resolve) => { window.setTimeout(resolve, HOLD_MS); });
+}
+
 async function boot() {
   const fonts = waitForFonts();
   const canvas = document.getElementById('site-loader-canvas');
 
   if (!shouldSkipLogoAnim()) {
-    const logoDone = runSiteLoaderLogo(canvas, {
+    await runSiteLoaderLogo(canvas, {
+      beforeDeconstruct: () => Promise.all([fonts, holdAssembled()]),
       onDeconstructStart: revealContent,
     });
-    await Promise.all([fonts, logoDone]);
   } else {
-    await Promise.all([fonts, minDelay()]);
+    await fonts;
     revealContent();
   }
 

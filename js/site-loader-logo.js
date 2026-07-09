@@ -112,24 +112,21 @@ function playConstruct(gsap, pieces, piecesFinalPos, camera) {
   gsap.set(camera.position, { z: 118 });
 
   return new Promise((resolve) => {
-    gsap.to(camera.position, { z: 90, duration: 2.6, ease: 'power3.out', delay: 0.15 });
+    gsap.to(camera.position, { z: 90, duration: 2.6, ease: 'power3.out' });
 
-    const intro = gsap.timeline({
-      delay: 0.15,
-      onComplete: resolve,
-    });
+    const intro = gsap.timeline({ onComplete: resolve });
 
     intro
-      .to(ring.scale, { x: 1, y: 1, z: 1, duration: 0.85, ease: 'elastic.out(1,0.5)' }, 0.10)
-      .to(ring.rotation, { z: 0, duration: 0.75, ease: 'power3.out' }, 0.12)
-      .to(thickLine.position, { y: thickFinalY, duration: 0.60, ease: 'power4.out' }, 0.38)
-      .to(thickLine.scale, { x: 1, y: 1, z: 1, duration: 0.55, ease: 'back.out(1.4)' }, 0.35)
-      .to(thinLine.position, { x: thinFinalX, duration: 0.52, ease: 'power3.out' }, 0.58)
-      .to(thinLine.scale, { x: 1, y: 1, z: 1, duration: 0.50, ease: 'back.out(2)' }, 0.56)
-      .to(orbit.scale, { x: 1, y: 1, duration: 0.75, ease: 'elastic.out(1,0.45)' }, 0.75)
-      .to(star.scale, { x: 1, y: 1, z: 1, duration: 0.50, ease: 'back.out(3)' }, 0.95)
-      .to(star.rotation, { z: 0, duration: 0.45, ease: 'power3.out' }, 0.95)
-      .to(star.position, { z: starFinalZ, duration: 0.40, ease: 'power4.out' }, 0.97);
+      .to(ring.scale, { x: 1, y: 1, z: 1, duration: 0.85, ease: 'elastic.out(1,0.5)' }, 0)
+      .to(ring.rotation, { z: 0, duration: 0.75, ease: 'power3.out' }, 0.02)
+      .to(thickLine.position, { y: thickFinalY, duration: 0.60, ease: 'power4.out' }, 0.28)
+      .to(thickLine.scale, { x: 1, y: 1, z: 1, duration: 0.55, ease: 'back.out(1.4)' }, 0.25)
+      .to(thinLine.position, { x: thinFinalX, duration: 0.52, ease: 'power3.out' }, 0.48)
+      .to(thinLine.scale, { x: 1, y: 1, z: 1, duration: 0.50, ease: 'back.out(2)' }, 0.46)
+      .to(orbit.scale, { x: 1, y: 1, duration: 0.75, ease: 'elastic.out(1,0.45)' }, 0.65)
+      .to(star.scale, { x: 1, y: 1, z: 1, duration: 0.50, ease: 'back.out(3)' }, 0.85)
+      .to(star.rotation, { z: 0, duration: 0.45, ease: 'power3.out' }, 0.85)
+      .to(star.position, { z: starFinalZ, duration: 0.40, ease: 'power4.out' }, 0.87);
   });
 }
 
@@ -164,7 +161,7 @@ function playDeconstruct(gsap, pieces, piecesFinalPos, camera, mat, group) {
   });
 }
 
-export async function runSiteLoaderLogo(canvas, { onDeconstructStart } = {}) {
+export async function runSiteLoaderLogo(canvas, { beforeDeconstruct, onDeconstructStart } = {}) {
   const gsap = window.gsap;
   if (!canvas || !gsap) return;
 
@@ -210,6 +207,7 @@ export async function runSiteLoaderLogo(canvas, { onDeconstructStart } = {}) {
 
   const pieces = buildLogoPieces(group, mat);
   const piecesFinalPos = pieces.map((mesh) => mesh.position.clone());
+  setConstructStartState(pieces, piecesFinalPos);
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -233,12 +231,16 @@ export async function runSiteLoaderLogo(canvas, { onDeconstructStart } = {}) {
     renderer.render(scene, camera);
     raf = requestAnimationFrame(tick);
   }
+
+  renderer.render(scene, camera);
   raf = requestAnimationFrame(tick);
+
+  window._loaderLogoPlayed = true;
 
   try {
     await playConstruct(gsap, pieces, piecesFinalPos, camera);
-    await new Promise((resolve) => { window.setTimeout(resolve, 220); });
-    onDeconstructStart?.();
+    await beforeDeconstruct?.();
+    await onDeconstructStart?.();
     await playDeconstruct(gsap, pieces, piecesFinalPos, camera, mat, group);
   } finally {
     running = false;
