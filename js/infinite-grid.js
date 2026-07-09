@@ -21,15 +21,25 @@ export default class InfiniteGrid {
     this.isDisabled = false;
     this.items = [];
     this.introItems = [];
+    this.$wrap = el.parentElement || el;
+    this.pointer = { active: false, lastX: 0, lastY: 0, moved: false };
+    this.didPan = false;
 
     this.onResize = this.onResize.bind(this);
     this.onWheel = this.onWheel.bind(this);
+    this.onPointerDown = this.onPointerDown.bind(this);
+    this.onPointerMove = this.onPointerMove.bind(this);
+    this.onPointerUp = this.onPointerUp.bind(this);
     this.render = this.render.bind(this);
     this.onModalOpen = () => { this.isDisabled = true; };
     this.onModalClose = () => { this.isDisabled = false; };
 
     window.addEventListener('resize', this.onResize);
     window.addEventListener('wheel', this.onWheel, { passive: false });
+    this.$wrap.addEventListener('pointerdown', this.onPointerDown);
+    this.$wrap.addEventListener('pointermove', this.onPointerMove, { passive: false });
+    this.$wrap.addEventListener('pointerup', this.onPointerUp);
+    this.$wrap.addEventListener('pointercancel', this.onPointerUp);
     window.addEventListener('feed-modal-open', this.onModalOpen);
     window.addEventListener('feed-modal-close', this.onModalClose);
 
@@ -176,6 +186,12 @@ export default class InfiniteGrid {
           wrapper.appendChild(caption);
 
           el.addEventListener('click', (e) => {
+            if (this.didPan) {
+              e.preventDefault();
+              e.stopPropagation();
+              this.didPan = false;
+              return;
+            }
             if (this.isDisabled || !this.onItemClick) return;
             e.stopPropagation();
             this.onItemClick(source.feedIndex);
@@ -210,6 +226,50 @@ export default class InfiniteGrid {
     const factor = 0.65;
     this.scroll.target.x -= e.deltaX * factor;
     this.scroll.target.y -= e.deltaY * factor;
+  }
+
+  onPointerDown(e) {
+    if (this.isDisabled) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+    this.pointer.active = true;
+    this.pointer.lastX = e.clientX;
+    this.pointer.lastY = e.clientY;
+    this.pointer.moved = false;
+    this.didPan = false;
+    this.$wrap.setPointerCapture(e.pointerId);
+  }
+
+  onPointerMove(e) {
+    if (!this.pointer.active || this.isDisabled) return;
+
+    const dx = e.clientX - this.pointer.lastX;
+    const dy = e.clientY - this.pointer.lastY;
+    this.pointer.lastX = e.clientX;
+    this.pointer.lastY = e.clientY;
+
+    if (!this.pointer.moved && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+      this.pointer.moved = true;
+    }
+
+    if (!this.pointer.moved) return;
+
+    this.scroll.target.x += dx;
+    this.scroll.target.y += dy;
+    e.preventDefault();
+  }
+
+  onPointerUp(e) {
+    if (!this.pointer.active) return;
+
+    this.pointer.active = false;
+    if (this.pointer.moved) this.didPan = true;
+
+    try {
+      this.$wrap.releasePointerCapture(e.pointerId);
+    } catch {
+      // pointer may already be released
+    }
   }
 
   render() {
@@ -255,6 +315,10 @@ export default class InfiniteGrid {
     cancelAnimationFrame(this._raf);
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('wheel', this.onWheel);
+    this.$wrap.removeEventListener('pointerdown', this.onPointerDown);
+    this.$wrap.removeEventListener('pointermove', this.onPointerMove);
+    this.$wrap.removeEventListener('pointerup', this.onPointerUp);
+    this.$wrap.removeEventListener('pointercancel', this.onPointerUp);
     window.removeEventListener('feed-modal-open', this.onModalOpen);
     window.removeEventListener('feed-modal-close', this.onModalClose);
   }

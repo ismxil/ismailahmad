@@ -7,7 +7,7 @@
     overflow: hidden;
     user-select: none;
     cursor: default;
-    touch-action: pan-x pan-y;
+    touch-action: none;
 }
 
 #feeds-grid {
