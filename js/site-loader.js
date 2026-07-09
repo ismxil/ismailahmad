@@ -1,44 +1,70 @@
 /**
- * Wait for portfolio typefaces before revealing the page.
+ * Site loader — fonts + logo construct/deconstruct before first paint.
  * Feed grid intro (infinite-grid.js) is unchanged — it runs after this resolves.
  */
-(function () {
-    const MIN_MS = 380;
-    const FONTS = [
-        '400 1em "Reckless"',
-        '500 1em "Reckless"',
-        '400 1em "Suisse Intl"',
-        '500 1em "Suisse Intl"',
-    ];
+import { runSiteLoaderLogo } from './site-loader-logo.js';
 
-    function waitForFonts() {
-        if (!document.fonts) return Promise.resolve();
-        return Promise.all(
-            FONTS.map((face) => document.fonts.load(face).catch(() => {}))
-        ).then(() => document.fonts.ready);
-    }
+const MIN_MS = 320;
+const FONTS = [
+  '400 1em "Reckless"',
+  '500 1em "Reckless"',
+  '400 1em "Suisse Intl"',
+  '500 1em "Suisse Intl"',
+];
 
-    function reveal() {
-        const root = document.documentElement;
-        const loader = document.getElementById('site-loader');
+function waitForFonts() {
+  if (!document.fonts) return Promise.resolve();
+  return Promise.all(
+    FONTS.map((face) => document.fonts.load(face).catch(() => {}))
+  ).then(() => document.fonts.ready);
+}
 
-        root.classList.add('is-ready');
-        root.classList.remove('is-loading');
+function minDelay() {
+  return new Promise((resolve) => { window.setTimeout(resolve, MIN_MS); });
+}
 
-        if (!loader) return;
+function shouldSkipLogoAnim() {
+  const welcome = document.getElementById('welcome');
+  if (welcome && !sessionStorage.getItem('pv')) return true;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+  return !window.gsap || !document.getElementById('site-loader-canvas');
+}
 
-        loader.classList.add('is-done');
-        loader.addEventListener('transitionend', () => {
-            loader.remove();
-        }, { once: true });
-    }
+function revealContent() {
+  const root = document.documentElement;
+  root.classList.add('is-ready');
+  root.classList.remove('is-loading');
+}
 
-    window.siteReady = Promise.all([
-        waitForFonts(),
-        new Promise((resolve) => { window.setTimeout(resolve, MIN_MS); }),
-    ]).then(reveal);
+function finishLoader() {
+  const loader = document.getElementById('site-loader');
+  if (!loader) return;
 
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.catch(() => {});
-    }
-})();
+  loader.classList.add('is-done');
+  loader.addEventListener('transitionend', () => {
+    loader.remove();
+  }, { once: true });
+}
+
+async function boot() {
+  const fonts = waitForFonts();
+  const canvas = document.getElementById('site-loader-canvas');
+
+  if (!shouldSkipLogoAnim()) {
+    const logoDone = runSiteLoaderLogo(canvas, {
+      onDeconstructStart: revealContent,
+    });
+    await Promise.all([fonts, logoDone]);
+  } else {
+    await Promise.all([fonts, minDelay()]);
+    revealContent();
+  }
+
+  finishLoader();
+}
+
+window.siteReady = boot();
+
+if (document.fonts?.ready) {
+  document.fonts.ready.catch(() => {});
+}
