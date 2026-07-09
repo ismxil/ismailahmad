@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
-    <link rel="stylesheet" href="css/music-visualizer.css">
+    <link rel="stylesheet" href="css/music-player.css">
 
     <style>
         :root {
@@ -257,15 +257,6 @@
             flex-wrap: wrap;
         }
 
-        .bottom-bar__music {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
         .social-pill,
         .top-pill,
         .pill {
@@ -322,218 +313,6 @@
         .top-pill:hover,
         .pill:hover {
             opacity: 0.75;
-        }
-
-        #play-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--brand);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: background 0.18s, transform 0.18s;
-            padding: 0;
-        }
-
-        #play-btn:hover {
-            background: #2b2ecc;
-            transform: scale(1.04);
-        }
-
-        #play-btn svg {
-            display: block;
-        }
-
-        #music-popover {
-            position: absolute;
-            right: 0;
-            bottom: 54px;
-            width: min(360px, calc(100vw - 32px));
-            padding: 22px;
-            border-radius: 28px;
-            background: var(--brand);
-            color: #fff;
-            box-shadow: 0 18px 50px rgba(0, 17, 255, 0.24);
-            opacity: 0;
-            transform: translateY(14px) scale(0.98);
-            transform-origin: right bottom;
-            pointer-events: none;
-            transition: opacity 0.22s ease, transform 0.22s ease, background 0.45s ease, backdrop-filter 0.45s ease, box-shadow 0.45s ease;
-        }
-
-        #play-btn:hover+#music-popover,
-        #play-btn:focus-visible+#music-popover,
-        #music-popover:hover,
-        #music-popover.is-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-        }
-
-        .music-track {
-            display: grid;
-            grid-template-columns: 48px 1fr 42px;
-            gap: 14px;
-            align-items: center;
-            margin-bottom: 18px;
-            width: 100%;
-            border: 0;
-            padding: 0;
-            background: transparent;
-            color: inherit;
-            text-align: left;
-        }
-
-        .music-track:last-of-type {
-            margin-bottom: 22px;
-        }
-
-        .music-cover,
-        .music-current-cover {
-            border-radius: 12px;
-            background:
-                radial-gradient(circle at 70% 25%, rgba(255, 255, 255, 0.42), transparent 24%),
-                linear-gradient(135deg, #0b163f, #4220c8 52%, #ff5c9f);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-        }
-
-        .music-cover {
-            width: 48px;
-            height: 48px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .music-cover,
-        .music-current-cover {
-            background-size: cover;
-            background-position: center;
-        }
-
-        .music-title {
-            font-size: 20px;
-            line-height: 1.05;
-            margin: 0 0 4px;
-            color: #fff;
-        }
-
-        .music-artist {
-            font-size: 14px;
-            line-height: 1.1;
-            margin: 0;
-            color: rgba(255, 255, 255, 0.62);
-        }
-
-        .music-row-btn {
-            width: 42px;
-            height: 42px;
-            border: none;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.18);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-        }
-
-        .music-track.is-active .music-row-btn {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .music-track.is-disabled {
-            opacity: 0.58;
-            cursor: default;
-        }
-
-        .music-now {
-            border-top: 1px solid rgba(0, 0, 0, 0.12);
-            padding-top: 20px;
-            text-align: center;
-        }
-
-        .music-current-cover {
-            width: 92px;
-            height: 92px;
-            border-radius: 50%;
-            margin: 0 auto 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            background-color: #101010;
-            isolation: isolate;
-            border: 0;
-            padding: 0;
-            cursor: pointer;
-        }
-
-        .music-current-cover:focus-visible {
-            outline: 2px solid rgba(255, 255, 255, 0.8);
-            outline-offset: 4px;
-        }
-
-        .music-current-art {
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background:
-                radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.08) 0 9%, transparent 10%),
-                radial-gradient(circle at 70% 25%, rgba(255, 255, 255, 0.28), transparent 24%),
-                linear-gradient(135deg, #0b163f, #4220c8 52%, #ff5c9f);
-            background-size: cover;
-            background-position: center;
-            transform: rotate(0deg);
-            transition: transform 0.35s ease;
-            will-change: transform;
-            z-index: 0;
-        }
-
-        .music-current-cover.is-playing .music-current-art {
-            animation: musicDiscSpin 18s linear infinite;
-        }
-
-        .music-current-cover::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background:
-                radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.42) 0 9%, rgba(255, 255, 255, 0.85) 9.5% 12%, transparent 12.5%),
-                linear-gradient(145deg, rgba(255, 255, 255, 0.18), transparent 32%, rgba(0, 0, 0, 0.24));
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .music-current-cover svg {
-            position: relative;
-            z-index: 2;
-            filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.38));
-        }
-
-        @keyframes musicDiscSpin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .music-current-title {
-            margin: 0;
-            font-size: 24px;
-            line-height: 1.1;
-            color: #fff;
-        }
-
-        .music-current-subtitle {
-            margin: 4px 0 0;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.52);
         }
 
         #open-contact {
@@ -1732,14 +1511,9 @@
         </div>
     </div>
 
-    <!-- SVG filters — music visualizer goo + grain -->
+    <!-- SVG filters — music glow grain -->
     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
         <defs>
-            <filter id="music-goo">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 55 -8" result="goo" />
-                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-            </filter>
             <filter id="music-grain-fine" x="-20%" y="-20%" width="140%" height="140%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" seed="2" />
                 <feColorMatrix type="saturate" values="0" />
@@ -1761,10 +1535,42 @@
         </defs>
     </svg>
 
-    <div id="music-visualizer" aria-hidden="true">
-        <div class="music-lava-bg"></div>
-        <div class="music-grain-overlay music-grain-overlay--fine"></div>
-        <div class="music-grain-overlay music-grain-overlay--coarse"></div>
+    <div id="music-glow" aria-hidden="true">
+        <img id="music-glow-bg" class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="836" height="735" />
+        <div class="music-glow__grain music-glow__grain--fine"></div>
+        <div class="music-glow__grain music-glow__grain--coarse"></div>
+    </div>
+
+    <div id="music-player" aria-hidden="true" aria-label="Music player">
+        <div class="music-player__thumbs" id="music-player-thumbs"></div>
+        <div class="music-player__art">
+            <img id="music-player-art" src="assets/music/dream-cover-opt.jpg" alt="Dream cover art" width="200" height="200" />
+        </div>
+        <div class="music-player__meta">
+            <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
+            <p class="music-player__title" id="music-player-title">Dream</p>
+        </div>
+        <div class="music-player__controls">
+            <button type="button" class="music-player__btn music-player__btn--side" id="music-prev" aria-label="Previous track">
+                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
+                    <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+            <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause" aria-label="Play">
+                <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true">
+                    <path d="M1 1L9 6L1 11V1Z" />
+                </svg>
+                <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" style="display:none">
+                    <rect x="1" y="1" width="2.5" height="10" rx="0.5" />
+                    <rect x="6.5" y="1" width="2.5" height="10" rx="0.5" />
+                </svg>
+            </button>
+            <button type="button" class="music-player__btn music-player__btn--side" id="music-next" aria-label="Next track">
+                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
+                    <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
     </div>
 
     <!-- ════════════════════════════════
@@ -1773,7 +1579,7 @@
     <div id="bottom-bar">
         <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
         <div class="bottom-bar__music" aria-label="Music controls">
-            <button id="play-btn" aria-label="Play / Pause music">
+            <button id="play-btn" aria-label="Play music">
                 <svg id="icon-play" width="14" height="14" viewBox="0 0 24 24" fill="white">
                     <polygon points="6,3 20,12 6,21" />
                 </svg>
@@ -1782,25 +1588,6 @@
                     <rect x="15" y="4" width="4" height="16" />
                 </svg>
             </button>
-            <div id="music-popover" aria-hidden="true">
-                <div id="music-queue"></div>
-                <div class="music-now">
-                    <button class="music-current-cover" id="music-current-control" type="button"
-                        aria-label="Play Current Track">
-                        <span class="music-current-art" id="music-current-art" aria-hidden="true"></span>
-                        <svg id="music-current-icon-play" width="24" height="28" viewBox="0 0 24 24" fill="white">
-                            <polygon points="7,4 20,12 7,20" />
-                        </svg>
-                        <svg id="music-current-icon-pause" width="26" height="28" viewBox="0 0 24 24" fill="white"
-                            style="display:none">
-                            <rect x="5" y="4" width="5" height="16" rx="2" />
-                            <rect x="14" y="4" width="5" height="16" rx="2" />
-                        </svg>
-                    </button>
-                    <p class="music-current-title">Alan Watts</p>
-                    <p class="music-current-subtitle" id="music-current-track">Dream</p>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -2197,7 +1984,7 @@
          ════════════════════════════════ -->
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
-    <script src="js/music-visualizer.js"></script>
+    <script src="js/music-player.js"></script>
     <script>
         // ── Show welcome only once per session ──
         window._skipWelcome = !!sessionStorage.getItem('pv');
@@ -2206,205 +1993,11 @@
             if (_wEl) _wEl.style.display = 'none';
         }
 
-        // ────────────────────────────────
-        // Local audio queue
-        // Add full audio files at these paths, or update src/cover per track.
-        // ────────────────────────────────
-        var MUSIC_TRACKS = [
-            { title: 'Dream', artist: 'Alan Watts', src: 'assets/audio/Alan Watts - Dream.flac', cover: 'assets/audio/dream cover.jpg', colors: ['#4220c8', '#ff5c9f', '#0b163f', '#6b4cff', '#ff8f6b'] },
-            { title: 'Beautiful Error', artist: 'Alan Watts', src: 'assets/audio/Alan Watts - Beautiful Error.flac', cover: 'assets/audio/beautiful error cover.jpg', colors: ['#ff4300', '#393bfe', '#ffb347', '#1e40af', '#ff7a45'] },
-            { title: 'Burgs', artist: 'Mt. Wolf', src: 'assets/audio/Mt. Wolf - Burgs.flac', cover: 'assets/audio/burgs cover.jpg', colors: ['#00db2e', '#393bfe', '#66cb29', '#0b163f', '#7ef29a'] },
-        ];
-
-        var siteAudio = document.getElementById('site-audio');
-        var musicOn = false;
-        var musicEnabled = false;
-        var currentTrackIndex = 0;
-        var currentTrack = MUSIC_TRACKS[currentTrackIndex];
-        var iconPause = document.getElementById('icon-pause');
-        var iconPlay = document.getElementById('icon-play');
-        var currentIconPause = document.getElementById('music-current-icon-pause');
-        var currentIconPlay = document.getElementById('music-current-icon-play');
-        var currentTrackLabel = document.getElementById('music-current-track');
-        var currentTitleLabel = document.querySelector('.music-current-title');
-        var currentCover = document.querySelector('.music-current-cover');
-        var currentArt = document.getElementById('music-current-art');
-        var musicPopover = document.getElementById('music-popover');
-        var musicQueue = document.getElementById('music-queue');
-        var musicStatusMessage = '';
-        var musicVisualizer = initMusicVisualizer(siteAudio, {
-            getColors: function () {
-                return (currentTrack && currentTrack.colors) ? currentTrack.colors : ['#4220c8', '#ff5c9f', '#0b163f'];
-            }
-        });
-
-        function syncMusicVisualizer() {
-            if (!musicVisualizer) return;
-            if (musicOn) {
-                musicVisualizer.onTrackChange();
-                musicVisualizer.onPlay();
-            } else {
-                musicVisualizer.onPause();
-            }
-        }
-
-        function updatePlayIcon() {
-            iconPlay.style.display = musicOn ? 'none' : 'block';
-            iconPause.style.display = musicOn ? 'block' : 'none';
-            currentIconPlay.style.display = musicOn ? 'none' : 'block';
-            currentIconPause.style.display = musicOn ? 'block' : 'none';
-            currentTrack = MUSIC_TRACKS[currentTrackIndex] || MUSIC_TRACKS[0];
-            currentTitleLabel.textContent = currentTrack.artist;
-            currentTrackLabel.textContent = currentTrack.title;
-            currentCover.classList.toggle('is-playing', musicOn);
-            currentCover.setAttribute('aria-label', musicOn ? 'Pause Current Track' : 'Play Current Track');
-            currentArt.style.backgroundImage = currentTrack.cover ? 'url("' + currentTrack.cover + '")' : '';
-            renderMusicQueue();
-            syncMusicVisualizer();
-        }
-
-        function renderMusicQueue() {
-            musicQueue.innerHTML = '';
-            if (!MUSIC_TRACKS.length) return;
-
-            var visibleTracks = MUSIC_TRACKS.slice(currentTrackIndex, currentTrackIndex + 3);
-            if (visibleTracks.length < 3) {
-                visibleTracks = visibleTracks.concat(MUSIC_TRACKS.slice(0, 3 - visibleTracks.length));
-            }
-
-            visibleTracks.forEach(function (track) {
-                var idx = MUSIC_TRACKS.indexOf(track);
-                var row = document.createElement('button');
-                row.type = 'button';
-                row.className = 'music-track' + (idx === currentTrackIndex ? ' is-active' : '');
-                row.setAttribute('data-track-index', String(idx));
-
-                var cover = document.createElement('span');
-                cover.className = 'music-cover';
-                if (track.cover) cover.style.backgroundImage = 'url("' + track.cover + '")';
-
-                var meta = document.createElement('span');
-                var title = document.createElement('p');
-                title.className = 'music-title';
-                title.textContent = track.title;
-                var artist = document.createElement('p');
-                artist.className = 'music-artist';
-                artist.textContent = track.artist;
-                meta.appendChild(title);
-                meta.appendChild(artist);
-
-                var icon = document.createElement('span');
-                icon.className = 'music-row-btn';
-                icon.innerHTML = idx === currentTrackIndex && musicOn
-                    ? '<svg width="13" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="2"/><rect x="14" y="4" width="5" height="16" rx="2"/></svg>'
-                    : '<svg width="14" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="7,4 20,12 7,20"/></svg>';
-
-                row.appendChild(cover);
-                row.appendChild(meta);
-                row.appendChild(icon);
-                row.addEventListener('click', function () {
-                    playTrack(idx);
-                });
-                musicQueue.appendChild(row);
-            });
-        }
-
-        function loadTrack(idx) {
-            currentTrackIndex = ((idx % MUSIC_TRACKS.length) + MUSIC_TRACKS.length) % MUSIC_TRACKS.length;
-            currentTrack = MUSIC_TRACKS[currentTrackIndex];
-            if (siteAudio.src !== new URL(currentTrack.src, window.location.href).href) {
-                siteAudio.src = currentTrack.src;
-                siteAudio.load();
-            }
-            updatePlayIcon();
-        }
-
-        function playTrack(idx) {
-            if (!MUSIC_TRACKS.length) return Promise.resolve();
-            musicEnabled = true;
-            musicStatusMessage = '';
-            musicOn = true;
-            loadTrack(idx);
-            return siteAudio.play().then(function () {
-                musicOn = true;
-                updatePlayIcon();
-            }).catch(function () {
-                musicOn = false;
-                musicStatusMessage = 'Audio Could Not Play In This Browser';
-                updatePlayIcon();
-            });
-        }
-
-        function startMusic() {
-            return playTrack(currentTrackIndex);
-        }
-
-        function toggleMusic() {
-            if (!musicEnabled || !siteAudio.src) {
-                startMusic();
-                return;
-            }
-            if (musicOn) {
-                siteAudio.pause();
-                musicOn = false;
-                musicStatusMessage = '';
-                updatePlayIcon();
-                return;
-            }
-            musicStatusMessage = '';
-            musicOn = true;
-            updatePlayIcon();
-            siteAudio.play().then(function () {
-                musicOn = true;
-                updatePlayIcon();
-            }).catch(function () {
-                musicOn = false;
-                musicStatusMessage = 'Audio Could Not Play In This Browser';
-                updatePlayIcon();
-            });
-        }
-
-        siteAudio.addEventListener('playing', function () {
-            musicOn = true;
-            syncMusicVisualizer();
-        });
-
-        siteAudio.addEventListener('ended', function () {
-            playTrack(currentTrackIndex + 1);
-        });
-        siteAudio.addEventListener('error', function () {
-            musicOn = false;
-            musicStatusMessage = 'Audio Could Not Play In This Browser';
-            updatePlayIcon();
-        });
-        renderMusicQueue();
-        updatePlayIcon();
-
-        var playBtn = document.getElementById('play-btn');
-        var hideMusicPopoverTimer = null;
-        function showMusicPopover() {
-            clearTimeout(hideMusicPopoverTimer);
-            musicPopover.classList.add('is-visible');
-        }
-        function hideMusicPopoverSoon() {
-            clearTimeout(hideMusicPopoverTimer);
-            hideMusicPopoverTimer = setTimeout(function () {
-                musicPopover.classList.remove('is-visible');
-            }, 120);
-        }
-
-        playBtn.addEventListener('click', toggleMusic);
-        currentCover.addEventListener('click', toggleMusic);
-        playBtn.addEventListener('mouseenter', showMusicPopover);
-        playBtn.addEventListener('focus', showMusicPopover);
-        playBtn.addEventListener('mouseleave', hideMusicPopoverSoon);
-        playBtn.addEventListener('blur', hideMusicPopoverSoon);
-        musicPopover.addEventListener('mouseenter', showMusicPopover);
-        musicPopover.addEventListener('mouseleave', hideMusicPopoverSoon);
+        var musicPlayer = initMusicPlayer();
 
         // ── Enter with sound ──
         document.getElementById('enter-sound').addEventListener('click', function () {
-            startMusic();
+            if (musicPlayer) musicPlayer.start();
             enterPortfolio();
         });
 
