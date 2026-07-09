@@ -1,11 +1,48 @@
-/* Music player — Figma index(music) 204:11130 */
+/* Music player — Figma index(music) 188:9585 / 204:11130 */
 
-#music-player {
+#music-stack {
     position: fixed;
     right: 24px;
     bottom: 88px;
     width: 269px;
     z-index: 46;
+    pointer-events: none;
+}
+
+#music-glow {
+    position: absolute;
+    right: -200px;
+    bottom: -80px;
+    width: min(520px, 72vw);
+    height: auto;
+    aspect-ratio: 1672 / 1470;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+    -webkit-mask-image: radial-gradient(ellipse 68% 62% at 58% 62%, #000 0%, transparent 74%);
+    mask-image: radial-gradient(ellipse 68% 62% at 58% 62%, #000 0%, transparent 74%);
+}
+
+#music-stack.is-open #music-glow {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.music-glow__bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 75%;
+    display: block;
+}
+
+#music-player {
+    position: relative;
+    z-index: 1;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -98,7 +135,8 @@
     font-size: 16px;
     line-height: 24px;
     font-weight: 500;
-    color: var(--text-primary);
+    color: #fff;
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 0, 0, 0.4);
 }
 
 .music-player__title {
@@ -107,7 +145,8 @@
     font-size: 12px;
     line-height: 16px;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.5);
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
 }
 
 .music-player__controls {
@@ -121,17 +160,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--text-primary);
+    border: 1px solid var(--bg-cream);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.92);
-    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.15);
+    color: var(--bg-cream);
     cursor: pointer;
     padding: 0;
     transition: background 0.18s ease, transform 0.18s ease;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .music-player__btn:hover {
-    background: var(--bg-cream);
+    background: rgba(0, 0, 0, 0.28);
     transform: scale(1.04);
 }
 
@@ -182,10 +223,16 @@
 }
 
 @media (max-width: 720px) {
-    #music-player {
+    #music-stack {
         right: 16px;
         bottom: 76px;
         width: min(269px, calc(100vw - 32px));
+    }
+
+    #music-glow {
+        right: -140px;
+        bottom: -60px;
+        width: min(420px, 95vw);
     }
 
     .music-player__art {

@@ -1527,7 +1527,12 @@
         </defs>
     </svg>
 
-    <div id="music-player" aria-hidden="true" aria-label="Music player">
+    <div id="music-stack" aria-hidden="true">
+        <div id="music-glow" aria-hidden="true">
+            <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
+        </div>
+
+        <div id="music-player" aria-hidden="true" aria-label="Music player">
             <div class="music-player__thumbs" id="music-player-thumbs"></div>
             <div class="music-player__art">
                 <img id="music-player-art" src="assets/music/dream-cover-opt.jpg" alt="Dream cover art" width="200" height="200" />
@@ -1557,6 +1562,7 @@
                     </svg>
                 </button>
             </div>
+        </div>
     </div>
 
     <!-- ════════════════════════════════
@@ -1565,13 +1571,16 @@
     <div id="bottom-bar">
         <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
         <div class="bottom-bar__music" aria-label="Music controls">
-            <button id="play-btn" aria-label="Play music">
-                <svg id="icon-play" width="14" height="14" viewBox="0 0 24 24" fill="white">
-                    <polygon points="6,3 20,12 6,21" />
+            <button id="play-btn" type="button" aria-label="Open music player">
+                <svg id="icon-audio" width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
+                    <path d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
                 </svg>
-                <svg id="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="white" style="display:none">
-                    <rect x="5" y="4" width="4" height="16" />
-                    <rect x="15" y="4" width="4" height="16" />
+                <svg id="icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:none">
+                    <path d="M7 7L17 17M17 7L7 17" stroke="#F3F2EF" stroke-width="2" stroke-linecap="round" />
                 </svg>
             </button>
         </div>

@@ -22,10 +22,11 @@
 
     window.initMusicPlayer = function () {
         var audio = document.getElementById('site-audio');
+        var stack = document.getElementById('music-stack');
         var player = document.getElementById('music-player');
         var playBtn = document.getElementById('play-btn');
-        var iconPlay = document.getElementById('icon-play');
-        var iconPause = document.getElementById('icon-pause');
+        var iconAudio = document.getElementById('icon-audio');
+        var iconClose = document.getElementById('icon-close');
         var artImg = document.getElementById('music-player-art');
         var artistEl = document.getElementById('music-player-artist');
         var titleEl = document.getElementById('music-player-title');
@@ -80,11 +81,12 @@
             titleEl.textContent = track.title;
             renderThumbs();
 
-            iconPlay.style.display = playing ? 'none' : 'block';
-            iconPause.style.display = playing ? 'block' : 'none';
+            iconAudio.style.display = open ? 'none' : 'block';
+            iconClose.style.display = open ? 'block' : 'none';
+            playBtn.setAttribute('aria-label', open ? 'Close music player' : 'Open music player');
+
             mainIconPlay.style.display = playing ? 'none' : 'block';
             mainIconPause.style.display = playing ? 'block' : 'none';
-            playBtn.setAttribute('aria-label', playing ? 'Pause music' : 'Play music');
             btnMain.setAttribute('aria-label', playing ? 'Pause' : 'Play');
         }
 
@@ -92,6 +94,11 @@
             open = next;
             player.classList.toggle('is-open', open);
             player.setAttribute('aria-hidden', open ? 'false' : 'true');
+            if (stack) {
+                stack.classList.toggle('is-open', open);
+                stack.setAttribute('aria-hidden', open ? 'false' : 'true');
+            }
+            updateUI();
         }
 
         function currentAudioSrc() {
@@ -139,6 +146,12 @@
             updateUI();
         }
 
+        function dismiss() {
+            audio.pause();
+            playing = false;
+            setOpen(false);
+        }
+
         function playTrack(i, keepPlaying) {
             loadTrack(i);
             if (keepPlaying) return beginPlayback();
@@ -146,11 +159,7 @@
             return Promise.resolve();
         }
 
-        function toggle() {
-            if (!open) {
-                setOpen(true);
-                return play();
-            }
+        function togglePlayback() {
             if (playing) {
                 pause();
                 return Promise.resolve();
@@ -160,11 +169,15 @@
 
         playBtn.addEventListener('click', function (e) {
             e.stopPropagation();
-            toggle();
+            if (open) {
+                dismiss();
+                return;
+            }
+            play();
         });
         btnMain.addEventListener('click', function (e) {
             e.stopPropagation();
-            toggle();
+            togglePlayback();
         });
         btnPrev.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -182,7 +195,6 @@
         audio.addEventListener('playing', function () {
             playing = true;
             setOpen(true);
-            updateUI();
         });
 
         audio.addEventListener('pause', function () {
@@ -202,7 +214,7 @@
 
         return {
             start: function () { return play(); },
-            toggle: toggle,
+            dismiss: dismiss,
             pause: pause,
             isPlaying: function () { return playing; }
         };
