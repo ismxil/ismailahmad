@@ -2321,9 +2321,10 @@
 
         function playTrack(idx) {
             if (!MUSIC_TRACKS.length) return Promise.resolve();
-            loadTrack(idx);
             musicEnabled = true;
             musicStatusMessage = '';
+            musicOn = true;
+            loadTrack(idx);
             return siteAudio.play().then(function () {
                 musicOn = true;
                 updatePlayIcon();
@@ -2351,6 +2352,8 @@
                 return;
             }
             musicStatusMessage = '';
+            musicOn = true;
+            updatePlayIcon();
             siteAudio.play().then(function () {
                 musicOn = true;
                 updatePlayIcon();
@@ -2360,6 +2363,11 @@
                 updatePlayIcon();
             });
         }
+
+        siteAudio.addEventListener('playing', function () {
+            musicOn = true;
+            syncMusicVisualizer();
+        });
 
         siteAudio.addEventListener('ended', function () {
             playTrack(currentTrackIndex + 1);

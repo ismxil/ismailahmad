@@ -2,15 +2,15 @@
 
 #music-visualizer {
     position: fixed;
-    right: -40px;
-    bottom: -20px;
-    width: min(720px, 92vw);
-    height: min(520px, 58vh);
+    right: -20px;
+    bottom: 0;
+    width: min(780px, 95vw);
+    height: min(560px, 62vh);
     pointer-events: none;
-    z-index: 12;
+    z-index: 15;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.7s ease, visibility 0s linear 0.7s;
+    transition: opacity 0.55s ease, visibility 0s linear 0.55s;
     overflow: visible;
 }
 
@@ -22,10 +22,11 @@
 
 .music-lava-bg {
     position: absolute;
-    inset: -12%;
-    filter: url(#music-goo) blur(44px);
+    inset: -15%;
+    filter: url(#music-goo) blur(48px);
     transform: translateZ(0);
     will-change: filter;
+    -webkit-filter: url(#music-goo) blur(48px);
 }
 
 .music-lava-blob {
@@ -36,6 +37,7 @@
     opacity: 0;
     will-change: transform, opacity, width, height, border-radius;
     transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
 }
 
 .music-grain-overlay {

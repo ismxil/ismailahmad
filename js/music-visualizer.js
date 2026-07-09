@@ -17,7 +17,6 @@
         if (!container || !lavaBg || !audioEl) return null;
 
         var blobs = [];
-        var idleTweens = [];
         var audioCtx = null;
         var analyser = null;
         var sourceNode = null;
@@ -26,7 +25,7 @@
         var active = false;
         var blobPhases = [];
         var smoothed = new Float32Array(BLOB_COUNT);
-        var prevEnergy = new Float32Array(BLOB_COUNT);
+        var prevTotal = 0;
         var baseSizes = [];
         var currentColors = ['#4220c8', '#ff5c9f', '#0b163f'];
         var getColors = options.getColors || function () { return currentColors; };
@@ -34,8 +33,8 @@
         for (var i = 0; i < BLOB_COUNT; i++) {
             var blob = document.createElement('div');
             blob.className = 'music-lava-blob';
-            var left = (i % 3 - 1) * 18 + 58;
-            var top = 28 + (i * 11 % 42);
+            var left = (i % 3 - 1) * 16 + 62;
+            var top = 24 + (i * 11 % 44);
             blob.style.left = left + '%';
             blob.style.top = top + '%';
             lavaBg.appendChild(blob);
@@ -43,16 +42,9 @@
             blobPhases.push({
                 phaseX: Math.random() * Math.PI * 2,
                 phaseY: Math.random() * Math.PI * 2,
-                speedX: 0.4 + Math.random() * 0.5,
-                speedY: 0.35 + Math.random() * 0.45
+                speedX: 0.45 + Math.random() * 0.55,
+                speedY: 0.38 + Math.random() * 0.48
             });
-        }
-
-        function killIdleTweens() {
-            idleTweens.forEach(function (t) {
-                if (t && t.kill) t.kill();
-            });
-            idleTweens = [];
         }
 
         function applyBlobColors(colors) {
@@ -62,97 +54,59 @@
             });
         }
 
-        function startIdleMotion() {
-            if (typeof gsap === 'undefined') return;
-            killIdleTweens();
+        function layoutBlobs() {
+            baseSizes = blobs.map(function (_, i) {
+                return 140 + (i % 3) * 36 + Math.random() * 120;
+            });
             blobs.forEach(function (blob, i) {
-                var size = baseSizes[i] || 160;
-                idleTweens.push(gsap.to(blob, {
-                    x: (Math.random() - 0.5) * 80,
-                    y: (Math.random() - 0.5) * 60,
-                    duration: 2.8 + Math.random() * 2.4,
-                    ease: 'sine.inOut',
-                    repeat: -1,
-                    yoyo: true,
-                    delay: i * 0.18
-                }));
-                idleTweens.push(gsap.to(blob, {
-                    borderRadius: (45 + Math.random() * 18) + '% ' + (52 + Math.random() * 16) + '% ' + (48 + Math.random() * 20) + '% ' + (50 + Math.random() * 14) + '%',
-                    duration: 3.2 + Math.random() * 2,
-                    ease: 'sine.inOut',
-                    repeat: -1,
-                    yoyo: true,
-                    delay: i * 0.12
-                }));
+                var size = baseSizes[i];
+                blob.style.width = size + 'px';
+                blob.style.height = size + 'px';
+                blob.style.opacity = '0.8';
             });
         }
 
         function showLava() {
             applyBlobColors(getColors());
-            baseSizes = blobs.map(function () {
-                return 120 + Math.random() * 180;
-            });
-
-            if (typeof gsap !== 'undefined') {
-                gsap.to(blobs, {
-                    opacity: 0.82,
-                    duration: 0.9,
-                    ease: 'power2.out',
-                    stagger: 0.06
-                });
-                blobs.forEach(function (blob, i) {
-                    var size = baseSizes[i];
-                    gsap.set(blob, { width: size, height: size });
-                });
-            } else {
-                blobs.forEach(function (blob, i) {
-                    var size = baseSizes[i];
-                    blob.style.opacity = '0.82';
-                    blob.style.width = size + 'px';
-                    blob.style.height = size + 'px';
-                });
-            }
-
-            startIdleMotion();
+            layoutBlobs();
             container.classList.add('is-active');
+            container.setAttribute('aria-hidden', 'false');
             if (popover) popover.classList.add('is-glowing');
         }
 
         function hideLava() {
-            stopReactiveLoop();
-            killIdleTweens();
-            if (typeof gsap !== 'undefined') {
-                gsap.to(blobs, {
-                    opacity: 0,
-                    duration: 0.55,
-                    ease: 'power2.in',
-                    onComplete: function () {
-                        blobs.forEach(function (blob) {
-                            gsap.set(blob, { clearProps: 'all' });
-                        });
-                    }
-                });
-            } else {
-                blobs.forEach(function (blob) {
-                    blob.style.opacity = '0';
-                });
-            }
+            stopLoop();
+            blobs.forEach(function (blob) {
+                blob.style.opacity = '0';
+                blob.style.transform = 'translate(-50%, -50%)';
+            });
             container.classList.remove('is-active');
+            container.setAttribute('aria-hidden', 'true');
             if (popover) popover.classList.remove('is-glowing');
         }
 
         function ensureAudioGraph() {
-            if (audioCtx) return;
+            if (audioCtx) return true;
             var Ctx = window.AudioContext || window.webkitAudioContext;
-            if (!Ctx) return;
-            audioCtx = new Ctx();
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 512;
-            analyser.smoothingTimeConstant = 0.78;
-            freqData = new Uint8Array(analyser.frequencyBinCount);
-            sourceNode = audioCtx.createMediaElementSource(audioEl);
-            sourceNode.connect(analyser);
-            analyser.connect(audioCtx.destination);
+            if (!Ctx) return false;
+
+            try {
+                audioCtx = new Ctx();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 512;
+                analyser.smoothingTimeConstant = 0.72;
+                freqData = new Uint8Array(analyser.frequencyBinCount);
+                sourceNode = audioCtx.createMediaElementSource(audioEl);
+                sourceNode.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                return true;
+            } catch (err) {
+                audioCtx = null;
+                analyser = null;
+                sourceNode = null;
+                freqData = null;
+                return false;
+            }
         }
 
         function getBandEnergy(start, end) {
@@ -166,62 +120,84 @@
             return count ? sum / count / 255 : 0;
         }
 
-        function reactiveLoop() {
-            if (!active || !analyser) {
+        function readEnergy() {
+            var t = performance.now() * 0.001;
+            var bass = 0;
+            var lowMid = 0;
+            var mid = 0;
+            var high = 0;
+            var total = 0;
+            var beat = 0;
+
+            if (analyser && freqData && !audioEl.paused) {
+                analyser.getByteFrequencyData(freqData);
+                bass = getBandEnergy(0, 10);
+                lowMid = getBandEnergy(10, 28);
+                mid = getBandEnergy(28, 72);
+                high = getBandEnergy(72, 140);
+                total = getBandEnergy(0, freqData.length);
+                beat = Math.max(0, total - prevTotal);
+                prevTotal = lerp(prevTotal, total, 0.4);
+            } else {
+                total = 0.32 + Math.sin(t * 2.2) * 0.14 + Math.sin(t * 5.1) * 0.07;
+                bass = total * 1.15;
+                lowMid = 0.22 + Math.sin(t * 1.6 + 1.2) * 0.1;
+                mid = 0.18 + Math.sin(t * 3.3 + 0.4) * 0.08;
+                high = 0.12 + Math.sin(t * 4.8 + 2.1) * 0.06;
+                beat = Math.max(0, Math.sin(t * 3.8) * 0.18);
+            }
+
+            return { bass: bass, lowMid: lowMid, mid: mid, high: high, total: total, beat: beat, t: t };
+        }
+
+        function tick() {
+            if (!active) {
                 rafId = null;
                 return;
             }
 
-            analyser.getByteFrequencyData(freqData);
-            var bass = getBandEnergy(0, 8);
-            var lowMid = getBandEnergy(8, 24);
-            var mid = getBandEnergy(24, 64);
-            var high = getBandEnergy(64, 128);
-            var total = getBandEnergy(0, freqData.length);
-            var beat = Math.max(0, total - prevEnergy[0]);
-            prevEnergy[0] = lerp(prevEnergy[0], total, 0.35);
-
+            var energy = readEnergy();
             var bands = [
-                { lo: 0, hi: bass },
-                { lo: 0, hi: lowMid },
-                { lo: lowMid, hi: mid },
-                { lo: mid, hi: high },
-                { lo: 0, hi: total },
-                { lo: bass, hi: mid },
-                { lo: mid, hi: total }
+                { lo: 0, hi: energy.bass },
+                { lo: 0, hi: energy.lowMid },
+                { lo: energy.lowMid, hi: energy.mid },
+                { lo: energy.mid, hi: energy.high },
+                { lo: 0, hi: energy.total },
+                { lo: energy.bass, hi: energy.mid },
+                { lo: energy.mid, hi: energy.total }
             ];
-
-            var t = performance.now() * 0.001;
 
             blobs.forEach(function (blob, i) {
                 var band = bands[i] || bands[bands.length - 1];
-                var energy = lerp(band.lo, band.hi, 0.65) + beat * (i < 2 ? 0.35 : 0.12);
-                var target = clamp(energy, 0, 1);
-                smoothed[i] = lerp(smoothed[i], target, 0.14);
+                var target = clamp(lerp(band.lo, band.hi, 0.7) + energy.beat * (i < 2 ? 0.42 : 0.14), 0, 1);
+                smoothed[i] = lerp(smoothed[i], target, 0.16);
 
                 var phase = blobPhases[i];
-                var base = baseSizes[i] || 160;
-                var pulse = 1 + smoothed[i] * (i < 3 ? 0.55 : 0.32);
-                var wobbleX = Math.sin(t * phase.speedX + phase.phaseX) * (12 + smoothed[i] * 28);
-                var wobbleY = Math.cos(t * phase.speedY + phase.phaseY) * (10 + smoothed[i] * 22);
-                var bleed = i > 3 ? smoothed[i] * 0.18 : 0;
+                var base = baseSizes[i] || 180;
+                var pulse = 1 + smoothed[i] * (i < 3 ? 0.62 : 0.36);
+                var wobbleX = Math.sin(energy.t * phase.speedX + phase.phaseX) * (18 + smoothed[i] * 34);
+                var wobbleY = Math.cos(energy.t * phase.speedY + phase.phaseY) * (14 + smoothed[i] * 28);
 
                 var size = base * pulse;
                 blob.style.width = size + 'px';
-                blob.style.height = (size * (0.92 + bleed)) + 'px';
+                blob.style.height = (size * (0.9 + (i > 3 ? smoothed[i] * 0.2 : 0))) + 'px';
+                blob.style.borderRadius = (44 + smoothed[i] * 14) + '% ' +
+                    (52 + smoothed[i] * 10) + '% ' +
+                    (48 + smoothed[i] * 12) + '% ' +
+                    (50 + smoothed[i] * 8) + '%';
                 blob.style.transform = 'translate(calc(-50% + ' + wobbleX + 'px), calc(-50% + ' + wobbleY + 'px))';
-                blob.style.opacity = String(clamp(0.55 + smoothed[i] * 0.42, 0.35, 0.95));
+                blob.style.opacity = String(clamp(0.58 + smoothed[i] * 0.38, 0.45, 0.96));
             });
 
-            rafId = requestAnimationFrame(reactiveLoop);
+            rafId = requestAnimationFrame(tick);
         }
 
-        function startReactiveLoop() {
+        function startLoop() {
             if (rafId) return;
-            rafId = requestAnimationFrame(reactiveLoop);
+            rafId = requestAnimationFrame(tick);
         }
 
-        function stopReactiveLoop() {
+        function stopLoop() {
             if (rafId) {
                 cancelAnimationFrame(rafId);
                 rafId = null;
@@ -234,10 +210,10 @@
                 active = true;
                 ensureAudioGraph();
                 if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume();
+                    audioCtx.resume().catch(function () { /* ignore */ });
                 }
                 showLava();
-                startReactiveLoop();
+                startLoop();
             },
             onPause: function () {
                 active = false;
@@ -245,6 +221,7 @@
             },
             onTrackChange: function () {
                 applyBlobColors(getColors());
+                if (active) layoutBlobs();
             },
             destroy: function () {
                 active = false;
