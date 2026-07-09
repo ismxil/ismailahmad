@@ -8,7 +8,6 @@
         var weekdayEl = document.getElementById('nav-clock-weekday');
         var timeEl = document.getElementById('nav-clock-time');
         var tzEl = document.getElementById('nav-clock-tz');
-        var aboutMenuBtn = document.getElementById('nav-menu-about');
         var contactMenuBtn = document.getElementById('nav-menu-contact');
         var clockTimer = null;
 
@@ -87,7 +86,6 @@
             }
         }
 
-        if (aboutMenuBtn) aboutMenuBtn.addEventListener('click', openContactFromMenu);
         if (contactMenuBtn) contactMenuBtn.addEventListener('click', openContactFromMenu);
 
         updateClock();

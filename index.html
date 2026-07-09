@@ -1645,6 +1645,7 @@
         </div>
         <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
             <div class="site-header__nav-pills" id="header-nav-pills">
+                <a class="pill pill--cream" href="about.html">About</a>
                 <a class="pill pill--cream nav-pill-feeds" href="feeds.html">Feeds</a>
                 <a class="pill pill--cream nav-pill-insights" href="insights.html">Insights</a>
                 <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
@@ -1656,7 +1657,7 @@
                 <div class="header-nav-menu__top">
                     <div class="header-nav-menu__links">
                         <a href="index.html">Index</a>
-                        <button type="button" id="nav-menu-about">About</button>
+                        <a href="about.html">About</a>
                         <a href="insights.html">Insights</a>
                         <a href="feeds.html">Feeds</a>
                         <button type="button" id="nav-menu-contact">Contact</button>
@@ -1677,7 +1678,6 @@
         </nav>
         <div class="site-header__meta">
             <p class="site-header__intro">A financial product designer and UX enthusiast shaping the brands, websites, and products of the world's most ambitious financial companies.</p>
-            <button type="button" class="pill pill--cream" id="about-btn">About</button>
         </div>
     </header>
 
@@ -2019,7 +2019,6 @@
 
         initContactPanel();
         initSiteNav();
-        document.getElementById('about-btn').addEventListener('click', openContactPanel);
 
         // Carousel slots — Figma card sizes and colors
         var carouselSlots = [

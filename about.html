@@ -2,405 +2,290 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About | Ismail Ahmad</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
-    <script src="tailwind.config.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About — Ismail Ahmad</title>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/header-fluid.css">
+    <link rel="stylesheet" href="css/site-nav.css">
+    <link rel="stylesheet" href="css/contact-panel.css">
+    <link rel="stylesheet" href="css/image-hover.css">
+    <link rel="stylesheet" href="css/about.css">
+    <style>
+        :root {
+            --brand: #393bfe;
+            --text-primary: #09090b;
+            --text-secondary: #52525b;
+            --text-tertiary: #71717a;
+            --bg-cream: #f3f2ef;
+            --bg-white: #ffffff;
+            --font-display: 'Reckless', Georgia, serif;
+            --font-body: 'Suisse Intl', system-ui, sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-white);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-weight: 500;
+            overflow-x: hidden;
+        }
+
+        .pill {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            color: var(--text-primary);
+            border-radius: 999px;
+            padding: 10px 16px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.18s ease, color 0.18s ease;
+            border: none;
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            width: fit-content;
+            font-family: inherit;
+        }
+
+        .pill--cream {
+            background: var(--bg-cream);
+        }
+
+        .pill--active {
+            color: var(--brand);
+        }
+
+        .pill:hover {
+            opacity: 0.75;
+        }
+    </style>
 </head>
 
-<body
-    class="bg-brand-black text-brand-red font-serif selection:bg-brand-red selection:text-brand-black min-h-screen px-4">
+<body>
+    <div class="about-page">
+        <header class="about-topbar" aria-label="About header">
+            <div class="about-brand header-fluid" data-header-fluid aria-label="About title">
+                <div class="header-fluid__content">
+                    <h1>Hi</h1>
+                    <img src="assets/logo.svg" alt="" width="54" height="54" />
+                </div>
+            </div>
 
-    <main class="max-w-sm mx-auto">
-
-        <!-- NAV Starts here-->
-        <!-- Header with Logo and Hamburger Menu -->
-        <div class="flex justify-between items-center mt-12">
-            <a href="index.html" class="flex justify-center items-center">
-                <svg class="w-8 h-8 logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="19.8924" cy="19.8924" r="18.6475" stroke="currentColor" stroke-width="2.48974" />
-                    <path d="M19.703 1.3706L7.38959 33.6143" stroke="currentColor" stroke-width="2.48974" />
-                    <path d="M18.6145 7.31771L33.1972 32.5316" stroke="currentColor" stroke-width="6.90648" />
-                    <path
-                        d="M14.122 14.4752C6.64759 15.2002 1.24487 17.2957 1.24487 19.7676C1.24487 22.8405 9.59363 25.3316 19.8924 25.3316C30.1911 25.3316 38.5398 22.8405 38.5398 19.7676C38.5398 17.2701 33.0246 15.1569 25.4299 14.4531"
-                        stroke="currentColor" stroke-width="2.48974" />
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M20.8605 30.2672L22.5437 30.4788C22.7748 30.5077 22.8643 30.791 22.6966 30.948L21.4593 32.1087L21.7782 33.7749C21.8216 34.0024 21.5816 34.1764 21.3792 34.0649L19.8929 33.2469L18.4066 34.0652C18.2042 34.1766 17.9639 34.0025 18.0076 33.7752L18.3265 32.1089L17.0891 30.948C16.9215 30.7907 17.0112 30.5077 17.2421 30.4788L18.9253 30.2672L19.6464 28.7322C19.7451 28.5221 20.0408 28.5221 20.1395 28.7322L20.8605 30.2672Z"
-                        fill="currentColor" />
-                </svg>
-            </a>
-            <!-- Hamburger Menu Button -->
-            <button id="menu-toggle" class="relative w-8 h-8 flex flex-col justify-center items-center group"
-                aria-label="Toggle Menu">
-                <span class="hamburger-line w-6 h-0.5 bg-current transition-all duration-300 ease-in-out"></span>
-                <span class="hamburger-line w-6 h-0.5 bg-current transition-all duration-300 ease-in-out mt-1.5"></span>
-                <span class="hamburger-line w-6 h-0.5 bg-current transition-all duration-300 ease-in-out mt-1.5"></span>
-            </button>
-        </div>
-
-        <!-- Mobile Navigation Overlay -->
-        <div id="nav-overlay"
-            class="fixed inset-0 bg-brand-black z-50 opacity-0 pointer-events-none transition-opacity duration-300">
-            <div class="h-full flex flex-col max-w-sm mx-auto">
-                <!-- Header with Logo and Close Button -->
-                <div class="flex justify-between items-center mt-12">
-                    <a href="index.html" class="flex justify-center items-center">
-                        <svg class="w-8 h-8 logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="19.8924" cy="19.8924" r="18.6475" stroke="currentColor"
-                                stroke-width="2.48974" />
-                            <path d="M19.703 1.3706L7.38959 33.6143" stroke="currentColor" stroke-width="2.48974" />
-                            <path d="M18.6145 7.31771L33.1972 32.5316" stroke="currentColor" stroke-width="6.90648" />
-                            <path
-                                d="M14.122 14.4752C6.64759 15.2002 1.24487 17.2957 1.24487 19.7676C1.24487 22.8405 9.59363 25.3316 19.8924 25.3316C30.1911 25.3316 38.5398 22.8405 38.5398 19.7676C38.5398 17.2701 33.0246 15.1569 25.4299 14.4531"
-                                stroke="currentColor" stroke-width="2.48974" />
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M20.8605 30.2672L22.5437 30.4788C22.7748 30.5077 22.8643 30.791 22.6966 30.948L21.4593 32.1087L21.7782 33.7749C21.8216 34.0024 21.5816 34.1764 21.3792 34.0649L19.8929 33.2469L18.4066 34.0652C18.2042 34.1766 17.9639 34.0025 18.0076 33.7752L18.3265 32.1089L17.0891 30.948C16.9215 30.7907 17.0112 30.5077 17.2421 30.4788L18.9253 30.2672L19.6464 28.7322C19.7451 28.5221 20.0408 28.5221 20.1395 28.7322L20.8605 30.2672Z"
-                                fill="currentColor" />
-                        </svg>
-                    </a>
-                    <!-- Close Button -->
-                    <button id="menu-close" class="relative w-8 h-8 flex flex-col justify-center items-center"
-                        aria-label="Close Menu">
-                        <span
-                            class="w-6 h-0.5 bg-current transition-all duration-300 ease-in-out rotate-45 absolute"></span>
-                        <span
-                            class="w-6 h-0.5 bg-current transition-all duration-300 ease-in-out -rotate-45 absolute"></span>
+            <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
+                <div class="site-header__nav-pills" id="header-nav-pills">
+                    <a class="pill pill--cream pill--active" href="about.html" aria-current="page">About</a>
+                    <a class="pill pill--cream" href="feeds.html">Feeds</a>
+                    <a class="pill pill--cream" href="insights.html">Insights</a>
+                    <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
+                        aria-controls="header-nav-menu" aria-label="Open menu">
+                        <span class="dot" aria-hidden="true"></span>
                     </button>
                 </div>
+                <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
+                    <div class="header-nav-menu__top">
+                        <div class="header-nav-menu__links">
+                            <a href="index.html">Index</a>
+                            <a href="about.html">About</a>
+                            <a href="insights.html">Insights</a>
+                            <a href="feeds.html">Feeds</a>
+                            <button type="button" id="nav-menu-contact">Contact</button>
+                        </div>
+                        <button type="button" class="header-nav-menu__close" id="header-nav-menu-close" aria-label="Close menu">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
+                        <span id="nav-clock-month"></span><br>
+                        <span id="nav-clock-weekday"></span><br>
+                        <span id="nav-clock-time"></span><br>
+                        <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
-                <!-- Navigation Items -->
-                <nav class="mt-8 mb-8 nav-item transform translate-y-8 opacity-0 transition-all duration-300 ease-out"
-                    style="transition-delay: 50ms;">
-                    <ul class="space-y-4">
-                        <li class="flex items-end justify-between group">
-                            <a href="about.html"
-                                class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">About</a>
-                            <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                            <span class="font-mono text-sm md:text-lg">I</span>
-                        </li>
-                        <li class="flex items-end justify-between group">
-                            <a href="work.html"
-                                class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">Work</a>
-                            <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                            <span class="font-mono text-sm md:text-lg">II</span>
-                        </li>
-                        <li class="flex items-end justify-between group">
-                            <a href="expertise.html"
-                                class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">Expertise</a>
-                            <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                            <span class="font-mono text-sm md:text-lg">III</span>
-                        </li>
-                        <li class="flex items-end justify-between group">
-                            <a href="play.html"
-                                class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">Play</a>
-                            <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                            <span class="font-mono text-sm md:text-lg">IV</span>
-                        </li>
-                        <li class="flex items-end justify-between group">
-                            <a href="thought.html"
-                                class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">Thought</a>
-                            <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                            <span class="font-mono text-sm md:text-lg">V</span>
-                        </li>
-                    </ul>
-                </nav>
+        <main class="about-panel" aria-label="About content">
+            <div class="about-stack">
+                <section class="about-intro" aria-labelledby="about-intro-title">
+                    <h2 id="about-intro-title" class="about-intro__title">I am Ahmad</h2>
+                    <p class="about-intro__lead">I help ambitious financial companies turn bold ideas into category defining brands, products and websites</p>
+                </section>
 
-                <!-- Social Links -->
-                <div class="nav-item transform translate-y-8 opacity-0 transition-all duration-300 ease-out"
-                    style="transition-delay: 100ms;">
-                    <div class="flex justify-center gap-6 mt-6">
-                        <!-- LinkedIn -->
-                        <a href="https://linkedin.com/in/ismxil" target="_blank"
-                            class="hover:scale-110 transition-transform duration-200" aria-label="LinkedIn">
-                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037c-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85c3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.06 2.06 0 0 1-2.063-2.065a2.064 2.064 0 1 1 2.063 2.065m1.782 13.019H3.555V9h3.564zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z" />
-                            </svg>
-                        </a>
-                        <!-- Behance -->
-                        <a href="https://www.behance.net/ismxil" target="_blank"
-                            class="hover:scale-110 transition-transform duration-200" aria-label="Behance">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988H0V5.021h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zM3 11h3.584c2.508 0 2.906-3-.312-3H3v3zm3.391 3H3v3.016h3.341c3.055 0 2.868-3.016.05-3.016z" />
-                            </svg>
-                        </a>
-                        <!-- Instagram -->
-                        <a href="https://www.instagram.com/ismxilahmad" target="_blank"
-                            class="hover:scale-110 transition-transform duration-200" aria-label="Instagram">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                            </svg>
-                        </a>
-                        <!-- X -->
-                        <a href="https://www.x.com/ismxilahmad" target="_blank"
-                            class="hover:scale-110 transition-transform duration-200" aria-label="X">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                            </svg>
-                        </a>
-                        <!-- GitHub -->
-                        <a href="https://github.com/ismxil" target="_blank"
-                            class="hover:scale-110 transition-transform duration-200" aria-label="GitHub">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                            </svg>
-                        </a>
-                        <!-- Email -->
-                        <a href="mailto:work@ismailahmad.com"
-                            class="hover:scale-110 transition-transform duration-200" aria-label="Email">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                            </svg>
-                        </a>
+                <div class="about-gallery" aria-label="Work highlights">
+                    <div class="about-gallery__track">
+                        <div class="about-gallery__item image-hover">
+                            <img src="assets/contact/profile.jpg" alt="" loading="lazy" />
+                        </div>
+                        <div class="about-gallery__item image-hover">
+                            <img src="assets/contact/coffee.jpg" alt="" loading="lazy" />
+                        </div>
+                        <div class="about-gallery__item" aria-hidden="true"></div>
                     </div>
                 </div>
 
-                <!-- Footer Info -->
-                <footer
-                    class="mt-8 opacity-80 text-center nav-item transform translate-y-8 opacity-0 transition-all duration-300 ease-out"
-                    style="transition-delay: 150ms;">
-                    <p class="text-xs text-center font-mono uppercase tracking-widest mb-2">(c) 2026</p>
-                    <div class="flex justify-center items-center mt-4">
-                        <a href="#" id="menu-color-randomizer" class="hover:scale-110 transition-transform duration-200"
-                            aria-label="Randomize Colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                    d="M15.98 1.804a1 1 0 0 0-1.96 0l-.24 1.192a1 1 0 0 1-.784.785l-1.192.238a1 1 0 0 0 0 1.962l1.192.238a1 1 0 0 1 .785.785l.238 1.192a1 1 0 0 0 1.962 0l.238-1.192a1 1 0 0 1 .785-.785l1.192-.238a1 1 0 0 0 0-1.962l-1.192-.238a1 1 0 0 1-.785-.785zm-9.031 3.88a1 1 0 0 0-1.898 0l-.683 2.051a1 1 0 0 1-.633.633l-2.051.683a1 1 0 0 0 0 1.898l2.051.684a1 1 0 0 1 .633.632l.683 2.051a1 1 0 0 0 1.898 0l.683-2.051a1 1 0 0 1 .633-.633l2.051-.683a1 1 0 0 0 0-1.898l-2.051-.683a1 1 0 0 1-.633-.633zm7 8a1 1 0 0 0-1.898 0l-.184.551a1 1 0 0 1-.632.633l-.551.183a1 1 0 0 0 0 1.898l.551.183a1 1 0 0 1 .633.633l.183.551a1 1 0 0 0 1.898 0l.184-.551a1 1 0 0 1 .632-.633l.551-.183a1 1 0 0 0 0-1.898l-.551-.184a1 1 0 0 1-.633-.632z" />
-                            </svg>
-                        </a>
+                <section class="about-section" aria-labelledby="about-expertise-label">
+                    <p id="about-expertise-label" class="about-section__label">Expertise</p>
+                    <div>
+                        <h3 class="about-section__title">Focused on Financial Tech.</h3>
+                        <p class="about-section__body">Since 2017, I have helped financial banks startups, scaleups, and global financial companies stand out, build trust, and accelerate adoption.</p>
                     </div>
-                </footer>
+                </section>
+
+                <section class="about-section about-section--wide" aria-labelledby="about-process-label">
+                    <p id="about-process-label" class="about-section__label">Process</p>
+                    <div>
+                        <p class="about-section__body">I follow these simple framework to ensure we deliver the best possible results.</p>
+                    </div>
+                    <div class="about-cards">
+                        <article class="about-card">
+                            <h4 class="about-card__title">Strategy</h4>
+                            <p class="about-card__text">I immerse myself into your goals, users, and constraints, questioning, and synthesizing insights into a clear, defensible position grounding all design decisions.</p>
+                        </article>
+                        <article class="about-card">
+                            <h4 class="about-card__title">Design</h4>
+                            <p class="about-card__text">I design within strategic guardrails to solve for conversion, comprehension, and trust, testing and refining until the experience works flawlessly at scale.</p>
+                        </article>
+                        <article class="about-card">
+                            <h4 class="about-card__title">Build</h4>
+                            <p class="about-card__text">I work in the space between design and development, I design with code in mind, and partner with developers to ensure the final product matches what was design.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="about-section about-section--wide" aria-labelledby="about-capabilities-label">
+                    <p id="about-capabilities-label" class="about-section__label">Capabilities</p>
+                    <div>
+                        <p class="about-section__body">Turning brief into trust. Without sucking out the creativity side of it.</p>
+                    </div>
+                    <div class="about-cards">
+                        <article class="about-card">
+                            <h4 class="about-card__title">Branding</h4>
+                            <ul class="about-card__list">
+                                <li>Research</li>
+                                <li>Positioning</li>
+                                <li>Brand Strategy</li>
+                                <li>Visual Identity</li>
+                                <li>Voice &amp; Tone</li>
+                                <li>Brand Assets</li>
+                            </ul>
+                        </article>
+                        <article class="about-card">
+                            <h4 class="about-card__title">Websites</h4>
+                            <ul class="about-card__list">
+                                <li>Market Analysis</li>
+                                <li>UX &amp; Architecture</li>
+                                <li>Copywriting</li>
+                                <li>Interface Design</li>
+                                <li>Motion &amp; Interactions</li>
+                                <li>Development</li>
+                            </ul>
+                        </article>
+                        <article class="about-card">
+                            <h4 class="about-card__title">Products</h4>
+                            <ul class="about-card__list">
+                                <li>User Research</li>
+                                <li>UX &amp; Architecture</li>
+                                <li>Interface Design</li>
+                                <li>Product Writing</li>
+                                <li>Front-end Development</li>
+                                <li>Design Systems</li>
+                            </ul>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="about-cta" aria-labelledby="about-cta-title">
+                    <h2 id="about-cta-title" class="about-cta__title">Is this the start of something beautiful?</h2>
+                    <button type="button" class="about-cta__btn" id="about-talk-btn">
+                        <span class="about-cta__btn-dot" aria-hidden="true"></span>
+                        Talk to Ahmad
+                    </button>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <footer class="about-footer" aria-label="Page footer">
+        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
+        <a class="home-logo" href="index.html" aria-label="Back to homepage">
+            <canvas id="about-logo-c" aria-hidden="true"></canvas>
+        </a>
+    </footer>
+
+    <aside id="contact-panel" aria-label="Contact" aria-hidden="true">
+        <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+            <button type="button" id="close-contact" class="contact-modal__close" aria-label="Close contact">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="contact-modal__intro">
+                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and business. I love working in conditions where decisions have real impact and good work actually ships.</p>
+                <button type="button" class="contact-modal__more" id="contact-more-btn">More</button>
+            </div>
+            <div class="contact-modal__polaroids" aria-hidden="true">
+                <figure class="contact-polaroid contact-polaroid--profile">
+                    <img src="assets/contact/profile.jpg" alt="" width="137" height="164" />
+                    <figcaption class="contact-polaroid__caption">
+                        <span>ID</span>
+                        <span>PROFILE PICTURE</span>
+                    </figcaption>
+                </figure>
+                <figure class="contact-polaroid contact-polaroid--coffee">
+                    <img src="assets/contact/coffee.jpg" alt="" width="95" height="114" />
+                    <figcaption class="contact-polaroid__caption">
+                        <span>ID</span>
+                        <span>☕ coffeeeee...</span>
+                    </figcaption>
+                </figure>
+            </div>
+            <div class="contact-modal__footer">
+                <div class="contact-modal__links" aria-label="Social links">
+                    <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
+                    <a href="https://github.com/ismxil" target="_blank" rel="noopener">Github</a>
+                    <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
+                    <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+                    <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
+                </div>
+                <img class="contact-modal__qr" src="assets/ahmadQR.svg" alt="QR code" width="67" height="67" />
             </div>
         </div>
-        <!-- NAV Ends here-->
+    </aside>
 
+    <script src="js/contact-panel.js"></script>
+    <script src="js/site-nav.js"></script>
+    <script type="module">
+        import { initBrandLogo3D } from './js/logo-3d.js';
+        import { initAllHeaderFluids } from './js/header-fluid.js';
 
-        <!-- Title -->
-        <h1 class="font-display text-6xl md:text-8xl font-black uppercase tracking-tight mt-8 mb-12">About</h1>
+        initBrandLogo3D(document.getElementById('about-logo-c'));
+        initAllHeaderFluids();
+        initContactPanel();
 
-        <!-- Bio Section -->
-        <div class="flex flex-col md:flex-col gap-8 mb-16">
-            <!-- Profile Image Placeholder -->
-            <img src="assets/ismail-ahmad.JPG" alt="Ismail Ahmad"
-                class="w-32 h-32 md:w-40 md:h-40 rounded-full flex-shrink-0 object-cover border-[3px] border-current">
-            <!-- Bio Text -->
-            <div class="space-y-4 text-base md:text-lg leading-relaxed opacity-90">
-                <p>I'm Ahmad, a product designer who's spent the past decade deep in fintech and banking, figuring out
-                    how to make complex
-                    financial products feel simple.
-                    I started at <a href="https://protechadvance.com/" target="_blank" class="highlight-link">NCK
-                        Technology</a>, a
-                    boutique tech
-                    firm where I helped build financial
-                    products for banks
-                    like <a href="https://www.fidelitybank.ng/" target="_blank" class="highlight-link">Fidelity</a>,
-                    <a href="https://www.accessbankplc.com/" target="_blank" class="highlight-link">Access Bank</a>, and
-                    <a href="https://www.ubagroup.com/" target="_blank"><span class="highlight-link">UBA</span></a>.
-                    That
-                    foundation shaped how I think
-                    about design at scale. From
-                    there, I moved to
-                    <a href="https://gomoney.global/" target="_blank" class="highlight-link">Gomoney</a> and <a
-                        href="https://sterling.ng/" target="_blank" class="highlight-link">Sterling Bank</a> as Lead
-                    Designer, then went on to
-                    work with <a href="https://www.lemfi.com/" target="_blank"><span
-                            class="highlight-link">Lemfi</span></a>,
-                    and <a href="https://www.accenture.com/us-en/about/accenture-song-index" target="_blank"><span
-                            class="highlight-link">Accenture</span></a>
-                    in Berlin, helping brand like like <a href="https://www.db.com/" target="_blank"
-                        class="highlight-link">Deutsche
-                        Bank</a>, <a href="https://www.motel-one.com/en/" target="_blank"><span
-                            class="highlight-link">Motel
-                            One</span></a> improving their digital experience. Each one of these experiences has
-                    sharpened my understanding of what it takes to ship products that actually works.
-                </p>
-                <p>I love the space where design meets business, where decisions have real impact and good work actually
-                    ships. If you're
-                    building something in fintech or need a design partner who understands the space, let's talk.</p>
-            </div>
-        </div>
+        const talkBtn = document.getElementById('about-talk-btn');
+        if (talkBtn) talkBtn.addEventListener('click', () => window.openContactPanel?.());
 
-        <!-- Quote -->
-        <blockquote class="border-l-2 border-current pl-6 my-12 opacity-80">
-            <p class="text-xl">"The best way to predict the future is to design it."</p>
-            <cite class="block mt-2 text-x not-italic opacity-60">— Buckminster Fuller</cite>
-        </blockquote>
-
-        <!-- Selected Press -->
-        <section class="mb-24 mt-24">
-            <h2 class="font-display text-4xl font-bold uppercase tracking-wide mb-6">Experience</h2>
-
-            <div class="flex items-end justify-between align-top mb-8">
-                <div>
-                    <p class="font-display text-xl">Head of Design</p>
-                    <a href="https://sterling.ng" target="_blank" class="hover:opacity-70 transition-opacity">Sterling
-                        Bank</a>
-                </div>
-                <div class="flex items-end justify-between group">
-                    <span class="font-mono text-sm opacity-90">Contract, Present</span>
-                </div>
-            </div>
-
-            <div class="flex items-end justify-between align-top mb-8">
-                <div>
-                    <p class="font-display text-xl">Founder</p>
-                    <a href="https://cadara.studio" target="_blank"
-                        class="hover:opacity-70 transition-opacity cursor-pointer hover:opacity-70 transition-opacity">Cadara
-                        Studio</a>
-                </div>
-                <div class="flex items-end justify-between group">
-                    <span class="font-mono text-sm opacity-60">2019 — Present</span>
-                </div>
-            </div>
-
-            <div class="flex items-end justify-between align-top mb-8">
-                <div>
-                    <p class="font-display text-xl">Mentoring</p>
-                    <a href="https://redi-school.org/redi-school-berlin" target="_blank"
-                        class="hover:opacity-70 transition-opacity cursor-pointer hover:opacity-70 transition-opacity">ReDI
-                        School Berlin</a>
-                </div>
-                <div class="flex items-end justify-between group">
-                    <span class="font-mono text-sm opacity-60">Present</span>
-                </div>
-            </div>
-
-            <div class="flex items-end justify-between align-top mb-8">
-                <div>
-                    <p class="font-display text-xl">Senior Product Designer</p>
-                    <a href="https://accenture.com" target="_blank"
-                        class="hover:opacity-70 transition-opacity cursor-pointer hover:opacity-70 transition-opacity">Accenture
-                        Song</a>
-                </div>
-                <div class="flex items-end justify-between group">
-                    <span class="font-mono text-sm opacity-60">2023 — 2024</span>
-                </div>
-            </div>
-
-            <div class="flex items-end justify-between align-top mb-8">
-                <div>
-                    <p class="font-display text-xl">Senior Product Designer</p>
-                    <a href="https://lemfi.com" target="_blank"
-                        class="hover:opacity-70 transition-opacity cursor-pointer hover:opacity-70 transition-opacity">Lemfi</a>
-                </div>
-                <div class="flex items-end justify-between group">
-                    <span class="font-mono text-sm opacity-60">2021 — 2023</span>
-                </div>
-            </div>
-
-        </section>
-
-
-        <!-- Navigation Section -->
-        <nav class="w-full max-w-sm mb-24">
-            <ul class="space-y-4">
-                <li class="flex items-end justify-between group">
-                    <a href="about.html"
-                        class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">About</a>
-                    <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                    <span class="font-mono text-sm md:text-lg">I</span>
-                </li>
-                <li class="flex items-end justify-between group">
-                    <a href="work.html"
-                        class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">Work</a>
-                    <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                    <span class="font-mono text-sm md:text-lg">II</span>
-                </li>
-                <li class="flex items-end justify-between group">
-                    <a href="expertise.html"
-                        class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">Expertise</a>
-                    <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                    <span class="font-mono text-sm md:text-lg">III</span>
-                </li>
-                <li class="flex items-end justify-between group">
-                    <a href="play.html"
-                        class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">Play</a>
-                    <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                    <span class="font-mono text-sm md:text-lg">IV</span>
-                </li>
-                <li class="flex items-end justify-between group">
-                    <a href="thought.html"
-                        class="uppercase tracking-widest text-lg md:text-2xl font-display transition-all duration-300 group-hover:pl-2">Thought</a>
-                    <div class="flex-grow border-b border-dotted border-current mx-2 mb-1"></div>
-                    <span class="font-mono text-sm md:text-lg">V</span>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="text-center mt-12">
-            <div class="font-display text-12xl md:text-4xl font-black uppercase tracking-normal leading-none mb-2">
-                <div class="flex justify-center gap-6 mt-6">
-                    <!-- LinkedIn -->
-                    <a href="https://linkedin.com/in/ismxil" target="_blank"
-                        class="hover:scale-110 transition-transform duration-200" aria-label="LinkedIn">
-                        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path fill="currentColor"
-                                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037c-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85c3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.06 2.06 0 0 1-2.063-2.065a2.064 2.064 0 1 1 2.063 2.065m1.782 13.019H3.555V9h3.564zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z" />
-                        </svg>
-                    </a>
-                    <!-- Behance -->
-                    <a href="https://www.behance.net/ismxil" target="_blank"
-                        class="hover:scale-110 transition-transform duration-200" aria-label="Behance">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988H0V5.021h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zM3 11h3.584c2.508 0 2.906-3-.312-3H3v3zm3.391 3H3v3.016h3.341c3.055 0 2.868-3.016.05-3.016z" />
-                        </svg>
-                    </a>
-                    <!-- Instagram -->
-                    <a href="https://www.instagram.com/ismxilahmad" target="_blank"
-                        class="hover:scale-110 transition-transform duration-200" aria-label="Instagram">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                        </svg>
-                    </a>
-                    <!-- X -->
-                    <a href="https://www.x.com/ismxilahmad" target="_blank"
-                        class="hover:scale-110 transition-transform duration-200" aria-label="X">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                        </svg>
-                    </a>
-                    <!-- GitHub -->
-                    <a href="https://github.com/ismxil" target="_blank"
-                        class="hover:scale-110 transition-transform duration-200" aria-label="GitHub">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                        </svg>
-                    </a>
-                    <!-- Email -->
-                    <a href="mailto:work@ismailahmad.com"
-                        class="hover:scale-110 transition-transform duration-200" aria-label="Email">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer Info -->
-        <footer class="my-16 opacity-80 text-center">
-            <p class="text-xs text-center font-mono uppercase tracking-widest mb-2">(c) 2026</p>
-            <div class="flex justify-center items-center mt-4">
-                <a href="#" id="color-randomizer" class="hover:scale-110 transition-transform duration-200"
-                    aria-label="Randomize Colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path fill="currentColor"
-                            d="M15.98 1.804a1 1 0 0 0-1.96 0l-.24 1.192a1 1 0 0 1-.784.785l-1.192.238a1 1 0 0 0 0 1.962l1.192.238a1 1 0 0 1 .785.785l.238 1.192a1 1 0 0 0 1.962 0l.238-1.192a1 1 0 0 1 .785-.785l1.192-.238a1 1 0 0 0 0-1.962l-1.192-.238a1 1 0 0 1-.785-.785zm-9.031 3.88a1 1 0 0 0-1.898 0l-.683 2.051a1 1 0 0 1-.633.633l-2.051.683a1 1 0 0 0 0 1.898l2.051.684a1 1 0 0 1 .633.632l.683 2.051a1 1 0 0 0 1.898 0l.683-2.051a1 1 0 0 1 .633-.633l2.051-.683a1 1 0 0 0 0-1.898l-2.051-.683a1 1 0 0 1-.633-.633zm7 8a1 1 0 0 0-1.898 0l-.184.551a1 1 0 0 1-.632.633l-.551.183a1 1 0 0 0 0 1.898l.551.183a1 1 0 0 1 .633.633l.183.551a1 1 0 0 0 1.898 0l.184-.551a1 1 0 0 1 .632-.633l.551-.183a1 1 0 0 0 0-1.898l-.551-.184a1 1 0 0 1-.633-.632z" />
-                    </svg>
-                </a>
-            </div>
-        </footer>
-    </main>
-
-    <script src="script.js"></script>
-    <script src="blog-cache.js"></script>
-    <script>BlogCache.getArticles(function () { });</script>
+        initSiteNav();
+    </script>
 </body>
 
 </html>
