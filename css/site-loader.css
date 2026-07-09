@@ -12,13 +12,11 @@ html.is-loading body {
 html.is-loading body > :not(#site-loader) {
     visibility: hidden;
     opacity: 0;
-    pointer-events: none;
 }
 
 html.is-ready body > :not(#site-loader) {
     visibility: visible;
     opacity: 1;
-    pointer-events: auto;
     transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -30,7 +28,12 @@ html.is-ready body > :not(#site-loader) {
     align-items: center;
     justify-content: center;
     background: #ffffff;
-    transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+    transition: opacity 0.5s ease, visibility 0s linear 0.5s, background 0.35s ease;
+}
+
+#site-loader.is-revealing {
+    pointer-events: none;
+    background: transparent;
 }
 
 #site-loader.is-done {

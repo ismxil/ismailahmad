@@ -402,6 +402,11 @@
             font-weight: 500;
         }
 
+        .site-header__home {
+            color: inherit;
+            text-decoration: none;
+        }
+
         .site-header__logo {
             width: 54px;
             height: 54px;
@@ -1794,10 +1799,12 @@
     <header id="site-header">
         <div class="site-header__lead">
         <div class="site-header__brand header-fluid" data-header-fluid>
+            <a class="site-header__home" href="index.html" aria-label="Back to homepage">
             <div class="header-fluid__content">
                 <h1>Ismail Ahmad</h1>
                 <img src="assets/logo.svg" alt="" class="site-header__logo" width="54" height="54">
             </div>
+            </a>
         </div>
         <div class="site-header__meta">
             <p class="site-header__intro">A financial product designer and UX enthusiast shaping the brands, websites, and products of the world's most ambitious financial companies.</p>
@@ -1816,7 +1823,7 @@
             <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
                 <div class="header-nav-menu__top">
                     <div class="header-nav-menu__links">
-                        <a href="index.html">Index</a>
+                        <a href="index.html" data-nav-home>Index</a>
                         <a href="about.html">About</a>
                         <a href="insights.html">Insights</a>
                         <a href="feeds.html">Feeds</a>

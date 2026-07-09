@@ -26,8 +26,12 @@ function shouldSkipLogoAnim() {
 
 function revealContent() {
   const root = document.documentElement;
+  const loader = document.getElementById('site-loader');
+
   root.classList.add('is-ready');
   root.classList.remove('is-loading');
+
+  if (loader) loader.classList.add('is-revealing');
 }
 
 function finishLoader() {
@@ -35,9 +39,13 @@ function finishLoader() {
   if (!loader) return;
 
   loader.classList.add('is-done');
-  loader.addEventListener('transitionend', () => {
+
+  const removeLoader = () => {
     loader.remove();
-  }, { once: true });
+  };
+
+  loader.addEventListener('transitionend', removeLoader, { once: true });
+  window.setTimeout(removeLoader, 700);
 }
 
 function holdAssembled() {
@@ -45,20 +53,33 @@ function holdAssembled() {
 }
 
 async function boot() {
-  const fonts = waitForFonts();
-  const canvas = document.getElementById('site-loader-canvas');
+  let revealed = false;
 
-  if (!shouldSkipLogoAnim()) {
-    await runSiteLoaderLogo(canvas, {
-      beforeDeconstruct: () => Promise.all([fonts, holdAssembled()]),
-      onDeconstructStart: revealContent,
-    });
-  } else {
-    await fonts;
+  function revealOnce() {
+    if (revealed) return;
+    revealed = true;
     revealContent();
   }
 
-  finishLoader();
+  try {
+    const fonts = waitForFonts();
+    const canvas = document.getElementById('site-loader-canvas');
+
+    if (!shouldSkipLogoAnim()) {
+      await runSiteLoaderLogo(canvas, {
+        beforeDeconstruct: () => Promise.all([fonts, holdAssembled()]),
+        onDeconstructStart: revealOnce,
+      });
+    } else {
+      await fonts;
+      revealOnce();
+    }
+  } catch (err) {
+    console.error('Site loader failed:', err);
+    revealOnce();
+  } finally {
+    finishLoader();
+  }
 }
 
 window.siteReady = boot();
