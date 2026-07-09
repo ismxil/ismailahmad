@@ -1,0 +1,224 @@
+/* Contact panel — Figma modal card */
+
+#contact-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+}
+
+#contact-panel.is-open {
+    pointer-events: auto;
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+.contact-modal {
+    position: fixed;
+    left: 24px;
+    bottom: 76px;
+    width: 326px;
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 100px);
+    overflow: auto;
+    background: #1e40af;
+    border-radius: 17px;
+    padding: 26px 13px 17px;
+    color: var(--bg-cream);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.22);
+    transform: translateY(12px) scale(0.98);
+    opacity: 0;
+    transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+}
+
+#contact-panel.is-open .contact-modal {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.contact-modal__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 40px;
+    background: var(--bg-cream);
+    color: #1e40af;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    z-index: 2;
+    transition: opacity 0.18s ease;
+}
+
+.contact-modal__close:hover {
+    opacity: 0.82;
+}
+
+.contact-modal__close svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+}
+
+.contact-modal__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    padding-right: 36px;
+}
+
+.contact-modal__bio {
+    margin: 0;
+    max-width: 255px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--bg-cream);
+}
+
+.contact-modal__more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--bg-cream);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.18s ease;
+}
+
+.contact-modal__more:hover {
+    opacity: 0.82;
+}
+
+.contact-modal__polaroids {
+    position: relative;
+    width: 100%;
+    min-height: 220px;
+    margin: 0 auto;
+}
+
+.contact-polaroid {
+    position: absolute;
+    margin: 0;
+    background: var(--bg-cream);
+    box-shadow: 0 6px 7px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 5px;
+}
+
+.contact-polaroid img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.contact-polaroid__caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: 500;
+    color: #1e40af;
+    padding: 0 2px 2px;
+}
+
+.contact-polaroid--profile {
+    left: 0;
+    top: 0;
+    width: 148px;
+    transform: rotate(-11deg);
+    z-index: 1;
+}
+
+.contact-polaroid--profile img {
+    height: 164px;
+}
+
+.contact-polaroid--coffee {
+    right: 8px;
+    top: 36px;
+    width: 103px;
+    transform: rotate(23deg);
+    z-index: 2;
+}
+
+.contact-polaroid--coffee img {
+    height: 114px;
+    filter: blur(1.5px);
+}
+
+.contact-modal__footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.contact-modal__links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+}
+
+.contact-modal__links a {
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--bg-cream);
+    text-decoration: none;
+    transition: opacity 0.18s ease;
+}
+
+.contact-modal__links a:hover {
+    opacity: 0.75;
+}
+
+.contact-modal__qr {
+    width: 67px;
+    height: 67px;
+    flex-shrink: 0;
+    display: block;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 4px;
+}
+
+@media (max-width: 720px) {
+    .contact-modal {
+        left: 16px;
+        right: 16px;
+        bottom: 72px;
+        width: auto;
+        max-width: none;
+    }
+}
