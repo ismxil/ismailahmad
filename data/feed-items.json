@@ -1,0 +1,304 @@
+{
+  "items": [
+    {
+      "id": "lemfi-community",
+      "client": "Lemfi",
+      "headline": "Building a community that let's people bond and stay connected within the app, to build conscious money habit",
+      "category": "Concepts",
+      "years": "(2021 - 2024)",
+      "description": "Researched target audiences and user needs. Shaped the product and brand touchpoints. Designed the website and connected digital experience",
+      "cover": "assets/feeds/covers/image_0.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "motel-one",
+      "client": "Motel One",
+      "headline": "Your digital key to every Motel One in the world",
+      "category": "App Design",
+      "years": "(2022 - 2024)",
+      "description": "Designed the guest companion app spanning booking support, digital check-in, and mobile key access across 92 hotels.",
+      "cover": "assets/feeds/covers/image_1.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "gomoney",
+      "client": "Gomoney",
+      "headline": "Reducing registration drop-off with a simpler digital bank onboarding",
+      "category": "App Design",
+      "years": "(2020 - 2022)",
+      "description": "Improved the onboarding process, introduced new feature directions, and refreshed the brand expression inside the product.",
+      "cover": "assets/feeds/covers/image_2.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "cadana",
+      "client": "Cadana",
+      "headline": "A global payments identity built for talent marketplaces and HR teams",
+      "category": "Branding",
+      "years": "(2023 - 2024)",
+      "description": "Designed the brand identity and created a visual system for product and marketing across 100+ countries.",
+      "cover": "assets/feeds/covers/image_3.jpg",
+      "accent": "#ff4300"
+    },
+    {
+      "id": "mezovest",
+      "client": "Mezovest",
+      "headline": "Small-business loan tools that connect vendors, customers, and investors",
+      "category": "Product Design",
+      "years": "(2024 - 2026)",
+      "description": "Mapped key business workflows and designed vendor, customer, and dashboard experiences for lending operations.",
+      "cover": "assets/feeds/covers/image_4.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "commerzbank",
+      "client": "Commerz Bank",
+      "headline": "Mobile banking flows shaped by research, audit, and redesign",
+      "category": "App Design",
+      "years": "(2023 - 2024)",
+      "description": "Audited the existing product experience, researched competitor patterns, and designed app improvements for banking tasks.",
+      "cover": "assets/feeds/covers/image_5.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "ecb",
+      "client": "Etihad Credit Bureau",
+      "headline": "A unified digital platform for national credit data services",
+      "category": "Web Design",
+      "years": "(2021 - 2023)",
+      "description": "Redesigned the public website and unified interaction patterns across portal and app touchpoints.",
+      "cover": "assets/feeds/covers/image_6.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "brass",
+      "client": "Brass",
+      "headline": "Business banking tools designed for African entrepreneurs",
+      "category": "Product Design",
+      "years": "(2020 - 2021)",
+      "description": "Shaped product flows for accounts, payments, and team management across web and mobile banking.",
+      "cover": "assets/feeds/covers/image_7.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "salarify",
+      "client": "Salarify",
+      "headline": "Payroll and benefits experiences for growing teams",
+      "category": "Product Design",
+      "years": "(2021 - 2022)",
+      "description": "Designed payroll workflows and employee-facing touchpoints for salary access and benefits management.",
+      "cover": "assets/feeds/covers/image_8.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "spatch",
+      "client": "Spatch",
+      "headline": "Delivery logistics interfaces for riders and operations teams",
+      "category": "App Design",
+      "years": "(2022 - 2023)",
+      "description": "Mapped dispatch workflows and designed rider, merchant, and operations dashboards for last-mile delivery.",
+      "cover": "assets/feeds/covers/image_9.jpg",
+      "accent": "#66cb29"
+    },
+    {
+      "id": "feed-10",
+      "client": "Lemfi",
+      "headline": "Debit card program designed for diaspora communities in the UK",
+      "category": "Product Design",
+      "years": "(2021 - 2024)",
+      "description": "Designed a premium, trustworthy debit card experience aligned with Lemfi's remittance product.",
+      "cover": "assets/feeds/covers/image_10.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-11",
+      "client": "Motel One",
+      "headline": "Digital check-in that reduces wait times and improves guest satisfaction",
+      "category": "App Design",
+      "years": "(2022 - 2024)",
+      "description": "Worked through check-in and key-access flows to structure the product around guest needs.",
+      "cover": "assets/feeds/covers/image_11.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-12",
+      "client": "Gomoney",
+      "headline": "A refreshed brand expression inside a consumer digital bank",
+      "category": "Branding",
+      "years": "(2020 - 2022)",
+      "description": "Introduced a modern UI that helped the bank stand out and better connect with its audience.",
+      "cover": "assets/feeds/covers/image_12.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-13",
+      "client": "Cadana",
+      "headline": "Marketing system for a global payroll infrastructure platform",
+      "category": "Branding",
+      "years": "(2023 - 2024)",
+      "description": "Helped shape a trustworthy infrastructure-facing experience for employers and HR teams.",
+      "cover": "assets/feeds/covers/image_13.jpg",
+      "accent": "#ff4300"
+    },
+    {
+      "id": "feed-14",
+      "client": "Mezovest",
+      "headline": "Dashboard experiences for loan decisioning and business monitoring",
+      "category": "Product Design",
+      "years": "(2024 - 2026)",
+      "description": "Created a foundation for operators and investors to monitor lending performance.",
+      "cover": "assets/feeds/covers/image_14.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-15",
+      "client": "Commerz Bank",
+      "headline": "Competitor research and design audit for mobile banking",
+      "category": "Research",
+      "years": "(2023 - 2024)",
+      "description": "Established clearer design direction for core banking tasks on mobile.",
+      "cover": "assets/feeds/covers/image_15.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-16",
+      "client": "Etihad Credit Bureau",
+      "headline": "Portal and app touchpoints for authenticated credit customers",
+      "category": "Web Design",
+      "years": "(2021 - 2023)",
+      "description": "Unified interaction patterns across public, portal, and mobile audiences.",
+      "cover": "assets/feeds/covers/image_16.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-17",
+      "client": "Brass",
+      "headline": "Team management and payments across web and mobile banking",
+      "category": "Product Design",
+      "years": "(2020 - 2021)",
+      "description": "Designed flows for accounts, payments, and team permissions for business owners.",
+      "cover": "assets/feeds/covers/image_17.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-18",
+      "client": "Salarify",
+      "headline": "Employee-facing salary access and benefits journeys",
+      "category": "App Design",
+      "years": "(2021 - 2022)",
+      "description": "Designed intuitive touchpoints for payroll access and benefits enrollment.",
+      "cover": "assets/feeds/covers/image_18.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-19",
+      "client": "Spatch",
+      "headline": "Merchant and rider dashboards for last-mile delivery",
+      "category": "App Design",
+      "years": "(2022 - 2023)",
+      "description": "Designed operations tooling for dispatch, tracking, and fulfillment.",
+      "cover": "assets/feeds/covers/image_19.jpg",
+      "accent": "#66cb29"
+    },
+    {
+      "id": "feed-20",
+      "client": "Lemfi",
+      "headline": "Website and connected digital experience for card acquisition",
+      "category": "Web Design",
+      "years": "(2021 - 2024)",
+      "description": "Designed the website and marketing touchpoints supporting card program growth.",
+      "cover": "assets/feeds/covers/image_20.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-21",
+      "client": "Motel One",
+      "headline": "beOne app as a full guest companion across the stay",
+      "category": "App Design",
+      "years": "(2022 - 2024)",
+      "description": "Supported a smoother hotel arrival experience from booking to in-stay support.",
+      "cover": "assets/feeds/covers/image_21.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-22",
+      "client": "Gomoney",
+      "headline": "Step-by-step onboarding that reduced registration friction",
+      "category": "App Design",
+      "years": "(2020 - 2022)",
+      "description": "Redesigned the onboarding journey with a simplified, visually engaging flow.",
+      "cover": "assets/feeds/covers/image_22.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-23",
+      "client": "Cadana",
+      "headline": "Visual system for product and marketing at global scale",
+      "category": "Branding",
+      "years": "(2023 - 2024)",
+      "description": "Built a distinct identity for a global payments platform serving talent marketplaces.",
+      "cover": "assets/feeds/covers/image_23.jpg",
+      "accent": "#ff4300"
+    },
+    {
+      "id": "feed-24",
+      "client": "Mezovest",
+      "headline": "Vendor tools and customer journeys for small-business lending",
+      "category": "Product Design",
+      "years": "(2024 - 2026)",
+      "description": "Designed touchpoints connecting vendors, customers, and internal operators.",
+      "cover": "assets/feeds/covers/image_24.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-25",
+      "client": "Commerz Bank",
+      "headline": "Usability patterns for confident digital banking on mobile",
+      "category": "App Design",
+      "years": "(2023 - 2024)",
+      "description": "Designed app improvements for everyday banking tasks and account management.",
+      "cover": "assets/feeds/covers/image_25.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-26",
+      "client": "Etihad Credit Bureau",
+      "headline": "Public website experience for UAE credit data services",
+      "category": "Web Design",
+      "years": "(2021 - 2023)",
+      "description": "Made credit information easier to understand for public and authenticated users.",
+      "cover": "assets/feeds/covers/image_26.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-27",
+      "client": "Brass",
+      "headline": "Accounts and permissions for growing African businesses",
+      "category": "Product Design",
+      "years": "(2020 - 2021)",
+      "description": "Shaped core banking flows for entrepreneurs managing teams and cash flow.",
+      "cover": "assets/feeds/covers/image_27.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-28",
+      "client": "Salarify",
+      "headline": "Payroll workflows for salary access at scale",
+      "category": "Product Design",
+      "years": "(2021 - 2022)",
+      "description": "Mapped payroll operations and designed employee-facing product journeys.",
+      "cover": "assets/feeds/covers/image_28.jpg",
+      "accent": "#393bfe"
+    },
+    {
+      "id": "feed-29",
+      "client": "Spatch",
+      "headline": "Dispatch workflows for operations and fulfillment teams",
+      "category": "App Design",
+      "years": "(2022 - 2023)",
+      "description": "Designed interfaces connecting riders, merchants, and logistics operators.",
+      "cover": "assets/feeds/covers/image_29.jpg",
+      "accent": "#66cb29"
+    }
+  ]
+}

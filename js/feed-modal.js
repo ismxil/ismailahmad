@@ -1,4 +1,4 @@
-import { getFeedItem } from './feed-items.js';
+import { loadFeedItems, getFeedItem } from './feed-items.js';
 
 let backdrop;
 let modal;
@@ -25,8 +25,8 @@ function cacheElements() {
   closeBtn = document.getElementById('feed-modal-close');
 }
 
-function populate(item) {
-  const data = getFeedItem(item.id);
+function populate(data) {
+  if (!data) return;
   hero.style.backgroundColor = data.accent || '#393bfe';
   heroImg.src = data.cover;
   heroImg.alt = data.client + ' project preview';
@@ -38,11 +38,14 @@ function populate(item) {
   modal.setAttribute('aria-label', data.client + ' project details');
 }
 
-export function openFeedModal(itemIndex) {
+export async function openFeedModal(itemIndex) {
   if (!backdrop) cacheElements();
   if (!backdrop || isOpen) return;
 
+  await loadFeedItems();
   const item = getFeedItem(itemIndex);
+  if (!item) return;
+
   populate(item);
   isOpen = true;
   backdrop.classList.add('is-open');
@@ -61,9 +64,11 @@ export function closeFeedModal() {
   window.dispatchEvent(new CustomEvent('feed-modal-close'));
 }
 
-export function initFeedModal() {
+export async function initFeedModal() {
   cacheElements();
   if (!backdrop) return;
+
+  await loadFeedItems();
 
   closeBtn.addEventListener('click', closeFeedModal);
   backdrop.addEventListener('click', (e) => {
@@ -75,4 +80,8 @@ export function initFeedModal() {
       closeFeedModal();
     }
   });
+
+  if (typeof window !== 'undefined') {
+    window.openFeedModal = openFeedModal;
+  }
 }

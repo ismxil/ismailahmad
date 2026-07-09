@@ -5,12 +5,10 @@
 
 import * as THREE from 'three';
 import { openFeedModal } from './feed-modal.js';
+import { getFeedItems, loadFeedItems } from './feed-items.js';
 
-const COVER_COUNT = 30;
 const MESH_COUNT = 400;
-const PLANE_WIDTH = 2;
-const PLANE_HEIGHT = 3.38;
-const CLICK_DRAG_THRESHOLD = 8;
+const CLICK_DRAG_THRESHOLD = 18;
 
 const vertexShader = `
 varying vec2 vUv;
@@ -171,7 +169,7 @@ class FeedsPlanes {
     this.createGeometry();
     this.createMaterial();
     this.createInstancedMesh();
-    this.loadCovers();
+    this.ready = this.initCovers();
 
     this._onWheel = this.onWheel.bind(this);
     window.addEventListener('wheel', this._onWheel, { passive: false });
@@ -220,14 +218,32 @@ class FeedsPlanes {
     return createImageBitmap(blob);
   }
 
-  async loadCovers() {
-    const urls = Array.from({ length: COVER_COUNT }, (_, i) => `assets/feeds/covers/image_${i}.jpg`);
-    const images = await Promise.all(urls.map((path) => this.loadImage(path)));
+  async initCovers() {
+    await loadFeedItems();
+    const items = getFeedItems();
+    if (!items.length) return;
+    await this.loadCovers(items.map((item) => item.cover));
+  }
 
-    const atlasWidth = Math.max(...images.map((img) => img.width));
+  async loadCovers(coverUrls) {
+    const images = await Promise.all(
+      coverUrls.map(async (path) => {
+        try {
+          return await this.loadImage(path);
+        } catch (err) {
+          console.warn('[feeds] Failed to load cover:', path, err);
+          return null;
+        }
+      })
+    );
+
+    const validImages = images.filter(Boolean);
+    if (!validImages.length) return;
+
+    const atlasWidth = Math.max(...validImages.map((img) => img.width));
     let totalHeight = 0;
     images.forEach((img) => {
-      totalHeight += img.height;
+      if (img) totalHeight += img.height;
     });
 
     const canvas = document.createElement('canvas');
@@ -236,9 +252,12 @@ class FeedsPlanes {
     const ctx = canvas.getContext('2d');
 
     let currentY = 0;
-    this.imageInfos = images.map((img) => {
+    this.imageInfos = [];
+    images.forEach((img, feedIndex) => {
+      if (!img) return;
       ctx.drawImage(img, 0, currentY);
-      const info = {
+      this.imageInfos.push({
+        feedIndex,
         width: img.width,
         height: img.height,
         aspectRatio: img.width / img.height,
@@ -248,9 +267,8 @@ class FeedsPlanes {
           yStart: 1 - currentY / totalHeight,
           yEnd: 1 - (currentY + img.height) / totalHeight,
         },
-      };
+      });
       currentY += img.height;
-      return info;
     });
 
     this.atlasTexture = new THREE.Texture(canvas);
@@ -303,10 +321,15 @@ class FeedsPlanes {
 
   bindDrag(element) {
     const pointerStart = { x: 0, y: 0 };
+    let didDrag = false;
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    const dummy = new THREE.Object3D();
 
     const onPointerDown = (e) => {
       if (this.isModalOpen) return;
       this.drag.isDown = true;
+      didDrag = false;
       this.drag.lastX = e.clientX;
       this.drag.lastY = e.clientY;
       pointerStart.x = e.clientX;
@@ -318,12 +341,19 @@ class FeedsPlanes {
       if (!this.drag.isDown || this.isModalOpen) return;
       const dx = e.clientX - this.drag.lastX;
       const dy = e.clientY - this.drag.lastY;
+      if (Math.abs(dx) > 1 || Math.abs(dy) > 1) didDrag = true;
       this.drag.lastX = e.clientX;
       this.drag.lastY = e.clientY;
       const worldPerPixelX = (this.sizes.width / window.innerWidth) * this.dragSensitivity;
       const worldPerPixelY = (this.sizes.height / window.innerHeight) * this.dragSensitivity;
       this.drag.xTarget += -dx * worldPerPixelX;
       this.drag.yTarget += dy * worldPerPixelY;
+    };
+
+    const tryOpenCard = async (clientX, clientY) => {
+      await this.ready;
+      const pick = this.pickInstance(clientX, clientY, raycaster, ndc, dummy);
+      if (pick) openFeedModal(pick.imageIndex);
     };
 
     const onPointerUp = (e) => {
@@ -336,12 +366,9 @@ class FeedsPlanes {
       if (!wasDown || this.isModalOpen) return;
 
       const moved = Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y);
-      if (moved > CLICK_DRAG_THRESHOLD) return;
+      if (didDrag && moved > CLICK_DRAG_THRESHOLD) return;
 
-      const pick = this.pickInstance(e.clientX, e.clientY);
-      if (pick) {
-        openFeedModal(pick.imageIndex);
-      }
+      tryOpenCard(e.clientX, e.clientY);
     };
 
     element.addEventListener('pointerdown', onPointerDown);
@@ -349,49 +376,42 @@ class FeedsPlanes {
     window.addEventListener('pointerup', onPointerUp);
   }
 
-  pickInstance(clientX, clientY) {
-    if (!this.imageInfos.length) return null;
+  pickInstance(clientX, clientY, raycaster, ndc, dummy) {
+    if (!this.imageInfos.length || !this.camera) return null;
 
-    const camera = this.camera;
-    const temp = new THREE.Vector3();
-    let best = null;
+    this.camera.updateMatrixWorld(true);
+
+    ndc.set(
+      (clientX / window.innerWidth) * 2 - 1,
+      -(clientY / window.innerHeight) * 2 + 1
+    );
+    raycaster.setFromCamera(ndc, this.camera);
 
     for (let i = 0; i < this.meshCount; i++) {
       const center = getInstanceCenter(i, this);
-      const visibility = getInstanceVisibility(center.z);
-      if (visibility < 0.12) continue;
-
-      temp.copy(center);
-      temp.project(camera);
-
-      if (temp.z > 1) continue;
-
-      const screenX = (temp.x * 0.5 + 0.5) * window.innerWidth;
-      const screenY = (-temp.y * 0.5 + 0.5) * window.innerHeight;
-      const distance = camera.position.distanceTo(center);
-      const visibleHeight = 2 * Math.tan((camera.fov * Math.PI) / 180 / 2) * distance;
-      const screenH = (PLANE_HEIGHT / visibleHeight) * window.innerHeight;
-      const screenW = (PLANE_WIDTH / visibleHeight) * window.innerHeight;
-
-      const halfW = screenW * 0.5;
-      const halfH = screenH * 0.5;
-
-      if (
-        clientX < screenX - halfW ||
-        clientX > screenX + halfW ||
-        clientY < screenY - halfH ||
-        clientY > screenY + halfH
-      ) {
-        continue;
-      }
-
-      const imageIndex = i % this.imageInfos.length;
-      if (!best || center.z > best.center.z) {
-        best = { instanceId: i, imageIndex, center };
-      }
+      if (getInstanceVisibility(center.z) < 0.05) continue;
+      dummy.position.copy(center);
+      dummy.quaternion.set(0, 0, 0, 1);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+      this.mesh.setMatrixAt(i, dummy.matrix);
     }
+    this.mesh.instanceMatrix.needsUpdate = true;
 
-    return best;
+    const hits = raycaster.intersectObject(this.mesh, false);
+    if (!hits.length) return null;
+
+    const hit = hits[0];
+    if (hit.instanceId === undefined) return null;
+
+    const atlasIndex = hit.instanceId % this.imageInfos.length;
+    const feedIndex = this.imageInfos[atlasIndex].feedIndex;
+
+    return {
+      instanceId: hit.instanceId,
+      imageIndex: feedIndex,
+      center: hit.point,
+    };
   }
 
   setModalOpen(isOpen) {
@@ -439,7 +459,6 @@ class FeedsVisualizer {
     this.time = 0;
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.scene.add(this.camera);
     this.camera.position.z = 10;
 
     this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -499,5 +518,6 @@ class FeedsVisualizer {
 
 const canvas = document.getElementById('feeds-webgl');
 if (canvas) {
+  canvas.style.pointerEvents = 'auto';
   new FeedsVisualizer(canvas);
 }
