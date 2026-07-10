@@ -5,7 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>document.documentElement.classList.add('is-loading');</script>
-    <style>html.is-loading,html.is-loading body{background:#fff}</style>
+    <style>
+        html.is-loading,
+        html.is-loading body {
+            background: #fff
+        }
+    </style>
     <title>Insights — Ismail Ahmad</title>
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
@@ -20,6 +25,7 @@
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
     <link rel="stylesheet" href="css/insights.css">
+    <link rel="stylesheet" href="css/music-player.css">
     <style>
         :root {
             --brand: #393bfe;
@@ -84,6 +90,7 @@
         .pill:hover {
             opacity: 0.75;
         }
+
     </style>
 </head>
 
@@ -99,7 +106,7 @@
             <div class="insights-brand header-fluid" data-header-fluid aria-label="Insights title">
                 <div class="header-fluid__content">
                     <h1>Insights</h1>
-                    <img src="assets/logo.svg" alt="" width="54" height="54" />
+                    <canvas id="insights-header-logo-c" aria-hidden="true" style="width:81px;height:81px;display:block;flex-shrink:0;"></canvas>
                 </div>
             </div>
 
@@ -122,8 +129,10 @@
                             <a href="feeds.html">Feeds</a>
                             <button type="button" id="nav-menu-contact">Contact</button>
                         </div>
-                        <button type="button" class="header-nav-menu__close" id="header-nav-menu-close" aria-label="Close menu">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                        <button type="button" class="header-nav-menu__close" id="header-nav-menu-close"
+                            aria-label="Close menu">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" aria-hidden="true">
                                 <path d="M18 6L6 18M6 6l12 12" />
                             </svg>
                         </button>
@@ -156,21 +165,31 @@
             <section class="insights-cta" aria-labelledby="insights-cta-title">
                 <div class="insights-cta__title-fluid header-fluid" data-header-fluid>
                     <div class="header-fluid__content">
-                        <h2 id="insights-cta-title" class="insights-cta__title">Be the first to know when I share my insights</h2>
+                        <h2 id="insights-cta-title" class="insights-cta__title">Keep up to date</h2>
                     </div>
                 </div>
-                <form class="insights-subscribe" id="insights-subscribe" action="https://wandarer.com/api/v1/free" method="post" target="_blank" rel="noopener">
+                <form class="insights-subscribe" id="insights-subscribe" action="https://wandarer.com/api/v1/free"
+                    method="post" target="_blank" rel="noopener">
                     <label class="insights-email" id="insights-email-field">
                         <span class="insights-email__icon" aria-hidden="true">
-                            <svg width="24" height="24" viewBox="0 0 18.8003 16.4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.00017 4.6L8.80497 9.0592C9.17337 9.2704 9.62697 9.2704 9.99537 9.0592L17.8002 4.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M14.2002 1H4.60017C2.61195 1 1.00017 2.61177 1.00017 4.6V11.8C1.00017 13.7882 2.61195 15.4 4.60017 15.4H14.2002C16.1884 15.4 17.8002 13.7882 17.8002 11.8V4.6C17.8002 2.61177 16.1884 1 14.2002 1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg width="24" height="24" viewBox="0 0 18.8003 16.4" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1.00017 4.6L8.80497 9.0592C9.17337 9.2704 9.62697 9.2704 9.99537 9.0592L17.8002 4.6"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path
+                                    d="M14.2002 1H4.60017C2.61195 1 1.00017 2.61177 1.00017 4.6V11.8C1.00017 13.7882 2.61195 15.4 4.60017 15.4H14.2002C16.1884 15.4 17.8002 13.7882 17.8002 11.8V4.6C17.8002 2.61177 16.1884 1 14.2002 1Z"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
                             </svg>
                         </span>
-                        <input class="insights-email__input" type="email" name="email" placeholder="Your email" autocomplete="email" required />
+                        <input class="insights-email__input" type="email" name="email" placeholder="Your email"
+                            autocomplete="email" required />
                     </label>
                     <button type="submit" class="insights-email__submit" aria-label="Subscribe">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
                     </button>
@@ -181,9 +200,44 @@
 
     <footer class="insights-footer" aria-label="Page footer">
         <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
-        <a class="home-logo" href="index.html" aria-label="Back to homepage">
-            <canvas id="insights-logo-c" aria-hidden="true"></canvas>
-        </a>
+        <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
+            <div id="music-stack" aria-hidden="true">
+                <div id="music-glow" aria-hidden="true">
+                    <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
+                </div>
+                <div id="music-player" aria-hidden="true" aria-label="Music player">
+                    <div class="music-player__thumbs" id="music-player-thumbs"></div>
+                    <div class="music-player__art">
+                        <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art" width="200" height="200" />
+                    </div>
+                    <div class="music-player__meta">
+                        <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
+                        <p class="music-player__title" id="music-player-title">Dream</p>
+                    </div>
+                    <div class="music-player__controls">
+                        <button type="button" class="music-player__btn music-player__btn--side" id="music-prev" aria-label="Previous track">
+                            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true"><path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
+                        <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause" aria-label="Play">
+                            <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true"><path d="M1 1L9 6L1 11V1Z" /></svg>
+                            <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" style="display:none"><rect x="1" y="1" width="2.5" height="10" rx="0.5" /><rect x="6.5" y="1" width="2.5" height="10" rx="0.5" /></svg>
+                        </button>
+                        <button type="button" class="music-player__btn music-player__btn--side" id="music-next" aria-label="Next track">
+                            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true"><path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button id="play-btn" type="button" aria-label="Toggle music player">
+                <svg width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
+                    <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path class="bar bar-3" d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path class="bar bar-4" d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path class="bar bar-5" d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                </svg>
+            </button>
+        </div>
     </footer>
 
     <div id="insight-backdrop" aria-hidden="true">
@@ -355,16 +409,35 @@
         renderInsights();
     </script>
 
+    <audio id="site-audio" preload="auto"></audio>
+
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+        <defs>
+            <filter id="music-paper-texture" x="0%" y="0%" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65 0.55" numOctaves="5" stitchTiles="stitch" seed="3" result="noise" />
+                <feColorMatrix in="noise" type="saturate" values="0" result="gray" />
+                <feComponentTransfer in="gray" result="crumple">
+                    <feFuncR type="linear" slope="0.12" intercept="0.04" />
+                    <feFuncG type="linear" slope="0.11" intercept="0.035" />
+                    <feFuncB type="linear" slope="0.10" intercept="0.03" />
+                </feComponentTransfer>
+                <feBlend in="crumple" in2="SourceGraphic" mode="screen" />
+            </filter>
+        </defs>
+    </svg>
+
     <aside id="contact-panel" aria-label="Contact" aria-hidden="true">
         <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
             <button type="button" id="close-contact" class="contact-modal__close" aria-label="Close contact">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    aria-hidden="true">
                     <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
             </button>
             <div class="contact-modal__intro">
-                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and business. I love working in conditions where decisions have real impact and good work actually ships.</p>
-                <button type="button" class="contact-modal__more" id="contact-more-btn">More</button>
+                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and
+                    business. I love working in conditions where decisions have real impact and good work actually
+                    ships.</p>
             </div>
             <div class="contact-modal__polaroids" aria-hidden="true">
                 <figure class="contact-polaroid contact-polaroid--profile">
@@ -397,14 +470,17 @@
 
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
+    <script src="js/music-player.js"></script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
         import { initAllHeaderFluids } from './js/header-fluid.js';
         await (window.siteReady ?? Promise.resolve());
+        initBrandLogo3D(document.getElementById('insights-header-logo-c'));
         initBrandLogo3D(document.getElementById('insights-logo-c'));
         initAllHeaderFluids();
         initContactPanel();
         initSiteNav();
+        initMusicPlayer();
     </script>
 </body>
 

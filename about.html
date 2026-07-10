@@ -5,7 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>document.documentElement.classList.add('is-loading');</script>
-    <style>html.is-loading,html.is-loading body{background:#fff}</style>
+    <style>
+        html.is-loading,
+        html.is-loading body {
+            background: #fff
+        }
+    </style>
     <title>About — Ismail Ahmad</title>
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
@@ -21,6 +26,7 @@
     <link rel="stylesheet" href="css/contact-panel.css">
     <link rel="stylesheet" href="css/image-hover.css">
     <link rel="stylesheet" href="css/about.css">
+    <link rel="stylesheet" href="css/music-player.css">
     <style>
         :root {
             --brand: #393bfe;
@@ -100,7 +106,8 @@
             <div class="about-brand header-fluid" data-header-fluid aria-label="About title">
                 <div class="header-fluid__content">
                     <h1>Hi</h1>
-                    <img src="assets/logo.svg" alt="" width="54" height="54" />
+                    <canvas id="about-header-logo-c" aria-hidden="true"
+                        style="width:81px;height:81px;display:block;flex-shrink:0;"></canvas>
                 </div>
             </div>
 
@@ -123,8 +130,10 @@
                             <a href="feeds.html">Feeds</a>
                             <button type="button" id="nav-menu-contact">Contact</button>
                         </div>
-                        <button type="button" class="header-nav-menu__close" id="header-nav-menu-close" aria-label="Close menu">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                        <button type="button" class="header-nav-menu__close" id="header-nav-menu-close"
+                            aria-label="Close menu">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" aria-hidden="true">
                                 <path d="M18 6L6 18M6 6l12 12" />
                             </svg>
                         </button>
@@ -144,8 +153,9 @@
                 <section class="about-section about-intro" aria-labelledby="about-intro-title">
                     <span class="about-section__label about-section__label--spacer" aria-hidden="true"></span>
                     <div class="about-section__content">
-                        <h2 id="about-intro-title" class="about-intro__title">I am Ahmad</h2>
-                        <p class="about-intro__lead">I help ambitious financial companies turn bold ideas into category defining brands, products and websites</p>
+                        <h3 class="about-section__title">Welcome to my corner, I am Ahmad</h3>
+                        <p class="about-intro__lead">I help ambitious financial companies turn bold ideas into category
+                            defining brands, products and websites</p>
                     </div>
                 </section>
 
@@ -169,10 +179,22 @@
                     <p id="about-expertise-label" class="about-section__label">Expertise</p>
                     <div class="about-section__stack">
                         <h3 class="about-section__title">Focused on Financial Tech.</h3>
-                        <p class="about-section__body">Since 2017, I have helped financial banks startups, scaleups, and global financial companies stand out, build trust, and accelerate adoption.</p>
-                        <a class="about-cv-btn" href="cv.pdf" download>
+                        <p class="about-section__body">Since 2017, I have helped financial banks startups, scaleups, and
+                            global financial companies stand out, build trust, and accelerate adoption.</p>
+                        <a class="about-cv-btn" href="assets/cv.pdf" target="_blank" rel="noopener">
+                            <svg width="20" height="20" viewBox="0 0 12 12" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path
+                                    d="m6.75,4.25h3.5c0-.321-.127-.627-.353-.853l-2.295-2.295c-.226-.226-.532-.353-.851-.353v3.5Z"
+                                    fill="currentColor" stroke-width="0" />
+                                <polyline points="6.75 .75 6.75 4.25 10.25 4.25" stroke="currentColor" stroke-width="1"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="m7.603,1.103l2.294,2.294c.226.226.353.532.353.852v5.001c0,1.105-.895,2-2,2H3.75c-1.105,0-2-.895-2-2V2.75C1.75,1.645,2.645.75,3.75.75h3.001c.32,0,.626.127.852.353Z"
+                                    stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
                             Download CV
-                            <img src="assets/about/icon-download.svg" alt="" width="24" height="24" />
                         </a>
                     </div>
                 </section>
@@ -181,29 +203,39 @@
                     <p id="about-approach-label" class="about-section__label">Approach</p>
                     <div class="about-section__stack about-section__stack--tight">
                         <p class="about-section__subtitle">Quality execution that feel cohesive</p>
-                        <p class="about-section__body">I follow these simple framework to ensure I deliver the best possible results.</p>
+                        <p class="about-section__body">I follow these simple framework to ensure I deliver the best
+                            possible results.</p>
                     </div>
                     <div class="about-cards">
                         <article class="about-card about-card--icon">
                             <div class="about-card__content">
                                 <h4 class="about-card__title">Strategy</h4>
-                                <p class="about-card__text">I immerse myself into your goals, users, and constraints, questioning, and synthesizing insights into a clear, defensible position grounding all design decisions.</p>
+                                <p class="about-card__text">I immerse myself into your goals, users, and constraints,
+                                    questioning, and synthesizing insights into a clear, defensible position grounding
+                                    all design decisions.</p>
                             </div>
-                            <img class="about-card__icon" src="assets/about/icon-strategy.svg" alt="" width="64" height="64" />
+                            <img class="about-card__icon" src="assets/about/icon-strategy.svg" alt="" width="64"
+                                height="64" />
                         </article>
                         <article class="about-card about-card--icon">
                             <div class="about-card__content">
                                 <h4 class="about-card__title">Design</h4>
-                                <p class="about-card__text">I design within strategic guardrails to solve for conversion, comprehension, and trust, testing and refining until the experience works flawlessly at scale.</p>
+                                <p class="about-card__text">I design within strategic guardrails to solve for
+                                    conversion, comprehension, and trust, testing and refining until the experience
+                                    works flawlessly at scale.</p>
                             </div>
-                            <img class="about-card__icon" src="assets/about/icon-design.svg" alt="" width="64" height="64" />
+                            <img class="about-card__icon" src="assets/about/icon-design.svg" alt="" width="64"
+                                height="64" />
                         </article>
                         <article class="about-card about-card--icon">
                             <div class="about-card__content">
                                 <h4 class="about-card__title">Build</h4>
-                                <p class="about-card__text">I work in the space between design and development, I design with code in mind, and partner with developers to ensure the final product matches what was design.</p>
+                                <p class="about-card__text">I work in the space between design and development, I design
+                                    with code in mind, and partner with developers to ensure the final product matches
+                                    what was design.</p>
                             </div>
-                            <img class="about-card__icon" src="assets/about/icon-build.svg" alt="" width="64" height="64" />
+                            <img class="about-card__icon" src="assets/about/icon-build.svg" alt="" width="64"
+                                height="64" />
                         </article>
                     </div>
                 </section>
@@ -212,7 +244,8 @@
                     <p id="about-capabilities-label" class="about-section__label">Capabilities</p>
                     <div class="about-section__stack about-section__stack--tight">
                         <p class="about-section__subtitle">T-Shaped industry experience</p>
-                        <p class="about-section__body">Turning brief into trust. Without sucking out the creativity side of it.</p>
+                        <p class="about-section__body">Turning brief into trust. Without sucking out the creativity side
+                            of it.</p>
                     </div>
                     <div class="about-cards">
                         <article class="about-card">
@@ -255,7 +288,8 @@
                     <p id="about-clients-label" class="about-section__label">Clients</p>
                     <div class="about-section__stack about-section__stack--tight">
                         <p class="about-section__subtitle">Spotting the patterns that matter.</p>
-                        <p class="about-section__body">Making financial infrastructure feel intuitive, reliable, and ready to scale.</p>
+                        <p class="about-section__body">Making financial infrastructure feel intuitive, reliable, and
+                            ready to scale.</p>
                     </div>
                     <div class="about-clients" aria-label="Client logos">
                         <img src="assets/about/client-1.svg" alt="Accenture" loading="lazy" />
@@ -272,36 +306,111 @@
             </div>
 
             <section class="about-cta" aria-labelledby="about-cta-title">
-                    <div class="about-cta__title-fluid header-fluid" data-header-fluid>
-                        <div class="header-fluid__content">
-                            <h2 id="about-cta-title" class="about-cta__title">Is this the start of something beautiful?</h2>
-                        </div>
+                <div class="about-cta__title-fluid header-fluid" data-header-fluid>
+                    <div class="header-fluid__content">
+                        <h2 id="about-cta-title" class="about-cta__title">Is this the start of something beautiful?</h2>
                     </div>
-                    <button type="button" class="about-cta__btn" id="about-talk-btn">
-                        <span class="about-cta__btn-dot" aria-hidden="true"></span>
-                        Talk to Ahmad
-                    </button>
+                </div>
+                <button type="button" class="about-cta__btn" id="about-talk-btn">
+                    <span class="about-cta__btn-dot" aria-hidden="true"></span>
+                    Talk to Ahmad
+                </button>
             </section>
         </main>
     </div>
 
     <footer class="about-footer" aria-label="Page footer">
         <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
-        <a class="home-logo" href="index.html" aria-label="Back to homepage">
-            <canvas id="about-logo-c" aria-hidden="true"></canvas>
-        </a>
+        <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
+            <div id="music-stack" aria-hidden="true">
+                <div id="music-glow" aria-hidden="true">
+                    <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
+                </div>
+                <div id="music-player" aria-hidden="true" aria-label="Music player">
+                    <div class="music-player__thumbs" id="music-player-thumbs"></div>
+                    <div class="music-player__art">
+                        <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art"
+                            width="200" height="200" />
+                    </div>
+                    <div class="music-player__meta">
+                        <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
+                        <p class="music-player__title" id="music-player-title">Dream</p>
+                    </div>
+                    <div class="music-player__controls">
+                        <button type="button" class="music-player__btn music-player__btn--side" id="music-prev"
+                            aria-label="Previous track">
+                            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
+                                <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause"
+                            aria-label="Play">
+                            <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12"
+                                fill="currentColor" aria-hidden="true">
+                                <path d="M1 1L9 6L1 11V1Z" />
+                            </svg>
+                            <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12"
+                                fill="currentColor" aria-hidden="true" style="display:none">
+                                <rect x="1" y="1" width="2.5" height="10" rx="0.5" />
+                                <rect x="6.5" y="1" width="2.5" height="10" rx="0.5" />
+                            </svg>
+                        </button>
+                        <button type="button" class="music-player__btn music-player__btn--side" id="music-next"
+                            aria-label="Next track">
+                            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
+                                <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button id="play-btn" type="button" aria-label="Toggle music player">
+                <svg width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
+                    <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
+                        stroke-linecap="square" />
+                    <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
+                        stroke-linecap="square" />
+                    <path class="bar bar-3" d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path class="bar bar-4" d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path class="bar bar-5" d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                </svg>
+            </button>
+        </div>
     </footer>
+
+    <audio id="site-audio" preload="auto"></audio>
+
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+        style="position:absolute;width:0;height:0;overflow:hidden">
+        <defs>
+            <filter id="music-paper-texture" x="0%" y="0%" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65 0.55" numOctaves="5" stitchTiles="stitch" seed="3"
+                    result="noise" />
+                <feColorMatrix in="noise" type="saturate" values="0" result="gray" />
+                <feComponentTransfer in="gray" result="crumple">
+                    <feFuncR type="linear" slope="0.12" intercept="0.04" />
+                    <feFuncG type="linear" slope="0.11" intercept="0.035" />
+                    <feFuncB type="linear" slope="0.10" intercept="0.03" />
+                </feComponentTransfer>
+                <feBlend in="crumple" in2="SourceGraphic" mode="screen" />
+            </filter>
+        </defs>
+    </svg>
 
     <aside id="contact-panel" aria-label="Contact" aria-hidden="true">
         <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
             <button type="button" id="close-contact" class="contact-modal__close" aria-label="Close contact">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    aria-hidden="true">
                     <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
             </button>
             <div class="contact-modal__intro">
-                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and business. I love working in conditions where decisions have real impact and good work actually ships.</p>
-                <button type="button" class="contact-modal__more" id="contact-more-btn">More</button>
+                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and
+                    business. I love working in conditions where decisions have real impact and good work actually
+                    ships.</p>
             </div>
             <div class="contact-modal__polaroids" aria-hidden="true">
                 <figure class="contact-polaroid contact-polaroid--profile">
@@ -334,20 +443,25 @@
 
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
+    <script src="js/music-player.js"></script>
     <script>
         initContactPanel();
         initSiteNav();
+        initMusicPlayer();
     </script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
         import { initAllHeaderFluids } from './js/header-fluid.js';
 
         await (window.siteReady ?? Promise.resolve());
+        initBrandLogo3D(document.getElementById('about-header-logo-c'));
         initBrandLogo3D(document.getElementById('about-logo-c'));
         initAllHeaderFluids();
 
         const talkBtn = document.getElementById('about-talk-btn');
-        if (talkBtn) talkBtn.addEventListener('click', () => window.openContactPanel?.());
+        if (talkBtn) talkBtn.addEventListener('click', () => {
+            window.location.href = 'mailto:work@ismailahmad.com?subject=Hey%20Ahmad,%20down%20for%20work?';
+        });
     </script>
 </body>
 

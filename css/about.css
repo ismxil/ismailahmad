@@ -210,10 +210,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 8px;
     width: fit-content;
     height: 48px;
-    padding: 8px 16px 8px 24px;
+    padding: 8px 20px;
     border: 1.5px solid var(--brand, #393bfe);
     border-radius: 50px;
     background: transparent;
@@ -232,10 +232,11 @@
     background: rgba(57, 59, 254, 0.04);
 }
 
-.about-cv-btn img {
+.about-cv-btn svg {
     display: block;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
     flex-shrink: 0;
 }
 

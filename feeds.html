@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/contact-panel.css">
     <link rel="stylesheet" href="css/feed-modal.css">
     <link rel="stylesheet" href="css/feeds-grid.css">
+    <link rel="stylesheet" href="css/music-player.css">
     <link rel="stylesheet" href="css/image-hover.css">
     <style>
         :root {
@@ -143,10 +144,22 @@
 
         .page-footer {
             position: fixed;
-            bottom: 20px;
+            left: 24px;
             right: 24px;
+            bottom: 20px;
             z-index: 45;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             pointer-events: none;
+        }
+
+        .page-footer > * {
+            pointer-events: auto;
+        }
+
+        .page-footer .pill--muted {
+            color: var(--text-tertiary, #71717a);
         }
 
         .home-logo {
@@ -188,6 +201,7 @@
                 gap: 10px;
             }
         }
+
     </style>
 </head>
 
@@ -207,7 +221,7 @@
             <div class="brand header-fluid" data-header-fluid aria-label="Feed title">
                 <div class="header-fluid__content">
                     <h1>Feed</h1>
-                    <img src="assets/logo.svg" alt="" width="54" height="54" />
+                    <canvas id="feeds-header-logo-c" aria-hidden="true" style="width:81px;height:81px;display:block;flex-shrink:0;"></canvas>
                 </div>
             </div>
 
@@ -247,9 +261,45 @@
         </header>
 
         <footer class="page-footer">
-            <a class="home-logo" href="index.html" aria-label="Back to homepage">
-                <canvas id="feeds-logo-c" aria-hidden="true"></canvas>
-            </a>
+            <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
+            <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
+                <div id="music-stack" aria-hidden="true">
+                    <div id="music-glow" aria-hidden="true">
+                        <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
+                    </div>
+                    <div id="music-player" aria-hidden="true" aria-label="Music player">
+                        <div class="music-player__thumbs" id="music-player-thumbs"></div>
+                        <div class="music-player__art">
+                            <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art" width="200" height="200" />
+                        </div>
+                        <div class="music-player__meta">
+                            <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
+                            <p class="music-player__title" id="music-player-title">Dream</p>
+                        </div>
+                        <div class="music-player__controls">
+                            <button type="button" class="music-player__btn music-player__btn--side" id="music-prev" aria-label="Previous track">
+                                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true"><path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
+                            <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause" aria-label="Play">
+                                <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true"><path d="M1 1L9 6L1 11V1Z" /></svg>
+                                <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" style="display:none"><rect x="1" y="1" width="2.5" height="10" rx="0.5" /><rect x="6.5" y="1" width="2.5" height="10" rx="0.5" /></svg>
+                            </button>
+                            <button type="button" class="music-player__btn music-player__btn--side" id="music-next" aria-label="Next track">
+                                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true"><path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button id="play-btn" type="button" aria-label="Toggle music player">
+                    <svg width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
+                        <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                        <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                        <path class="bar bar-3" d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                        <path class="bar bar-4" d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                        <path class="bar bar-5" d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    </svg>
+                </button>
+            </div>
         </footer>
     </div>
 
@@ -279,6 +329,23 @@
         </div>
     </div>
 
+    <audio id="site-audio" preload="auto"></audio>
+
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+        <defs>
+            <filter id="music-paper-texture" x="0%" y="0%" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65 0.55" numOctaves="5" stitchTiles="stitch" seed="3" result="noise" />
+                <feColorMatrix in="noise" type="saturate" values="0" result="gray" />
+                <feComponentTransfer in="gray" result="crumple">
+                    <feFuncR type="linear" slope="0.12" intercept="0.04" />
+                    <feFuncG type="linear" slope="0.11" intercept="0.035" />
+                    <feFuncB type="linear" slope="0.10" intercept="0.03" />
+                </feComponentTransfer>
+                <feBlend in="crumple" in2="SourceGraphic" mode="screen" />
+            </filter>
+        </defs>
+    </svg>
+
     <aside id="contact-panel" aria-label="Contact" aria-hidden="true">
         <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
             <button type="button" id="close-contact" class="contact-modal__close" aria-label="Close contact">
@@ -288,7 +355,6 @@
             </button>
             <div class="contact-modal__intro">
                 <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and business. I love working in conditions where decisions have real impact and good work actually ships.</p>
-                <button type="button" class="contact-modal__more" id="contact-more-btn">More</button>
             </div>
             <div class="contact-modal__polaroids" aria-hidden="true">
                 <figure class="contact-polaroid contact-polaroid--profile">
@@ -321,16 +387,19 @@
 
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
+    <script src="js/music-player.js"></script>
     <script type="module" src="js/feeds-grid.js"></script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
         import { initAllHeaderFluids } from './js/header-fluid.js';
         import { initFeedModal } from './js/feed-modal.js';
+        initBrandLogo3D(document.getElementById('feeds-header-logo-c'));
         initBrandLogo3D(document.getElementById('feeds-logo-c'));
         initAllHeaderFluids();
         initFeedModal();
         initContactPanel();
         initSiteNav();
+        initMusicPlayer();
     </script>
 </body>
 

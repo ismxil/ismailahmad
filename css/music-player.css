@@ -1,14 +1,43 @@
 /* Music player — Figma index(music) 188:9585 / 204:11130 */
 
-#music-stack {
-    position: fixed;
-    right: 24px;
-    bottom: 88px;
-    width: 269px;
-    z-index: 46;
-    pointer-events: none;
+/* ─── Soundbar pulse animation ───────────────────────────────────
+   When music is playing, each bar bounces with staggered delays
+   to create a live equaliser effect. Triggered by JS adding
+   .is-playing to #play-btn.
+   ──────────────────────────────────────────────────────────────── */
+@keyframes bar-bounce {
+    0%, 100% { transform: scaleY(1);   }
+    50%       { transform: scaleY(0.25); }
 }
 
+#play-btn.is-playing .bar {
+    transform-origin: center;
+    transform-box: fill-box;
+}
+#play-btn.is-playing .bar-1 { animation: bar-bounce 0.85s ease-in-out infinite 0.00s; }
+#play-btn.is-playing .bar-2 { animation: bar-bounce 0.85s ease-in-out infinite 0.17s; }
+#play-btn.is-playing .bar-3 { animation: bar-bounce 0.85s ease-in-out infinite 0.34s; }
+#play-btn.is-playing .bar-4 { animation: bar-bounce 0.85s ease-in-out infinite 0.51s; }
+#play-btn.is-playing .bar-5 { animation: bar-bounce 0.85s ease-in-out infinite 0.68s; }
+
+/* ─── Music stack (the floating panel container) ─────────────────
+   Lives inside .bottom-bar__music so it inherits the hover zone.
+   JS adds/removes .is-open — CSS handles the visual transition.
+   ──────────────────────────────────────────────────────────────── */
+#music-stack {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 16px);  /* floats above the play button */
+    width: 269px;
+    z-index: 46;
+    pointer-events: none;       /* transparent until .is-open */
+}
+
+#music-stack.is-open {
+    pointer-events: auto;
+}
+
+/* ─── Glow blob ──────────────────────────────────────────────────*/
 #music-glow {
     position: absolute;
     right: -200px;
@@ -22,7 +51,7 @@
     visibility: hidden;
     transition: opacity 0.5s ease, visibility 0s linear 0.5s;
     -webkit-mask-image: radial-gradient(ellipse 68% 62% at 58% 62%, #000 0%, transparent 74%);
-    mask-image: radial-gradient(ellipse 68% 62% at 58% 62%, #000 0%, transparent 74%);
+            mask-image: radial-gradient(ellipse 68% 62% at 58% 62%, #000 0%, transparent 74%);
 }
 
 #music-stack.is-open #music-glow {
@@ -39,6 +68,7 @@
     display: block;
 }
 
+/* ─── Player card ────────────────────────────────────────────────*/
 #music-player {
     position: relative;
     z-index: 1;
@@ -50,7 +80,10 @@
     opacity: 0;
     visibility: hidden;
     transform: translateY(12px);
-    transition: opacity 0.4s ease, visibility 0s linear 0.4s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        opacity   0.35s ease,
+        visibility 0s linear 0.35s,
+        transform  0.35s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
 }
 
@@ -62,6 +95,7 @@
     transition-delay: 0s;
 }
 
+/* ─── Thumbnail strip ────────────────────────────────────────────*/
 .music-player__thumbs {
     display: flex;
     align-items: flex-start;
@@ -94,6 +128,7 @@
     display: block;
 }
 
+/* ─── Album art ──────────────────────────────────────────────────*/
 .music-player__art {
     width: 200px;
     height: 200px;
@@ -114,13 +149,14 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: repeating-conic-gradient(rgba(255, 255, 255, 0.03) 0% 25%, transparent 0% 50%) 0 0 / 3px 3px;
+    background: repeating-conic-gradient(rgba(255,255,255,0.03) 0% 25%, transparent 0% 50%) 0 0 / 3px 3px;
     filter: url(#music-paper-texture);
     opacity: 0.45;
     mix-blend-mode: overlay;
     pointer-events: none;
 }
 
+/* ─── Meta (artist / title) ──────────────────────────────────────*/
 .music-player__meta {
     display: flex;
     flex-direction: column;
@@ -136,7 +172,7 @@
     line-height: 24px;
     font-weight: 500;
     color: #fff;
-    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 1px 14px rgba(0,0,0,0.65), 0 0 24px rgba(0,0,0,0.4);
 }
 
 .music-player__title {
@@ -145,10 +181,11 @@
     font-size: 12px;
     line-height: 16px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
-    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+    color: rgba(255,255,255,0.5);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.6);
 }
 
+/* ─── Controls ───────────────────────────────────────────────────*/
 .music-player__controls {
     display: flex;
     align-items: center;
@@ -176,20 +213,14 @@
     transform: scale(1.04);
 }
 
-.music-player__btn--side {
-    width: 32px;
-    height: 32px;
-}
+.music-player__btn--side  { width: 32px; height: 32px; }
+.music-player__btn--main  { width: 48px; height: 48px; }
 
-.music-player__btn--main {
-    width: 48px;
-    height: 48px;
-}
+.music-player__btn svg { display: block; }
 
-.music-player__btn svg {
-    display: block;
-}
-
+/* ─── Bottom-bar music zone ──────────────────────────────────────
+   position: relative gives #music-stack its anchor point.
+   ──────────────────────────────────────────────────────────────── */
 .bottom-bar__music {
     position: relative;
     display: flex;
@@ -198,6 +229,7 @@
     flex-shrink: 0;
 }
 
+/* ─── Soundbar / play button ─────────────────────────────────────*/
 #play-btn {
     width: 44px;
     height: 44px;
@@ -211,21 +243,17 @@
     flex-shrink: 0;
     transition: background 0.18s, transform 0.18s;
     padding: 0;
+    position: relative;
+    z-index: 2;
 }
 
-#play-btn:hover {
-    background: #2b2ecc;
-    transform: scale(1.04);
-}
+#play-btn:hover { background: #2b2ecc; transform: scale(1.04); }
+#play-btn svg   { display: block; }
 
-#play-btn svg {
-    display: block;
-}
-
+/* ─── Responsive ─────────────────────────────────────────────────*/
 @media (max-width: 720px) {
     #music-stack {
-        right: 16px;
-        bottom: 76px;
+        right: 0;
         width: min(269px, calc(100vw - 32px));
     }
 

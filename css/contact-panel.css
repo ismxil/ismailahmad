@@ -23,9 +23,7 @@
     bottom: 76px;
     width: 326px;
     max-width: calc(100vw - 48px);
-    max-height: calc(100vh - 100px);
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
     background: #1e40af;
     border-radius: 17px;
     padding: 26px 13px 17px;
@@ -115,15 +113,13 @@
 }
 
 .contact-modal__polaroids {
-    position: relative;
+    display: flow-root;
     width: 100%;
-    min-height: 220px;
-    margin: 0 auto;
-    overflow: hidden;
+    padding-bottom: 16px;
 }
 
 .contact-polaroid {
-    position: absolute;
+    position: relative;
     margin: 0;
     background: var(--bg-cream);
     box-shadow: 0 6px 7px rgba(0, 0, 0, 0.4);
@@ -153,27 +149,29 @@
 }
 
 .contact-polaroid--profile {
-    left: 0;
-    top: 0;
-    width: 148px;
+    float: left;
+    width: 130px;
+    margin-left: 14px;
+    margin-top: 8px;
     transform: rotate(-11deg);
     z-index: 1;
 }
 
 .contact-polaroid--profile img {
-    height: 164px;
+    height: 148px;
 }
 
 .contact-polaroid--coffee {
-    right: 16px;
-    top: 36px;
-    width: 96px;
+    float: right;
+    width: 88px;
+    margin-right: 22px;
+    margin-top: 36px;
     transform: rotate(23deg);
     z-index: 2;
 }
 
 .contact-polaroid--coffee img {
-    height: 114px;
+    height: 104px;
     filter: blur(1.5px);
 }
 
