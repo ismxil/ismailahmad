@@ -3,10 +3,10 @@
  */
 
 const LERP = 0.12;
-const GAP_PX = 16;
-const MOBILE_GAP_PX = 12;
-const DISPLAY_SCALE = 0.74;
-const MOBILE_DISPLAY_SCALE = 0.42;
+const GAP_PX = 28;
+const MOBILE_GAP_PX = 20;
+const DISPLAY_SCALE = 1.0;
+const MOBILE_DISPLAY_SCALE = 0.92;
 const MOBILE_BREAKPOINT = 768;
 const DRAG_THRESHOLD_PX = 8;
 const SCROLL_EPSILON = 0.25;
@@ -133,6 +133,24 @@ export class Carousel {
     return Math.floor(this.slots.length / 2);
   }
 
+  _updateSlotSizes() {
+    const vw = window.innerWidth;
+    const sh = this.stageHeight || Math.round(window.innerHeight * 0.7);
+    if (!vw) return;
+    const isMob = this._isMobile();
+    if (isMob) {
+      const w = Math.max(280, Math.round(vw * 0.8));
+      const h = Math.min(sh - 20, Math.round(w * 1.15));
+      this.slots.forEach(s => { s.width = w; s.hoverWidth = w; s.height = h; });
+    } else {
+      // Default = larger; hover = about-gallery size (42vw) — reversed from typical
+      const hoverW = Math.min(820, Math.max(320, Math.round(vw * 0.42)));
+      const w      = Math.min(920, Math.max(360, Math.round(vw * 0.50)));
+      const h      = Math.min(sh - 20, Math.min(597, Math.max(280, Math.round(vw * 0.42))));
+      this.slots.forEach(s => { s.width = w; s.hoverWidth = hoverW; s.height = h; });
+    }
+  }
+
   _isMobile() {
     return window.innerWidth <= MOBILE_BREAKPOINT;
   }
@@ -216,10 +234,11 @@ export class Carousel {
 
   start(initialIndex = 0) {
     this.build();
+    this._refreshStageMetrics();
+    this._updateSlotSizes();
     this.measure();
     this.scrollX = this._indexToScroll(initialIndex);
     this.targetScrollX = this.scrollX;
-    this._refreshStageMetrics();
     this.applyTransforms();
     this.root.classList.add('is-ready');
 
@@ -246,8 +265,9 @@ export class Carousel {
   }
 
   _onResize() {
-    this.measure();
     this._refreshStageMetrics();
+    this._updateSlotSizes();
+    this.measure();
     this.applyTransforms();
     this._ensureTick();
   }
@@ -301,7 +321,9 @@ export class Carousel {
     const stageH = this.stageHeight;
     if (!vw || !stageH) return;
 
-    const heightScale = Math.min(1, (stageH - 12) / this.maxCardH);
+    const heightScale = this._isMobile()
+      ? Math.min(1, (stageH - 12) / this.maxCardH)
+      : 1;
     this.fitScale = heightScale * this._displayScale();
 
     const baseRelXs = this._relOffsets();

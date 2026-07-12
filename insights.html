@@ -12,6 +12,7 @@
         }
     </style>
     <title>Insights — Ismail Ahmad</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
@@ -24,6 +25,7 @@
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
+    <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/insights.css">
     <link rel="stylesheet" href="css/music-player.css">
     <style>
@@ -112,9 +114,9 @@
 
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
                 <div class="site-header__nav-pills" id="header-nav-pills">
+                    <a class="pill pill--cream" href="index.html">Index</a>
                     <a class="pill pill--cream" href="about.html">About</a>
                     <a class="pill pill--cream" href="feeds.html">Feeds</a>
-                    <a class="pill pill--cream pill--active" href="insights.html" aria-current="page">Insights</a>
                     <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
                         aria-controls="header-nav-menu" aria-label="Open menu">
                         <span class="dot" aria-hidden="true"></span>
@@ -471,6 +473,7 @@
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
+    <script src="js/spa-nav.js"></script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
         import { initAllHeaderFluids } from './js/header-fluid.js';
@@ -481,6 +484,7 @@
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
+        initSpaNav();
     </script>
 </body>
 

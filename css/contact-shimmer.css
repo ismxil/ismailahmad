@@ -1,0 +1,59 @@
+/* Contact button — periodic shimmer + sparkle to draw the eye */
+
+#open-contact {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    gap: 8px;
+}
+
+#open-contact::before {
+    content: '\2726';
+    position: relative;
+    z-index: 1;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--brand, #393bfe);
+    flex-shrink: 0;
+}
+
+/* Sits behind the button's own text/icon (negative z-index, relative to
+   the stacking context #open-contact establishes) so the shine sweeps
+   across the surface without ever washing out "Contact". */
+#open-contact::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(115deg,
+            transparent 32%,
+            rgba(89, 124, 255, 0.55) 44%,
+            rgba(255, 255, 255, 0.95) 50%,
+            rgba(89, 124, 255, 0.55) 56%,
+            transparent 68%);
+    background-size: 220% 100%;
+    background-position: 160% 0;
+    animation: contact-shimmer 3.6s ease-in-out infinite;
+}
+
+@keyframes contact-shimmer {
+    0% {
+        background-position: 160% 0;
+    }
+
+    35% {
+        background-position: -60% 0;
+    }
+
+    100% {
+        background-position: -60% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #open-contact::after {
+        animation: none;
+        content: none;
+    }
+}

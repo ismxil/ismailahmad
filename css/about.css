@@ -2,6 +2,7 @@
 
 .about-page {
     --about-pad: 24px;
+    --about-topbar-top: 25px;
     --about-frame: min(991px, calc(100vw - 2 * var(--about-pad)));
     --about-label: clamp(120px, 22vw, 320px);
     --about-gap: 32px;
@@ -11,11 +12,12 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 25px var(--about-pad) 0;
+    padding: var(--about-topbar-top) var(--about-pad) 0;
 }
 
 .about-topbar {
-    position: relative;
+    position: sticky;
+    top: var(--about-topbar-top);
     z-index: 50;
     display: flex;
     align-items: flex-start;
@@ -128,6 +130,17 @@
     color: var(--text-secondary, #52525b);
 }
 
+.about-gallery-pin {
+    flex-shrink: 0;
+}
+
+.about-gallery-pin__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+}
+
 .about-gallery-breakout {
     width: 100vw;
     margin-left: calc(50% - 50vw);
@@ -153,9 +166,11 @@
     min-width: 100%;
     padding-left: var(--about-content-start);
     padding-right: 0;
+    will-change: transform;
 }
 
 .about-gallery__item {
+    position: relative;
     flex: 0 0 clamp(320px, 42vw, 820px);
     height: clamp(280px, 42vw, 597px);
     border-radius: 32px;
@@ -168,6 +183,10 @@
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+.about-gallery-pin.is-pin-driven .about-gallery {
+    overflow-x: hidden;
 }
 
 .about-section__label {
@@ -485,11 +504,19 @@
 @media (max-width: 660px) {
     .about-page {
         --about-pad: 16px;
-        padding: 18px var(--about-pad) 0;
+        --about-topbar-top: 18px;
+        padding: var(--about-topbar-top) var(--about-pad) 0;
     }
 
     .about-panel {
         min-height: calc(100vh - 140px);
+    }
+
+    .about-brand h1 {
+        font-size: 40px;
+        line-height: 46px;
+        font-weight: 600;
+        letter-spacing: 0;
     }
 
     .about-brand img {
@@ -497,7 +524,25 @@
         height: 44px;
     }
 
+    #header-nav-pills .pill {
+        display: none;
+    }
+
+    .nav-dot-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .nav-dot-btn .dot {
+        width: 8px;
+        height: 8px;
+    }
+
     .about-stack {
+        gap: 72px;
+    }
+
+    .about-gallery-pin__inner {
         gap: 72px;
     }
 

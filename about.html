@@ -12,10 +12,12 @@
         }
     </style>
     <title>About — Ismail Ahmad</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/site-loader.css">
     <link rel="modulepreload" href="js/site-loader.js">
@@ -24,6 +26,7 @@
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
+    <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/image-hover.css">
     <link rel="stylesheet" href="css/about.css">
     <link rel="stylesheet" href="css/music-player.css">
@@ -113,9 +116,9 @@
 
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
                 <div class="site-header__nav-pills" id="header-nav-pills">
+                    <a class="pill pill--cream" href="index.html">Index</a>
                     <a class="pill pill--cream pill--active" href="about.html" aria-current="page">About</a>
                     <a class="pill pill--cream" href="feeds.html">Feeds</a>
-                    <a class="pill pill--cream" href="insights.html">Insights</a>
                     <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
                         aria-controls="header-nav-menu" aria-label="Open menu">
                         <span class="dot" aria-hidden="true"></span>
@@ -150,26 +153,30 @@
 
         <main class="about-panel" aria-label="About content">
             <div class="about-stack">
-                <section class="about-section about-intro" aria-labelledby="about-intro-title">
-                    <span class="about-section__label about-section__label--spacer" aria-hidden="true"></span>
-                    <div class="about-section__content">
-                        <h3 class="about-section__title">Welcome to my corner, I am Ahmad</h3>
-                        <p class="about-intro__lead">I help ambitious financial companies turn bold ideas into category
-                            defining brands, products and websites</p>
-                    </div>
-                </section>
+                <div class="about-gallery-pin">
+                    <div class="about-gallery-pin__inner">
+                        <section class="about-section about-intro" aria-labelledby="about-intro-title">
+                            <span class="about-section__label about-section__label--spacer" aria-hidden="true"></span>
+                            <div class="about-section__content">
+                                <h3 class="about-section__title">Welcome to my corner, I am Ahmad</h3>
+                                <p class="about-intro__lead">I help ambitious financial companies turn bold ideas into category
+                                    defining brands, products and websites</p>
+                            </div>
+                        </section>
 
-                <div class="about-gallery-breakout" aria-label="Work highlights">
-                    <div class="about-gallery">
-                        <div class="about-gallery__track">
-                            <div class="about-gallery__item image-hover">
-                                <img src="assets/about/gallery-1.jpg" alt="" loading="lazy" width="800" height="597" />
-                            </div>
-                            <div class="about-gallery__item image-hover">
-                                <img src="assets/about/gallery-2.jpg" alt="" loading="lazy" width="800" height="597" />
-                            </div>
-                            <div class="about-gallery__item image-hover">
-                                <img src="assets/about/gallery-3.jpg" alt="" loading="lazy" width="800" height="597" />
+                        <div class="about-gallery-breakout" aria-label="Work highlights">
+                            <div class="about-gallery">
+                                <div class="about-gallery__track">
+                                    <div class="about-gallery__item image-hover">
+                                        <img src="assets/about/gallery-1.jpg" alt="" loading="lazy" width="800" height="597" />
+                                    </div>
+                                    <div class="about-gallery__item image-hover">
+                                        <img src="assets/about/gallery-2.jpg" alt="" loading="lazy" width="800" height="597" />
+                                    </div>
+                                    <div class="about-gallery__item image-hover">
+                                        <img src="assets/about/gallery-3.jpg" alt="" loading="lazy" width="800" height="597" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -444,10 +451,14 @@
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
+    <script src="js/about-gallery-pin.js"></script>
+    <script src="js/spa-nav.js"></script>
     <script>
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
+        initAboutGalleryPin();
+        initSpaNav();
     </script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';

@@ -28,6 +28,15 @@
         return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     }
 
+    var STORAGE_KEY = 'siteMusicState';
+
+    function readSavedState() {
+        try {
+            var raw = sessionStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) { return null; }
+    }
+
     window.initMusicPlayer = function () {
         var audio     = document.getElementById('site-audio');
         var stack     = document.getElementById('music-stack');
@@ -39,7 +48,7 @@
         var titleEl       = document.getElementById('music-player-title');
         var thumbsEl      = document.getElementById('music-player-thumbs');
         var btnPrev       = document.getElementById('music-prev');
-        var btnMain       = document.getElementById('music-play-pause');  // THE ONLY pause control
+        var btnMain       = document.getElementById('music-play-pause');
         var btnNext       = document.getElementById('music-next');
         var mainIconPlay  = document.getElementById('music-main-icon-play');
         var mainIconPause = document.getElementById('music-main-icon-pause');
@@ -138,6 +147,20 @@
             hideTimer = setTimeout(hidePanel, 200);
         }
 
+        // ── Cross-page persistence (sessionStorage) ────────────────────
+        // Lets playback survive normal in-site navigation (not a hard
+        // refresh's worth of guarantee, but sessionStorage does persist
+        // across reloads too within the same tab).
+        function saveState() {
+            try {
+                sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    trackIndex: index,
+                    currentTime: audio.currentTime || 0,
+                    playing: playing
+                }));
+            } catch (e) {}
+        }
+
         // ── Track loading ────────────────────────────────────────────
         function loadTrack(i) {
             index = ((i % TRACKS.length) + TRACKS.length) % TRACKS.length;
@@ -153,18 +176,20 @@
             return audio.play().then(function () {
                 playing = true;
                 updateUI();
+                saveState();
             }).catch(function (err) {
                 console.warn('[MusicPlayer] Playback failed:', err);
                 playing = false;
                 updateUI();
+                saveState();
             });
         }
 
-        // THE ONLY function that pauses — called exclusively by btnMain
         function pausePlaying() {
             audio.pause();
             playing = false;
             updateUI();
+            saveState();
         }
 
         function playTrack(i) {
@@ -175,8 +200,7 @@
         // ── Soundbar button — hover + click ───────────────────────────
         //
         // HOVER (desktop): reveals the player panel.
-        // CLICK: starts music if not already playing — but NEVER pauses.
-        //        Clicking the soundbar when music is playing does nothing to audio.
+        // CLICK: toggles playback — starts if paused, pauses if playing.
         //
         playBtn.addEventListener('mouseenter', function () {
             if (!isTouch()) {
@@ -193,13 +217,12 @@
             e.stopPropagation();
             ensureAudioContext();
 
-            if (isTouch()) {
-                // Mobile: tap soundbar → open panel if closed; start music if not playing.
-                if (!panelOpen) showPanel();
-                if (!playing) startPlaying();
+            if (isTouch() && !panelOpen) showPanel();
+
+            if (playing) {
+                pausePlaying();
             } else {
-                // Desktop: click → start music if not already playing. Never pauses.
-                if (!playing) startPlaying();
+                startPlaying();
             }
         });
 
@@ -213,7 +236,7 @@
             });
         }
 
-        // ── THE ONLY pause control: btnMain inside the player card ────
+        // ── Play/pause control inside the player card ─────────────────
         if (btnMain) {
             btnMain.addEventListener('click', function (e) {
                 e.stopPropagation();
@@ -243,14 +266,31 @@
         }
 
         // ── Audio element events ──────────────────────────────────────
-        audio.addEventListener('ended',   function () { playTrack(index + 1); });
-        audio.addEventListener('playing', function () { playing = true;  updateUI(); });
-        audio.addEventListener('pause',   function () { if (!audio.ended) { playing = false; updateUI(); } });
-        audio.addEventListener('error',   function () {
-            var err = audio.error;
-            console.warn('[MusicPlayer] Audio error:', err ? 'code ' + err.code + ' — ' + err.message : 'unknown');
-            playing = false; updateUI();
+        // The <audio> element can survive a soft page navigation (see
+        // spa-nav.js), which means this whole init function — and these
+        // listeners — can run again against the *same* element. Remove
+        // whatever this element's last init attached before adding fresh
+        // ones, otherwise events like 'ended' fire once per past page
+        // visited and skip multiple tracks at once.
+        if (audio._musicPlayerListeners) {
+            Object.keys(audio._musicPlayerListeners).forEach(function (type) {
+                audio.removeEventListener(type, audio._musicPlayerListeners[type]);
+            });
+        }
+        var listeners = {
+            ended:   function () { playTrack(index + 1); },
+            playing: function () { playing = true;  updateUI(); },
+            pause:   function () { if (!audio.ended) { playing = false; updateUI(); } },
+            error:   function () {
+                var err = audio.error;
+                console.warn('[MusicPlayer] Audio error:', err ? 'code ' + err.code + ' — ' + err.message : 'unknown');
+                playing = false; updateUI();
+            }
+        };
+        Object.keys(listeners).forEach(function (type) {
+            audio.addEventListener(type, listeners[type]);
         });
+        audio._musicPlayerListeners = listeners;
 
         // ── Mobile: tap outside → hide panel (music keeps playing) ───
         document.addEventListener('click', function (e) {
@@ -259,9 +299,59 @@
             hidePanel();
         });
 
+        // ── Persist state so navigating to another page keeps the music
+        //    going (picks up the same track/position on the next page).
+        //    initMusicPlayer() can run again on the same window after a
+        //    soft navigation, so tear down the previous page's hooks
+        //    first instead of stacking duplicate timers/listeners.
+        var prev = window._musicPlayerPersistence;
+        if (prev) {
+            window.removeEventListener('pagehide', prev.save);
+            window.removeEventListener('beforeunload', prev.save);
+            clearInterval(prev.interval);
+        }
+        window.addEventListener('pagehide', saveState);
+        window.addEventListener('beforeunload', saveState);
+        window._musicPlayerPersistence = {
+            save: saveState,
+            interval: setInterval(function () { if (playing) saveState(); }, 3000)
+        };
+
         // ── Init ──────────────────────────────────────────────────────
-        loadTrack(0);
-        updateUI();
+        // A soft (SPA-style) navigation carries the *same* <audio> element
+        // over from the previous page — it already has a src and may
+        // already be playing. Detect that case via currentSrc so we don't
+        // reset or re-seek a track that's already live.
+        var isPersistedAudio = !!audio.currentSrc;
+        var saved = readSavedState();
+
+        if (isPersistedAudio) {
+            var matchedIndex = -1;
+            for (var t = 0; t < TRACKS.length; t++) {
+                if (trackUrl(TRACKS[t]) === currentAudioSrc()) { matchedIndex = t; break; }
+            }
+            index = matchedIndex !== -1 ? matchedIndex : 0;
+            playing = !audio.paused;
+            updateUI();
+        } else {
+            loadTrack(saved ? saved.trackIndex : 0);
+            updateUI();
+
+            if (saved) {
+                (function () {
+                    var resumeTime = saved.currentTime || 0;
+                    var shouldResume = !!saved.playing;
+                    function applyResume() {
+                        audio.removeEventListener('loadedmetadata', applyResume);
+                        if (resumeTime > 0) {
+                            try { audio.currentTime = resumeTime; } catch (e) {}
+                        }
+                        if (shouldResume) startPlaying();
+                    }
+                    audio.addEventListener('loadedmetadata', applyResume);
+                })();
+            }
+        }
 
         return {
             // Called by "Enter with sound" button

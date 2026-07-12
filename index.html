@@ -5,8 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>document.documentElement.classList.add('is-loading');</script>
-    <style>html.is-loading,html.is-loading body{background:#fff}</style>
+    <style>
+        html.is-loading,
+        html.is-loading body {
+            background: #fff
+        }
+    </style>
     <title>Ismail Ahmad — Portfolio 2026</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 
@@ -23,6 +29,7 @@
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
+    <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/image-hover.css">
     <link rel="stylesheet" href="css/music-player.css">
 
@@ -59,7 +66,9 @@
             font-weight: 500;
         }
 
-        h1, h2, .font-display {
+        h1,
+        h2,
+        .font-display {
             font-family: var(--font-display);
             font-weight: 500;
         }
@@ -70,9 +79,7 @@
         }
 
         /* Case studies & project copy — Reckless Regular */
-        .carousel-meta__title,
-        .project-detail h2,
-        .project-detail p,
+        .stack-card__label,
         #modal-title,
         #modal-subtitle,
         #modal-lead,
@@ -233,12 +240,9 @@
         #home-layout {
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            height: 100dvh;
-            padding: 25px 24px 88px;
-            overflow: visible;
+            min-height: 100svh;
+            padding: 25px 24px 48px;
             position: relative;
-            z-index: 5;
         }
 
         /* ── Site header (Figma layout) ── */
@@ -249,7 +253,7 @@
             grid-template-columns: 1fr auto;
             grid-template-rows: auto auto;
             column-gap: 24px;
-            row-gap: 24px;
+            row-gap: 12px;
             flex-shrink: 0;
             pointer-events: none;
         }
@@ -305,243 +309,72 @@
             color: var(--text-primary);
         }
 
-        /* ── Carousel (WebGPU-style) ── */
-        .carousel-section {
-            position: relative;
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            z-index: 10;
-            width: 100vw;
-            margin-left: calc(50% - 50vw);
-            overflow: visible;
-            padding-bottom: 8px;
+        /* ── Stack cards ── */
+        .work-label {
+            margin: auto 0;
+            text-align: center;
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 20px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-tertiary, #71717a);
         }
 
-        .carousel-stage {
-            position: relative;
-            flex: 1;
+        #work-section {
             width: 100%;
-            min-height: 140px;
-            max-height: min(52vh, 520px);
-            overflow: visible;
         }
 
-        .carousel {
-            position: absolute;
-            inset: 0;
-            cursor: grab;
-            touch-action: none;
-            overflow: visible;
-            pointer-events: none;
-        }
-
-        .carousel.is-ready {
-            pointer-events: auto;
-        }
-
-        .carousel.is-dragging {
-            cursor: grabbing;
-        }
-
-        .carousel-slot {
+        #card-stage {
             position: fixed;
+            inset: 0;
+            z-index: 15;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .stack-card {
+            position: absolute;
             top: 0;
             left: 0;
-            width: var(--card-w, 400px);
-            padding: 0;
             border: none;
-            background: transparent;
+            background: var(--card-color, var(--brand));
+            border-radius: 32px;
+            overflow: hidden;
             cursor: pointer;
-            opacity: 0;
             pointer-events: auto;
-            display: block;
-            text-align: left;
-        }
-
-        .carousel.is-ready .carousel-slot {
-            opacity: 1;
-        }
-
-        .carousel-slot__body {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            width: 100%;
+            transform-origin: top center;
+            box-shadow: 0 8px 48px rgba(9, 9, 11, 0.16);
             will-change: transform;
+            opacity: 0; /* JS sets this once positioned */
         }
 
-        .carousel.is-hover-animating .carousel-slot__body {
-            transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
-        }
-
-        .carousel-card-wrap {
-            position: relative;
-            display: block;
-            width: var(--card-w);
-            height: var(--card-h, 400px);
-            flex-shrink: 0;
-            margin-left: 0;
-        }
-
-        .carousel.is-hover-animating .carousel-card-wrap {
-            transition: width 0.45s cubic-bezier(0.32, 0.72, 0, 1);
-        }
-
-        .carousel-card {
-            display: block;
+        .stack-card img {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            border-radius: 32px;
-            background: var(--card-color, var(--brand));
-            box-shadow: none;
-            transition: box-shadow 0.35s ease;
+            object-fit: cover;
+            display: block;
         }
 
-        .carousel-card-img {
+        .stack-card__label {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            font-family: var(--font-display);
+            font-size: clamp(18px, 2.4vw, 28px);
+            font-weight: 600;
+            line-height: 1.2;
+            color: #fff;
+            pointer-events: none;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+        }
+
+        .gallery-wrap {
             display: none;
         }
-
-        .carousel-slot.is-active .carousel-card {
-            box-shadow: 0 24px 64px rgba(9, 9, 11, 0.12);
-        }
-
-        .carousel-slot.is-hovered .carousel-card-wrap,
-        .carousel-slot:focus-visible .carousel-card-wrap {
-            width: var(--hover-w, var(--card-w));
-        }
-
-        .carousel-slot.is-hovered,
-        .carousel-slot:focus-visible {
-            width: var(--hover-w, var(--card-w));
-        }
-
-        .carousel.is-hover-animating .carousel-slot.is-hovered,
-        .carousel.is-hover-animating .carousel-slot:focus-visible {
-            transition: width 0.45s cubic-bezier(0.32, 0.72, 0, 1);
-        }
-
-        .carousel-slot.is-hovered .carousel-card,
-        .carousel-slot:focus-visible .carousel-card {
-            box-shadow: 0 24px 64px rgba(9, 9, 11, 0.16);
-        }
-
-        .carousel-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 8px;
-            padding-left: 16px;
-            width: min(440px, 100%);
-            text-align: left;
-            pointer-events: none;
-        }
-
-        .carousel-slot.is-hovered .carousel-meta,
-        .carousel-slot:focus-visible .carousel-meta {
-            gap: 24px;
-        }
-
-        .carousel-meta__title {
-            font-family: var(--font-display);
-            font-weight: 600;
-            font-size: 24px;
-            line-height: 32px;
-            color: var(--text-primary);
-        }
-
-        .carousel-meta__reveal {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 24px;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.45s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.32s ease;
-        }
-
-        .carousel-meta__desc {
-            font-family: var(--font-body);
-            font-weight: 500;
-            font-size: 16px;
-            line-height: 24px;
-            color: var(--text-primary);
-            max-width: 323px;
-        }
-
-        .carousel-meta__view {
-            background: var(--bg-cream);
-            border-radius: 999px;
-            padding: 10px 16px;
-            height: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            line-height: 24px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            pointer-events: none;
-        }
-
-        .carousel-slot.is-hovered .carousel-meta__reveal,
-        .carousel-slot:focus-visible .carousel-meta__reveal {
-            max-height: 180px;
-            opacity: 1;
-        }
-
-        .project-detail {
-            position: relative;
-            flex-shrink: 0;
-            z-index: 15;
-            text-align: center;
-            width: min(440px, 90vw);
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
-            pointer-events: none;
-            transition: opacity 0.35s ease;
-        }
-
-        .project-detail.is-faded {
-            opacity: 0.35;
-        }
-
-        .project-detail__copy {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            text-align: left;
-            width: 100%;
-        }
-
-        .project-detail h2 {
-            margin: 0;
-            font-size: clamp(32px, 4vw, 40px);
-            line-height: 1.15;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .project-detail p {
-            margin: 0;
-            font-size: clamp(16px, 2vw, 20px);
-            line-height: 1.4;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        #active-view {
-            pointer-events: auto;
-            color: var(--text-secondary);
-        }
-
-        .gallery-wrap { display: none; }
 
         @media (max-width: 900px) {
             #site-header {
@@ -571,7 +404,7 @@
         /* Mobile index — Figma 127:2139 */
         @media (max-width: 768px) {
             #home-layout {
-                padding: 16px 12px 72px;
+                padding: 16px 12px 40px;
             }
 
             #site-header {
@@ -602,6 +435,10 @@
                 line-height: 46px;
                 font-weight: 600;
                 letter-spacing: 0;
+            }
+
+            .site-header__firstname {
+                display: none;
             }
 
             .site-header__logo {
@@ -639,48 +476,8 @@
                 font-weight: 500;
             }
 
-            .carousel-section {
-                width: 100%;
-                margin-left: 0;
-                padding-bottom: 0;
-            }
-
-            .carousel-stage {
-                max-height: none;
-            }
-
-            .carousel-card {
-                border-radius: 16px;
-            }
-
-            .carousel-slot__body {
-                gap: 7px;
-            }
-
-            .carousel-meta {
-                padding-left: 0;
-                width: 100%;
-            }
-
-            .carousel-meta__title {
-                font-size: 16px;
-                line-height: 24px;
-                font-weight: 500;
-            }
-
-            .carousel-meta__reveal {
-                display: none !important;
-            }
-
-            .carousel-slot.is-hovered .carousel-card-wrap,
-            .carousel-slot:focus-visible .carousel-card-wrap,
-            .carousel-slot.is-hovered,
-            .carousel-slot:focus-visible {
-                width: var(--card-w) !important;
-            }
-
-            .project-detail {
-                display: none !important;
+            .stack-card {
+                border-radius: 20px;
             }
 
             #bottom-bar {
@@ -734,11 +531,11 @@
         #modal-panel {
             position: relative;
             width: 100%;
-            height: calc(100dvh - 48px);
-            max-height: calc(100dvh - 48px);
+            height: 100dvh;
+            max-height: 100dvh;
             background: #f8f8f7;
-            border-radius: 64px 64px 0 0;
-            box-shadow: 0 -43px 47px rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+            box-shadow: none;
             transform: translateY(100%);
             transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
             display: flex;
@@ -1195,9 +992,9 @@
 
         @media (max-width: 900px) {
             #modal-panel {
-                border-radius: 40px 40px 0 0;
-                height: calc(100dvh - 24px);
-                max-height: calc(100dvh - 24px);
+                border-radius: 0;
+                height: 100dvh;
+                max-height: 100dvh;
             }
 
             #modal-scroll {
@@ -1525,10 +1322,12 @@
     </div>
 
     <!-- SVG filter — album art paper texture -->
-    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+        style="position:absolute;width:0;height:0;overflow:hidden">
         <defs>
             <filter id="music-paper-texture" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.65 0.55" numOctaves="5" stitchTiles="stitch" seed="3" result="noise" />
+                <feTurbulence type="fractalNoise" baseFrequency="0.65 0.55" numOctaves="5" stitchTiles="stitch" seed="3"
+                    result="noise" />
                 <feColorMatrix in="noise" type="saturate" values="0" result="gray" />
                 <feComponentTransfer in="gray" result="crumple">
                     <feFuncR type="linear" slope="0.12" intercept="0.04" />
@@ -1555,30 +1354,38 @@
                 <div id="music-player" aria-hidden="true" aria-label="Music player">
                     <div class="music-player__thumbs" id="music-player-thumbs"></div>
                     <div class="music-player__art">
-                        <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art" width="200" height="200" />
+                        <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art"
+                            width="200" height="200" />
                     </div>
                     <div class="music-player__meta">
                         <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
                         <p class="music-player__title" id="music-player-title">Dream</p>
                     </div>
                     <div class="music-player__controls">
-                        <button type="button" class="music-player__btn music-player__btn--side" id="music-prev" aria-label="Previous track">
+                        <button type="button" class="music-player__btn music-player__btn--side" id="music-prev"
+                            aria-label="Previous track">
                             <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
-                                <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
-                        <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause" aria-label="Play">
-                            <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true">
+                        <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause"
+                            aria-label="Play">
+                            <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12"
+                                fill="currentColor" aria-hidden="true">
                                 <path d="M1 1L9 6L1 11V1Z" />
                             </svg>
-                            <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" style="display:none">
+                            <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12"
+                                fill="currentColor" aria-hidden="true" style="display:none">
                                 <rect x="1" y="1" width="2.5" height="10" rx="0.5" />
                                 <rect x="6.5" y="1" width="2.5" height="10" rx="0.5" />
                             </svg>
                         </button>
-                        <button type="button" class="music-player__btn music-player__btn--side" id="music-next" aria-label="Next track">
+                        <button type="button" class="music-player__btn music-player__btn--side" id="music-next"
+                            aria-label="Next track">
                             <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
-                                <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
                     </div>
@@ -1587,8 +1394,10 @@
 
             <button id="play-btn" type="button" aria-label="Toggle music player">
                 <svg id="icon-audio" width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
-                    <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
+                        stroke-linecap="square" />
+                    <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
+                        stroke-linecap="square" />
                     <path class="bar bar-3" d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
                     <path class="bar bar-4" d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
                     <path class="bar bar-5" d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
@@ -1606,12 +1415,15 @@
     <aside id="contact-panel" aria-label="Contact" aria-hidden="true">
         <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
             <button type="button" id="close-contact" class="contact-modal__close" aria-label="Close contact">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    aria-hidden="true">
                     <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
             </button>
             <div class="contact-modal__intro">
-                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and business. I love working in conditions where decisions have real impact and good work actually ships.</p>
+                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and
+                    business. I love working in conditions where decisions have real impact and good work actually
+                    ships.</p>
             </div>
             <div class="contact-modal__polaroids" aria-hidden="true">
                 <figure class="contact-polaroid contact-polaroid--profile">
@@ -1646,67 +1458,62 @@
          Site Header — Figma layout
          ════════════════════════════════ -->
     <div id="home-layout">
-    <header id="site-header">
-        <div class="site-header__lead">
-        <div class="site-header__brand header-fluid" data-header-fluid>
-            <div class="header-fluid__content">
-                <h1>Ismail Ahmad</h1>
-                <canvas id="header-logo-c" class="site-header__logo" aria-hidden="true"></canvas>
-            </div>
-        </div>
-        <div class="site-header__meta">
-            <p class="site-header__intro">A financial product designer and UX enthusiast shaping the brands, websites, and products of the world's most ambitious financial companies.</p>
-        </div>
-        </div>
-        <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
-            <div class="site-header__nav-pills" id="header-nav-pills">
-                <a class="pill pill--cream" href="about.html">About</a>
-                <a class="pill pill--cream nav-pill-feeds" href="feeds.html">Feeds</a>
-                <a class="pill pill--cream nav-pill-insights" href="insights.html">Insights</a>
-                <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
-                    aria-controls="header-nav-menu" aria-label="Open menu">
-                    <span class="dot" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
-                <div class="header-nav-menu__top">
-                    <div class="header-nav-menu__links">
-                        <a href="index.html">Index</a>
-                        <a href="about.html">About</a>
-                        <a href="insights.html">Insights</a>
-                        <a href="feeds.html">Feeds</a>
-                        <button type="button" id="nav-menu-contact">Contact</button>
+        <header id="site-header">
+            <div class="site-header__lead">
+                <div class="site-header__brand header-fluid" data-header-fluid>
+                    <div class="header-fluid__content">
+                        <h1><span class="site-header__firstname">Ismail </span>Ahmad</h1>
+                        <canvas id="header-logo-c" class="site-header__logo" aria-hidden="true"></canvas>
                     </div>
-                    <button type="button" class="header-nav-menu__close" id="header-nav-menu-close" aria-label="Close menu">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-                            <path d="M18 6L6 18M6 6l12 12" />
-                        </svg>
+                </div>
+                <div class="site-header__meta">
+                    <p class="site-header__intro">Product & UX designer shaping financial brands, websites, and products
+                        for the world’s ambitious companies.</p>
+                </div>
+            </div>
+            <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
+                <div class="site-header__nav-pills" id="header-nav-pills">
+                    <a class="pill pill--cream pill--active" href="index.html" aria-current="page">Index</a>
+                    <a class="pill pill--cream" href="about.html">About</a>
+                    <a class="pill pill--cream" href="feeds.html">Feeds</a>
+                    <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
+                        aria-controls="header-nav-menu" aria-label="Open menu">
+                        <span class="dot" aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
-                    <span id="nav-clock-month"></span><br>
-                    <span id="nav-clock-weekday"></span><br>
-                    <span id="nav-clock-time"></span><br>
-                    <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
+                <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
+                    <div class="header-nav-menu__top">
+                        <div class="header-nav-menu__links">
+                            <a href="index.html">Index</a>
+                            <a href="about.html">About</a>
+                            <a href="insights.html">Insights</a>
+                            <a href="feeds.html">Feeds</a>
+                            <button type="button" id="nav-menu-contact">Contact</button>
+                        </div>
+                        <button type="button" class="header-nav-menu__close" id="header-nav-menu-close"
+                            aria-label="Close menu">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" aria-hidden="true">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
+                        <span id="nav-clock-month"></span><br>
+                        <span id="nav-clock-weekday"></span><br>
+                        <span id="nav-clock-time"></span><br>
+                        <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
+            </nav>
+        </header>
 
-    <section class="carousel-section" aria-label="Featured projects">
-        <div class="carousel-stage">
-            <div class="carousel" id="project-carousel"></div>
-        </div>
-    </section>
+        <p class="work-label">selected work</p>
+    </div><!-- /#home-layout -->
 
-    <div class="project-detail" id="project-detail" hidden>
-        <div class="project-detail__copy">
-            <h2 id="active-title">Cadana</h2>
-            <p id="active-desc">Cross-platform work. International brands. Experiences recognised by the industry's leading design awards.</p>
-        </div>
-        <button type="button" class="pill pill--cream" id="active-view">View</button>
-    </div>
-    </div>
+    <div id="work-section"></div>
+
+    <div id="card-stage" aria-label="Featured projects"></div>
 
     <!-- Legacy main hidden — gallery moved to carousel -->
 
@@ -1808,35 +1615,21 @@
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
+    <script src="js/spa-nav.js"></script>
     <script>
         var musicPlayer = initMusicPlayer();
 
         initContactPanel();
         initSiteNav();
+        initSpaNav();
 
-        // Carousel slots — Figma card sizes and colors
-        var carouselSlots = [
-            { color: '#66cb29', width: 400, height: 385, cardIndex: 0 },
-            { color: '#393bfe', width: 400, height: 485, cardIndex: 1 },
-            { color: '#ff4300', width: 450, height: 485, cardIndex: 2 },
-            { color: '#00db2e', width: 400, height: 325, cardIndex: 3 },
-            { color: '#393bfe', width: 400, height: 485, cardIndex: 4 },
-            { color: '#393bfe', width: 400, height: 385, cardIndex: 5 },
+        // Stack card slots — order: Cadana, Lemfi, Mezovest, Motel One
+        var stackSlots = [
+            { color: '#ff4300', cardIndex: 2 }, // Cadana
+            { color: '#66cb29', cardIndex: 0 }, // Lemfi
+            { color: '#393bfe', cardIndex: 1 }, // Mezovest
+            { color: '#00db2e', cardIndex: 3 }, // Motel One
         ];
-
-        function updateActiveDetail(slotIndex) {
-            var cardIdx = carouselSlots[slotIndex].cardIndex;
-            var card = cards[cardIdx];
-            if (!card) return;
-            document.getElementById('active-title').textContent = card.title;
-            document.getElementById('active-desc').textContent = card.brief || card.desc;
-            document.getElementById('active-view').dataset.index = cardIdx;
-        }
-
-        document.getElementById('active-view').addEventListener('click', function () {
-            var idx = parseInt(this.dataset.index, 10);
-            if (!isNaN(idx)) openModal(idx);
-        });
 
         // ────────────────────────────────
         // Card data
@@ -2039,13 +1832,12 @@
             }
         ];
 
-        // Attach hover meta for carousel cards (Figma 160:9035)
-        carouselSlots.forEach(function (slot) {
+        // Attach titles and images to stack slots
+        stackSlots.forEach(function (slot) {
             var card = cards[slot.cardIndex];
             if (!card) return;
             slot.title = card.title;
-            slot.metaDesc = card.brief || card.desc || '';
-            slot.hoverWidth = Math.min(750, Math.round(slot.width * (750 / 450)));
+            slot.image = card.images && card.images[0] ? card.images[0].src : '';
         });
 
         // ────────────────────────────────
@@ -2448,20 +2240,19 @@
             e.preventDefault();
         }, { capture: true, passive: false });
 
-        // WebGPU-style project carousel
-        import('./js/carousel.js').then(function (mod) {
-            var carousel = new mod.Carousel(
-                document.getElementById('project-carousel'),
-                carouselSlots,
+        // Scroll-driven vertical card stack
+        import('./js/stack-cards.js').then(function (mod) {
+            var stack = new mod.StackCards(
+                document.getElementById('card-stage'),
+                document.getElementById('work-section'),
+                stackSlots,
                 {
-                    onActiveChange: function (i) { updateActiveDetail(i); },
                     onSelect: function (i) {
-                        openModal(carouselSlots[i].cardIndex);
+                        openModal(stackSlots[i].cardIndex);
                     },
                 }
             );
-            carousel.start(2);
-            updateActiveDetail(2);
+            stack.start();
         });
 
         import('./js/header-fluid.js').then(function (mod) {

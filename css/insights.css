@@ -444,9 +444,30 @@
         padding: 18px var(--insights-pad) 0;
     }
 
+    .insights-brand h1 {
+        font-size: 40px;
+        line-height: 46px;
+        font-weight: 600;
+        letter-spacing: 0;
+    }
+
     .insights-brand img {
         width: 44px;
         height: 44px;
+    }
+
+    #header-nav-pills .pill {
+        display: none;
+    }
+
+    .nav-dot-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .nav-dot-btn .dot {
+        width: 8px;
+        height: 8px;
     }
 
     .insights-panel {

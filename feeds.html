@@ -7,6 +7,7 @@
     <script>document.documentElement.classList.add('is-loading');</script>
     <style>html.is-loading,html.is-loading body{background:#fff}</style>
     <title>Feed — Ismail Ahmad</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
     </script>
@@ -19,6 +20,7 @@
     <link rel="stylesheet" href="css/header-fluid.css">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/contact-panel.css">
+    <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/feed-modal.css">
     <link rel="stylesheet" href="css/feeds-grid.css">
     <link rel="stylesheet" href="css/music-player.css">
@@ -192,9 +194,30 @@
                 padding: 18px 16px;
             }
 
+            .brand h1 {
+                font-size: 40px;
+                line-height: 46px;
+                font-weight: 600;
+                letter-spacing: 0;
+            }
+
             .brand img {
                 width: 44px;
                 height: 44px;
+            }
+
+            #header-nav-pills .pill {
+                display: none;
+            }
+
+            .nav-dot-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .nav-dot-btn .dot {
+                width: 8px;
+                height: 8px;
             }
 
             .nav {
@@ -227,9 +250,9 @@
 
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
                 <div class="site-header__nav-pills" id="header-nav-pills">
+                    <a class="pill pill--cream" href="index.html">Index</a>
                     <a class="pill pill--cream" href="about.html">About</a>
                     <a class="pill pill--cream pill--active" href="feeds.html" aria-current="page">Feeds</a>
-                    <a class="pill pill--cream" href="insights.html">Insights</a>
                     <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
                         aria-controls="header-nav-menu" aria-label="Open menu">
                         <span class="dot" aria-hidden="true"></span>
@@ -388,6 +411,7 @@
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
+    <script src="js/spa-nav.js"></script>
     <script type="module" src="js/feeds-grid.js"></script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
@@ -400,6 +424,7 @@
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
+        initSpaNav();
     </script>
 </body>
 
