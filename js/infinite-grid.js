@@ -1,12 +1,13 @@
-const ASPECTS = [1.2, 0.82, 1.05, 0.72, 1.28, 0.9, 1.15, 0.78, 1.35, 0.88];
+const FALLBACK_ASPECTS = [1.2, 0.82, 1.05, 0.72, 1.28, 0.9, 1.15, 0.78, 1.35, 0.88];
 
 export default class InfiniteGrid {
-  constructor({ el, sources, onItemClick, gap = 56, captionSpace = 76 }) {
+  constructor({ el, sources, onItemClick, gap = 56, captionSpace = 76, aspects }) {
     this.$container = el;
     this.sources = sources;
     this.onItemClick = onItemClick || null;
     this.gap = gap;
     this.captionSpace = captionSpace;
+    this.aspects = aspects || null;
 
     this.scroll = {
       ease: 0.06,
@@ -20,8 +21,9 @@ export default class InfiniteGrid {
     this.items = [];
     this.introItems = [];
     this.$wrap = el.parentElement || el;
-    this.pointer = { active: false, lastX: 0, lastY: 0, moved: false };
-    this.didPan = false;
+    this.pointer = { active: false, lastX: 0, lastY: 0, moved: false, cardEl: null };
+    this.lastPanAt = 0;
+    this.openedFromPointer = false;
 
     this.onResize = this.onResize.bind(this);
     this.onWheel = this.onWheel.bind(this);
@@ -57,6 +59,12 @@ export default class InfiniteGrid {
     return Math.max(28, Math.round(this.winW * 0.045));
   }
 
+  getItemAspect(index) {
+    const aspect = this.aspects?.[index] ?? FALLBACK_ASPECTS[index % FALLBACK_ASPECTS.length];
+    if (!aspect || !Number.isFinite(aspect) || aspect <= 0) return 1.1;
+    return aspect;
+  }
+
   buildMasonry() {
     const columns = this.getColumns();
     const padding = this.getPadding();
@@ -75,7 +83,7 @@ export default class InfiniteGrid {
         }
       }
 
-      const aspect = ASPECTS[index % ASPECTS.length];
+      const aspect = this.getItemAspect(index);
       const imageH = colWidth / aspect;
       const x = padding + column * (colWidth + this.gap);
       const y = colHeights[column];
@@ -197,15 +205,14 @@ export default class InfiniteGrid {
           wrapper.appendChild(caption);
 
           el.addEventListener('click', (e) => {
-            if (this.didPan) {
-              e.preventDefault();
-              e.stopPropagation();
-              this.didPan = false;
+            if (this.isDisabled || !this.onItemClick) return;
+            if (this.openedFromPointer) {
+              this.openedFromPointer = false;
               return;
             }
-            if (this.isDisabled || !this.onItemClick) return;
             e.stopPropagation();
-            this.onItemClick(source.feedIndex);
+            const open = window.openFeedModal || this.onItemClick;
+            open(source.feedIndex);
           });
 
           this.$container.appendChild(el);
@@ -232,7 +239,7 @@ export default class InfiniteGrid {
   }
 
   onWheel(e) {
-    if (this.isDisabled) return;
+    if (!this._isActive() || this.isDisabled) return;
     e.preventDefault();
     const factor = 0.65;
     this.scroll.target.x -= e.deltaX * factor;
@@ -240,26 +247,27 @@ export default class InfiniteGrid {
   }
 
   onPointerDown(e) {
-    if (this.isDisabled) return;
+    if (!this._isActive() || this.isDisabled) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
 
     this.pointer.active = true;
     this.pointer.lastX = e.clientX;
     this.pointer.lastY = e.clientY;
     this.pointer.moved = false;
-    this.didPan = false;
+    this.pointer.cardEl = e.target.closest('.feed-grid__item');
+    this.lastPanAt = 0;
     this.$wrap.setPointerCapture(e.pointerId);
   }
 
   onPointerMove(e) {
-    if (!this.pointer.active || this.isDisabled) return;
+    if (!this._isActive() || !this.pointer.active || this.isDisabled) return;
 
     const dx = e.clientX - this.pointer.lastX;
     const dy = e.clientY - this.pointer.lastY;
     this.pointer.lastX = e.clientX;
     this.pointer.lastY = e.clientY;
 
-    if (!this.pointer.moved && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+    if (!this.pointer.moved && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
       this.pointer.moved = true;
     }
 
@@ -273,14 +281,31 @@ export default class InfiniteGrid {
   onPointerUp(e) {
     if (!this.pointer.active) return;
 
+    const tappedCard = this.pointer.cardEl && !this.pointer.moved
+      ? this.pointer.cardEl
+      : null;
+    const wasMoved = this.pointer.moved;
+
     this.pointer.active = false;
-    if (this.pointer.moved) this.didPan = true;
+    this.pointer.cardEl = null;
 
     try {
       this.$wrap.releasePointerCapture(e.pointerId);
     } catch {
       // pointer may already be released
     }
+
+    if (tappedCard && this.onItemClick) {
+      const idx = Number(tappedCard.dataset.feedIndex);
+      if (!Number.isNaN(idx)) {
+        this.openedFromPointer = true;
+        const open = window.openFeedModal || this.onItemClick;
+        open(idx);
+      }
+      return;
+    }
+
+    if (wasMoved) this.lastPanAt = Date.now();
   }
 
   render() {
@@ -320,6 +345,10 @@ export default class InfiniteGrid {
     this.scroll.last.y = this.scroll.current.y;
 
     this._raf = requestAnimationFrame(this.render);
+  }
+
+  _isActive() {
+    return !!(this.$container && this.$container.isConnected);
   }
 
   destroy() {

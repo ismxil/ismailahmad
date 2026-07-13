@@ -1,6 +1,33 @@
 {
   "items": [
     {
+      "id": "huegrid",
+      "name": "HueGrid",
+      "client": "HueGrid",
+      "year": 2023,
+      "projectType": "Web App",
+      "category": "Web App",
+      "years": "(2023)",
+      "tagline": "A no-code shader design tool for the web — design the visual, walk away with the code.",
+      "headline": "A no-code shader design tool for the web — design the visual, walk away with the code.",
+      "liveUrl": "https://huegrid.app",
+      "link": "https://huegrid.app",
+      "accent": "#d946ef",
+      "cover": "assets/feeds/huegrid-hero.png",
+      "heroImage": "assets/feeds/huegrid-hero.png",
+      "stats": [
+        { "value": "2,000+", "label": "Active users" },
+        { "value": "50", "label": "Paid users" },
+        { "value": "50+", "label": "Figma plugin users" }
+      ],
+      "problemBody": "WebGL and shader programming are powerful but impenetrable for non-technical designers. HueGrid bridges that gap by letting anyone create and tweak real-time visual effects directly in the browser — no code required.",
+      "marketBigStat": "$129B",
+      "marketDescription": "projected size of the no-code / low-code tools market by 2030 (~26% CAGR) — creation is moving from code to canvas.",
+      "marketSource": "SOURCE — GRAND VIEW RESEARCH, 2021",
+      "ctaLabel": "Partner up",
+      "ctaUrl": "https://huegrid.app"
+    },
+    {
       "id": "lemfi-community",
       "client": "Lemfi",
       "headline": "Building a community that let's people bond and stay connected within the app, to build conscious money habit",

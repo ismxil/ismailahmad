@@ -1,11 +1,189 @@
 /**
- * Feed CMS loader — reads copy and image paths from data/feed-items.json
+ * Feed CMS loader — Sanity first, local JSON fallback.
  */
+
+import { sanityConfig, isSanityConfigured } from './sanity-config.js';
 
 const FEED_DATA_URL = 'data/feed-items.json';
 
+/** Placeholder modal content — shown until you replace per project in Sanity/JSON */
+const MODAL_PLACEHOLDER = {
+  tagline: 'A no-code shader design tool for the web — design the visual, walk away with the code.',
+  stats: [
+    { value: '2,000+', label: 'Active users' },
+    { value: '50', label: 'Paid users' },
+    { value: '50+', label: 'Figma plugin users' },
+  ],
+  problemBody:
+    'WebGL and shader programming are powerful but impenetrable for non-technical designers. HueGrid bridges that gap by letting anyone create and tweak real-time visual effects directly in the browser — no code required.',
+  marketBigStat: '$129B',
+  marketDescription:
+    'projected size of the no-code / low-code tools market by 2030 (~26% CAGR) — creation is moving from code to canvas.',
+  marketSource: 'SOURCE — GRAND VIEW RESEARCH, 2021',
+  ctaLabel: 'Partner up',
+  liveUrl: 'https://huegrid.app',
+};
+
 let feedItems = [];
 let loadPromise = null;
+
+function formatYears(year, yearEnd, legacyYears) {
+  if (legacyYears) return legacyYears;
+  if (!year) return '';
+  if (yearEnd && yearEnd !== year) return `(${year} - ${yearEnd})`;
+  return `(${year})`;
+}
+
+function normalizeStats(stats) {
+  if (!Array.isArray(stats)) return [];
+  return stats
+    .map((stat) => {
+      if (!stat) return null;
+      if (typeof stat === 'string') {
+        return { value: stat, label: '' };
+      }
+      const value = stat.value || '';
+      const label = stat.label || '';
+      if (!value && !label) return null;
+      return { value, label };
+    })
+    .filter(Boolean);
+}
+
+function normalizePreviewMedia(media) {
+  if (!Array.isArray(media)) return [];
+  return media
+    .map((item) => {
+      if (!item) return null;
+      const src = item.url || item.src || item.asset || '';
+      if (!src) return null;
+      return typeof src === 'string' ? src : src.url || '';
+    })
+    .filter(Boolean);
+}
+
+function applyModalPlaceholders(item) {
+  const liveUrl = MODAL_PLACEHOLDER.liveUrl;
+  return {
+    ...item,
+    tagline: MODAL_PLACEHOLDER.tagline,
+    stats: MODAL_PLACEHOLDER.stats.map((s) => ({ ...s })),
+    problemBody: MODAL_PLACEHOLDER.problemBody,
+    content: MODAL_PLACEHOLDER.problemBody,
+    market: {
+      bigStat: MODAL_PLACEHOLDER.marketBigStat,
+      description: MODAL_PLACEHOLDER.marketDescription,
+      source: MODAL_PLACEHOLDER.marketSource,
+    },
+    ctaLabel: MODAL_PLACEHOLDER.ctaLabel,
+    liveUrl,
+    link: liveUrl,
+    url: liveUrl,
+    ctaUrl: liveUrl,
+    heroImage: item.heroImage || item.cover,
+  };
+}
+
+function normalizeItem(item) {
+  if (!item) return null;
+
+  const name = item.name || item.title || item.client || '';
+  const year = item.year ?? null;
+  const yearEnd = item.yearEnd ?? null;
+  const projectType = item.projectType || item.category || item.type || '';
+  const liveUrl = item.liveUrl || item.link || item.url || '';
+  const tagline = item.tagline || item.headline || '';
+  const previewMedia = normalizePreviewMedia(item.previewMedia);
+  const cover = item.cover || previewMedia[0] || item.heroImage || '';
+  const heroImage = item.heroImage || previewMedia[0] || cover || '';
+  const logo = item.logo || '';
+  const stats = normalizeStats(item.stats);
+  const problemBody = item.problemBody || item.content || item.description || '';
+  const ctaUrl = item.ctaUrl || liveUrl || '';
+  const ctaLabel = item.ctaLabel || 'View project';
+
+  return applyModalPlaceholders({
+    id: item.id || item.slug || '',
+    name,
+    title: name,
+    client: name,
+    slug: item.slug || item.id || '',
+    logo,
+    year,
+    yearEnd,
+    projectType,
+    category: projectType,
+    type: projectType,
+    liveUrl,
+    link: liveUrl,
+    url: liveUrl,
+    tagline,
+    headline: tagline,
+    years: formatYears(year, yearEnd, item.years),
+    accent: item.accent || '#393bfe',
+    cover,
+    heroImage,
+    previewMedia,
+    stats,
+    problemBody,
+    content: problemBody,
+    description: item.description || problemBody,
+    market: {
+      bigStat: item.market?.bigStat || item.marketBigStat || '',
+      description: item.market?.description || item.marketDescription || '',
+      source: item.market?.source || item.marketSource || '',
+    },
+    ctaLabel,
+    ctaUrl,
+  });
+}
+
+function normalizeItems(items) {
+  return (items || []).map(normalizeItem).filter(Boolean);
+}
+
+async function fetchFromSanity() {
+  const { projectId, dataset, apiVersion } = sanityConfig;
+  const query = encodeURIComponent(`*[_type == "feedItem"] | order(order asc, _createdAt desc) {
+    "id": slug.current,
+    "slug": slug.current,
+    name,
+    year,
+    yearEnd,
+    projectType,
+    liveUrl,
+    tagline,
+    accent,
+    ctaLabel,
+    ctaUrl,
+    problemBody,
+    marketBigStat,
+    marketDescription,
+    marketSource,
+    stats[]{ value, label },
+    "logo": logo.asset->url,
+    "cover": coalesce(cover.asset->url, previewMedia[0].asset->url),
+    "previewMedia": previewMedia[].asset->url,
+    "heroImage": coalesce(previewMedia[0].asset->url, cover.asset->url)
+  }`);
+
+  const url = `https://${projectId}.api.sanity.io/v${apiVersion}/data/query/${dataset}?query=${query}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Sanity query failed');
+  const data = await res.json();
+  const items = normalizeItems(data.result);
+  if (!items.length) throw new Error('Sanity returned no feed items');
+  return items;
+}
+
+async function fetchFromJson() {
+  const res = await fetch(FEED_DATA_URL);
+  if (!res.ok) throw new Error('Feed data not found');
+  const data = await res.json();
+  const items = normalizeItems(data.items);
+  if (!items.length) throw new Error('Feed data is empty');
+  return items;
+}
 
 export function getFeedItems() {
   return feedItems;
@@ -24,29 +202,39 @@ export function getFeedItemCount() {
 /** Resolve cover URL — prefers item.cover, falls back to index in assets/feeds/ */
 export function resolveFeedCover(item, index) {
   if (item?.cover) {
+    if (item.cover.startsWith('http')) return item.cover;
     return item.cover.replace('assets/feeds/covers/', 'assets/feeds/');
   }
   return `assets/feeds/image_${index}.jpg`;
 }
 
-export async function loadFeedItems() {
+export async function loadFeedItems(force = false) {
+  if (force) {
+    loadPromise = null;
+    feedItems = [];
+  }
   if (loadPromise) return loadPromise;
 
-  loadPromise = fetch(FEED_DATA_URL)
-    .then((res) => {
-      if (!res.ok) throw new Error('Feed data not found');
-      return res.json();
-    })
-    .then((data) => {
-      feedItems = Array.isArray(data.items) ? data.items : [];
-      if (!feedItems.length) throw new Error('Feed data is empty');
+  loadPromise = (async () => {
+    try {
+      if (isSanityConfigured()) {
+        feedItems = await fetchFromSanity();
+        return feedItems;
+      }
+      feedItems = await fetchFromJson();
       return feedItems;
-    })
-    .catch((err) => {
-      console.error('[feed-items]', err);
-      feedItems = [];
-      return feedItems;
-    });
+    } catch (sanityOrJsonErr) {
+      console.warn('[feed-items] primary source failed, trying fallback JSON', sanityOrJsonErr);
+      try {
+        feedItems = await fetchFromJson();
+        return feedItems;
+      } catch (jsonErr) {
+        console.error('[feed-items]', jsonErr);
+        feedItems = [];
+        return feedItems;
+      }
+    }
+  })();
 
   return loadPromise;
 }

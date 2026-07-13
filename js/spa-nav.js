@@ -25,6 +25,19 @@
 
     // Best-effort GPU cleanup so repeated navigation doesn't pile up
     // orphaned WebGL contexts from the 3D logo canvases.
+    function teardownPageScripts() {
+        if (window.__stackCards) {
+            window.__stackCards.stop();
+            window.__stackCards = null;
+        }
+        if (typeof window.teardownFeedsPage === 'function') window.teardownFeedsPage();
+        if (typeof window.teardownAboutGalleryPin === 'function') window.teardownAboutGalleryPin();
+        if (typeof window.teardownFeedModal === 'function') window.teardownFeedModal();
+        if (window.ScrollTrigger && typeof window.ScrollTrigger.getAll === 'function') {
+            window.ScrollTrigger.getAll().forEach(function (st) { st.kill(); });
+        }
+    }
+
     function loseWebGLContexts(root) {
         var canvases = root.querySelectorAll('canvas');
         canvases.forEach(function (canvas) {
@@ -96,11 +109,98 @@
         }, Promise.resolve());
     }
 
-    // site-loader.js lives in <head>, which is swapped via innerHTML (so
-    // its script tag is inert) and is otherwise left alone on purpose —
-    // re-running every head script would also reload gsap/Tailwind's CDN
-    // bundles and reset global state they own. This re-runs *just* the
-    // loader, cache-busted so its per-page boot() animation replays and
+    // Reconciles <head> instead of blindly replacing it. A blind
+    // `head.innerHTML = ...` destroys and recreates every <link
+    // rel="stylesheet">, including ones shared by every page (site-loader.css
+    // among them) — for a moment those rules don't apply to anything, which
+    // is exactly the "flash of unstyled background before the loader shows"
+    // this fixes. Stylesheets already present (same href) are left alone;
+    // only ones the new page actually needs get added, and page-specific
+    // ones the new page doesn't use get removed.
+    function syncHead(doc) {
+        document.title = doc.title;
+
+        var newLinks = Array.prototype.slice.call(doc.head.querySelectorAll('link[rel="stylesheet"]'));
+        var newHrefs = newLinks.map(function (l) { return l.getAttribute('href'); });
+
+        Array.prototype.slice.call(document.head.querySelectorAll('link[rel="stylesheet"]')).forEach(function (link) {
+            if (newHrefs.indexOf(link.getAttribute('href')) === -1) link.remove();
+        });
+
+        var currentHrefs = Array.prototype.slice.call(document.head.querySelectorAll('link[rel="stylesheet"]'))
+            .map(function (l) { return l.getAttribute('href'); });
+
+        newLinks.forEach(function (link) {
+            var href = link.getAttribute('href');
+            if (currentHrefs.indexOf(href) === -1) {
+                var fresh = document.createElement('link');
+                fresh.rel = 'stylesheet';
+                fresh.href = href;
+                document.head.appendChild(fresh);
+            }
+        });
+
+        var newIcon = doc.head.querySelector('link[rel="icon"]');
+        var curIcon = document.head.querySelector('link[rel="icon"]');
+        if (newIcon) {
+            var iconHref = newIcon.getAttribute('href');
+            if (!curIcon) {
+                var freshIcon = document.createElement('link');
+                freshIcon.rel = 'icon';
+                if (newIcon.getAttribute('type')) freshIcon.type = newIcon.getAttribute('type');
+                freshIcon.href = iconHref;
+                document.head.appendChild(freshIcon);
+            } else if (curIcon.getAttribute('href') !== iconHref) {
+                curIcon.setAttribute('href', iconHref);
+            }
+        }
+
+        // Each page also carries its own large inline <style> block(s) with
+        // page-specific rules (e.g. .feeds-chrome's fixed positioning).
+        // Unlike <link> stylesheets these need no network round trip to
+        // apply, so a blind swap here doesn't reintroduce the flash —
+        // it's just replacing text content synchronously.
+        Array.prototype.slice.call(document.head.querySelectorAll('style')).forEach(function (el) {
+            el.remove();
+        });
+        Array.prototype.slice.call(doc.head.querySelectorAll('style')).forEach(function (el) {
+            document.head.appendChild(document.importNode(el, true));
+        });
+    }
+
+    // <head> scripts already present (by src) are left alone on purpose —
+    // reloading e.g. gsap's core bundle on every nav would reset global
+    // state it owns. But some pages load a library the others don't (only
+    // about.html pulls in ScrollTrigger) — those genuinely-new ones need to
+    // load, in order, before any body script that depends on them runs.
+    function loadMissingHeadScripts(doc) {
+        var scripts = Array.prototype.slice.call(doc.head.querySelectorAll('script[src]'))
+            .filter(function (s) {
+                var src = s.getAttribute('src');
+                return src.indexOf('site-loader.js') === -1 && s.getAttribute('type') !== 'importmap';
+            });
+
+        return scripts.reduce(function (chain, old) {
+            return chain.then(function () {
+                var src = old.getAttribute('src');
+                if (document.querySelector('script[src="' + src + '"]')) return Promise.resolve();
+                return new Promise(function (resolve) {
+                    var s = document.createElement('script');
+                    if (old.type) s.type = old.type;
+                    if (old.hasAttribute('async')) s.async = old.async;
+                    s.src = src;
+                    s.onload = resolve;
+                    s.onerror = resolve;
+                    document.head.appendChild(s);
+                });
+            });
+        }, Promise.resolve());
+    }
+
+    // The loader is re-run *cache-busted* even though it's "already
+    // present" by src — re-running is the whole point, so it needs its own
+    // handling instead of the already-loaded-skip logic above. This re-runs
+    // *just* the loader so its per-page boot() animation replays and
     // window.siteReady is reassigned before body scripts that await it run.
     function runSiteLoaderScript() {
         var old = document.head.querySelector('script[src*="site-loader.js"]');
@@ -135,12 +235,16 @@
                 return res.text();
             })
             .then(function (html) {
-                var doc = new DOMParser().parseFromString(html, 'text/html');
-                loseWebGLContexts(document);
-
-                document.title = doc.title;
-                document.head.innerHTML = doc.head.innerHTML;
+                // First and synchronous: cover the screen. site-loader.css's
+                // html.is-loading rule is already loaded (syncHead below
+                // never touches it since every page shares that stylesheet),
+                // so this takes effect immediately with nothing to wait on.
                 document.documentElement.classList.add('is-loading');
+
+                var doc = new DOMParser().parseFromString(html, 'text/html');
+                teardownPageScripts();
+                loseWebGLContexts(document);
+                syncHead(doc);
 
                 Array.prototype.slice.call(document.body.children).forEach(function (el) {
                     if (el !== audio) el.remove();
@@ -150,14 +254,23 @@
                     document.body.appendChild(document.importNode(el, true));
                 });
 
+                // Drop page-specific body state left over from the previous view
+                // (e.g. index overflow:hidden, feed-modal-open, inline styles).
+                document.body.className = '';
+                document.body.style.overflow = '';
+                document.body.style.removeProperty('overflow');
+                document.documentElement.style.overflow = '';
+
                 if (!opts.isPopState) {
                     window.history.pushState({ spaNav: true }, '', url);
                 }
                 window.scrollTo(0, 0);
 
-                runSiteLoaderScript().then(function () {
-                    return runScripts(document.body);
-                });
+                loadMissingHeadScripts(doc)
+                    .then(runSiteLoaderScript)
+                    .then(function () {
+                        return runScripts(document.body);
+                    });
             })
             .catch(function (err) {
                 console.warn('[spa-nav] falling back to full navigation:', err);

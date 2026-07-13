@@ -328,26 +328,52 @@
 
     <div id="feed-modal-backdrop" class="feed-modal-backdrop" aria-hidden="true">
         <div id="feed-modal" class="feed-modal" role="dialog" aria-modal="true" tabindex="-1">
-            <div class="feed-modal__grid">
-                <div id="feed-modal-hero" class="feed-modal__hero">
-                    <img id="feed-modal-hero-img" src="" alt="" />
-                    <button type="button" id="feed-modal-close" class="feed-modal__close" aria-label="Close project details">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                            <path d="M18 6L6 18M6 6l12 12" />
+            <button type="button" id="feed-modal-close" class="feed-modal__close" aria-label="Close project details">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="feed-modal__split">
+                <div class="feed-modal__content">
+                    <div class="feed-modal__header">
+                        <div id="feed-modal-icon" class="feed-modal__icon" aria-hidden="true">
+                            <img id="feed-modal-logo" class="feed-modal__logo" alt="" hidden />
+                        </div>
+                        <div class="feed-modal__title-wrap">
+                            <h2 id="feed-modal-title" class="feed-modal__title"></h2>
+                            <div id="feed-modal-meta" class="feed-modal__meta-row"></div>
+                        </div>
+                    </div>
+                    <p id="feed-modal-tagline" class="feed-modal__tagline"></p>
+                    <div id="feed-modal-stats" class="feed-modal__stats" hidden></div>
+                    <div class="feed-modal__sections">
+                        <section id="feed-modal-problem" class="feed-modal__section" hidden>
+                            <h3 class="feed-modal__section-label">The problem</h3>
+                            <div id="feed-modal-problem-body" class="feed-modal__section-body"></div>
+                        </section>
+                        <section id="feed-modal-market" class="feed-modal__section" hidden>
+                            <h3 class="feed-modal__section-label">The market</h3>
+                            <p id="feed-modal-market-stat" class="feed-modal__big-stat"></p>
+                            <p id="feed-modal-market-desc" class="feed-modal__market-desc"></p>
+                            <p id="feed-modal-market-source" class="feed-modal__market-source"></p>
+                        </section>
+                    </div>
+                    <a id="feed-modal-cta" class="feed-modal__cta" href="#" target="_blank" rel="noopener" hidden>
+                        <span id="feed-modal-cta-label">View project</span>
+                        <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                            <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                    </button>
+                    </a>
                 </div>
-                <div class="feed-modal__left">
-                    <div>
-                        <p id="feed-modal-client" class="feed-modal__client"></p>
-                        <h2 id="feed-modal-headline" class="feed-modal__headline"></h2>
-                    </div>
-                    <div>
-                        <p id="feed-modal-category" class="feed-modal__meta"></p>
-                        <p id="feed-modal-years" class="feed-modal__meta"></p>
-                    </div>
+                <div class="feed-modal__media">
+                    <a id="feed-modal-link" class="feed-modal__link-pill" href="#" target="_blank" rel="noopener" hidden>
+                        <span id="feed-modal-link-label"></span>
+                        <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                            <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <img id="feed-modal-hero-img" src="" alt="" />
                 </div>
-                <p id="feed-modal-description" class="feed-modal__description"></p>
             </div>
         </div>
     </div>
@@ -408,24 +434,18 @@
         </div>
     </aside>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
     <script src="js/spa-nav.js"></script>
-    <script type="module" src="js/feeds-grid.js"></script>
-    <script type="module">
-        import { initBrandLogo3D } from './js/logo-3d.js';
-        import { initAllHeaderFluids } from './js/header-fluid.js';
-        import { initFeedModal } from './js/feed-modal.js';
-        initBrandLogo3D(document.getElementById('feeds-header-logo-c'));
-        initBrandLogo3D(document.getElementById('feeds-logo-c'));
-        initAllHeaderFluids();
-        initFeedModal();
+    <script>
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
         initSpaNav();
     </script>
+    <script type="module" src="js/feeds-page.js"></script>
 </body>
 
 </html>
