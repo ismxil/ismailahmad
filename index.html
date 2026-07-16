@@ -53,7 +53,6 @@
 
         html {
             background: #fff;
-            overflow: hidden;
         }
 
         body {
@@ -61,7 +60,6 @@
             color: var(--text-primary);
             margin: 0;
             padding: 0;
-            overflow: hidden;
             font-family: var(--font-body);
             font-weight: 500;
         }
@@ -79,7 +77,6 @@
         }
 
         /* Case studies & project copy — Reckless Regular */
-        .stack-card__label,
         #modal-title,
         #modal-subtitle,
         #modal-lead,
@@ -120,10 +117,7 @@
         }
 
         main {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            display: block;
         }
 
         .gallery-section {
@@ -135,20 +129,42 @@
         }
 
         /* ════════════════════════════════
-           Bottom social + play bar
+           Info + music bar
+           Docked to top of project cards until scroll, then pinned bottom
            ════════════════════════════════ */
+        #bottom-bar-slot {
+            height: 44px;
+            margin: 0 auto 18px;
+            width: calc(100% - 48px);
+            max-width: 2008px;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
         #bottom-bar {
             position: fixed;
-            bottom: 20px;
-            left: 24px;
-            right: 24px;
-            transform: none;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 48px);
+            max-width: 2008px;
             z-index: 45;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            box-sizing: border-box;
             white-space: nowrap;
+            pointer-events: none;
+            bottom: auto;
+        }
+
+        #bottom-bar.is-pinned {
+            top: auto !important;
+            bottom: 20px;
+        }
+
+        #bottom-bar > * {
+            pointer-events: auto;
         }
 
         .bottom-bar__socials {
@@ -236,30 +252,32 @@
             z-index: -1;
         }
 
-        /* ── Home layout shell ── */
+        /* ── Home page — Figma 504:1343 vertical scroll grid ── */
         #home-layout {
-            display: flex;
-            flex-direction: column;
-            min-height: 100svh;
-            padding: 25px 24px 48px;
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            padding: 25px 24px 0;
+            background: transparent;
+            pointer-events: none;
         }
 
-        /* ── Site header (Figma layout) ── */
         #site-header {
             position: relative;
             z-index: 20;
-            display: grid;
-            grid-template-columns: 1fr auto;
-            grid-template-rows: auto auto;
-            column-gap: 24px;
-            row-gap: 12px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
             flex-shrink: 0;
             pointer-events: none;
         }
 
         .site-header__lead {
-            display: contents;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 0;
         }
 
         #site-header * {
@@ -267,21 +285,13 @@
         }
 
         .site-header__brand {
-            grid-column: 1;
-            grid-row: 1;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 16px;
         }
 
         .site-header__meta {
-            grid-column: 1;
-            grid-row: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 24px;
-            max-width: 554px;
+            display: none;
         }
 
         .site-header__brand h1 {
@@ -294,114 +304,173 @@
         }
 
         .site-header__logo {
-            width: 81px;
-            height: 81px;
+            width: 54px;
+            height: 54px;
             flex-shrink: 0;
         }
 
-        .site-header__intro {
+        .home-page {
+            width: 100%;
+        }
+
+        .home-hero {
+            min-height: calc(100svh - 420px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 64px 24px 32px;
+        }
+
+        .home-hero__copy {
             margin: 0;
-            max-width: 554px;
-            font-family: var(--font-serif);
-            font-size: clamp(18px, 2.2vw, 28px);
-            line-height: 1.43;
-            font-weight: 400;
+            width: min(627px, 100%);
+            text-align: center;
+            font-family: var(--font-body);
+            font-size: clamp(20px, 2.2vw, 32px);
+            line-height: 1.375;
+            font-weight: 500;
             color: var(--text-primary);
         }
 
-        /* ── Stack cards ── */
-        .work-label {
-            margin: auto 0;
-            text-align: center;
-            font-family: var(--font-body);
-            font-size: 13px;
-            font-weight: 500;
-            line-height: 20px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text-tertiary, #71717a);
-        }
-
-        #work-section {
+        .home-projects {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 18px;
+            row-gap: 80px;
+            padding: 0 24px 160px;
             width: 100%;
+            max-width: 2056px;
+            margin: 0 auto;
+            box-sizing: border-box;
         }
 
-        #card-stage {
-            position: fixed;
-            inset: 0;
-            z-index: 15;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .stack-card {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .home-project {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 32px;
+            min-width: 0;
             border: none;
-            background: var(--card-color, var(--brand));
-            border-radius: 32px;
-            overflow: hidden;
+            background: transparent;
+            padding: 0;
+            text-align: left;
             cursor: pointer;
-            pointer-events: auto;
-            transform-origin: top center;
-            box-shadow: 0 8px 48px rgba(9, 9, 11, 0.16);
-            will-change: transform;
-            opacity: 0; /* JS sets this once positioned */
+            color: inherit;
         }
 
-        .stack-card img {
-            position: absolute;
-            inset: 0;
+        .home-project:hover .home-project__cover {
+            opacity: 0.92;
+        }
+
+        .home-project__cover {
+            width: 100%;
+            aspect-ratio: 996 / 560;
+            overflow: hidden;
+            background: var(--card-color, #111);
+            transition: opacity 0.2s ease;
+        }
+
+        .home-project__cover img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
             display: block;
         }
 
-        .stack-card__label {
-            position: absolute;
-            bottom: 24px;
-            left: 24px;
-            font-family: var(--font-display);
-            font-size: clamp(18px, 2.4vw, 28px);
-            font-weight: 600;
-            line-height: 1.2;
-            color: #fff;
-            pointer-events: none;
-            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+        .home-project__meta {
+            width: min(100%, 569px);
         }
 
+        .home-project__title {
+            margin: 0;
+            font-family: var(--font-body);
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--text-tertiary, #71717a);
+        }
+
+        .home-project__desc {
+            margin: 8px 0 0;
+            font-family: var(--font-body);
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--text-tertiary, #71717a);
+        }
+
+        .home-cta {
+            margin: 40px auto 0;
+            width: min(999px, calc(100% - 48px));
+            min-height: 280px;
+            background: var(--bg-cream, #f3f2ef);
+            border-radius: 32px 32px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 31px;
+            padding: 80px 24px 48px;
+            box-sizing: border-box;
+        }
+
+        .home-cta__title {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(32px, 4vw, 56px);
+            font-weight: 600;
+            line-height: 1.07;
+            color: var(--brand);
+            text-align: center;
+        }
+
+        .home-cta__btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 44px;
+            padding: 0 16px;
+            border: none;
+            border-radius: 999px;
+            background: var(--brand);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            cursor: pointer;
+            transition: opacity 0.18s ease;
+        }
+
+        .home-cta__btn::before {
+            content: '';
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #fff;
+            flex-shrink: 0;
+        }
+
+        .home-cta__btn:hover {
+            opacity: 0.85;
+        }
+
+        .work-label,
+        #work-section,
+        #card-stage,
         .gallery-wrap {
-            display: none;
+            display: none !important;
         }
 
         @media (max-width: 900px) {
-            #site-header {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto;
-            }
-
-            .site-header__brand {
-                grid-row: 1;
-            }
-
-            .site-header__nav {
-                grid-column: 1;
-                grid-row: 2;
-                flex-wrap: wrap;
-            }
-
-            .site-header__meta {
-                grid-row: 3;
-            }
-
             .site-header__brand h1 {
                 font-size: clamp(40px, 12vw, 72px);
             }
         }
 
-        /* Mobile index — Figma 127:2139 */
+        /* Mobile index */
         @media (max-width: 768px) {
             #home-layout {
                 padding: 16px 12px 40px;
@@ -414,9 +483,6 @@
             }
 
             .site-header__lead {
-                display: flex;
-                flex-direction: column;
-                gap: 24px;
                 flex: 1;
                 min-width: 0;
             }
@@ -451,38 +517,73 @@
                 margin-left: auto;
             }
 
-            #header-nav-pills .pill {
+            #home-layout .nav-morph {
+                --nav-closed-h: 32px;
+                border-radius: 999px;
+                min-width: 32px;
+            }
+
+            #home-layout .site-header__nav-pills {
+                height: 32px;
+                padding: 0;
+                width: 32px;
+                min-width: 32px;
+            }
+
+            #home-layout .site-header__nav-pills .pill {
                 display: none;
             }
 
-            .nav-dot-btn {
+            #home-layout .nav-dot-btn {
+                top: 0;
+                right: 0;
                 width: 32px;
                 height: 32px;
             }
 
-            .nav-dot-btn .dot {
-                width: 8px;
-                height: 8px;
+            .home-hero {
+                min-height: calc(100svh - 320px);
+                padding: 32px 16px 28px;
             }
 
-            .site-header__meta {
-                max-width: none;
+            .home-hero__copy {
+                font-size: 18px;
+                line-height: 26px;
             }
 
-            .site-header__intro {
-                font-family: var(--font-body);
-                font-size: 16px;
-                line-height: 24px;
-                font-weight: 500;
+            .home-projects {
+                grid-template-columns: 1fr;
+                row-gap: 56px;
+                padding: 0 16px 80px;
             }
 
-            .stack-card {
-                border-radius: 20px;
+            .home-project {
+                gap: 20px;
+            }
+
+            .home-project__desc {
+                margin-top: 8px;
+                font-size: 20px;
+                line-height: 28px;
+            }
+
+            .home-cta {
+                width: calc(100% - 24px);
+                min-height: 220px;
+                padding: 56px 20px 36px;
+                border-radius: 24px 24px 0 0;
+            }
+
+            #bottom-bar-slot {
+                width: calc(100% - 32px);
+                margin-bottom: 16px;
             }
 
             #bottom-bar {
-                left: 16px;
-                right: 16px;
+                width: calc(100% - 32px);
+            }
+
+            #bottom-bar.is-pinned {
                 bottom: 16px;
             }
 
@@ -990,6 +1091,114 @@
             display: block;
         }
 
+        .project-case__section {
+            display: grid;
+            grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+            gap: 32px;
+            align-items: start;
+        }
+
+        .project-case__label {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(20px, 2.5vw, 24px);
+            line-height: 1.33;
+            font-weight: 500;
+            color: #71717a;
+        }
+
+        .project-case__content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .project-case__content p {
+            margin: 0;
+            font-size: clamp(22px, 3vw, 32px);
+            line-height: 1.375;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .project-case__button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-height: 48px;
+            padding: 8px 16px 8px 24px;
+            border: 1.5px solid var(--brand);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--brand);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.18s ease;
+        }
+
+        .project-case__button:hover {
+            opacity: 0.75;
+        }
+
+        .project-case__button--primary {
+            background: var(--brand);
+            color: #f8f8f7;
+        }
+
+        .project-case__button svg {
+            flex-shrink: 0;
+        }
+
+        .project-case__results {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .project-case__results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .project-case__result-card {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px 16px 24px;
+            border-radius: 24px;
+            background: #f8f8f7;
+        }
+
+        .project-case__result-value {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(56px, 6vw, 72px);
+            line-height: 1;
+            font-weight: 600;
+            color: #059669;
+        }
+
+        .project-case__result-text {
+            margin: 0;
+            font-size: 20px;
+            line-height: 24px;
+            font-weight: 400;
+            color: var(--text-primary);
+        }
+
         @media (max-width: 900px) {
             #modal-panel {
                 border-radius: 0;
@@ -1006,12 +1215,25 @@
             }
 
             .project-modal__overview,
-            .project-modal__split {
+            .project-modal__split,
+            .project-case__section {
                 grid-template-columns: 1fr;
             }
 
             .project-modal__blocks {
                 gap: 80px;
+            }
+
+            .project-case__content {
+                gap: 32px;
+            }
+
+            .project-case__results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-case__result-card {
+                min-height: 320px;
             }
 
             .project-modal__metric {
@@ -1339,74 +1561,6 @@
         </defs>
     </svg>
 
-    <!-- ════════════════════════════════
-         Bottom social + play bar
-         ════════════════════════════════ -->
-    <div id="bottom-bar">
-        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
-        <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
-
-            <div id="music-stack" aria-hidden="true">
-                <div id="music-glow" aria-hidden="true">
-                    <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
-                </div>
-
-                <div id="music-player" aria-hidden="true" aria-label="Music player">
-                    <div class="music-player__thumbs" id="music-player-thumbs"></div>
-                    <div class="music-player__art">
-                        <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art"
-                            width="200" height="200" />
-                    </div>
-                    <div class="music-player__meta">
-                        <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
-                        <p class="music-player__title" id="music-player-title">Dream</p>
-                    </div>
-                    <div class="music-player__controls">
-                        <button type="button" class="music-player__btn music-player__btn--side" id="music-prev"
-                            aria-label="Previous track">
-                            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
-                                <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                        <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause"
-                            aria-label="Play">
-                            <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12"
-                                fill="currentColor" aria-hidden="true">
-                                <path d="M1 1L9 6L1 11V1Z" />
-                            </svg>
-                            <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12"
-                                fill="currentColor" aria-hidden="true" style="display:none">
-                                <rect x="1" y="1" width="2.5" height="10" rx="0.5" />
-                                <rect x="6.5" y="1" width="2.5" height="10" rx="0.5" />
-                            </svg>
-                        </button>
-                        <button type="button" class="music-player__btn music-player__btn--side" id="music-next"
-                            aria-label="Next track">
-                            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
-                                <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <button id="play-btn" type="button" aria-label="Toggle music player">
-                <svg id="icon-audio" width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
-                    <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
-                        stroke-linecap="square" />
-                    <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
-                        stroke-linecap="square" />
-                    <path class="bar bar-3" d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-4" d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-5" d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                </svg>
-            </button>
-
-        </div>
-    </div>
-
     <audio id="site-audio" preload="auto"></audio>
 
     <!-- ════════════════════════════════
@@ -1466,56 +1620,127 @@
                         <canvas id="header-logo-c" class="site-header__logo" aria-hidden="true"></canvas>
                     </div>
                 </div>
-                <div class="site-header__meta">
-                    <p class="site-header__intro">Product & UX designer shaping financial brands, websites, and products
-                        for the world’s ambitious companies.</p>
-                </div>
             </div>
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
-                <div class="site-header__nav-pills" id="header-nav-pills">
-                    <a class="pill pill--cream pill--active" href="index.html" aria-current="page">Index</a>
-                    <a class="pill pill--cream" href="about.html">About</a>
-                    <a class="pill pill--cream" href="feeds.html">Feeds</a>
+                <div class="nav-morph" id="nav-morph">
+                    <div class="site-header__nav-pills" id="header-nav-pills">
+                        <a class="pill pill--cream pill--active" href="index.html" aria-current="page">Index</a>
+                        <a class="pill pill--cream" href="about.html">About</a>
+                        <a class="pill pill--cream" href="feeds.html">Feed</a>
+                    </div>
                     <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
                         aria-controls="header-nav-menu" aria-label="Open menu">
-                        <span class="dot" aria-hidden="true"></span>
+                        <span class="nav-menu-icon" aria-hidden="true">
+                            <span class="nav-menu-icon__bar"></span>
+                            <span class="nav-menu-icon__bar"></span>
+                        </span>
                     </button>
-                </div>
-                <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
-                    <div class="header-nav-menu__top">
-                        <div class="header-nav-menu__links">
-                            <a href="index.html">Index</a>
-                            <a href="about.html">About</a>
-                            <a href="insights.html">Insights</a>
-                            <a href="feeds.html">Feeds</a>
-                            <button type="button" id="nav-menu-contact">Contact</button>
+                    <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
+                        <div class="header-nav-menu__top">
+                            <div class="header-nav-menu__links">
+                                <a href="index.html">Index</a>
+                                <a href="about.html">About</a>
+                                <a href="insights.html">Insights</a>
+                                <a href="feeds.html">Feeds</a>
+                                <button type="button" id="nav-menu-contact">Contact</button>
+                            </div>
+                            <span class="header-nav-menu__close-slot" aria-hidden="true"></span>
                         </div>
-                        <button type="button" class="header-nav-menu__close" id="header-nav-menu-close"
-                            aria-label="Close menu">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                                stroke-linecap="round" aria-hidden="true">
-                                <path d="M18 6L6 18M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
-                        <span id="nav-clock-month"></span><br>
-                        <span id="nav-clock-weekday"></span><br>
-                        <span id="nav-clock-time"></span><br>
-                        <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
+                        <div class="header-nav-menu__footer">
+                            <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
+                                <span id="nav-clock-month"></span><br>
+                                <span id="nav-clock-weekday"></span><br>
+                                <span id="nav-clock-time"></span><br>
+                                <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
+                            </div>
+                            <span class="header-nav-menu__version">V.26</span>
+                        </div>
                     </div>
                 </div>
             </nav>
         </header>
-
-        <p class="work-label">selected work</p>
     </div><!-- /#home-layout -->
 
-    <div id="work-section"></div>
+    <div class="home-page">
+        <section class="home-hero" aria-label="Introduction">
+            <p class="home-hero__copy">Product &amp; UX designer shaping financial brands, websites, and products
+                for the world’s ambitious companies.</p>
+        </section>
 
-    <div id="card-stage" aria-label="Featured projects"></div>
+        <div id="bottom-bar-slot" aria-hidden="true"></div>
 
-    <!-- Legacy main hidden — gallery moved to carousel -->
+        <div id="bottom-bar">
+            <button type="button" id="open-contact" class="pill pill--cream pill--muted">info</button>
+            <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
+
+                <div id="music-stack" aria-hidden="true">
+                    <div id="music-glow" aria-hidden="true">
+                        <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
+                    </div>
+
+                    <div id="music-player" aria-hidden="true" aria-label="Music player">
+                        <div class="music-player__thumbs" id="music-player-thumbs"></div>
+                        <div class="music-player__art">
+                            <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art"
+                                width="200" height="200" />
+                        </div>
+                        <div class="music-player__meta">
+                            <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
+                            <p class="music-player__title" id="music-player-title">Dream</p>
+                        </div>
+                        <div class="music-player__controls">
+                            <button type="button" class="music-player__btn music-player__btn--side" id="music-prev"
+                                aria-label="Previous track">
+                                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
+                                    <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                            <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause"
+                                aria-label="Play">
+                                <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12"
+                                    fill="currentColor" aria-hidden="true">
+                                    <path d="M1 1L9 6L1 11V1Z" />
+                                </svg>
+                                <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12"
+                                    fill="currentColor" aria-hidden="true" style="display:none">
+                                    <rect x="1" y="1" width="2.5" height="10" rx="0.5" />
+                                    <rect x="6.5" y="1" width="2.5" height="10" rx="0.5" />
+                                </svg>
+                            </button>
+                            <button type="button" class="music-player__btn music-player__btn--side" id="music-next"
+                                aria-label="Next track">
+                                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
+                                    <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="play-btn" type="button" aria-label="Toggle music player">
+                    <svg id="icon-audio" width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
+                        <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
+                            stroke-linecap="square" />
+                        <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
+                            stroke-linecap="square" />
+                        <path class="bar bar-3" d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                        <path class="bar bar-4" d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                        <path class="bar bar-5" d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+                    </svg>
+                </button>
+
+            </div>
+        </div>
+
+        <section class="home-projects" id="home-projects" aria-label="Featured projects"></section>
+
+        <section class="home-cta" aria-label="Contact">
+            <h2 class="home-cta__title">Stay in touch</h2>
+            <button type="button" class="home-cta__btn" id="home-cta-contact">Talk to Ahmad</button>
+        </section>
+    </div>
 
     <!-- ════════════════════════════════
          Project Modal — Figma overlay
@@ -1540,7 +1765,7 @@
 
                     <div class="project-modal__gallery" id="modal-gallery"></div>
 
-                    <section class="project-modal__overview">
+                    <section class="project-modal__overview" id="modal-overview">
                         <div class="project-modal__meta" id="modal-meta"></div>
                         <div class="project-modal__copy">
                             <p id="modal-lead"></p>
@@ -1623,13 +1848,8 @@
         initSiteNav();
         initSpaNav();
 
-        // Stack card slots — order: Cadana, Lemfi, Mezovest, Motel One
-        var stackSlots = [
-            { color: '#ff4300', cardIndex: 2 }, // Cadana
-            { color: '#66cb29', cardIndex: 0 }, // Lemfi
-            { color: '#393bfe', cardIndex: 1 }, // Mezovest
-            { color: '#00db2e', cardIndex: 3 }, // Motel One
-        ];
+        // Featured grid order — Figma 504:1343: Lemfi, Cadana, gomoney, Mezovest
+        var homeProjectIndices = [0, 2, 4, 1];
 
         // ────────────────────────────────
         // Card data
@@ -1637,16 +1857,16 @@
         var cards = [
             {
                 title: 'Lemfi',
-                subtitle: 'Debit card feature program',
-                year: '2026',
-                tags: ['Product Design', '2026'],
+                subtitle: 'Lemfi moved millions across borders. Spending it required another bank. I designed the card feature to close the gap.',
+                year: '2024',
+                tags: ['Card', 'Lead Product Designer', '2024'],
                 accent: '#059669',
                 accentColor: '#66cb29',
                 desc: 'Lemfi is a financial technology company offering remittance and money services designed for people in the diaspora. I worked across mobile, web, portal, and community touchpoints.',
                 brief: 'Diaspora remittance and product ecosystem',
                 url: 'https://lemfi.com/cards',
                 storyUrl: 'https://lemfi.com/cards',
-                images: [{ src: 'assets/lemfi.png', alt: 'Lemfi project preview' }],
+                images: [{ src: 'assets/cover/lemfi.png', alt: 'Lemfi project preview' }],
                 details: [
                     { title: 'Services', items: ['Product Design', 'Web Design'] },
                     { title: 'Industries', items: ['Financial Technology', 'Remittance'] },
@@ -1660,9 +1880,9 @@
                     { label: 'Impact', content: 'The debit card program reduced customer complaints related to spending while onboarding a significant new cohort of card users and opening a new revenue stream.' }
                 ],
                 metrics: [
-                    { value: '-25%', text: 'Fewer customer complaints across platform related to spending, target was 45%', accent: '#059669' },
+                    { value: '25%', text: 'Fewer customer complaints across platform related to spending, target was 45%', accent: '#059669' },
                     { value: '+32.1k', text: 'The number of new users onboarded to the card feature jumped — the target was 30K', accent: '#059669' },
-                    { value: '£58m', text: 'Raised through the card feature strategy — a new revenue stream', accent: '#059669' }
+                    { value: '£58m', text: 'Raised through the card feature strategy, a new revenue stream', accent: '#059669' }
                 ],
                 story: {
                     headline: 'Lemfi is a financial technology company offering remittance and money services designed for people in the diaspora. I worked across mobile, web, portal, and community touchpoints to shape a debit card program that could grow the product without losing trust.',
@@ -1680,6 +1900,20 @@
                             content: 'We focused on reducing spending-related complaints, onboarding a new cohort of card users, and opening a new revenue stream — while making the card feel like a natural extension of the remittance product.'
                         }
                     ]
+                },
+                caseStudy: {
+                    heroImage: { src: 'assets/lemfi-case/lemfi-hero.png', alt: 'Lemfi debit card hero visual' },
+                    solutionImage: { src: 'assets/lemfi-case/lemfi-solution.png', alt: 'Lemfi card experience screen' },
+                    flowImage: { src: 'assets/lemfi-case/lemfi-flow.png', alt: 'Lemfi card feature flow diagram' },
+                    intro: [
+                        'Lemfi is a fintech built for the global diaspora: cross-border transfers, multi-currency accounts, and a platform that helps people keep money moving between continents.',
+                        'The people using it had left their home countries for the UK, the US, and Canada. They were sending money to family, managing balances in multiple currencies, and building lives in new cities.',
+                        'Moving money to Lemfi was solved. Spending it was not. We designed a card experience that closed the gap.'
+                    ],
+                    problem: 'Sending money back home when you live in London meant entering your Barclays card details every single time. Paying a friend back could fail if they were not on Lemfi too. And card-limit errors often showed up before you had even tried to save a card.',
+                    solution: 'We focused on reducing spending-related complaints, onboarding a new cohort of card users, and opening a new revenue stream while making the card feel like a natural extension of the remittance product.',
+                    reflection: 'The card feature made Lemfi feel more complete for people living across borders. It reduced friction around spending, strengthened trust in the product, and showed how tightly product design and business growth could reinforce each other.',
+                    resultsSummary: 'The card design received strong positive feedback for its look and feel. Brand loyalty strengthened. Transaction volume increased significantly in the UK market following launch.'
                 }
             },
             {
@@ -1692,7 +1926,7 @@
                 desc: 'Mezovest is a technology solution helping small businesses access loans to grow. The project involved designing business management tools for vendors, customer touchpoints, and dashboards for internal teams and investors.',
                 brief: 'Small-business loan and management platform',
                 url: '',
-                images: [{ src: 'assets/mezovest.png', alt: 'Mezovest project preview' }],
+                images: [{ src: 'assets/cover/mezovest.png', alt: 'Mezovest project preview' }],
                 details: [
                     { title: 'Services', items: ['Product Design', 'Web Design'] },
                     { title: 'Industries', items: ['Small Business Finance', 'Lending'] },
@@ -1717,7 +1951,7 @@
                 brief: 'Payment infrastructure brand identity',
                 url: 'https://cadanapay.com',
                 storyUrl: 'https://cadanapay.com',
-                images: [{ src: 'assets/cadana.png', alt: 'Cadana project preview' }],
+                images: [{ src: 'assets/cover/cadana.png', alt: 'Cadana project preview' }],
                 details: [
                     { title: 'Services', items: ['Rebranding', 'Web Design'] },
                     { title: 'Industries', items: ['Payroll Infrastructure', 'Global Hiring'] },
@@ -1742,7 +1976,7 @@
                 brief: 'Hotel guest app and digital check-in',
                 url: 'https://motel-one.com/check-in',
                 storyUrl: 'https://motel-one.com/check-in',
-                images: [{ src: 'assets/motel-one.png', alt: 'Motel One project preview' }],
+                images: [{ src: 'assets/cover/motel-one.png', alt: 'Motel One project preview' }],
                 details: [
                     { title: 'Services', items: ['App Design', 'Experience Design'] },
                     { title: 'Industries', items: ['Travel', 'Hospitality'] },
@@ -1767,7 +2001,7 @@
                 brief: 'Digital bank onboarding and brand refresh',
                 url: 'https://gomoney.global/account',
                 storyUrl: 'https://gomoney.global/account',
-                images: [{ src: 'assets/gomoney.png', alt: 'Gomoney project preview' }],
+                images: [{ src: 'assets/cover/gomoney.png', alt: 'Gomoney project preview' }],
                 details: [
                     { title: 'Services', items: ['App Design', 'Brand Refresh'] },
                     { title: 'Industries', items: ['Digital Banking', 'Consumer Finance'] },
@@ -1816,7 +2050,7 @@
                 brief: 'National credit bureau digital platform',
                 url: 'https://etihadbureau.ae',
                 storyUrl: 'https://etihadbureau.ae',
-                images: [{ src: 'assets/ecb.png', alt: 'Etihad Credit Bureau project preview' }],
+                images: [{ src: 'assets/cover/ecb.png', alt: 'Etihad Credit Bureau project preview' }],
                 details: [
                     { title: 'Services', items: ['Web Design', 'App Design', 'Portal Design'] },
                     { title: 'Industries', items: ['Government Services', 'Credit Data'] },
@@ -1832,14 +2066,6 @@
             }
         ];
 
-        // Attach titles and images to stack slots
-        stackSlots.forEach(function (slot) {
-            var card = cards[slot.cardIndex];
-            if (!card) return;
-            slot.title = card.title;
-            slot.image = card.images && card.images[0] ? card.images[0].src : '';
-        });
-
         // ────────────────────────────────
         // Project modal — Figma template
         // ────────────────────────────────
@@ -1851,6 +2077,7 @@
         var modalSubtitle = document.getElementById('modal-subtitle');
         var modalTags = document.getElementById('modal-tags');
         var modalGallery = document.getElementById('modal-gallery');
+        var modalOverview = document.getElementById('modal-overview');
         var modalMeta = document.getElementById('modal-meta');
         var modalLead = document.getElementById('modal-lead');
         var modalStory = document.getElementById('modal-story');
@@ -1983,7 +2210,7 @@
 
         function renderModalTags(card) {
             modalTags.innerHTML = '';
-            var labels = card.tags && card.tags.length ? card.tags.slice(0, 2) : [];
+            var labels = card.tags && card.tags.length ? card.tags.slice(0, 3) : [];
             if (!labels.length) {
                 labels = [getDetailText(card, 'Services').split(',')[0] || 'Product Design', card.year || '2026'];
             }
@@ -1994,6 +2221,87 @@
                 tag.textContent = label.trim();
                 modalTags.appendChild(tag);
             });
+        }
+
+        function createCaseSection(labelText, paragraphs, actions) {
+            var section = document.createElement('section');
+            section.className = 'project-case__section';
+
+            var label = document.createElement('h3');
+            label.className = 'project-case__label';
+            label.textContent = labelText;
+            section.appendChild(label);
+
+            var content = document.createElement('div');
+            content.className = 'project-case__content';
+
+            (paragraphs || []).forEach(function (text) {
+                if (!text) return;
+                var p = document.createElement('p');
+                p.textContent = text;
+                content.appendChild(p);
+            });
+
+            if (actions && actions.length) {
+                var row = document.createElement('div');
+                row.className = 'project-case__actions';
+                actions.forEach(function (action) {
+                    var el;
+                    if (action.type === 'button') {
+                        el = document.createElement('button');
+                        el.type = 'button';
+                        el.addEventListener('click', action.onClick);
+                    } else {
+                        el = document.createElement('a');
+                        el.href = action.href;
+                        el.target = '_blank';
+                        el.rel = 'noopener';
+                    }
+                    el.className = 'project-case__button' + (action.primary ? ' project-case__button--primary' : '');
+                    el.innerHTML = action.label + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10" /></svg>';
+                    row.appendChild(el);
+                });
+                content.appendChild(row);
+            }
+
+            section.appendChild(content);
+            return section;
+        }
+
+        function createCaseImage(image) {
+            var wrap = document.createElement('div');
+            wrap.className = 'project-modal__image';
+            renderVisual(wrap, image, { title: image.alt || 'Project image', accentColor: '#e4e4e7' });
+            return wrap;
+        }
+
+        function createCaseResults(card) {
+            var wrap = document.createElement('section');
+            wrap.className = 'project-case__results';
+            wrap.appendChild(createCaseSection('Results', [card.caseStudy.resultsSummary]));
+
+            var grid = document.createElement('div');
+            grid.className = 'project-case__results-grid';
+
+            (card.metrics || []).forEach(function (metric) {
+                var item = document.createElement('article');
+                item.className = 'project-case__result-card';
+
+                var value = document.createElement('p');
+                value.className = 'project-case__result-value';
+                value.textContent = metric.value;
+
+                var text = document.createElement('p');
+                text.className = 'project-case__result-text';
+                text.textContent = metric.text;
+
+                item.appendChild(value);
+                item.appendChild(text);
+                grid.appendChild(item);
+            });
+
+            wrap.appendChild(grid);
+            return wrap;
         }
 
         function renderModalMeta(card) {
@@ -2032,6 +2340,21 @@
 
         function renderModalBlocks(card) {
             modalBlocks.innerHTML = '';
+            if (card.caseStudy) {
+                modalBlocks.appendChild(createCaseImage(card.caseStudy.heroImage));
+                modalBlocks.appendChild(createCaseSection('Intro', card.caseStudy.intro, [
+                    { type: 'button', label: 'Read more', onClick: openStorySheet },
+                    card.url ? { type: 'link', label: 'See it live', href: card.url, primary: true } : null
+                ].filter(Boolean)));
+                modalBlocks.appendChild(createCaseSection('Problem', [card.caseStudy.problem]));
+                modalBlocks.appendChild(createCaseImage(card.caseStudy.flowImage));
+                modalBlocks.appendChild(createCaseSection('Solution', [card.caseStudy.solution]));
+                modalBlocks.appendChild(createCaseImage(card.caseStudy.solutionImage));
+                modalBlocks.appendChild(createCaseResults(card));
+                modalBlocks.appendChild(createCaseSection('Reflection', [card.caseStudy.reflection]));
+                return;
+            }
+
             var galleryItems = createGalleryItems(card);
             var heroImage = galleryItems[0];
 
@@ -2109,21 +2432,32 @@
             modalTitle.textContent = card.title;
             modalSubtitle.textContent = card.subtitle || card.brief || '';
             renderModalTags(card);
-            modalGallery.innerHTML = '';
-            createGalleryItems(card).forEach(function (image) {
-                var item = document.createElement('div');
-                item.className = 'project-modal__gallery-item';
-                renderVisual(item, image, card);
-                modalGallery.appendChild(item);
-            });
+            if (card.caseStudy) {
+                modalGallery.hidden = true;
+                modalOverview.hidden = true;
+                modalGallery.innerHTML = '';
+                modalStory.style.display = 'none';
+                modalMetrics.hidden = true;
+            } else {
+                modalGallery.hidden = false;
+                modalOverview.hidden = false;
+                modalGallery.innerHTML = '';
+                createGalleryItems(card).forEach(function (image) {
+                    var item = document.createElement('div');
+                    item.className = 'project-modal__gallery-item';
+                    renderVisual(item, image, card);
+                    modalGallery.appendChild(item);
+                });
 
-            renderModalMeta(card);
-            modalLead.textContent = card.desc;
-
-            modalStory.style.display = 'inline-flex';
+                renderModalMeta(card);
+                modalLead.textContent = card.desc;
+                modalStory.style.display = 'inline-flex';
+            }
 
             renderModalBlocks(card);
-            renderModalMetrics(card);
+            if (!card.caseStudy) {
+                renderModalMetrics(card);
+            }
             renderModalNext(idx);
         }
 
@@ -2240,20 +2574,101 @@
             e.preventDefault();
         }, { capture: true, passive: false });
 
-        // Scroll-driven vertical card stack
-        import('./js/stack-cards.js').then(function (mod) {
-            var stack = new mod.StackCards(
-                document.getElementById('card-stage'),
-                document.getElementById('work-section'),
-                stackSlots,
-                {
-                    onSelect: function (i) {
-                        openModal(stackSlots[i].cardIndex);
-                    },
+        // Vertical project grid — Figma 504:1343
+        (function renderHomeProjects() {
+            var grid = document.getElementById('home-projects');
+            if (!grid) return;
+
+            homeProjectIndices.forEach(function (cardIndex) {
+                var card = cards[cardIndex];
+                if (!card) return;
+
+                var coverSrc = card.images && card.images[0] && card.images[0].src
+                    ? card.images[0].src
+                    : '';
+                var coverAlt = card.images && card.images[0] && card.images[0].alt
+                    ? card.images[0].alt
+                    : card.title;
+                var desc = card.brief || card.subtitle || card.desc || '';
+
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'home-project';
+                btn.setAttribute('aria-label', 'Open project: ' + card.title);
+                if (card.accentColor) {
+                    btn.style.setProperty('--card-color', card.accentColor);
                 }
-            );
-            stack.start();
-        });
+
+                var cover = document.createElement('div');
+                cover.className = 'home-project__cover';
+                if (coverSrc) {
+                    var img = document.createElement('img');
+                    img.src = coverSrc;
+                    img.alt = coverAlt;
+                    img.loading = 'lazy';
+                    cover.appendChild(img);
+                }
+                btn.appendChild(cover);
+
+                var meta = document.createElement('div');
+                meta.className = 'home-project__meta';
+
+                var title = document.createElement('h3');
+                title.className = 'home-project__title';
+                title.textContent = card.title;
+                meta.appendChild(title);
+
+                if (desc) {
+                    var copy = document.createElement('p');
+                    copy.className = 'home-project__desc';
+                    copy.textContent = desc;
+                    meta.appendChild(copy);
+                }
+
+                btn.appendChild(meta);
+                btn.addEventListener('click', function () {
+                    openModal(cardIndex);
+                });
+                grid.appendChild(btn);
+            });
+        })();
+
+        var homeCtaContact = document.getElementById('home-cta-contact');
+        if (homeCtaContact) {
+            homeCtaContact.addEventListener('click', function () {
+                if (typeof window.openContactPanel === 'function') window.openContactPanel();
+            });
+        }
+
+        (function initBottomBarDock() {
+            var bar = document.getElementById('bottom-bar');
+            var slot = document.getElementById('bottom-bar-slot');
+            if (!bar || !slot) return;
+
+            function update() {
+                var slotTop = slot.getBoundingClientRect().top;
+                var barH = bar.offsetHeight || 44;
+                var pinInset = window.matchMedia('(max-width: 768px)').matches ? 16 : 20;
+                var pinTop = window.innerHeight - pinInset - barH;
+                var hasScrolled = window.scrollY > 24;
+
+                // Rest: sit on top of the project cards.
+                // After scroll: pin to the bottom of the viewport.
+                if (!hasScrolled || slotTop > pinTop) {
+                    bar.classList.remove('is-pinned');
+                    bar.style.top = Math.max(slotTop, 0) + 'px';
+                    bar.style.bottom = 'auto';
+                } else {
+                    bar.classList.add('is-pinned');
+                    bar.style.top = 'auto';
+                    bar.style.bottom = pinInset + 'px';
+                }
+            }
+
+            window.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', update);
+            update();
+        })();
 
         import('./js/header-fluid.js').then(function (mod) {
             mod.initAllHeaderFluids();

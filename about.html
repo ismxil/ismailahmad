@@ -50,7 +50,11 @@
 
         html,
         body {
-            height: 100%;
+            min-height: 100%;
+        }
+
+        html {
+            overflow-y: auto;
         }
 
         body {
@@ -115,37 +119,39 @@
             </div>
 
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
-                <div class="site-header__nav-pills" id="header-nav-pills">
-                    <a class="pill pill--cream" href="index.html">Index</a>
-                    <a class="pill pill--cream pill--active" href="about.html" aria-current="page">About</a>
-                    <a class="pill pill--cream" href="feeds.html">Feeds</a>
+                <div class="nav-morph" id="nav-morph">
+                    <div class="site-header__nav-pills" id="header-nav-pills">
+                        <a class="pill pill--cream" href="index.html">Index</a>
+                        <a class="pill pill--cream pill--active" href="about.html" aria-current="page">About</a>
+                        <a class="pill pill--cream" href="feeds.html">Feed</a>
+                    </div>
                     <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
                         aria-controls="header-nav-menu" aria-label="Open menu">
-                        <span class="dot" aria-hidden="true"></span>
+                        <span class="nav-menu-icon" aria-hidden="true">
+                            <span class="nav-menu-icon__bar"></span>
+                            <span class="nav-menu-icon__bar"></span>
+                        </span>
                     </button>
-                </div>
-                <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
-                    <div class="header-nav-menu__top">
-                        <div class="header-nav-menu__links">
-                            <a href="index.html">Index</a>
-                            <a href="about.html">About</a>
-                            <a href="insights.html">Insights</a>
-                            <a href="feeds.html">Feeds</a>
-                            <button type="button" id="nav-menu-contact">Contact</button>
+                    <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
+                        <div class="header-nav-menu__top">
+                            <div class="header-nav-menu__links">
+                                <a href="index.html">Index</a>
+                                <a href="about.html">About</a>
+                                <a href="insights.html">Insights</a>
+                                <a href="feeds.html">Feeds</a>
+                                <button type="button" id="nav-menu-contact">Contact</button>
+                            </div>
+                            <span class="header-nav-menu__close-slot" aria-hidden="true"></span>
                         </div>
-                        <button type="button" class="header-nav-menu__close" id="header-nav-menu-close"
-                            aria-label="Close menu">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                                stroke-linecap="round" aria-hidden="true">
-                                <path d="M18 6L6 18M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
-                        <span id="nav-clock-month"></span><br>
-                        <span id="nav-clock-weekday"></span><br>
-                        <span id="nav-clock-time"></span><br>
-                        <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
+                        <div class="header-nav-menu__footer">
+                            <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
+                                <span id="nav-clock-month"></span><br>
+                                <span id="nav-clock-weekday"></span><br>
+                                <span id="nav-clock-time"></span><br>
+                                <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
+                            </div>
+                            <span class="header-nav-menu__version">V.26</span>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -327,7 +333,7 @@
     </div>
 
     <footer class="about-footer" aria-label="Page footer">
-        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
+        <button type="button" id="open-contact" class="pill pill--cream pill--muted">info</button>
         <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
             <div id="music-stack" aria-hidden="true">
                 <div id="music-glow" aria-hidden="true">
@@ -457,8 +463,11 @@
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
-        initAboutGalleryPin();
         initSpaNav();
+
+        (window.siteReady ?? Promise.resolve()).then(function () {
+            return initAboutGalleryPin();
+        });
     </script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
@@ -466,7 +475,6 @@
 
         await (window.siteReady ?? Promise.resolve());
         initBrandLogo3D(document.getElementById('about-header-logo-c'));
-        initBrandLogo3D(document.getElementById('about-logo-c'));
         initAllHeaderFluids();
 
         const talkBtn = document.getElementById('about-talk-btn');

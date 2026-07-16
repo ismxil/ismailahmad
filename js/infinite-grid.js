@@ -21,7 +21,7 @@ export default class InfiniteGrid {
     this.items = [];
     this.introItems = [];
     this.$wrap = el.parentElement || el;
-    this.pointer = { active: false, lastX: 0, lastY: 0, moved: false, cardEl: null };
+    this.pointer = { active: false, lastX: 0, lastY: 0, moved: false, cardEl: null, captured: false };
     this.lastPanAt = 0;
     this.openedFromPointer = false;
 
@@ -255,8 +255,8 @@ export default class InfiniteGrid {
     this.pointer.lastY = e.clientY;
     this.pointer.moved = false;
     this.pointer.cardEl = e.target.closest('.feed-grid__item');
+    this.pointer.captured = false;
     this.lastPanAt = 0;
-    this.$wrap.setPointerCapture(e.pointerId);
   }
 
   onPointerMove(e) {
@@ -269,6 +269,10 @@ export default class InfiniteGrid {
 
     if (!this.pointer.moved && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
       this.pointer.moved = true;
+      if (!this.pointer.captured) {
+        this.pointer.captured = true;
+        this.$wrap.setPointerCapture(e.pointerId);
+      }
     }
 
     if (!this.pointer.moved) return;
@@ -281,26 +285,30 @@ export default class InfiniteGrid {
   onPointerUp(e) {
     if (!this.pointer.active) return;
 
-    const tappedCard = this.pointer.cardEl && !this.pointer.moved
+    const tappedCard = this.pointer.cardEl && !this.pointer.moved && !this.isDisabled
       ? this.pointer.cardEl
       : null;
     const wasMoved = this.pointer.moved;
+    const hadCapture = this.pointer.captured;
 
     this.pointer.active = false;
     this.pointer.cardEl = null;
+    this.pointer.captured = false;
 
-    try {
-      this.$wrap.releasePointerCapture(e.pointerId);
-    } catch {
-      // pointer may already be released
+    if (hadCapture) {
+      try {
+        this.$wrap.releasePointerCapture(e.pointerId);
+      } catch {
+        // pointer may already be released
+      }
     }
 
-    if (tappedCard && this.onItemClick) {
+    if (tappedCard) {
       const idx = Number(tappedCard.dataset.feedIndex);
       if (!Number.isNaN(idx)) {
         this.openedFromPointer = true;
         const open = window.openFeedModal || this.onItemClick;
-        open(idx);
+        if (typeof open === 'function') open(idx);
       }
       return;
     }

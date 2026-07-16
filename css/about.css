@@ -3,6 +3,7 @@
 .about-page {
     --about-pad: 24px;
     --about-topbar-top: 25px;
+    --about-topbar-height: clamp(72px, 10vw, 120px);
     --about-frame: min(991px, calc(100vw - 2 * var(--about-pad)));
     --about-label: clamp(120px, 22vw, 320px);
     --about-gap: 32px;
@@ -12,17 +13,25 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: var(--about-topbar-top) var(--about-pad) 0;
+    padding: calc(var(--about-topbar-top) + var(--about-topbar-height) + 32px) var(--about-pad) 0;
 }
 
 .about-topbar {
-    position: sticky;
+    position: fixed;
     top: var(--about-topbar-top);
+    left: 0;
+    right: 0;
     z-index: 50;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 24px;
+    padding: 0 var(--about-pad);
+    pointer-events: none;
+}
+
+.about-topbar > * {
+    pointer-events: auto;
 }
 
 .about-topbar .site-header__nav {
@@ -59,7 +68,7 @@
     gap: 120px;
     width: 100%;
     max-width: none;
-    margin: clamp(48px, 8vh, 120px) 0 0;
+    margin: clamp(24px, 4vh, 48px) 0 0;
     min-height: calc(100vh - 180px);
 }
 
@@ -505,7 +514,8 @@
     .about-page {
         --about-pad: 16px;
         --about-topbar-top: 18px;
-        padding: var(--about-topbar-top) var(--about-pad) 0;
+        --about-topbar-height: 64px;
+        padding: calc(var(--about-topbar-top) + var(--about-topbar-height) + 24px) var(--about-pad) 0;
     }
 
     .about-panel {
@@ -528,13 +538,18 @@
         display: none;
     }
 
+    .site-header__nav-pills {
+        height: 32px;
+        padding: 0;
+    }
+
     .nav-dot-btn {
         width: 32px;
         height: 32px;
     }
 
-    .nav-dot-btn .dot {
-        width: 8px;
+    .nav-dot-btn .nav-menu-icon {
+        width: 12px;
         height: 8px;
     }
 

@@ -315,6 +315,7 @@ export async function initFeedModal() {
   document.addEventListener('keydown', onKeydown);
   bound = true;
 
+  unbindFeedCardClicks();
   bindFeedCardClicks();
   window.openFeedModal = openFeedModal;
   window.closeFeedModal = closeFeedModal;
@@ -332,6 +333,8 @@ export function teardownFeedModal() {
 
   unbindFeedCardClicks();
   isOpen = false;
+  delete window.openFeedModal;
+  delete window.closeFeedModal;
   backdrop = null;
   modal = null;
 }

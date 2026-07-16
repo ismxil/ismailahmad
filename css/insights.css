@@ -460,13 +460,18 @@
         display: none;
     }
 
+    .site-header__nav-pills {
+        height: 32px;
+        padding: 0;
+    }
+
     .nav-dot-btn {
         width: 32px;
         height: 32px;
     }
 
-    .nav-dot-btn .dot {
-        width: 8px;
+    .nav-dot-btn .nav-menu-icon {
+        width: 12px;
         height: 8px;
     }
 
