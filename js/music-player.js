@@ -1,22 +1,22 @@
 (function () {
     var TRACKS = [
         {
-            title: 'Dream',
-            artist: 'Alan Watts',
-            src: 'assets/audio/dream/Alan Watts - Dream.flac',
-            cover: 'assets/audio/dream/dream cover.jpg'
+            title: 'Essence',
+            artist: 'TWO LANES',
+            src: 'assets/audio/01-essence.flac',
+            cover: 'assets/audio/01-cover.jpg'
         },
         {
-            title: 'Beautiful Error',
-            artist: 'Alan Watts',
-            src: 'assets/audio/beautiful-error/Alan Watts - Beautiful Error.flac',
-            cover: 'assets/audio/beautiful-error/beautiful error cover.jpg'
+            title: 'Immersion',
+            artist: 'TWO LANES',
+            src: 'assets/audio/02-immersion.flac',
+            cover: 'assets/audio/02-cover.jpg'
         },
         {
-            title: 'Burgs',
-            artist: 'Mt. Wolf',
-            src: 'assets/audio/burgs/Mt. Wolf - Burgs.flac',
-            cover: 'assets/audio/burgs/burgs cover.jpg'
+            title: 'Inner Motion',
+            artist: 'TWO LANES',
+            src: 'assets/audio/03-inner_motion.flac',
+            cover: 'assets/audio/03-cover.jpg'
         }
     ];
 

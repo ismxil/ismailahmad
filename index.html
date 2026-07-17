@@ -53,6 +53,7 @@
 
         html {
             background: #fff;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -285,9 +286,19 @@
         }
 
         .site-header__brand {
+            --brand-scale: 1;
             display: flex;
             align-items: flex-start;
             gap: 16px;
+            transform: scale(var(--brand-scale));
+            transform-origin: left top;
+            will-change: transform;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .site-header__brand {
+                transform: none;
+            }
         }
 
         .site-header__meta {
@@ -304,9 +315,10 @@
         }
 
         .site-header__logo {
-            width: 54px;
-            height: 54px;
+            width: 81px;
+            height: 81px;
             flex-shrink: 0;
+            display: block;
         }
 
         .home-page {
@@ -321,15 +333,29 @@
             padding: 64px 24px 32px;
         }
 
+        .home-hero__inner {
+            position: relative;
+            width: min(627px, 100%);
+        }
+
         .home-hero__copy {
             margin: 0;
-            width: min(627px, 100%);
+            width: 100%;
             text-align: center;
             font-family: var(--font-body);
             font-size: clamp(20px, 2.2vw, 32px);
             line-height: 1.375;
             font-weight: 500;
             color: var(--text-primary);
+        }
+
+        .home-hero__cta {
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            transform: translateX(-50%);
+            margin-top: 28px;
+            white-space: nowrap;
         }
 
         .home-projects {
@@ -342,6 +368,7 @@
             max-width: 2056px;
             margin: 0 auto;
             box-sizing: border-box;
+            scroll-margin-top: 96px;
         }
 
         .home-project {
@@ -508,8 +535,8 @@
             }
 
             .site-header__logo {
-                width: 29px;
-                height: 29px;
+                width: 48px;
+                height: 48px;
             }
 
             .site-header__nav {
@@ -549,6 +576,10 @@
             .home-hero__copy {
                 font-size: 18px;
                 line-height: 26px;
+            }
+
+            .home-hero__cta {
+                margin-top: 20px;
             }
 
             .home-projects {
@@ -1624,7 +1655,7 @@
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
                 <div class="nav-morph" id="nav-morph">
                     <div class="site-header__nav-pills" id="header-nav-pills">
-                        <a class="pill pill--cream pill--active" href="index.html" aria-current="page">Index</a>
+                        <a class="pill pill--cream pill--active" href="index.html" aria-current="page">Home</a>
                         <a class="pill pill--cream" href="about.html">About</a>
                         <a class="pill pill--cream" href="feeds.html">Feed</a>
                     </div>
@@ -1638,7 +1669,7 @@
                     <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
                         <div class="header-nav-menu__top">
                             <div class="header-nav-menu__links">
-                                <a href="index.html">Index</a>
+                                <a href="index.html">Home</a>
                                 <a href="about.html">About</a>
                                 <a href="insights.html">Insights</a>
                                 <a href="feeds.html">Feeds</a>
@@ -1663,14 +1694,17 @@
 
     <div class="home-page">
         <section class="home-hero" aria-label="Introduction">
-            <p class="home-hero__copy">Product &amp; UX designer shaping financial brands, websites, and products
-                for the world’s ambitious companies.</p>
+            <div class="home-hero__inner">
+                <p class="home-hero__copy">Product &amp; UX designer specialised in financial brands, and products
+                    for the world’s ambitious companies.</p>
+                <a class="pill pill--cream home-hero__cta" href="#work">View work</a>
+            </div>
         </section>
 
         <div id="bottom-bar-slot" aria-hidden="true"></div>
 
         <div id="bottom-bar">
-            <button type="button" id="open-contact" class="pill pill--cream pill--muted">info</button>
+            <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
             <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
 
                 <div id="music-stack" aria-hidden="true">
@@ -1681,12 +1715,12 @@
                     <div id="music-player" aria-hidden="true" aria-label="Music player">
                         <div class="music-player__thumbs" id="music-player-thumbs"></div>
                         <div class="music-player__art">
-                            <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art"
+                            <img id="music-player-art" src="assets/audio/01-cover.jpg" alt="Essence cover art"
                                 width="200" height="200" />
                         </div>
                         <div class="music-player__meta">
-                            <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
-                            <p class="music-player__title" id="music-player-title">Dream</p>
+                            <p class="music-player__artist" id="music-player-artist">TWO LANES</p>
+                            <p class="music-player__title" id="music-player-title">Essence</p>
                         </div>
                         <div class="music-player__controls">
                             <button type="button" class="music-player__btn music-player__btn--side" id="music-prev"
@@ -1734,7 +1768,7 @@
             </div>
         </div>
 
-        <section class="home-projects" id="home-projects" aria-label="Featured projects"></section>
+        <section class="home-projects" id="work" aria-label="Featured projects"></section>
 
         <section class="home-cta" aria-label="Contact">
             <h2 class="home-cta__title">Stay in touch</h2>
@@ -2576,7 +2610,7 @@
 
         // Vertical project grid — Figma 504:1343
         (function renderHomeProjects() {
-            var grid = document.getElementById('home-projects');
+            var grid = document.getElementById('work');
             if (!grid) return;
 
             homeProjectIndices.forEach(function (cardIndex) {
@@ -2663,6 +2697,27 @@
                     bar.style.top = 'auto';
                     bar.style.bottom = pinInset + 'px';
                 }
+            }
+
+            window.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', update);
+            update();
+        })();
+
+        (function initHomeHeaderScrollScale() {
+            var brand = document.querySelector('#site-header .site-header__brand');
+            if (!brand) return;
+
+            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reducedMotion) return;
+
+            var hero = document.querySelector('.home-hero');
+
+            function update() {
+                var range = hero ? Math.max(hero.offsetHeight * 0.75, 240) : 320;
+                var progress = Math.min(1, Math.max(0, window.scrollY / range));
+                var scale = 1 - progress * 0.75;
+                brand.style.setProperty('--brand-scale', scale.toFixed(4));
             }
 
             window.addEventListener('scroll', update, { passive: true });

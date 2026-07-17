@@ -270,6 +270,16 @@
                     .then(runSiteLoaderScript)
                     .then(function () {
                         return runScripts(document.body);
+                    })
+                    .then(function () {
+                        return window.siteReady ?? Promise.resolve();
+                    })
+                    .then(function () {
+                        window.dispatchEvent(new CustomEvent('spa:page-ready'));
+                        var page = window.location.pathname.split('/').pop() || 'index.html';
+                        if (page === 'about.html' && typeof window.initAboutGalleryPin === 'function') {
+                            return window.initAboutGalleryPin();
+                        }
                     });
             })
             .catch(function (err) {

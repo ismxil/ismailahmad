@@ -174,7 +174,7 @@
     width: max-content;
     min-width: 100%;
     padding-left: var(--about-content-start);
-    padding-right: 0;
+    padding-right: 20px;
     will-change: transform;
 }
 

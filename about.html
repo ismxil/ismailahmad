@@ -121,7 +121,7 @@
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
                 <div class="nav-morph" id="nav-morph">
                     <div class="site-header__nav-pills" id="header-nav-pills">
-                        <a class="pill pill--cream" href="index.html">Index</a>
+                        <a class="pill pill--cream" href="index.html">Home</a>
                         <a class="pill pill--cream pill--active" href="about.html" aria-current="page">About</a>
                         <a class="pill pill--cream" href="feeds.html">Feed</a>
                     </div>
@@ -135,7 +135,7 @@
                     <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
                         <div class="header-nav-menu__top">
                             <div class="header-nav-menu__links">
-                                <a href="index.html">Index</a>
+                                <a href="index.html">Home</a>
                                 <a href="about.html">About</a>
                                 <a href="insights.html">Insights</a>
                                 <a href="feeds.html">Feeds</a>
@@ -174,13 +174,16 @@
                             <div class="about-gallery">
                                 <div class="about-gallery__track">
                                     <div class="about-gallery__item image-hover">
-                                        <img src="assets/about/gallery-1.jpg" alt="" loading="lazy" width="800" height="597" />
+                                        <img src="assets/about/gallery-1.jpg" alt="" loading="eager" width="800" height="597" />
                                     </div>
                                     <div class="about-gallery__item image-hover">
-                                        <img src="assets/about/gallery-2.jpg" alt="" loading="lazy" width="800" height="597" />
+                                        <img src="assets/about/gallery-2.jpg" alt="" loading="eager" width="800" height="597" />
                                     </div>
                                     <div class="about-gallery__item image-hover">
-                                        <img src="assets/about/gallery-3.jpg" alt="" loading="lazy" width="800" height="597" />
+                                        <img src="assets/about/gallery-3.jpg" alt="" loading="eager" width="800" height="597" />
+                                    </div>
+                                    <div class="about-gallery__item image-hover">
+                                        <img src="assets/about/gallery-4.jpg" alt="" loading="eager" width="800" height="597" />
                                     </div>
                                 </div>
                             </div>
@@ -333,7 +336,7 @@
     </div>
 
     <footer class="about-footer" aria-label="Page footer">
-        <button type="button" id="open-contact" class="pill pill--cream pill--muted">info</button>
+        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
         <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
             <div id="music-stack" aria-hidden="true">
                 <div id="music-glow" aria-hidden="true">
@@ -342,12 +345,12 @@
                 <div id="music-player" aria-hidden="true" aria-label="Music player">
                     <div class="music-player__thumbs" id="music-player-thumbs"></div>
                     <div class="music-player__art">
-                        <img id="music-player-art" src="assets/audio/dream/dream cover.jpg" alt="Dream cover art"
+                        <img id="music-player-art" src="assets/audio/01-cover.jpg" alt="Essence cover art"
                             width="200" height="200" />
                     </div>
                     <div class="music-player__meta">
-                        <p class="music-player__artist" id="music-player-artist">Alan Watts</p>
-                        <p class="music-player__title" id="music-player-title">Dream</p>
+                        <p class="music-player__artist" id="music-player-artist">TWO LANES</p>
+                        <p class="music-player__title" id="music-player-title">Essence</p>
                     </div>
                     <div class="music-player__controls">
                         <button type="button" class="music-player__btn music-player__btn--side" id="music-prev"
@@ -464,10 +467,6 @@
         initSiteNav();
         initMusicPlayer();
         initSpaNav();
-
-        (window.siteReady ?? Promise.resolve()).then(function () {
-            return initAboutGalleryPin();
-        });
     </script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
