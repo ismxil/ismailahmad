@@ -783,58 +783,95 @@
         .home-cta {
             margin: 120px auto 0;
             width: min(999px, calc(100% - 48px));
-            min-height: 280px;
-            background: var(--bg-cream, #f3f2ef);
-            border-radius: 32px 32px 0 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
-            gap: 31px;
-            padding: 80px 24px 48px;
+            justify-content: space-between;
+            gap: 32px 64px;
+            padding: 48px 0 40px;
             box-sizing: border-box;
+            flex-wrap: wrap;
         }
 
-        .home-cta__title {
+        .home-cta__touch {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+
+        .home-cta__label {
             margin: 0;
             font-family: var(--font-display);
-            font-size: clamp(32px, 4vw, 56px);
-            font-weight: 600;
-            line-height: 1.07;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
             color: var(--brand);
-            text-align: center;
+            white-space: nowrap;
         }
 
-        .home-cta__btn {
+        .home-cta__email {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            height: 44px;
-            padding: 0 16px;
-            border: none;
+            gap: 12px;
+            min-height: 48px;
+            padding: 12px 72px 12px 16px;
+            border: 2px solid var(--brand);
             border-radius: 999px;
-            background: var(--brand);
-            color: #fff;
+            background: var(--bg-cream, #f3f2ef);
+            color: var(--text-tertiary, #a1a1aa);
             font-family: var(--font-body);
             font-size: 16px;
             font-weight: 500;
             line-height: 24px;
             cursor: pointer;
+            transition: opacity 0.18s ease, background 0.18s ease;
+        }
+
+        .home-cta__email:hover {
+            opacity: 0.88;
+        }
+
+        .home-cta__email:focus-visible {
+            outline: 2px solid var(--brand);
+            outline-offset: 3px;
+        }
+
+        .home-cta__email-icon {
+            display: block;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .home-cta__email-icon img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-cta__socials {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .home-cta__socials a {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            color: var(--brand);
+            text-decoration: none;
+            white-space: nowrap;
             transition: opacity 0.18s ease;
         }
 
-        .home-cta__btn::before {
-            content: '';
-            width: 11px;
-            height: 11px;
-            border-radius: 50%;
-            background: #fff;
-            flex-shrink: 0;
-        }
-
-        .home-cta__btn:hover {
-            opacity: 0.85;
+        .home-cta__socials a:hover {
+            opacity: 0.72;
         }
 
         .work-label,
@@ -1031,9 +1068,28 @@
 
             .home-cta {
                 width: calc(100% - 24px);
-                min-height: 220px;
-                padding: 56px 20px 36px;
-                border-radius: 24px 24px 0 0;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 28px;
+                padding: 40px 0 32px;
+            }
+
+            .home-cta__touch {
+                width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .home-cta__email {
+                width: 100%;
+                max-width: 360px;
+                box-sizing: border-box;
+                padding-right: 24px;
+            }
+
+            .home-cta__socials {
+                gap: 20px 24px;
             }
 
             #bottom-bar-slot {
@@ -2348,9 +2404,22 @@
             </div>
         </section>
 
-        <section class="home-cta" aria-label="Contact">
-            <h2 class="home-cta__title">Stay in touch</h2>
-            <button type="button" class="home-cta__btn" id="home-cta-contact">Talk to Ahmad</button>
+        <section class="home-cta" aria-label="Stay in touch">
+            <div class="home-cta__touch">
+                <p class="home-cta__label">Stay in touch</p>
+                <button type="button" class="home-cta__email" id="home-cta-contact" aria-label="Open contact">
+                    <span class="home-cta__email-icon" aria-hidden="true">
+                        <img src="assets/icons/email-envelope.svg" alt="" width="24" height="24" />
+                    </span>
+                    <span>Your email</span>
+                </button>
+            </div>
+            <nav class="home-cta__socials" aria-label="Social links">
+                <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
+                <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
+                <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+            </nav>
         </section>
     </div>
 
