@@ -14,6 +14,7 @@
     display: flex;
     flex-direction: column;
     padding: calc(var(--about-topbar-top) + var(--about-topbar-height) + 32px) var(--about-pad) 0;
+    overflow-x: clip;
 }
 
 .about-topbar {
@@ -55,10 +56,13 @@
     color: var(--brand, #393bfe);
 }
 
-.about-brand img {
-    width: 54px;
-    height: 54px;
+.about-brand img,
+.about-brand canvas,
+.about-brand .site-header__logo {
+    width: 81px;
+    height: 81px;
     display: block;
+    flex-shrink: 0;
 }
 
 .about-panel {
@@ -151,8 +155,8 @@
 }
 
 .about-gallery-breakout {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+    width: calc(100% + 2 * var(--about-pad));
+    margin-left: calc(-1 * var(--about-pad));
     overflow: hidden;
 }
 
@@ -162,6 +166,7 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding-bottom: 4px;
+    overscroll-behavior-x: contain;
 }
 
 .about-gallery::-webkit-scrollbar {
@@ -507,6 +512,7 @@
 
     .about-gallery__track {
         padding-left: var(--about-pad);
+        padding-right: max(var(--about-pad), calc(100vw - min(82vw, 520px) - var(--about-pad)));
     }
 }
 
@@ -529,9 +535,11 @@
         letter-spacing: 0;
     }
 
-    .about-brand img {
-        width: 44px;
-        height: 44px;
+    .about-brand img,
+    .about-brand canvas,
+    .about-brand .site-header__logo {
+        width: 48px;
+        height: 48px;
     }
 
     #header-nav-pills .pill {
@@ -548,6 +556,13 @@
         height: 32px;
     }
 
+    .site-header__nav.is-menu-open .nav-dot-btn {
+        top: 16px;
+        right: 16px;
+        width: 28px;
+        height: 28px;
+    }
+
     .nav-dot-btn .nav-menu-icon {
         width: 12px;
         height: 8px;
@@ -561,9 +576,15 @@
         gap: 72px;
     }
 
+    .about-gallery__track {
+        padding-left: var(--about-pad);
+        padding-right: max(var(--about-pad), calc(100vw - min(82vw, 520px) - var(--about-pad)));
+        scroll-padding-inline: var(--about-pad);
+    }
+
     .about-gallery__item {
         border-radius: 24px;
-        flex-basis: min(85vw, 520px);
+        flex-basis: min(82vw, 520px);
         height: clamp(220px, 56vw, 400px);
     }
 

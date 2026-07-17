@@ -858,6 +858,13 @@
                 height: 32px;
             }
 
+            #home-layout .site-header__nav.is-menu-open .nav-dot-btn {
+                top: 16px;
+                right: 16px;
+                width: 28px;
+                height: 28px;
+            }
+
             .home-hero {
                 min-height: calc(100svh - 150px);
                 padding: 72px 16px 0;
@@ -1003,6 +1010,7 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
+            overflow: hidden;
             transition: opacity 0.32s ease, visibility 0s linear 0.32s;
         }
 
@@ -1016,6 +1024,7 @@
         #modal-panel {
             position: relative;
             width: 100%;
+            max-width: 100%;
             height: 100dvh;
             max-height: 100dvh;
             background: #f8f8f7;
@@ -1026,6 +1035,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            overflow-x: hidden;
         }
 
         #modal-backdrop.is-open #modal-panel {
@@ -1034,8 +1044,8 @@
 
         #modal-close-btn {
             position: absolute;
-            top: 21px;
-            right: 21px;
+            top: max(20px, env(safe-area-inset-top, 0px));
+            right: max(20px, env(safe-area-inset-right, 0px));
             z-index: 5;
             width: 64px;
             height: 64px;
@@ -1058,6 +1068,7 @@
         #modal-scroll {
             flex: 1 1 0;
             min-height: 0;
+            overflow-x: hidden;
             overflow-y: auto;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
@@ -1071,11 +1082,13 @@
 
         .project-modal__inner {
             width: min(991px, 100%);
+            max-width: 100%;
             margin: 0 auto;
             min-height: 100%;
             display: flex;
             flex-direction: column;
             gap: 120px;
+            overflow-x: clip;
         }
 
         .project-modal__header {
@@ -1133,13 +1146,15 @@
         .project-modal__gallery {
             display: flex;
             gap: 24px;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             overflow-x: auto;
+            overflow-y: hidden;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             padding-bottom: 4px;
-            margin: 0 -24px;
-            padding-left: 24px;
-            padding-right: 24px;
+            overscroll-behavior-x: contain;
         }
 
         .project-modal__gallery::-webkit-scrollbar {
@@ -1147,12 +1162,15 @@
         }
 
         .project-modal__gallery-item {
-            flex: 0 0 min(999px, 85vw);
+            flex: 0 0 100%;
+            width: 100%;
+            max-width: 100%;
             height: clamp(280px, 42vw, 545px);
             border-radius: 32px;
             overflow: hidden;
             scroll-snap-align: center;
             background: #e4e4e7;
+            box-sizing: border-box;
         }
 
         .project-modal__gallery-item img {
@@ -1303,15 +1321,17 @@
         .project-modal__metrics {
             display: flex;
             gap: 24px;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             overflow-x: auto;
+            overflow-y: hidden;
             padding-bottom: 4px;
-            margin: 0 -24px;
-            padding-left: 24px;
-            padding-right: 24px;
+            overscroll-behavior-x: contain;
         }
 
         .project-modal__metric {
-            flex: 0 0 400px;
+            flex: 0 0 min(400px, 100%);
             min-height: 540px;
             display: flex;
             flex-direction: column;
@@ -1342,11 +1362,11 @@
             display: flex;
             flex-direction: column;
             gap: 72px;
-            width: calc(100% + 48px);
-            margin-left: -24px;
-            margin-right: -24px;
+            width: 100%;
+            max-width: 100%;
             margin-top: auto;
             padding: 0;
+            box-sizing: border-box;
         }
 
         .project-modal__next-row {
@@ -1356,7 +1376,8 @@
             gap: 32px;
             width: min(991px, 100%);
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         .project-modal__next-label {
@@ -1621,7 +1642,7 @@
             }
 
             .project-modal__metric {
-                flex-basis: min(400px, 85vw);
+                flex-basis: min(400px, 100%);
                 min-height: 420px;
             }
 
@@ -1632,21 +1653,24 @@
 
         @media (max-width: 600px) {
             #modal-close-btn {
-                width: 52px;
-                height: 52px;
-                top: 16px;
-                right: 16px;
+                width: 44px;
+                height: 44px;
+                top: max(16px, env(safe-area-inset-top, 0px));
+                right: max(16px, env(safe-area-inset-right, 0px));
             }
 
             #modal-scroll {
-                padding: 88px 16px 0;
+                padding: 80px 16px 0;
+                overflow-x: hidden;
             }
 
-            .project-modal__gallery,
-            .project-modal__metrics {
-                margin: 0 -16px;
-                padding-left: 16px;
-                padding-right: 16px;
+            .project-modal__gallery-item {
+                border-radius: 24px;
+            }
+
+            .project-modal__metric {
+                flex-basis: min(360px, 100%);
+                min-height: 360px;
             }
         }
 
@@ -1717,8 +1741,8 @@
 
         #story-close-btn {
             position: absolute;
-            top: 21px;
-            right: 21px;
+            top: max(20px, env(safe-area-inset-top, 0px));
+            right: max(20px, env(safe-area-inset-right, 0px));
             z-index: 5;
             width: 64px;
             height: 64px;
@@ -1823,10 +1847,10 @@
 
         @media (max-width: 600px) {
             #story-close-btn {
-                width: 52px;
-                height: 52px;
-                top: 16px;
-                right: 16px;
+                width: 44px;
+                height: 44px;
+                top: max(16px, env(safe-area-inset-top, 0px));
+                right: max(16px, env(safe-area-inset-right, 0px));
             }
 
             #story-scroll {

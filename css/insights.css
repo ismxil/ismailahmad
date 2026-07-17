@@ -38,10 +38,13 @@
     color: var(--brand, #393bfe);
 }
 
-.insights-brand img {
-    width: 54px;
-    height: 54px;
+.insights-brand img,
+.insights-brand canvas,
+.insights-brand .site-header__logo {
+    width: 81px;
+    height: 81px;
     display: block;
+    flex-shrink: 0;
 }
 
 .insights-panel {
@@ -451,9 +454,11 @@
         letter-spacing: 0;
     }
 
-    .insights-brand img {
-        width: 44px;
-        height: 44px;
+    .insights-brand img,
+    .insights-brand canvas,
+    .insights-brand .site-header__logo {
+        width: 48px;
+        height: 48px;
     }
 
     #header-nav-pills .pill {
@@ -468,6 +473,13 @@
     .nav-dot-btn {
         width: 32px;
         height: 32px;
+    }
+
+    .site-header__nav.is-menu-open .nav-dot-btn {
+        top: 16px;
+        right: 16px;
+        width: 28px;
+        height: 28px;
     }
 
     .nav-dot-btn .nav-menu-icon {

@@ -1,4 +1,35 @@
-/* Shared header navigation — morphing pill → dropdown */
+/* Shared 3D brand mark size — match homepage */
+.site-header__logo,
+.about-brand canvas,
+.about-brand .site-header__logo,
+.insights-brand canvas,
+.insights-brand .site-header__logo,
+.brand canvas,
+.brand .site-header__logo,
+#feeds-header-logo-c,
+#insights-header-logo-c,
+#about-header-logo-c {
+    width: 81px;
+    height: 81px;
+    display: block;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .site-header__logo,
+    .about-brand canvas,
+    .about-brand .site-header__logo,
+    .insights-brand canvas,
+    .insights-brand .site-header__logo,
+    .brand canvas,
+    .brand .site-header__logo,
+    #feeds-header-logo-c,
+    #insights-header-logo-c,
+    #about-header-logo-c {
+        width: 48px;
+        height: 48px;
+    }
+}
 
 #site-header .site-header__nav {
     grid-column: 2;
@@ -110,8 +141,8 @@
 }
 
 .site-header__nav.is-menu-open .nav-dot-btn {
-    top: 12px;
-    right: 12px;
+    top: 16px;
+    right: 16px;
     width: 28px;
     height: 28px;
     background: color-mix(in srgb, var(--brand, #393bfe) 12%, #fff);
@@ -169,7 +200,7 @@
     inset: 0;
     z-index: 1;
     box-sizing: border-box;
-    padding: 12px 12px 16px;
+    padding: 16px 16px 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -309,8 +340,8 @@
     }
 
     .site-header__nav.is-menu-open .nav-dot-btn {
-        top: 12px;
-        right: 12px;
+        top: 16px;
+        right: 16px;
         width: 28px;
         height: 28px;
     }

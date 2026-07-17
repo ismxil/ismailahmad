@@ -429,8 +429,8 @@ body.feed-modal-open .feeds-chrome {
     }
 
     .feed-modal__close {
-        top: 14px;
-        right: 14px;
+        top: max(16px, env(safe-area-inset-top, 0px));
+        right: max(16px, env(safe-area-inset-right, 0px));
         width: 36px;
         height: 36px;
     }

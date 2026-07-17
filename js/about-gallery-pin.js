@@ -132,7 +132,12 @@
         var track = document.querySelector('.about-gallery__track');
         if (!pinWrap || !pinInner || !gallery || !track) return Promise.resolve();
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return Promise.resolve();
-        if (window.matchMedia && window.matchMedia('(max-width: 660px)').matches) return Promise.resolve();
+        if (window.matchMedia && window.matchMedia('(max-width: 660px)').matches) {
+            killGalleryPin();
+            if (gallery) gallery.scrollLeft = 0;
+            if (track && typeof gsap !== 'undefined') gsap.set(track, { clearProps: 'transform,x' });
+            return Promise.resolve();
+        }
 
         gsap.registerPlugin(ScrollTrigger);
         killGalleryPin();
