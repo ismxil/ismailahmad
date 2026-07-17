@@ -14,7 +14,8 @@
     display: flex;
     flex-direction: column;
     padding: calc(var(--about-topbar-top) + var(--about-topbar-height) + 32px) var(--about-pad) 0;
-    overflow-x: clip;
+    /* Horizontal bleed is clipped by .about-gallery-breakout + body overflow-x.
+       overflow-x here would create a containing block that breaks ScrollTrigger pins. */
 }
 
 .about-topbar {
@@ -95,10 +96,6 @@
 }
 
 .about-section--cards {
-    row-gap: 48px;
-}
-
-.about-section--clients {
     row-gap: 48px;
 }
 
@@ -315,110 +312,10 @@
     color: var(--text-primary, #09090b);
 }
 
-.about-card__list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
-    font-size: clamp(16px, 1.6vw, 20px);
-    line-height: 1.2;
-    font-weight: 400;
-    color: var(--text-primary, #09090b);
-}
-
-.about-card__list li + li {
-    margin-top: 0;
-}
-
 .about-card__icon {
     display: block;
     width: 64px;
     height: 64px;
-    flex-shrink: 0;
-}
-
-.about-clients {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    width: min(657px, 100%);
-    margin-left: auto;
-}
-
-.about-clients img {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 213 / 75;
-    object-fit: contain;
-}
-
-.about-cta {
-    width: var(--about-frame);
-    margin-inline: auto;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 31px;
-    padding: 72px 24px calc(96px + env(safe-area-inset-bottom, 0px));
-    border-radius: 32px 32px 0 0;
-    background: #f8f8f7;
-    text-align: center;
-}
-
-.about-cta__title-fluid {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 760px;
-}
-
-.about-cta__title-fluid .header-fluid__content {
-    justify-content: center;
-}
-
-.about-cta__title {
-    margin: 0;
-    max-width: 760px;
-    font-family: var(--font-display, 'Reckless', Georgia, serif);
-    font-size: clamp(32px, 4.5vw, 56px);
-    line-height: 1.08;
-    font-weight: 600;
-    color: var(--brand, #393bfe);
-    text-align: center;
-}
-
-.about-cta__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 44px;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 999px;
-    background: var(--brand, #393bfe);
-    color: #fff;
-    font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.about-cta__btn:hover {
-    opacity: 0.9;
-    transform: scale(1.02);
-}
-
-.about-cta__btn-dot {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: #fff;
     flex-shrink: 0;
 }
 
@@ -431,7 +328,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px 32px;
     pointer-events: none;
+    box-sizing: border-box;
 }
 
 .about-footer .home-logo {
@@ -482,8 +381,7 @@
         gap: 16px;
     }
 
-    .about-section--cards,
-    .about-section--clients {
+    .about-section--cards {
         row-gap: 32px;
     }
 
@@ -503,11 +401,6 @@
     .about-card {
         min-height: auto;
         gap: 32px;
-    }
-
-    .about-clients {
-        margin-left: 0;
-        width: 100%;
     }
 
     .about-gallery__track {
@@ -603,12 +496,10 @@
         height: clamp(220px, 56vw, 400px);
     }
 
-    .about-clients {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .about-footer {
         left: 16px;
         right: 16px;
+        bottom: 16px;
+        gap: 12px;
     }
 }

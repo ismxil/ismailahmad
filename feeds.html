@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="css/feeds-grid.css">
     <link rel="stylesheet" href="css/music-player.css">
     <link rel="stylesheet" href="css/image-hover.css">
+    <link rel="stylesheet" href="css/bottom-bar-cta.css">
     <style>
         :root {
             --brand: #393bfe;
@@ -166,7 +167,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 20px 32px;
             pointer-events: none;
+            box-sizing: border-box;
         }
 
         .page-footer > * {
@@ -250,6 +253,13 @@
             .nav {
                 gap: 10px;
             }
+
+            .page-footer {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                gap: 12px;
+            }
         }
 
     </style>
@@ -316,6 +326,44 @@
 
         <footer class="page-footer">
             <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
+            <div class="bottom-bar__cta" aria-label="Stay in touch" aria-hidden="true" inert>
+                <div class="home-cta__touch">
+                    <p class="home-cta__label">Stay in touch</p>
+                    <form class="home-cta__email-form" id="feed-subscribe"
+                        action="https://wandarer.com/api/v1/free" method="post" target="_blank" rel="noopener"
+                        data-subscribe-source="website_footer">
+                        <label class="home-cta__email" id="feed-email-field" data-subscribe-field>
+                            <span class="home-cta__email-icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 18.8003 16.4" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M1.00017 4.6L8.80497 9.0592C9.17337 9.2704 9.62697 9.2704 9.99537 9.0592L17.8002 4.6"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M14.2002 1H4.60017C2.61195 1 1.00017 2.61177 1.00017 4.6V11.8C1.00017 13.7882 2.61195 15.4 4.60017 15.4H14.2002C16.1884 15.4 17.8002 13.7882 17.8002 11.8V4.6C17.8002 2.61177 16.1884 1 14.2002 1Z"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <input class="home-cta__email-input" type="email" name="email" placeholder="Your email"
+                                autocomplete="email" required aria-label="Your email" />
+                        </label>
+                        <button type="submit" class="home-cta__email-submit" aria-label="Subscribe to newsletter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                <nav class="home-cta__socials" aria-label="Social links">
+                    <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
+                    <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
+                    <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
+                    <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+                </nav>
+            </div>
             <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
                 <div id="music-stack" aria-hidden="true">
                     <div id="music-glow" aria-hidden="true">
@@ -448,11 +496,14 @@
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
+    <script src="js/bottom-bar-cta.js"></script>
     <script src="js/spa-nav.js"></script>
     <script>
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
+        initAllSubscribeForms();
+        initBottomBarCta();
         initSpaNav();
     </script>
     <script type="module" src="js/feeds-page.js"></script>

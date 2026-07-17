@@ -1,0 +1,261 @@
+/* Stay in touch CTA inside fixed bottom bars (Home / About / Feed) */
+
+.bottom-bar__cta {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px 48px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+/* Collapsed until page end — Info + music stay space-between without mid gap */
+#bottom-bar:not(.is-at-bottom),
+.about-footer:not(.is-at-bottom),
+.page-footer:not(.is-at-bottom) {
+    gap: 0;
+}
+
+#bottom-bar:not(.is-at-bottom) .bottom-bar__cta,
+.about-footer:not(.is-at-bottom) .bottom-bar__cta,
+.page-footer:not(.is-at-bottom) .bottom-bar__cta {
+    flex: 0 0 0;
+    width: 0;
+    min-width: 0;
+    max-width: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+}
+
+#bottom-bar.is-at-bottom .bottom-bar__cta,
+.about-footer.is-at-bottom .bottom-bar__cta,
+.page-footer.is-at-bottom .bottom-bar__cta {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.page-end-sentinel,
+.home-page-end {
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
+}
+
+.home-cta__touch {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.home-cta__label {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color: var(--brand);
+    white-space: nowrap;
+}
+
+.home-cta__email-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.home-cta__email {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 44px;
+    min-height: 44px;
+    min-width: 182px;
+    padding: 0 16px;
+    border: 2px solid var(--brand);
+    border-radius: 999px;
+    background: var(--bg-cream, #f3f2ef);
+    box-sizing: border-box;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.home-cta__email:focus-within,
+.home-cta__email.has-value {
+    background: #fff;
+}
+
+.home-cta__email-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: #a1a1aa;
+    transition: color 0.18s ease;
+}
+
+.home-cta__email:focus-within .home-cta__email-icon,
+.home-cta__email.has-value .home-cta__email-icon {
+    color: var(--brand);
+}
+
+.home-cta__email-icon svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
+.home-cta__email-input {
+    flex: 1;
+    min-width: 0;
+    width: 110px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color: var(--brand);
+    outline: none;
+}
+
+.home-cta__email-input::placeholder {
+    color: #a1a1aa;
+}
+
+.home-cta__email-submit {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    line-height: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.home-cta__email-form:focus-within .home-cta__email-submit,
+.home-cta__email.has-value ~ .home-cta__email-submit {
+    display: inline-flex;
+}
+
+.home-cta__email-submit:hover {
+    opacity: 0.88;
+    transform: scale(1.04);
+}
+
+.home-cta__email-submit svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    /* Optical center: arrow path is slightly left-weighted */
+    transform: translateX(0.5px);
+}
+
+.home-cta__email-form.is-success .home-cta__email {
+    background: #fff;
+    border-color: var(--brand);
+}
+
+.home-cta__email-form.is-success .home-cta__email-input {
+    color: var(--brand);
+}
+
+.home-cta__socials {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+}
+
+.home-cta__socials a {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color: var(--brand);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.18s ease;
+}
+
+.home-cta__socials a:hover {
+    opacity: 0.72;
+}
+
+@media (max-width: 768px) {
+    .bottom-bar__cta {
+        gap: 16px;
+    }
+
+    .home-cta__label {
+        display: none;
+    }
+
+    .home-cta__socials {
+        gap: 16px;
+    }
+
+    .home-cta__email {
+        height: 40px;
+        min-height: 40px;
+        padding: 0 12px;
+        font-size: 14px;
+    }
+
+    .home-cta__email-submit {
+        width: 40px;
+        height: 40px;
+    }
+
+    .home-cta__email-submit svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 720px) {
+    .bottom-bar__cta .home-cta__socials {
+        display: none;
+    }
+
+    .home-cta__email {
+        min-width: 148px;
+        max-width: 200px;
+    }
+
+    .home-cta__email-input {
+        width: 88px;
+        font-size: 14px;
+    }
+
+    .bottom-bar__cta {
+        flex: 1 1 auto;
+        justify-content: flex-start;
+        min-width: 0;
+    }
+}

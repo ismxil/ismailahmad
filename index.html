@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/image-hover.css">
     <link rel="stylesheet" href="css/music-player.css">
+    <link rel="stylesheet" href="css/bottom-bar-cta.css">
 
     <style>
         :root {
@@ -164,7 +165,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 20px 32px;
             box-sizing: border-box;
             white-space: nowrap;
             pointer-events: none;
@@ -172,6 +173,18 @@
 
         #bottom-bar > * {
             pointer-events: auto;
+        }
+
+        .bottom-bar__music {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        #open-contact {
+            flex-shrink: 0;
+            height: 44px;
+            box-sizing: border-box;
         }
 
         .bottom-bar__socials {
@@ -329,6 +342,7 @@
 
         .home-page {
             width: 100%;
+            padding-bottom: 88px;
         }
 
         .home-hero {
@@ -461,7 +475,7 @@
         }
 
         .home-more {
-            margin-top: 56px;
+            margin: 120px 0;
         }
 
         .home-project {
@@ -640,7 +654,7 @@
             opacity: 0.8;
         }
 
-        /* ── Capabilities & Approach ── */
+        /* ── Capabilities ── */
         .home-detail {
             width: 100%;
             max-width: 2056px;
@@ -650,6 +664,10 @@
             display: flex;
             flex-direction: column;
             gap: 48px;
+        }
+
+        .home-detail[aria-labelledby="home-capabilities-label"] {
+            margin-bottom: 120px;
         }
 
         .home-detail__head {
@@ -716,12 +734,6 @@
             gap: 16px;
         }
 
-        .home-card--approach {
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 24px;
-        }
-
         .home-card__col {
             display: flex;
             flex-direction: column;
@@ -756,122 +768,6 @@
             max-width: 314px;
             border-radius: 24px;
             background: #e4e4e7;
-        }
-
-        .home-card__text {
-            margin: 0;
-            font-family: var(--font-body);
-            font-size: clamp(18px, 1.9vw, 24px);
-            font-weight: 400;
-            line-height: 1.42;
-            color: var(--text-primary, #09090b);
-        }
-
-        .home-card__head {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .home-card__icon {
-            display: block;
-            width: 84px;
-            height: 84px;
-            flex-shrink: 0;
-        }
-
-        .home-cta {
-            margin: 120px auto 0;
-            width: min(999px, calc(100% - 48px));
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 32px 64px;
-            padding: 48px 0 40px;
-            box-sizing: border-box;
-            flex-wrap: wrap;
-        }
-
-        .home-cta__touch {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            min-width: 0;
-        }
-
-        .home-cta__label {
-            margin: 0;
-            font-family: var(--font-display);
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 24px;
-            color: var(--brand);
-            white-space: nowrap;
-        }
-
-        .home-cta__email {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 48px;
-            padding: 12px 72px 12px 16px;
-            border: 2px solid var(--brand);
-            border-radius: 999px;
-            background: var(--bg-cream, #f3f2ef);
-            color: var(--text-tertiary, #a1a1aa);
-            font-family: var(--font-body);
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 24px;
-            cursor: pointer;
-            transition: opacity 0.18s ease, background 0.18s ease;
-        }
-
-        .home-cta__email:hover {
-            opacity: 0.88;
-        }
-
-        .home-cta__email:focus-visible {
-            outline: 2px solid var(--brand);
-            outline-offset: 3px;
-        }
-
-        .home-cta__email-icon {
-            display: block;
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .home-cta__email-icon img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .home-cta__socials {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-            flex-wrap: wrap;
-        }
-
-        .home-cta__socials a {
-            font-family: var(--font-display);
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 24px;
-            color: var(--brand);
-            text-decoration: none;
-            white-space: nowrap;
-            transition: opacity 0.18s ease;
-        }
-
-        .home-cta__socials a:hover {
-            opacity: 0.72;
         }
 
         .work-label,
@@ -1031,7 +927,7 @@
             }
 
             .home-more {
-                margin-top: 40px;
+                margin: 120px 0;
             }
 
             .home-detail {
@@ -1066,32 +962,6 @@
                 max-width: 160px;
             }
 
-            .home-cta {
-                width: calc(100% - 24px);
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 28px;
-                padding: 40px 0 32px;
-            }
-
-            .home-cta__touch {
-                width: 100%;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .home-cta__email {
-                width: 100%;
-                max-width: 360px;
-                box-sizing: border-box;
-                padding-right: 24px;
-            }
-
-            .home-cta__socials {
-                gap: 20px 24px;
-            }
-
             #bottom-bar-slot {
                 width: calc(100% - 32px);
             }
@@ -1099,6 +969,7 @@
             #bottom-bar {
                 width: calc(100% - 32px);
                 bottom: 16px;
+                gap: 12px;
             }
 
             #open-contact {
@@ -2211,6 +2082,44 @@
 
         <div id="bottom-bar">
             <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
+            <div class="bottom-bar__cta" aria-label="Stay in touch" aria-hidden="true" inert>
+                <div class="home-cta__touch">
+                    <p class="home-cta__label">Stay in touch</p>
+                    <form class="home-cta__email-form" id="home-subscribe"
+                        action="https://wandarer.com/api/v1/free" method="post" target="_blank" rel="noopener"
+                        data-subscribe-source="website_footer">
+                        <label class="home-cta__email" id="home-email-field" data-subscribe-field>
+                            <span class="home-cta__email-icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 18.8003 16.4" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M1.00017 4.6L8.80497 9.0592C9.17337 9.2704 9.62697 9.2704 9.99537 9.0592L17.8002 4.6"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M14.2002 1H4.60017C2.61195 1 1.00017 2.61177 1.00017 4.6V11.8C1.00017 13.7882 2.61195 15.4 4.60017 15.4H14.2002C16.1884 15.4 17.8002 13.7882 17.8002 11.8V4.6C17.8002 2.61177 16.1884 1 14.2002 1Z"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <input class="home-cta__email-input" type="email" name="email" placeholder="Your email"
+                                autocomplete="email" required aria-label="Your email" />
+                        </label>
+                        <button type="submit" class="home-cta__email-submit" aria-label="Subscribe to newsletter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                <nav class="home-cta__socials" aria-label="Social links">
+                    <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
+                    <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
+                    <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
+                    <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+                </nav>
+            </div>
             <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
 
                 <div id="music-stack" aria-hidden="true">
@@ -2364,63 +2273,7 @@
                 </article>
             </div>
         </section>
-
-        <section class="home-detail" aria-labelledby="home-approach-label">
-            <div class="home-detail__head">
-                <p class="home-detail__label" id="home-approach-label">Approach</p>
-                <div class="home-detail__intro">
-                    <p class="home-detail__subtitle">Quality execution that feel cohesive</p>
-                    <p class="home-detail__body">I follow these simple framework to ensure I deliver the best possible
-                        results.</p>
-                </div>
-            </div>
-            <div class="home-detail__cards">
-                <article class="home-card home-card--approach">
-                    <div class="home-card__head">
-                        <h3 class="home-card__title">Strategy</h3>
-                        <p class="home-card__text">I immerse myself into your goals, users, and constraints, questioning,
-                            and synthesizing insights into a clear, defensible position grounding all design decisions.
-                        </p>
-                    </div>
-                    <img class="home-card__icon" src="assets/about/icon-strategy.svg" alt="" width="84" height="84" />
-                </article>
-                <article class="home-card home-card--approach">
-                    <div class="home-card__head">
-                        <h3 class="home-card__title">Design</h3>
-                        <p class="home-card__text">I design within strategic guardrails to solve for conversion,
-                            comprehension, and trust, testing and refining until the experience works flawlessly at
-                            scale.</p>
-                    </div>
-                    <img class="home-card__icon" src="assets/about/icon-design.svg" alt="" width="84" height="84" />
-                </article>
-                <article class="home-card home-card--approach">
-                    <div class="home-card__head">
-                        <h3 class="home-card__title">Build</h3>
-                        <p class="home-card__text">I work in the space between design and development, I design with code
-                            in mind, and partner with developers to ensure the final product matches what was design.</p>
-                    </div>
-                    <img class="home-card__icon" src="assets/about/icon-build.svg" alt="" width="84" height="84" />
-                </article>
-            </div>
-        </section>
-
-        <section class="home-cta" aria-label="Stay in touch">
-            <div class="home-cta__touch">
-                <p class="home-cta__label">Stay in touch</p>
-                <button type="button" class="home-cta__email" id="home-cta-contact" aria-label="Open contact">
-                    <span class="home-cta__email-icon" aria-hidden="true">
-                        <img src="assets/icons/email-envelope.svg" alt="" width="24" height="24" />
-                    </span>
-                    <span>Your email</span>
-                </button>
-            </div>
-            <nav class="home-cta__socials" aria-label="Social links">
-                <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
-                <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
-                <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
-                <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
-            </nav>
-        </section>
+        <div class="page-end-sentinel home-page-end" aria-hidden="true"></div>
     </div>
 
     <!-- ════════════════════════════════
@@ -2521,6 +2374,7 @@
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
+    <script src="js/bottom-bar-cta.js"></script>
     <script src="js/mosaic-portrait.js"></script>
     <script src="js/spa-nav.js"></script>
     <script>
@@ -3331,12 +3185,8 @@
             });
         })();
 
-        var homeCtaContact = document.getElementById('home-cta-contact');
-        if (homeCtaContact) {
-            homeCtaContact.addEventListener('click', function () {
-                if (typeof window.openContactPanel === 'function') window.openContactPanel();
-            });
-        }
+        initAllSubscribeForms();
+        initBottomBarCta();
 
         (function initHomeHeaderScrollScale() {
             var brand = document.querySelector('#site-header .site-header__brand');

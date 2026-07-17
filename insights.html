@@ -182,9 +182,10 @@
                         <h2 id="insights-cta-title" class="insights-cta__title">Keep up to date</h2>
                     </div>
                 </div>
-                <form class="insights-subscribe" id="insights-subscribe" action="https://wandarer.com/api/v1/free"
-                    method="post" target="_blank" rel="noopener">
-                    <label class="insights-email" id="insights-email-field">
+                <form class="insights-subscribe js-subscribe-form" id="insights-subscribe"
+                    action="https://wandarer.com/api/v1/free" method="post" target="_blank" rel="noopener"
+                    data-subscribe-source="website_insights">
+                    <label class="insights-email" id="insights-email-field" data-subscribe-field>
                         <span class="insights-email__icon" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 18.8003 16.4" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -410,16 +411,6 @@
             insightLoading.style.display = 'none';
         });
 
-        var emailField = document.getElementById('insights-email-field');
-        var emailInput = emailField && emailField.querySelector('.insights-email__input');
-        if (emailInput) {
-            function syncEmailState() {
-                emailField.classList.toggle('has-value', emailInput.value.trim().length > 0);
-            }
-            emailInput.addEventListener('input', syncEmailState);
-            syncEmailState();
-        }
-
         renderInsights();
     </script>
 
@@ -485,6 +476,7 @@
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
+    <script src="js/bottom-bar-cta.js"></script>
     <script src="js/spa-nav.js"></script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';
@@ -496,6 +488,9 @@
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
+        initSubscribeForm(document.getElementById('insights-subscribe'), {
+            source: 'website_insights'
+        });
         initSpaNav();
     </script>
 </body>

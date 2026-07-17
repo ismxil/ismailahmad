@@ -30,6 +30,7 @@
             window.__stackCards.stop();
             window.__stackCards = null;
         }
+        if (typeof window.teardownBottomBarCta === 'function') window.teardownBottomBarCta();
         if (typeof window.teardownFeedsPage === 'function') window.teardownFeedsPage();
         if (typeof window.teardownAboutGalleryPin === 'function') window.teardownAboutGalleryPin();
         if (typeof window.teardownFeedModal === 'function') window.teardownFeedModal();
@@ -284,9 +285,9 @@
                         document.documentElement.classList.remove('is-loading');
                         window.dispatchEvent(new CustomEvent('spa:page-ready'));
                         var page = window.location.pathname.split('/').pop() || 'index.html';
-                        if (page === 'about.html' && typeof window.initAboutGalleryPin === 'function') {
-                            return window.initAboutGalleryPin();
-                        }
+                        // About gallery pin inits via spa:page-ready (and its own
+                        // script boot). Avoid a second parallel init — racing
+                        // builds orphan ScrollTriggers and leave an empty pin-spacer.
                         if ((page === 'index.html' || page === '' || page === '/') &&
                             typeof window.initMosaicPortrait === 'function') {
                             return window.initMosaicPortrait();

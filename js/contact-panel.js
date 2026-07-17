@@ -1,5 +1,5 @@
 (function () {
-    var CTA_SELECTOR = '#home-cta-contact, #about-talk-btn, [data-open-contact]';
+    var CTA_SELECTOR = '#about-talk-btn, [data-open-contact]';
 
     function openContactPanel() {
         var panel = document.getElementById('contact-panel');

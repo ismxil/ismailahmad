@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="css/image-hover.css">
     <link rel="stylesheet" href="css/about.css">
     <link rel="stylesheet" href="css/music-player.css">
+    <link rel="stylesheet" href="css/bottom-bar-cta.css">
     <style>
         :root {
             --brand: #393bfe;
@@ -264,88 +265,52 @@
                         </article>
                     </div>
                 </section>
-
-                <section class="about-section about-section--cards" aria-labelledby="about-capabilities-label">
-                    <p id="about-capabilities-label" class="about-section__label">Capabilities</p>
-                    <div class="about-section__stack about-section__stack--tight">
-                        <p class="about-section__subtitle">T-Shaped industry experience</p>
-                        <p class="about-section__body">Turning brief into trust. Without sucking out the creativity side
-                            of it.</p>
-                    </div>
-                    <div class="about-cards">
-                        <article class="about-card">
-                            <h4 class="about-card__title">Branding</h4>
-                            <ul class="about-card__list">
-                                <li>Research</li>
-                                <li>Positioning</li>
-                                <li>Brand Strategy</li>
-                                <li>Visual Identity</li>
-                                <li>Voice &amp; Tone</li>
-                                <li>Brand Assets</li>
-                            </ul>
-                        </article>
-                        <article class="about-card">
-                            <h4 class="about-card__title">Websites</h4>
-                            <ul class="about-card__list">
-                                <li>Market Analysis</li>
-                                <li>UX &amp; Architecture</li>
-                                <li>Copywriting</li>
-                                <li>Interface Design</li>
-                                <li>Motion &amp; Interactions</li>
-                                <li>Development</li>
-                            </ul>
-                        </article>
-                        <article class="about-card">
-                            <h4 class="about-card__title">Products</h4>
-                            <ul class="about-card__list">
-                                <li>User Research</li>
-                                <li>UX &amp; Architecture</li>
-                                <li>Interface Design</li>
-                                <li>Product Writing</li>
-                                <li>Front-end Development</li>
-                                <li>Design Systems</li>
-                            </ul>
-                        </article>
-                    </div>
-                </section>
-
-                <section class="about-section about-section--clients" aria-labelledby="about-clients-label">
-                    <p id="about-clients-label" class="about-section__label">Clients</p>
-                    <div class="about-section__stack about-section__stack--tight">
-                        <p class="about-section__subtitle">Spotting the patterns that matter.</p>
-                        <p class="about-section__body">Making financial infrastructure feel intuitive, reliable, and
-                            ready to scale.</p>
-                    </div>
-                    <div class="about-clients" aria-label="Client logos">
-                        <img src="assets/about/client-1.svg" alt="Accenture" loading="lazy" />
-                        <img src="assets/about/client-2.svg" alt="Lemfi" loading="lazy" />
-                        <img src="assets/about/client-3.svg" alt="Sterling" loading="lazy" />
-                        <img src="assets/about/client-4.svg" alt="Commerzbank" loading="lazy" />
-                        <img src="assets/about/client-5.svg" alt="Cadana" loading="lazy" />
-                        <img src="assets/about/client-6.svg" alt="Deutsche Bank" loading="lazy" />
-                        <img src="assets/about/client-7.svg" alt="Gomoney" loading="lazy" />
-                        <img src="assets/about/client-8.svg" alt="Landor" loading="lazy" />
-                        <img src="assets/about/client-9.svg" alt="Client" loading="lazy" />
-                    </div>
-                </section>
             </div>
 
-            <section class="about-cta" aria-labelledby="about-cta-title">
-                <div class="about-cta__title-fluid header-fluid" data-header-fluid>
-                    <div class="header-fluid__content">
-                        <h2 id="about-cta-title" class="about-cta__title">Is this the start of something beautiful?</h2>
-                    </div>
-                </div>
-                <button type="button" class="about-cta__btn" id="about-talk-btn">
-                    <span class="about-cta__btn-dot" aria-hidden="true"></span>
-                    Talk to Ahmad
-                </button>
-            </section>
+            <div class="page-end-sentinel" aria-hidden="true"></div>
         </main>
     </div>
 
     <footer class="about-footer" aria-label="Page footer">
         <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
+        <div class="bottom-bar__cta" aria-label="Stay in touch" aria-hidden="true" inert>
+            <div class="home-cta__touch">
+                <p class="home-cta__label">Stay in touch</p>
+                <form class="home-cta__email-form" id="about-subscribe"
+                    action="https://wandarer.com/api/v1/free" method="post" target="_blank" rel="noopener"
+                    data-subscribe-source="website_footer">
+                    <label class="home-cta__email" id="about-email-field" data-subscribe-field>
+                        <span class="home-cta__email-icon" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 18.8003 16.4" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1.00017 4.6L8.80497 9.0592C9.17337 9.2704 9.62697 9.2704 9.99537 9.0592L17.8002 4.6"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path
+                                    d="M14.2002 1H4.60017C2.61195 1 1.00017 2.61177 1.00017 4.6V11.8C1.00017 13.7882 2.61195 15.4 4.60017 15.4H14.2002C16.1884 15.4 17.8002 13.7882 17.8002 11.8V4.6C17.8002 2.61177 16.1884 1 14.2002 1Z"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <input class="home-cta__email-input" type="email" name="email" placeholder="Your email"
+                            autocomplete="email" required aria-label="Your email" />
+                    </label>
+                    <button type="submit" class="home-cta__email-submit" aria-label="Subscribe to newsletter">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            <nav class="home-cta__socials" aria-label="Social links">
+                <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
+                <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
+                <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
+            </nav>
+        </div>
         <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
             <div id="music-stack" aria-hidden="true">
                 <div id="music-glow" aria-hidden="true">
@@ -469,12 +434,15 @@
     <script src="js/contact-panel.js"></script>
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
+    <script src="js/bottom-bar-cta.js"></script>
     <script src="js/about-gallery-pin.js"></script>
     <script src="js/spa-nav.js"></script>
     <script>
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
+        initAllSubscribeForms();
+        initBottomBarCta();
         initSpaNav();
     </script>
     <script type="module">
@@ -484,13 +452,6 @@
         await (window.siteReady ?? Promise.resolve());
         initBrandLogo3D(document.getElementById('about-header-logo-c'));
         initAllHeaderFluids();
-
-        const talkBtn = document.getElementById('about-talk-btn');
-        if (talkBtn) {
-            talkBtn.addEventListener('click', () => {
-                if (typeof window.openContactPanel === 'function') window.openContactPanel();
-            });
-        }
     </script>
 </body>
 

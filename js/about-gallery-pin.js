@@ -1,9 +1,18 @@
 (function () {
-    var galleryScrollTrigger = null;
-    var galleryTween = null;
-    var refreshTimer = null;
-    var resizeObserver = null;
-    var mobileMq = window.matchMedia ? window.matchMedia('(max-width: 660px)') : null;
+    // Singleton state so SPA re-injection of this script cannot stack
+    // listeners or orphan ScrollTriggers from a previous closure.
+    var state = window.__aboutGalleryPinState || (window.__aboutGalleryPinState = {
+        installed: false,
+        initGen: 0,
+        galleryScrollTrigger: null,
+        galleryTween: null,
+        refreshTimer: null,
+        resizeObserver: null,
+        mobileMq: window.matchMedia ? window.matchMedia('(max-width: 660px)') : null,
+        onViewportChange: null,
+        onResize: null,
+        onSpaReady: null,
+    });
 
     function waitForGalleryImages(gallery) {
         var imgs = Array.prototype.slice.call(gallery.querySelectorAll('img'));
@@ -88,28 +97,51 @@
         track.style.paddingRight = endPad + 'px';
     }
 
+    function isGalleryPinTrigger(trigger) {
+        if (!trigger || !trigger.classList) return false;
+        return trigger.classList.contains('about-gallery-pin__inner') ||
+            trigger.classList.contains('about-gallery-pin');
+    }
+
+    function killOrphanGalleryTriggers() {
+        if (typeof ScrollTrigger === 'undefined' || typeof ScrollTrigger.getAll !== 'function') return;
+        ScrollTrigger.getAll().forEach(function (st) {
+            if (isGalleryPinTrigger(st.trigger)) st.kill();
+        });
+    }
+
     function killGalleryPin() {
-        if (galleryScrollTrigger) {
-            galleryScrollTrigger.kill();
-            galleryScrollTrigger = null;
+        // Invalidate any in-flight async inits from racing callers.
+        state.initGen += 1;
+
+        if (state.galleryScrollTrigger) {
+            state.galleryScrollTrigger.kill();
+            state.galleryScrollTrigger = null;
         }
-        if (galleryTween) {
-            galleryTween.kill();
-            galleryTween = null;
+        if (state.galleryTween) {
+            state.galleryTween.kill();
+            state.galleryTween = null;
         }
-        if (refreshTimer) {
-            clearTimeout(refreshTimer);
-            refreshTimer = null;
+        // SPA re-runs leave triggers owned by dead closures — sweep them too.
+        killOrphanGalleryTriggers();
+
+        if (state.refreshTimer) {
+            clearTimeout(state.refreshTimer);
+            state.refreshTimer = null;
         }
-        if (resizeObserver) {
-            resizeObserver.disconnect();
-            resizeObserver = null;
+        if (state.resizeObserver) {
+            state.resizeObserver.disconnect();
+            state.resizeObserver = null;
         }
 
         var pinWrap = document.querySelector('.about-gallery-pin');
+        var pinInner = document.querySelector('.about-gallery-pin__inner');
         var track = document.querySelector('.about-gallery__track');
         var gallery = document.querySelector('.about-gallery');
         clearTrackTransform(track);
+        if (pinInner && typeof gsap !== 'undefined') {
+            gsap.set(pinInner, { clearProps: 'transform,top,left,width,maxWidth,margin,position,zIndex,boxSizing' });
+        }
         if (pinWrap) pinWrap.classList.remove('is-pin-driven');
         if (gallery) gallery.scrollLeft = 0;
     }
@@ -124,21 +156,27 @@
     }
 
     function isMobile() {
-        return !!(mobileMq && mobileMq.matches);
+        return !!(state.mobileMq && state.mobileMq.matches);
     }
 
     function scheduleRefresh() {
         if (typeof ScrollTrigger === 'undefined') return;
         ScrollTrigger.refresh(true);
-        clearTimeout(refreshTimer);
-        refreshTimer = window.setTimeout(function () {
+        clearTimeout(state.refreshTimer);
+        state.refreshTimer = window.setTimeout(function () {
             ScrollTrigger.refresh(true);
         }, 120);
     }
 
-    function buildGalleryPin(pinWrap, pinInner, gallery, track) {
+    function buildGalleryPin(pinWrap, pinInner, gallery, track, gen) {
+        if (gen !== state.initGen) return Promise.resolve(false);
+
         var maxScroll = measureMaxScroll(gallery, track);
         if (maxScroll <= 0) return Promise.resolve(false);
+
+        // Drop any race-built triggers before creating the canonical one.
+        killOrphanGalleryTriggers();
+        if (gen !== state.initGen) return Promise.resolve(false);
 
         pinWrap.classList.add('is-pin-driven');
         gsap.set(track, { x: 0, force3D: true });
@@ -146,35 +184,50 @@
         var topbar = document.querySelector('.about-topbar');
         var pinTopOffset = topbar ? Math.round(topbar.getBoundingClientRect().bottom + 40) : 0;
 
-        galleryTween = gsap.to(track, {
-            x: -maxScroll,
+        state.galleryTween = gsap.to(track, {
+            x: function () { return -measureMaxScroll(gallery, track); },
             ease: 'none',
             scrollTrigger: {
                 trigger: pinInner,
                 start: 'top top+=' + pinTopOffset,
-                end: '+=' + Math.round(maxScroll + window.innerHeight * 0.15),
+                end: function () {
+                    return '+=' + Math.round(measureMaxScroll(gallery, track) + window.innerHeight * 0.15);
+                },
                 pin: true,
+                // Avoid fixed-pin breakage from ancestors with overflow-x clip/hidden
+                // (.about-page, body) — common cause of an empty pin-spacer.
+                pinType: 'transform',
                 scrub: 0.35,
                 invalidateOnRefresh: true,
                 anticipatePin: 1,
             },
         });
 
-        galleryScrollTrigger = galleryTween.scrollTrigger;
+        if (gen !== state.initGen) {
+            if (state.galleryTween) {
+                state.galleryTween.kill();
+                state.galleryTween = null;
+            }
+            killOrphanGalleryTriggers();
+            return Promise.resolve(false);
+        }
+
+        state.galleryScrollTrigger = state.galleryTween.scrollTrigger;
         scheduleRefresh();
         ScrollTrigger.refresh(true);
         ScrollTrigger.update();
 
         if (window.ResizeObserver) {
-            resizeObserver = new ResizeObserver(function () {
+            if (state.resizeObserver) state.resizeObserver.disconnect();
+            state.resizeObserver = new ResizeObserver(function () {
                 if (isMobile()) {
                     enableMobileNativeScroll();
                     return;
                 }
                 scheduleRefresh();
             });
-            resizeObserver.observe(gallery);
-            resizeObserver.observe(track);
+            state.resizeObserver.observe(gallery);
+            state.resizeObserver.observe(track);
         }
 
         window.addEventListener('load', scheduleRefresh, { once: true });
@@ -201,16 +254,43 @@
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return Promise.resolve();
 
         gsap.registerPlugin(ScrollTrigger);
-        killGalleryPin();
+        var gen = state.initGen + 1;
+        state.initGen = gen;
+        // Soft cleanup without bumping initGen again.
+        if (state.galleryScrollTrigger) {
+            state.galleryScrollTrigger.kill();
+            state.galleryScrollTrigger = null;
+        }
+        if (state.galleryTween) {
+            state.galleryTween.kill();
+            state.galleryTween = null;
+        }
+        killOrphanGalleryTriggers();
+        if (state.resizeObserver) {
+            state.resizeObserver.disconnect();
+            state.resizeObserver = null;
+        }
+        clearTrackTransform(track);
+        pinWrap.classList.remove('is-pin-driven');
 
         return waitForReady(gallery).then(function () {
+            if (gen !== state.initGen) return;
             if (isMobile()) {
                 enableMobileNativeScroll();
                 return;
             }
-            return buildGalleryPin(pinWrap, pinInner, gallery, track).then(function (ready) {
+            // Re-query in case SPA swapped the DOM during wait.
+            pinWrap = document.querySelector('.about-gallery-pin');
+            pinInner = document.querySelector('.about-gallery-pin__inner');
+            gallery = document.querySelector('.about-gallery');
+            track = document.querySelector('.about-gallery__track');
+            if (!pinWrap || !pinInner || !gallery || !track) return;
+
+            return buildGalleryPin(pinWrap, pinInner, gallery, track, gen).then(function (ready) {
+                if (gen !== state.initGen) return;
                 if (ready || attempt >= 4) return;
                 return waitForLayout().then(function () {
+                    if (gen !== state.initGen) return;
                     return tryInitGalleryPin(attempt + 1);
                 });
             });
@@ -237,25 +317,37 @@
         tryInitGalleryPin(0);
     }
 
-    if (mobileMq) {
-        if (typeof mobileMq.addEventListener === 'function') {
-            mobileMq.addEventListener('change', onViewportChange);
-        } else if (typeof mobileMq.addListener === 'function') {
-            mobileMq.addListener(onViewportChange);
-        }
+    function onResize() {
+        if (isMobile()) syncMobileEndPadding();
     }
 
-    window.addEventListener('resize', function () {
-        if (isMobile()) syncMobileEndPadding();
-    });
+    // Stable dispatchers so SPA re-injection can refresh implementations
+    // without stacking duplicate window listeners.
+    state.runSchedule = scheduleGalleryInit;
+    state.runViewportChange = onViewportChange;
+    state.runResize = onResize;
+
+    if (!state.installed) {
+        state.installed = true;
+
+        if (state.mobileMq) {
+            var mqHandler = function () { state.runViewportChange(); };
+            if (typeof state.mobileMq.addEventListener === 'function') {
+                state.mobileMq.addEventListener('change', mqHandler);
+            } else if (typeof state.mobileMq.addListener === 'function') {
+                state.mobileMq.addListener(mqHandler);
+            }
+        }
+
+        window.addEventListener('resize', function () { state.runResize(); });
+        window.addEventListener('spa:page-ready', function () { state.runSchedule(); });
+    }
 
     window.teardownAboutGalleryPin = killGalleryPin;
 
     window.initAboutGalleryPin = function () {
         return tryInitGalleryPin(0);
     };
-
-    window.addEventListener('spa:page-ready', scheduleGalleryInit);
 
     if (document.querySelector('.about-gallery-pin')) {
         scheduleGalleryInit();

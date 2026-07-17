@@ -287,6 +287,11 @@
     height: 20px;
 }
 
+.insights-subscribe.is-success .insights-email {
+    background: #fff;
+    border-color: var(--brand, #393bfe);
+}
+
 .insights-footer {
     position: fixed;
     left: 24px;
