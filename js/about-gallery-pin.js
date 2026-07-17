@@ -3,6 +3,7 @@
     var galleryTween = null;
     var refreshTimer = null;
     var resizeObserver = null;
+    var mobileMq = window.matchMedia ? window.matchMedia('(max-width: 660px)') : null;
 
     function waitForGalleryImages(gallery) {
         var imgs = Array.prototype.slice.call(gallery.querySelectorAll('img'));
@@ -30,9 +31,18 @@
         });
     }
 
+    function waitForFontsBriefly() {
+        if (!document.fonts) return Promise.resolve();
+        // Never await fonts.ready alone — can hang when faces 404 (Safari).
+        var loads = document.fonts.ready.catch(function () {});
+        return Promise.race([
+            loads,
+            new Promise(function (resolve) { window.setTimeout(resolve, 1200); }),
+        ]);
+    }
+
     function waitForReady(gallery) {
-        var fonts = document.fonts ? document.fonts.ready.catch(function () {}) : Promise.resolve();
-        return Promise.all([fonts, waitForGalleryImages(gallery), waitForLayout()]);
+        return Promise.all([waitForFontsBriefly(), waitForGalleryImages(gallery), waitForLayout()]);
     }
 
     function measureMaxScroll(gallery, track) {
@@ -48,6 +58,34 @@
         var fromItems = (lastRect.right - trackRect.left) - galleryRect.width;
 
         return Math.max(0, Math.round(fromItems));
+    }
+
+    function clearTrackTransform(track) {
+        if (!track) return;
+        if (typeof gsap !== 'undefined') {
+            gsap.set(track, { clearProps: 'transform,x,y,z,force3D' });
+        }
+        track.style.removeProperty('transform');
+        track.style.removeProperty('translate');
+    }
+
+    function syncMobileEndPadding() {
+        var gallery = document.querySelector('.about-gallery');
+        var track = document.querySelector('.about-gallery__track');
+        var item = track && track.querySelector('.about-gallery__item');
+        if (!gallery || !track || !item) return;
+
+        if (!isMobile()) {
+            track.style.removeProperty('padding-right');
+            return;
+        }
+
+        var page = document.querySelector('.about-page');
+        var padRaw = page ? getComputedStyle(page).getPropertyValue('--about-pad') : '';
+        var pad = parseFloat(padRaw) || 16;
+        var itemWidth = item.getBoundingClientRect().width;
+        var endPad = Math.max(pad, Math.round(gallery.clientWidth - itemWidth - pad));
+        track.style.paddingRight = endPad + 'px';
     }
 
     function killGalleryPin() {
@@ -70,8 +108,23 @@
 
         var pinWrap = document.querySelector('.about-gallery-pin');
         var track = document.querySelector('.about-gallery__track');
-        if (track && typeof gsap !== 'undefined') gsap.set(track, { clearProps: 'transform' });
+        var gallery = document.querySelector('.about-gallery');
+        clearTrackTransform(track);
         if (pinWrap) pinWrap.classList.remove('is-pin-driven');
+        if (gallery) gallery.scrollLeft = 0;
+    }
+
+    function enableMobileNativeScroll() {
+        killGalleryPin();
+        var track = document.querySelector('.about-gallery__track');
+        var gallery = document.querySelector('.about-gallery');
+        clearTrackTransform(track);
+        syncMobileEndPadding();
+        if (gallery) gallery.scrollLeft = 0;
+    }
+
+    function isMobile() {
+        return !!(mobileMq && mobileMq.matches);
     }
 
     function scheduleRefresh() {
@@ -114,6 +167,10 @@
 
         if (window.ResizeObserver) {
             resizeObserver = new ResizeObserver(function () {
+                if (isMobile()) {
+                    enableMobileNativeScroll();
+                    return;
+                }
                 scheduleRefresh();
             });
             resizeObserver.observe(gallery);
@@ -131,18 +188,26 @@
         var gallery = document.querySelector('.about-gallery');
         var track = document.querySelector('.about-gallery__track');
         if (!pinWrap || !pinInner || !gallery || !track) return Promise.resolve();
-        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return Promise.resolve();
-        if (window.matchMedia && window.matchMedia('(max-width: 660px)').matches) {
-            killGalleryPin();
-            if (gallery) gallery.scrollLeft = 0;
-            if (track && typeof gsap !== 'undefined') gsap.set(track, { clearProps: 'transform,x' });
-            return Promise.resolve();
+
+        if (isMobile()) {
+            enableMobileNativeScroll();
+            return waitForGalleryImages(gallery).then(function () {
+                return waitForLayout().then(function () {
+                    syncMobileEndPadding();
+                });
+            });
         }
+
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return Promise.resolve();
 
         gsap.registerPlugin(ScrollTrigger);
         killGalleryPin();
 
         return waitForReady(gallery).then(function () {
+            if (isMobile()) {
+                enableMobileNativeScroll();
+                return;
+            }
             return buildGalleryPin(pinWrap, pinInner, gallery, track).then(function (ready) {
                 if (ready || attempt >= 4) return;
                 return waitForLayout().then(function () {
@@ -154,10 +219,35 @@
 
     function scheduleGalleryInit() {
         if (!document.querySelector('.about-gallery-pin')) return Promise.resolve();
-        return (window.siteReady ?? Promise.resolve()).then(function () {
+        // On mobile, clear pin state immediately — don't wait on siteReady.
+        if (isMobile()) {
+            enableMobileNativeScroll();
+        }
+        var ready = window.siteReady ?? Promise.resolve();
+        return Promise.race([
+            ready,
+            new Promise(function (resolve) { window.setTimeout(resolve, 6000); }),
+        ]).then(function () {
             return tryInitGalleryPin(0);
         });
     }
+
+    function onViewportChange() {
+        if (!document.querySelector('.about-gallery-pin')) return;
+        tryInitGalleryPin(0);
+    }
+
+    if (mobileMq) {
+        if (typeof mobileMq.addEventListener === 'function') {
+            mobileMq.addEventListener('change', onViewportChange);
+        } else if (typeof mobileMq.addListener === 'function') {
+            mobileMq.addListener(onViewportChange);
+        }
+    }
+
+    window.addEventListener('resize', function () {
+        if (isMobile()) syncMobileEndPadding();
+    });
 
     window.teardownAboutGalleryPin = killGalleryPin;
 

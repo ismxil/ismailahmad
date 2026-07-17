@@ -7,17 +7,9 @@ let logoEl;
 let titleEl;
 let metaEl;
 let taglineEl;
-let statsEl;
-let problemSection;
 let problemBodyEl;
-let marketSection;
-let marketStatEl;
-let marketDescEl;
-let marketSourceEl;
 let ctaEl;
 let ctaLabelEl;
-let linkEl;
-let linkLabelEl;
 let heroImg;
 let closeBtn;
 let isOpen = false;
@@ -35,17 +27,9 @@ function cacheElements() {
   titleEl = document.getElementById('feed-modal-title');
   metaEl = document.getElementById('feed-modal-meta');
   taglineEl = document.getElementById('feed-modal-tagline');
-  statsEl = document.getElementById('feed-modal-stats');
-  problemSection = document.getElementById('feed-modal-problem');
   problemBodyEl = document.getElementById('feed-modal-problem-body');
-  marketSection = document.getElementById('feed-modal-market');
-  marketStatEl = document.getElementById('feed-modal-market-stat');
-  marketDescEl = document.getElementById('feed-modal-market-desc');
-  marketSourceEl = document.getElementById('feed-modal-market-source');
   ctaEl = document.getElementById('feed-modal-cta');
   ctaLabelEl = document.getElementById('feed-modal-cta-label');
-  linkEl = document.getElementById('feed-modal-link');
-  linkLabelEl = document.getElementById('feed-modal-link-label');
   heroImg = document.getElementById('feed-modal-hero-img');
   closeBtn = document.getElementById('feed-modal-close');
 }
@@ -63,11 +47,11 @@ function renderMarkdown(markdown) {
     .replace(/\n/g, '<br>');
 }
 
-function linkLabel(url) {
-  try {
-    return new URL(url).hostname.replace(/^www\./, '');
-  } catch {
-    return 'View project';
+function openTalkCta(e) {
+  e.preventDefault();
+  closeFeedModal();
+  if (typeof window.openContactPanel === 'function') {
+    window.openContactPanel();
   }
 }
 
@@ -129,10 +113,6 @@ function populate(data, index) {
   const cover = data.heroImage || resolveFeedCover(data, index);
   const title = data.name || data.title || data.client || 'Project';
   const tagline = data.tagline || data.headline || '';
-  const stats = Array.isArray(data.stats) ? data.stats.filter(Boolean) : [];
-  const liveUrl = data.liveUrl || data.link || data.url || '';
-  const ctaUrl = data.ctaUrl || liveUrl;
-  const market = data.market || {};
 
   modal.style.setProperty('--feed-modal-accent', accent);
 
@@ -167,63 +147,13 @@ function populate(data, index) {
     metaEl.hidden = !metaEl.children.length;
   }
 
-  if (statsEl) {
-    statsEl.innerHTML = '';
-    stats.forEach((stat) => {
-      const pill = document.createElement('span');
-      pill.className = 'feed-modal__stat';
-      if (typeof stat === 'object' && stat.value) {
-        const value = document.createElement('strong');
-        value.className = 'feed-modal__stat-value';
-        value.textContent = stat.value;
-        pill.appendChild(value);
-        if (stat.label) {
-          pill.appendChild(document.createTextNode(' '));
-          const label = document.createElement('span');
-          label.className = 'feed-modal__stat-label';
-          label.textContent = stat.label;
-          pill.appendChild(label);
-        }
-      } else if (typeof stat === 'string') {
-        pill.textContent = stat;
-      }
-      statsEl.appendChild(pill);
-    });
-    statsEl.hidden = !stats.length;
-  }
-
   const problemHtml = renderMarkdown(data.problemBody || data.content || data.description || '');
   if (problemBodyEl) problemBodyEl.innerHTML = problemHtml;
-  setHidden(problemSection, !problemHtml);
-
-  const bigStat = market.bigStat || '';
-  const marketDesc = market.description || '';
-  const marketSource = market.source || '';
-  setText(marketStatEl, bigStat);
-  setText(marketDescEl, marketDesc);
-  setHidden(marketDescEl, !marketDesc);
-  setText(marketSourceEl, marketSource);
-  setHidden(marketSourceEl, !marketSource);
-  setHidden(marketSection, !(bigStat || marketDesc || marketSource));
+  setHidden(problemBodyEl, !problemHtml);
 
   if (ctaEl && ctaLabelEl) {
-    if (ctaUrl) {
-      ctaEl.href = ctaUrl;
-      ctaLabelEl.textContent = data.ctaLabel || 'View project';
-      ctaEl.hidden = false;
-    } else {
-      ctaEl.hidden = true;
-    }
-  }
-
-  if (linkEl && linkLabelEl) {
-    if (liveUrl) {
-      linkEl.href = liveUrl;
-      linkLabelEl.textContent = linkLabel(liveUrl);
-      linkEl.hidden = false;
-    } else {
-      linkEl.hidden = true;
-    }
+    ctaLabelEl.textContent = data.ctaLabel || "Let's talk";
+    ctaEl.hidden = false;
   }
 
   if (heroImg) {
@@ -295,6 +225,7 @@ export async function initFeedModal() {
 
   if (bound) {
     closeBtn?.removeEventListener('click', closeFeedModal);
+    ctaEl?.removeEventListener('click', openTalkCta);
     if (backdrop && onBackdropClick) backdrop.removeEventListener('click', onBackdropClick);
     if (onKeydown) document.removeEventListener('keydown', onKeydown);
     bound = false;
@@ -311,6 +242,7 @@ export async function initFeedModal() {
   };
 
   closeBtn?.addEventListener('click', closeFeedModal);
+  ctaEl?.addEventListener('click', openTalkCta);
   backdrop.addEventListener('click', onBackdropClick);
   document.addEventListener('keydown', onKeydown);
   bound = true;
@@ -326,6 +258,7 @@ export function teardownFeedModal() {
 
   if (bound) {
     closeBtn?.removeEventListener('click', closeFeedModal);
+    ctaEl?.removeEventListener('click', openTalkCta);
     if (backdrop && onBackdropClick) backdrop.removeEventListener('click', onBackdropClick);
     if (onKeydown) document.removeEventListener('keydown', onKeydown);
     bound = false;

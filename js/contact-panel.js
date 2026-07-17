@@ -1,4 +1,6 @@
 (function () {
+    var CTA_SELECTOR = '#home-cta-contact, #about-talk-btn, [data-open-contact]';
+
     function openContactPanel() {
         var panel = document.getElementById('contact-panel');
         var closeBtn = document.getElementById('close-contact');
@@ -17,6 +19,18 @@
 
     window.openContactPanel = openContactPanel;
     window.closeContactPanel = closeContactPanel;
+
+    // Document-level delegation so page CTAs keep working across SPA
+    // body swaps. Guard against duplicate listeners if this file re-runs.
+    if (!window.__contactCtaDelegated) {
+        window.__contactCtaDelegated = true;
+        document.addEventListener('click', function (e) {
+            var trigger = e.target.closest && e.target.closest(CTA_SELECTOR);
+            if (!trigger) return;
+            e.preventDefault();
+            openContactPanel();
+        });
+    }
 
     window.initContactPanel = function () {
         var panel = document.getElementById('contact-panel');

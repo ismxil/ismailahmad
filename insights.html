@@ -4,7 +4,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script>document.documentElement.classList.add('is-loading');</script>
+    <script>
+        document.documentElement.classList.add('is-loading');
+        /* Hard fallback if site-loader.js never runs (module/CDN failure). */
+        window.setTimeout(function () {
+            document.documentElement.classList.remove('is-loading');
+            var el = document.getElementById('site-loader');
+            if (!el) return;
+            el.classList.add('is-done', 'is-revealing');
+            window.setTimeout(function () { el.remove(); }, 600);
+        }, 7000);
+    </script>
     <style>
         html.is-loading,
         html.is-loading body {

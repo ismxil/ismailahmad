@@ -512,7 +512,7 @@
 
     .about-gallery__track {
         padding-left: var(--about-pad);
-        padding-right: max(var(--about-pad), calc(100vw - min(82vw, 520px) - var(--about-pad)));
+        padding-right: var(--about-pad);
     }
 }
 
@@ -576,10 +576,25 @@
         gap: 72px;
     }
 
+    .about-gallery {
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-width: 100%;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .about-gallery__track {
         padding-left: var(--about-pad);
-        padding-right: max(var(--about-pad), calc(100vw - min(82vw, 520px) - var(--about-pad)));
+        /* JS sets an exact end pad from gallery.clientWidth; this is the CSS fallback. */
+        padding-right: var(--about-pad);
         scroll-padding-inline: var(--about-pad);
+        will-change: auto;
+        transform: none;
+    }
+
+    .about-gallery-pin.is-pin-driven .about-gallery {
+        overflow-x: auto;
     }
 
     .about-gallery__item {

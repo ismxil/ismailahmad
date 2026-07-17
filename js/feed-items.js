@@ -9,45 +9,21 @@ const FEED_DATA_URL = 'data/feed-items.json';
 /** Placeholder modal content — shown until you replace per project in Sanity/JSON */
 const MODAL_PLACEHOLDER = {
   tagline: 'A no-code shader design tool for the web — design the visual, walk away with the code.',
-  stats: [
-    { value: '2,000+', label: 'Active users' },
-    { value: '50', label: 'Paid users' },
-    { value: '50+', label: 'Figma plugin users' },
-  ],
   problemBody:
     'WebGL and shader programming are powerful but impenetrable for non-technical designers. HueGrid bridges that gap by letting anyone create and tweak real-time visual effects directly in the browser — no code required.',
-  marketBigStat: '$129B',
-  marketDescription:
-    'projected size of the no-code / low-code tools market by 2030 (~26% CAGR) — creation is moving from code to canvas.',
-  marketSource: 'SOURCE — GRAND VIEW RESEARCH, 2021',
-  ctaLabel: 'Partner up',
-  liveUrl: 'https://huegrid.app',
+  ctaLabel: "Let's talk",
 };
 
 let feedItems = [];
 let loadPromise = null;
 
 function formatYears(year, yearEnd, legacyYears) {
-  if (legacyYears) return legacyYears;
+  if (legacyYears) {
+    return String(legacyYears).replace(/^\(+|\)+$/g, '').trim();
+  }
   if (!year) return '';
-  if (yearEnd && yearEnd !== year) return `(${year} - ${yearEnd})`;
-  return `(${year})`;
-}
-
-function normalizeStats(stats) {
-  if (!Array.isArray(stats)) return [];
-  return stats
-    .map((stat) => {
-      if (!stat) return null;
-      if (typeof stat === 'string') {
-        return { value: stat, label: '' };
-      }
-      const value = stat.value || '';
-      const label = stat.label || '';
-      if (!value && !label) return null;
-      return { value, label };
-    })
-    .filter(Boolean);
+  if (yearEnd && yearEnd !== year) return `${year} - ${yearEnd}`;
+  return String(year);
 }
 
 function normalizePreviewMedia(media) {
@@ -63,23 +39,12 @@ function normalizePreviewMedia(media) {
 }
 
 function applyModalPlaceholders(item) {
-  const liveUrl = MODAL_PLACEHOLDER.liveUrl;
   return {
     ...item,
     tagline: MODAL_PLACEHOLDER.tagline,
-    stats: MODAL_PLACEHOLDER.stats.map((s) => ({ ...s })),
     problemBody: MODAL_PLACEHOLDER.problemBody,
     content: MODAL_PLACEHOLDER.problemBody,
-    market: {
-      bigStat: MODAL_PLACEHOLDER.marketBigStat,
-      description: MODAL_PLACEHOLDER.marketDescription,
-      source: MODAL_PLACEHOLDER.marketSource,
-    },
     ctaLabel: MODAL_PLACEHOLDER.ctaLabel,
-    liveUrl,
-    link: liveUrl,
-    url: liveUrl,
-    ctaUrl: liveUrl,
     heroImage: item.heroImage || item.cover,
   };
 }
@@ -97,10 +62,9 @@ function normalizeItem(item) {
   const cover = item.cover || previewMedia[0] || item.heroImage || '';
   const heroImage = item.heroImage || previewMedia[0] || cover || '';
   const logo = item.logo || '';
-  const stats = normalizeStats(item.stats);
   const problemBody = item.problemBody || item.content || item.description || '';
   const ctaUrl = item.ctaUrl || liveUrl || '';
-  const ctaLabel = item.ctaLabel || 'View project';
+  const ctaLabel = item.ctaLabel || "Let's talk";
 
   return applyModalPlaceholders({
     id: item.id || item.slug || '',
@@ -124,15 +88,9 @@ function normalizeItem(item) {
     cover,
     heroImage,
     previewMedia,
-    stats,
     problemBody,
     content: problemBody,
     description: item.description || problemBody,
-    market: {
-      bigStat: item.market?.bigStat || item.marketBigStat || '',
-      description: item.market?.description || item.marketDescription || '',
-      source: item.market?.source || item.marketSource || '',
-    },
     ctaLabel,
     ctaUrl,
   });
@@ -157,10 +115,6 @@ async function fetchFromSanity() {
     ctaLabel,
     ctaUrl,
     problemBody,
-    marketBigStat,
-    marketDescription,
-    marketSource,
-    stats[]{ value, label },
     "logo": logo.asset->url,
     "cover": coalesce(cover.asset->url, previewMedia[0].asset->url),
     "previewMedia": previewMedia[].asset->url,

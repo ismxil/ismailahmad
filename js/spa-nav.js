@@ -33,6 +33,7 @@
         if (typeof window.teardownFeedsPage === 'function') window.teardownFeedsPage();
         if (typeof window.teardownAboutGalleryPin === 'function') window.teardownAboutGalleryPin();
         if (typeof window.teardownFeedModal === 'function') window.teardownFeedModal();
+        if (typeof window.teardownMosaicPortrait === 'function') window.teardownMosaicPortrait();
         if (window.ScrollTrigger && typeof window.ScrollTrigger.getAll === 'function') {
             window.ScrollTrigger.getAll().forEach(function (st) { st.kill(); });
         }
@@ -272,13 +273,23 @@
                         return runScripts(document.body);
                     })
                     .then(function () {
-                        return window.siteReady ?? Promise.resolve();
+                        var ready = window.siteReady ?? Promise.resolve();
+                        // Don't let a hung siteReady leave SPA navigations stuck loading.
+                        return Promise.race([
+                            ready,
+                            new Promise(function (resolve) { window.setTimeout(resolve, 6000); }),
+                        ]);
                     })
                     .then(function () {
+                        document.documentElement.classList.remove('is-loading');
                         window.dispatchEvent(new CustomEvent('spa:page-ready'));
                         var page = window.location.pathname.split('/').pop() || 'index.html';
                         if (page === 'about.html' && typeof window.initAboutGalleryPin === 'function') {
                             return window.initAboutGalleryPin();
+                        }
+                        if ((page === 'index.html' || page === '' || page === '/') &&
+                            typeof window.initMosaicPortrait === 'function') {
+                            return window.initMosaicPortrait();
                         }
                     });
             })

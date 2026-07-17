@@ -165,7 +165,13 @@ export async function runSiteLoaderLogo(canvas, { beforeDeconstruct } = {}) {
   const gsap = window.gsap;
   if (!canvas || !gsap) return;
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  } catch {
+    // No WebGL / context creation failed — skip logo anim so the loader can dismiss.
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
