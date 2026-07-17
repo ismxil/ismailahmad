@@ -135,8 +135,8 @@
            ════════════════════════════════ */
         #bottom-bar-slot {
             height: 44px;
-            margin: 0 auto 18px;
-            width: calc(100% - 48px);
+            margin: 0 auto;
+            width: 100%;
             max-width: 2008px;
             box-sizing: border-box;
             pointer-events: none;
@@ -145,6 +145,8 @@
         #bottom-bar {
             position: fixed;
             left: 50%;
+            bottom: 20px;
+            top: auto;
             transform: translateX(-50%);
             width: calc(100% - 48px);
             max-width: 2008px;
@@ -156,12 +158,6 @@
             box-sizing: border-box;
             white-space: nowrap;
             pointer-events: none;
-            bottom: auto;
-        }
-
-        #bottom-bar.is-pinned {
-            top: auto !important;
-            bottom: 20px;
         }
 
         #bottom-bar > * {
@@ -326,16 +322,24 @@
         }
 
         .home-hero {
-            min-height: calc(100svh - 420px);
+            min-height: calc(100svh - 168px);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 64px 24px 32px;
+            justify-content: space-between;
+            padding: clamp(100px, 18vh, 280px) 24px 0;
+            box-sizing: border-box;
         }
 
         .home-hero__inner {
-            position: relative;
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
             width: min(627px, 100%);
+            position: relative;
+            z-index: 2;
         }
 
         .home-hero__copy {
@@ -350,12 +354,43 @@
         }
 
         .home-hero__cta {
+            white-space: nowrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        .home-hero__foot {
+            position: relative;
+            width: 100%;
+            max-width: 2008px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        .home-hero__portrait {
             position: absolute;
             left: 50%;
-            top: 100%;
+            bottom: 0;
             transform: translateX(-50%);
-            margin-top: 28px;
-            white-space: nowrap;
+            height: clamp(280px, 46vh, 536px);
+            width: auto;
+            max-width: min(100%, 714px);
+            object-fit: contain;
+            object-position: center bottom;
+            display: block;
+            pointer-events: none;
+            -webkit-user-select: none;
+            user-select: none;
+            z-index: 0;
+        }
+
+        .home-hero__foot #bottom-bar-slot {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 44px;
+            z-index: 1;
         }
 
         .home-projects {
@@ -363,19 +398,23 @@
             grid-template-columns: 1fr 1fr;
             column-gap: 18px;
             row-gap: 80px;
-            padding: 0 24px 160px;
+            padding: 0 24px;
             width: 100%;
             max-width: 2056px;
-            margin: 0 auto;
+            margin: 120px auto 0;
             box-sizing: border-box;
             scroll-margin-top: 96px;
+        }
+
+        .home-more {
+            margin-top: 56px;
         }
 
         .home-project {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 32px;
+            gap: 16px;
             min-width: 0;
             border: none;
             background: transparent;
@@ -406,6 +445,9 @@
         }
 
         .home-project__meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             width: min(100%, 569px);
         }
 
@@ -413,22 +455,266 @@
             margin: 0;
             font-family: var(--font-body);
             font-size: 20px;
-            font-weight: 500;
-            line-height: 1.4;
+            font-weight: 400;
+            line-height: 28px;
             color: var(--text-tertiary, #71717a);
         }
 
         .home-project__desc {
-            margin: 8px 0 0;
+            margin: 0;
             font-family: var(--font-body);
             font-size: 20px;
-            font-weight: 500;
-            line-height: 1.4;
+            font-weight: 400;
+            line-height: 28px;
             color: var(--text-tertiary, #71717a);
         }
 
+        /* ── Brands strip ── */
+        .home-brands {
+            width: 100%;
+            max-width: 2010px;
+            margin: 0 auto;
+            padding: 60px 24px 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 48px;
+        }
+
+        .home-brands__label {
+            margin: 0;
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 20px;
+            letter-spacing: 0.02em;
+            text-align: center;
+            color: var(--text-primary, #09090b);
+        }
+
+        .home-brands__viewport {
+            width: min(1322px, 100%);
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+        }
+
+        .home-brands__track {
+            display: flex;
+            align-items: center;
+            width: max-content;
+            animation: home-brands-scroll 40s linear infinite;
+            will-change: transform;
+        }
+
+        .home-brands__track:hover {
+            animation-play-state: paused;
+        }
+
+        .home-brands__group {
+            display: flex;
+            align-items: center;
+            gap: clamp(28px, 4vw, 56px);
+            padding-right: clamp(28px, 4vw, 56px);
+            flex-shrink: 0;
+        }
+
+        .home-brands__group img {
+            height: 21px;
+            width: auto;
+            flex-shrink: 0;
+            object-fit: contain;
+            opacity: 0.85;
+        }
+
+        .home-brands__group img[src*="deutsche-bank"] {
+            height: 16px;
+        }
+
+        @keyframes home-brands-scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .home-brands__track {
+                animation: none;
+            }
+        }
+
+        /* ── See more work ── */
+        .home-more {
+            display: flex;
+            justify-content: center;
+            padding: 0 24px;
+        }
+
+        .home-more__btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 54px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 999px;
+            background: var(--bg-cream, #f3f2ef);
+            color: var(--text-primary, #09090b);
+            font-family: var(--font-body);
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 24px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.18s ease;
+        }
+
+        .home-more__btn:hover {
+            opacity: 0.8;
+        }
+
+        /* ── Capabilities & Approach ── */
+        .home-detail {
+            width: 100%;
+            max-width: 2056px;
+            margin: 120px auto 0;
+            padding: 0 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .home-detail__head {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 992px;
+        }
+
+        .home-detail__label {
+            margin: 0;
+            flex: 0 0 317px;
+            font-family: var(--font-display, 'Reckless', Georgia, serif);
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 28px;
+            color: var(--text-tertiary, #71717a);
+        }
+
+        .home-detail__intro {
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .home-detail__subtitle {
+            margin: 0;
+            font-family: var(--font-display, 'Reckless', Georgia, serif);
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 32px;
+            color: var(--text-primary, #09090b);
+        }
+
+        .home-detail__body {
+            margin: 0;
+            font-family: var(--font-body);
+            font-size: clamp(24px, 2.6vw, 32px);
+            font-weight: 500;
+            line-height: 1.375;
+            color: var(--text-primary, #09090b);
+        }
+
+        .home-detail__cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .home-card {
+            display: flex;
+            min-height: 400px;
+            padding: 16px 16px 20px;
+            border-radius: 32px;
+            background: #f8f8f7;
+            box-sizing: border-box;
+        }
+
+        .home-card--cap {
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .home-card--approach {
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .home-card__col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 40px;
+            min-width: 0;
+        }
+
+        .home-card__title {
+            margin: 0;
+            font-family: var(--font-display, 'Reckless', Georgia, serif);
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 32px;
+            color: var(--text-tertiary, #71717a);
+        }
+
+        .home-card__list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-family: var(--font-body);
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 24px;
+            color: var(--text-primary, #09090b);
+        }
+
+        .home-card__box {
+            flex: 0 0 auto;
+            width: 44%;
+            max-width: 314px;
+            border-radius: 24px;
+            background: #e4e4e7;
+        }
+
+        .home-card__text {
+            margin: 0;
+            font-family: var(--font-body);
+            font-size: clamp(18px, 1.9vw, 24px);
+            font-weight: 400;
+            line-height: 1.42;
+            color: var(--text-primary, #09090b);
+        }
+
+        .home-card__head {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .home-card__icon {
+            display: block;
+            width: 84px;
+            height: 84px;
+            flex-shrink: 0;
+        }
+
         .home-cta {
-            margin: 40px auto 0;
+            margin: 120px auto 0;
             width: min(999px, calc(100% - 48px));
             min-height: 280px;
             background: var(--bg-cream, #f3f2ef);
@@ -550,6 +836,10 @@
                 min-width: 32px;
             }
 
+            #home-layout .site-header__nav.is-menu-open .nav-morph {
+                border-radius: 16px;
+            }
+
             #home-layout .site-header__nav-pills {
                 height: 32px;
                 padding: 0;
@@ -569,8 +859,12 @@
             }
 
             .home-hero {
-                min-height: calc(100svh - 320px);
-                padding: 32px 16px 28px;
+                min-height: calc(100svh - 150px);
+                padding: 72px 16px 0;
+            }
+
+            .home-hero__inner {
+                gap: 24px;
             }
 
             .home-hero__copy {
@@ -579,23 +873,86 @@
             }
 
             .home-hero__cta {
-                margin-top: 20px;
+                margin-top: 0;
+            }
+
+            .home-hero__portrait {
+                height: clamp(220px, 42vh, 400px);
+            }
+
+            .home-hero__foot {
+                height: 44px;
+            }
+
+            .home-brands {
+                padding: 48px 16px 0;
+                gap: 28px;
+            }
+
+            .home-brands__group {
+                gap: 24px;
+                padding-right: 24px;
+            }
+
+            .home-brands__group img {
+                height: 16px;
+            }
+
+            .home-brands__group img[src*="deutsche-bank"] {
+                height: 12px;
             }
 
             .home-projects {
                 grid-template-columns: 1fr;
                 row-gap: 56px;
-                padding: 0 16px 80px;
+                margin-top: 72px;
+                padding: 0 16px;
             }
 
             .home-project {
-                gap: 20px;
+                gap: 16px;
             }
 
+            .home-project__title,
             .home-project__desc {
-                margin-top: 8px;
                 font-size: 20px;
                 line-height: 28px;
+            }
+
+            .home-more {
+                margin-top: 40px;
+            }
+
+            .home-detail {
+                margin-top: 80px;
+                padding: 0 16px;
+                gap: 32px;
+            }
+
+            .home-detail__head {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .home-detail__label {
+                flex: none;
+            }
+
+            .home-detail__cards {
+                grid-template-columns: 1fr;
+            }
+
+            .home-card {
+                min-height: 0;
+            }
+
+            .home-card--cap {
+                min-height: 240px;
+            }
+
+            .home-card--cap .home-card__box {
+                width: 40%;
+                max-width: 160px;
             }
 
             .home-cta {
@@ -607,14 +964,10 @@
 
             #bottom-bar-slot {
                 width: calc(100% - 32px);
-                margin-bottom: 16px;
             }
 
             #bottom-bar {
                 width: calc(100% - 32px);
-            }
-
-            #bottom-bar.is-pinned {
                 bottom: 16px;
             }
 
@@ -1699,9 +2052,12 @@
                     for the world’s ambitious companies.</p>
                 <a class="pill pill--cream home-hero__cta" href="#work">View work</a>
             </div>
+            <div class="home-hero__foot">
+                <img class="home-hero__portrait" src="assets/me.png" alt="Portrait of Ismail Ahmad" width="714"
+                    height="536" />
+                <div id="bottom-bar-slot" aria-hidden="true"></div>
+            </div>
         </section>
-
-        <div id="bottom-bar-slot" aria-hidden="true"></div>
 
         <div id="bottom-bar">
             <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
@@ -1768,7 +2124,135 @@
             </div>
         </div>
 
+        <section class="home-brands" aria-label="Brands I have worked with">
+            <p class="home-brands__label">BRAND I HAVE WORKED WITH</p>
+            <div class="home-brands__viewport">
+                <div class="home-brands__track">
+                    <div class="home-brands__group">
+                        <img src="assets/clients/accenture.svg" alt="Accenture" />
+                        <img src="assets/clients/lemfi.svg" alt="Lemfi" />
+                        <img src="assets/clients/sterling.svg" alt="Sterling" />
+                        <img src="assets/clients/commerz.svg" alt="Commerzbank" />
+                        <img src="assets/clients/cadana.svg" alt="Cadana" />
+                        <img src="assets/clients/deutsche-bank.svg" alt="Deutsche Bank" />
+                        <img src="assets/clients/gomoney.svg" alt="Gomoney" />
+                        <img src="assets/clients/landor.svg" alt="Landor" />
+                        <img src="assets/clients/eithad.svg" alt="Etihad" />
+                    </div>
+                    <div class="home-brands__group" aria-hidden="true">
+                        <img src="assets/clients/accenture.svg" alt="" />
+                        <img src="assets/clients/lemfi.svg" alt="" />
+                        <img src="assets/clients/sterling.svg" alt="" />
+                        <img src="assets/clients/commerz.svg" alt="" />
+                        <img src="assets/clients/cadana.svg" alt="" />
+                        <img src="assets/clients/deutsche-bank.svg" alt="" />
+                        <img src="assets/clients/gomoney.svg" alt="" />
+                        <img src="assets/clients/landor.svg" alt="" />
+                        <img src="assets/clients/eithad.svg" alt="" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="home-projects" id="work" aria-label="Featured projects"></section>
+
+        <div class="home-more">
+            <a class="home-more__btn" href="feeds.html">See more work</a>
+        </div>
+
+        <section class="home-detail" aria-labelledby="home-capabilities-label">
+            <div class="home-detail__head">
+                <p class="home-detail__label" id="home-capabilities-label">Capabilities</p>
+                <div class="home-detail__intro">
+                    <p class="home-detail__subtitle">T-Shaped industry experience</p>
+                    <p class="home-detail__body">Turning brief into trust. Without sucking out the creativity side of
+                        it.</p>
+                </div>
+            </div>
+            <div class="home-detail__cards">
+                <article class="home-card home-card--cap">
+                    <div class="home-card__col">
+                        <h3 class="home-card__title">Branding</h3>
+                        <ul class="home-card__list">
+                            <li>Research</li>
+                            <li>Positioning</li>
+                            <li>Brand Strategy</li>
+                            <li>Visual Identity</li>
+                            <li>Voice &amp; Tone</li>
+                            <li>Brand Assets</li>
+                        </ul>
+                    </div>
+                    <div class="home-card__box" aria-hidden="true"></div>
+                </article>
+                <article class="home-card home-card--cap">
+                    <div class="home-card__col">
+                        <h3 class="home-card__title">Websites</h3>
+                        <ul class="home-card__list">
+                            <li>Market Analysis</li>
+                            <li>UX &amp; Architecture</li>
+                            <li>Copywriting</li>
+                            <li>Interface Design</li>
+                            <li>Motion &amp; Interactions</li>
+                            <li>Development</li>
+                        </ul>
+                    </div>
+                    <div class="home-card__box" aria-hidden="true"></div>
+                </article>
+                <article class="home-card home-card--cap">
+                    <div class="home-card__col">
+                        <h3 class="home-card__title">Products</h3>
+                        <ul class="home-card__list">
+                            <li>User Research</li>
+                            <li>UX &amp; Architecture</li>
+                            <li>Interface Design</li>
+                            <li>Product Writing</li>
+                            <li>Front-end Development</li>
+                            <li>Design Systems</li>
+                        </ul>
+                    </div>
+                    <div class="home-card__box" aria-hidden="true"></div>
+                </article>
+            </div>
+        </section>
+
+        <section class="home-detail" aria-labelledby="home-approach-label">
+            <div class="home-detail__head">
+                <p class="home-detail__label" id="home-approach-label">Approach</p>
+                <div class="home-detail__intro">
+                    <p class="home-detail__subtitle">Quality execution that feel cohesive</p>
+                    <p class="home-detail__body">I follow these simple framework to ensure I deliver the best possible
+                        results.</p>
+                </div>
+            </div>
+            <div class="home-detail__cards">
+                <article class="home-card home-card--approach">
+                    <div class="home-card__head">
+                        <h3 class="home-card__title">Strategy</h3>
+                        <p class="home-card__text">I immerse myself into your goals, users, and constraints, questioning,
+                            and synthesizing insights into a clear, defensible position grounding all design decisions.
+                        </p>
+                    </div>
+                    <img class="home-card__icon" src="assets/about/icon-strategy.svg" alt="" width="84" height="84" />
+                </article>
+                <article class="home-card home-card--approach">
+                    <div class="home-card__head">
+                        <h3 class="home-card__title">Design</h3>
+                        <p class="home-card__text">I design within strategic guardrails to solve for conversion,
+                            comprehension, and trust, testing and refining until the experience works flawlessly at
+                            scale.</p>
+                    </div>
+                    <img class="home-card__icon" src="assets/about/icon-design.svg" alt="" width="84" height="84" />
+                </article>
+                <article class="home-card home-card--approach">
+                    <div class="home-card__head">
+                        <h3 class="home-card__title">Build</h3>
+                        <p class="home-card__text">I work in the space between design and development, I design with code
+                            in mind, and partner with developers to ensure the final product matches what was design.</p>
+                    </div>
+                    <img class="home-card__icon" src="assets/about/icon-build.svg" alt="" width="84" height="84" />
+                </article>
+            </div>
+        </section>
 
         <section class="home-cta" aria-label="Contact">
             <h2 class="home-cta__title">Stay in touch</h2>
@@ -2608,6 +3092,22 @@
             e.preventDefault();
         }, { capture: true, passive: false });
 
+        (function initViewWorkScroll() {
+            var cta = document.querySelector('.home-hero__cta');
+            var work = document.getElementById('work');
+            if (!cta || !work) return;
+
+            cta.addEventListener('click', function (e) {
+                e.preventDefault();
+                work.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (history.replaceState) {
+                    history.replaceState(null, '', '#work');
+                } else {
+                    location.hash = 'work';
+                }
+            });
+        })();
+
         // Vertical project grid — Figma 504:1343
         (function renderHomeProjects() {
             var grid = document.getElementById('work');
@@ -2673,36 +3173,6 @@
                 if (typeof window.openContactPanel === 'function') window.openContactPanel();
             });
         }
-
-        (function initBottomBarDock() {
-            var bar = document.getElementById('bottom-bar');
-            var slot = document.getElementById('bottom-bar-slot');
-            if (!bar || !slot) return;
-
-            function update() {
-                var slotTop = slot.getBoundingClientRect().top;
-                var barH = bar.offsetHeight || 44;
-                var pinInset = window.matchMedia('(max-width: 768px)').matches ? 16 : 20;
-                var pinTop = window.innerHeight - pinInset - barH;
-                var hasScrolled = window.scrollY > 24;
-
-                // Rest: sit on top of the project cards.
-                // After scroll: pin to the bottom of the viewport.
-                if (!hasScrolled || slotTop > pinTop) {
-                    bar.classList.remove('is-pinned');
-                    bar.style.top = Math.max(slotTop, 0) + 'px';
-                    bar.style.bottom = 'auto';
-                } else {
-                    bar.classList.add('is-pinned');
-                    bar.style.top = 'auto';
-                    bar.style.bottom = pinInset + 'px';
-                }
-            }
-
-            window.addEventListener('scroll', update, { passive: true });
-            window.addEventListener('resize', update);
-            update();
-        })();
 
         (function initHomeHeaderScrollScale() {
             var brand = document.querySelector('#site-header .site-header__brand');

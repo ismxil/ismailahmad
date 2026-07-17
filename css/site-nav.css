@@ -304,6 +304,10 @@
         height: 8px;
     }
 
+    .site-header__nav.is-menu-open .nav-morph {
+        border-radius: 16px;
+    }
+
     .site-header__nav.is-menu-open .nav-dot-btn {
         top: 12px;
         right: 12px;
