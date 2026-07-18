@@ -1,7 +1,10 @@
 /**
  * Homepage hero portrait mosaic.
- * - Scroll through `.home-hero` gradually intensifies pixelation (0 → full).
- * - Click toggles a "forced full mosaic" override; when off, scroll intensity applies.
+ * - Starts fully mosaicked.
+ * - A short scroll through `.home-hero` clears pixelation (full → 0) while the
+ *   portrait is still largely in view — well before the hero leaves the viewport.
+ * - Click toggles clear vs mosaic (override); when following scroll, intensity is from scroll.
+ * - prefers-reduced-motion: start mosaic, click still reveals; skip scroll-driven animation.
  */
 (function () {
     var MOSAIC_CELL = 18;
@@ -19,9 +22,13 @@
     var offscreen = null;
     var offCtx = null;
 
-    var scrollIntensity = 0;
-    var forcedFull = false;
-    var displayIntensity = 0;
+    /** Mosaic amount from scroll: 1 at page top, 0 after a short leave scroll. */
+    var scrollMosaic = 1;
+    /**
+     * Manual override from click: null = follow scroll, 0 = forced clear, 1 = forced mosaic.
+     */
+    var manualOverride = null;
+    var displayIntensity = 1;
     var animating = false;
     var animRaf = 0;
     var scrollRaf = 0;
@@ -29,6 +36,9 @@
     var reduceMotion = false;
     var mq = null;
     var onMqChange = null;
+    var cachedSize = { w: 0, h: 0 };
+    var lastDrawnCell = -1;
+    var sizeDirty = true;
 
     function prefersReducedMotion() {
         return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -43,7 +53,9 @@
     }
 
     function targetIntensity() {
-        return forcedFull ? 1 : scrollIntensity;
+        if (manualOverride !== null) return manualOverride;
+        if (reduceMotion) return 1;
+        return scrollMosaic;
     }
 
     function ensureCanvas() {
@@ -58,11 +70,14 @@
     }
 
     function displaySize() {
+        if (!sizeDirty && cachedSize.w > 0) return cachedSize;
         var rect = img.getBoundingClientRect();
-        return {
+        cachedSize = {
             w: Math.max(1, Math.round(rect.width)),
             h: Math.max(1, Math.round(rect.height)),
         };
+        sizeDirty = false;
+        return cachedSize;
     }
 
     function syncCanvasSize() {
@@ -76,8 +91,9 @@
             canvas.height = bh;
             canvas.style.width = size.w + 'px';
             canvas.style.height = size.h + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            lastDrawnCell = -1;
         }
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         return size;
     }
 
@@ -119,21 +135,29 @@
 
     function syncPressed() {
         if (!btn) return;
-        btn.setAttribute('aria-pressed', forcedFull ? 'true' : 'false');
+        var mosaicOn = targetIntensity() >= VISIBLE_EPS;
+        btn.setAttribute('aria-pressed', mosaicOn ? 'true' : 'false');
     }
 
-    function applyIntensity(intensity) {
+    function applyIntensity(intensity, force) {
         displayIntensity = clamp01(intensity);
         ensureCanvas();
 
         if (displayIntensity < VISIBLE_EPS) {
+            if (lastDrawnCell === -1 && !(btn && btn.classList.contains('is-mosaic'))) return;
+            lastDrawnCell = -1;
             clearCanvas();
             setMosaicVisible(false);
             return;
         }
 
+        // Quantize cell size so scroll doesn't redraw every subpixel step.
+        var cell = Math.round(intensityToCell(displayIntensity) * 2) / 2;
+        if (!force && cell === lastDrawnCell) return;
+
         setMosaicVisible(true);
-        drawMosaic(intensityToCell(displayIntensity));
+        lastDrawnCell = cell;
+        drawMosaic(cell);
     }
 
     function cancelAnim() {
@@ -172,7 +196,7 @@
         function frame(now) {
             var t = Math.min(1, (now - start) / DURATION_MS);
             var eased = EASE(t);
-            applyIntensity(from + (to - from) * eased);
+            applyIntensity(from + (to - from) * eased, true);
 
             if (t < 1) {
                 animRaf = requestAnimationFrame(frame);
@@ -181,7 +205,7 @@
 
             animRaf = 0;
             animating = false;
-            applyIntensity(to);
+            applyIntensity(to, true);
             syncPressed();
         }
 
@@ -189,22 +213,33 @@
     }
 
     /**
-     * Progress 0 at page top / hero fully below-or-at top of viewport,
-     * 1 once the hero has scrolled fully past the top edge.
+     * Mosaic intensity 1 at page top / hero fully in view,
+     * 0 after a short scroll while the portrait is still largely visible
+     * (~90–130px / ≤35% of hero leave distance).
      */
-    function readScrollIntensity() {
-        if (!hero) return 0;
+    function readScrollMosaic() {
+        if (!hero) return 1;
         var rect = hero.getBoundingClientRect();
-        var range = Math.max(1, rect.height);
-        // Dead zone: ignore the first ~8% so tiny scrolls don't pixelate yet
-        var raw = (-rect.top) / range;
-        return clamp01((raw - 0.08) / 0.92);
+        var leaveRange = Math.max(1, rect.height);
+        var deadPx = Math.min(20, leaveRange * 0.03);
+        // Prefer ~25% of leave, clamped to ~90–130px and never past 35% of leave.
+        var endPx = Math.min(130, Math.max(90, leaveRange * 0.25));
+        endPx = Math.min(endPx, leaveRange * 0.35);
+        var scrolled = Math.max(0, -rect.top);
+        if (endPx <= deadPx) return scrolled <= 0 ? 1 : 0;
+        return 1 - clamp01((scrolled - deadPx) / (endPx - deadPx));
     }
 
     function updateFromScroll() {
-        scrollIntensity = readScrollIntensity();
-        if (animating || forcedFull) return;
-        applyIntensity(scrollIntensity);
+        var next = readScrollMosaic();
+        var moved = Math.abs(next - scrollMosaic) > 0.002;
+        scrollMosaic = next;
+        if (reduceMotion || animating) return;
+        // Scrolling re-engages scroll control after a click override.
+        if (moved && manualOverride !== null) manualOverride = null;
+        if (manualOverride !== null) return;
+        applyIntensity(scrollMosaic);
+        syncPressed();
     }
 
     function onScroll() {
@@ -215,30 +250,34 @@
         });
     }
 
-    function toggleForcedFull() {
+    function toggleMosaic() {
         if (!img || !img.naturalWidth) return;
         if (animating) return;
 
-        forcedFull = !forcedFull;
+        var next = targetIntensity() >= 0.5 ? 0 : 1;
+        manualOverride = next;
         syncPressed();
-        animateToIntensity(targetIntensity());
+        animateToIntensity(next);
     }
 
     function onClick(e) {
         e.preventDefault();
-        toggleForcedFull();
+        toggleMosaic();
     }
 
     function onKeydown(e) {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            toggleForcedFull();
+            toggleMosaic();
         }
     }
 
     function onResize() {
+        sizeDirty = true;
+        lastDrawnCell = -1;
         if (animating) return;
-        applyIntensity(targetIntensity());
+        applyIntensity(targetIntensity(), true);
+        syncPressed();
     }
 
     function waitForImage(el) {
@@ -264,6 +303,10 @@
             mq = window.matchMedia('(prefers-reduced-motion: reduce)');
             onMqChange = function () {
                 reduceMotion = prefersReducedMotion();
+                if (!animating && manualOverride === null) {
+                    applyIntensity(targetIntensity(), true);
+                    syncPressed();
+                }
             };
             if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onMqChange);
             else if (typeof mq.addListener === 'function') mq.addListener(onMqChange);
@@ -307,10 +350,13 @@
         ctx = null;
         offscreen = null;
         offCtx = null;
-        scrollIntensity = 0;
-        forcedFull = false;
-        displayIntensity = 0;
+        scrollMosaic = 1;
+        manualOverride = null;
+        displayIntensity = 1;
         animating = false;
+        cachedSize = { w: 0, h: 0 };
+        lastDrawnCell = -1;
+        sizeDirty = true;
         mq = null;
     }
 
@@ -325,22 +371,30 @@
         if (!btn) {
             btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'home-hero__portrait-btn';
+            btn.className = 'home-hero__portrait-btn is-mosaic';
             btn.setAttribute('aria-label', 'Toggle mosaic effect on portrait');
-            btn.setAttribute('aria-pressed', 'false');
+            btn.setAttribute('aria-pressed', 'true');
             img.parentNode.insertBefore(btn, img);
             btn.appendChild(img);
+        } else {
+            btn.classList.add('is-mosaic');
+            btn.setAttribute('aria-pressed', 'true');
         }
 
         reduceMotion = prefersReducedMotion();
+        scrollMosaic = 1;
+        manualOverride = null;
+        displayIntensity = 1;
 
         return waitForImage(img).then(function () {
             if (!img || !btn || !document.contains(img)) return;
             ensureCanvas();
             syncCanvasSize();
             bind();
+            // Paint full mosaic immediately so we never flash the sharp image.
+            applyIntensity(1, true);
             syncPressed();
-            updateFromScroll();
+            if (!reduceMotion) updateFromScroll();
         });
     }
 

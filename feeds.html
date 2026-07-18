@@ -23,6 +23,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/site-loader.css">
     <link rel="modulepreload" href="js/site-loader.js">
     <link rel="modulepreload" href="js/site-loader-logo.js">
@@ -330,7 +331,8 @@
                 <div class="home-cta__touch">
                     <p class="home-cta__label">Stay in touch</p>
                     <form class="home-cta__email-form" id="feed-subscribe"
-                        action="https://wandarer.com/api/v1/free" method="post" target="_blank" rel="noopener"
+                        action="/api/collect-email"
+                        method="post"
                         data-subscribe-source="website_footer">
                         <label class="home-cta__email" id="feed-email-field" data-subscribe-field>
                             <span class="home-cta__email-icon" aria-hidden="true">
@@ -349,7 +351,7 @@
                             <input class="home-cta__email-input" type="email" name="email" placeholder="Your email"
                                 autocomplete="email" required aria-label="Your email" />
                         </label>
-                        <button type="submit" class="home-cta__email-submit" aria-label="Subscribe to newsletter">
+                        <button type="submit" class="home-cta__email-submit" aria-label="Send email">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M5 12h14M13 6l6 6-6 6" />
@@ -497,6 +499,7 @@
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
     <script src="js/bottom-bar-cta.js"></script>
+    <script src="js/smooth-scroll.js"></script>
     <script src="js/spa-nav.js"></script>
     <script>
         initContactPanel();

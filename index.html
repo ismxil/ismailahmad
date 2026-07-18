@@ -32,6 +32,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/site-loader.css">
     <link rel="modulepreload" href="js/site-loader.js">
     <link rel="modulepreload" href="js/site-loader-logo.js">
@@ -64,7 +65,6 @@
 
         html {
             background: #fff;
-            scroll-behavior: smooth;
         }
 
         body {
@@ -311,6 +311,9 @@
             gap: 16px;
             transform: scale(var(--brand-scale));
             transform-origin: left top;
+        }
+
+        .site-header__brand.is-scaling {
             will-change: transform;
         }
 
@@ -444,7 +447,8 @@
             opacity: 0;
         }
 
-        .home-hero__portrait-btn.is-mosaic .home-hero__portrait {
+        /* Hide sharp img only once the mosaic canvas exists (avoids blank pre-JS). */
+        .home-hero__portrait-btn.is-mosaic:has(.home-hero__portrait-mosaic) .home-hero__portrait {
             opacity: 0;
         }
 
@@ -586,7 +590,6 @@
             align-items: center;
             width: max-content;
             animation: home-brands-scroll 40s linear infinite;
-            will-change: transform;
         }
 
         .home-brands__track:hover {
@@ -730,8 +733,7 @@
         }
 
         .home-card--cap {
-            justify-content: space-between;
-            gap: 16px;
+            justify-content: flex-start;
         }
 
         .home-card__col {
@@ -740,6 +742,7 @@
             justify-content: space-between;
             gap: 40px;
             min-width: 0;
+            width: 100%;
         }
 
         .home-card__title {
@@ -760,14 +763,6 @@
             font-weight: 400;
             line-height: 24px;
             color: var(--text-primary, #09090b);
-        }
-
-        .home-card__box {
-            flex: 0 0 auto;
-            width: 44%;
-            max-width: 314px;
-            border-radius: 24px;
-            background: #e4e4e7;
         }
 
         .work-label,
@@ -955,11 +950,6 @@
 
             .home-card--cap {
                 min-height: 240px;
-            }
-
-            .home-card--cap .home-card__box {
-                width: 40%;
-                max-width: 160px;
             }
 
             #bottom-bar-slot {
@@ -2071,8 +2061,8 @@
                 <a class="pill pill--cream home-hero__cta" href="#work">View work</a>
             </div>
             <div class="home-hero__foot">
-                <button type="button" class="home-hero__portrait-btn" aria-label="Toggle mosaic effect on portrait"
-                    aria-pressed="false">
+                <button type="button" class="home-hero__portrait-btn is-mosaic" aria-label="Toggle mosaic effect on portrait"
+                    aria-pressed="true">
                     <img class="home-hero__portrait" src="assets/me.png" alt="Portrait of Ismail Ahmad" width="714"
                         height="536" draggable="false" />
                 </button>
@@ -2086,7 +2076,8 @@
                 <div class="home-cta__touch">
                     <p class="home-cta__label">Stay in touch</p>
                     <form class="home-cta__email-form" id="home-subscribe"
-                        action="https://wandarer.com/api/v1/free" method="post" target="_blank" rel="noopener"
+                        action="/api/collect-email"
+                        method="post"
                         data-subscribe-source="website_footer">
                         <label class="home-cta__email" id="home-email-field" data-subscribe-field>
                             <span class="home-cta__email-icon" aria-hidden="true">
@@ -2105,7 +2096,7 @@
                             <input class="home-cta__email-input" type="email" name="email" placeholder="Your email"
                                 autocomplete="email" required aria-label="Your email" />
                         </label>
-                        <button type="submit" class="home-cta__email-submit" aria-label="Subscribe to newsletter">
+                        <button type="submit" class="home-cta__email-submit" aria-label="Send email">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M5 12h14M13 6l6 6-6 6" />
@@ -2241,7 +2232,6 @@
                             <li>Brand Assets</li>
                         </ul>
                     </div>
-                    <div class="home-card__box" aria-hidden="true"></div>
                 </article>
                 <article class="home-card home-card--cap">
                     <div class="home-card__col">
@@ -2255,7 +2245,6 @@
                             <li>Development</li>
                         </ul>
                     </div>
-                    <div class="home-card__box" aria-hidden="true"></div>
                 </article>
                 <article class="home-card home-card--cap">
                     <div class="home-card__col">
@@ -2269,7 +2258,6 @@
                             <li>Design Systems</li>
                         </ul>
                     </div>
-                    <div class="home-card__box" aria-hidden="true"></div>
                 </article>
             </div>
         </section>
@@ -2376,6 +2364,7 @@
     <script src="js/music-player.js"></script>
     <script src="js/bottom-bar-cta.js"></script>
     <script src="js/mosaic-portrait.js"></script>
+    <script src="js/smooth-scroll.js"></script>
     <script src="js/spa-nav.js"></script>
     <script>
         var musicPlayer = initMusicPlayer();
@@ -3196,16 +3185,32 @@
             if (reducedMotion) return;
 
             var hero = document.querySelector('.home-hero');
+            var raf = 0;
+            var lastScale = '1';
+            var clearWillChangeTimer = 0;
 
             function update() {
+                raf = 0;
                 var range = hero ? Math.max(hero.offsetHeight * 0.75, 240) : 320;
                 var progress = Math.min(1, Math.max(0, window.scrollY / range));
-                var scale = 1 - progress * 0.75;
-                brand.style.setProperty('--brand-scale', scale.toFixed(4));
+                var scale = (1 - progress * 0.75).toFixed(4);
+                if (scale === lastScale) return;
+                lastScale = scale;
+                brand.classList.add('is-scaling');
+                brand.style.setProperty('--brand-scale', scale);
+                if (clearWillChangeTimer) window.clearTimeout(clearWillChangeTimer);
+                clearWillChangeTimer = window.setTimeout(function () {
+                    brand.classList.remove('is-scaling');
+                }, 180);
             }
 
-            window.addEventListener('scroll', update, { passive: true });
-            window.addEventListener('resize', update);
+            function onScroll() {
+                if (raf) return;
+                raf = requestAnimationFrame(update);
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
             update();
         })();
 

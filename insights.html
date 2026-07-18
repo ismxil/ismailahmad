@@ -28,6 +28,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/site-loader.css">
     <link rel="modulepreload" href="js/site-loader.js">
     <link rel="modulepreload" href="js/site-loader-logo.js">
@@ -183,7 +184,7 @@
                     </div>
                 </div>
                 <form class="insights-subscribe js-subscribe-form" id="insights-subscribe"
-                    action="https://wandarer.com/api/v1/free" method="post" target="_blank" rel="noopener"
+                    action="/api/subscribe" method="post"
                     data-subscribe-source="website_insights">
                     <label class="insights-email" id="insights-email-field" data-subscribe-field>
                         <span class="insights-email__icon" aria-hidden="true">
@@ -477,6 +478,7 @@
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
     <script src="js/bottom-bar-cta.js"></script>
+    <script src="js/smooth-scroll.js"></script>
     <script src="js/spa-nav.js"></script>
     <script type="module">
         import { initBrandLogo3D } from './js/logo-3d.js';

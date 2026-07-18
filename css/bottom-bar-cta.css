@@ -85,6 +85,7 @@
     border-radius: 999px;
     background: var(--bg-cream, #f3f2ef);
     box-sizing: border-box;
+    overflow: hidden;
     transition: background 0.18s ease, border-color 0.18s ease;
 }
 
@@ -116,9 +117,9 @@
 }
 
 .home-cta__email-input {
-    flex: 1;
-    min-width: 0;
+    flex: 0 0 auto;
     width: 110px;
+    min-width: 0;
     border: none;
     background: transparent;
     padding: 0;
@@ -131,15 +132,32 @@
     outline: none;
 }
 
+.home-cta__email-input:read-only {
+    cursor: wait;
+    opacity: 1;
+    color: var(--brand);
+}
+
+/* Never leave the field untouchable after a stuck success class */
+.home-cta__email-form:not(.is-success) .home-cta__email {
+    display: inline-flex;
+}
+
+.home-cta__email-form:not(.is-success) .home-cta__email-input {
+    pointer-events: auto;
+}
+
 .home-cta__email-input::placeholder {
     color: #a1a1aa;
 }
 
 .home-cta__email-submit {
+    position: relative;
     display: none;
     align-items: center;
     justify-content: center;
     width: 44px;
+    max-width: 44px;
     height: 44px;
     margin: 0;
     padding: 0;
@@ -151,19 +169,33 @@
     flex-shrink: 0;
     box-sizing: border-box;
     line-height: 0;
+    overflow: hidden;
     -webkit-appearance: none;
     appearance: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        max-width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        padding 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.32s ease;
 }
 
 .home-cta__email-form:focus-within .home-cta__email-submit,
-.home-cta__email.has-value ~ .home-cta__email-submit {
+.home-cta__email.has-value ~ .home-cta__email-submit,
+.home-cta__email-submit.is-loading,
+.home-cta__email-form.is-success .home-cta__email-submit {
     display: inline-flex;
 }
 
-.home-cta__email-submit:hover {
+.home-cta__email-submit:hover:not(:disabled):not([data-success]) {
     opacity: 0.88;
     transform: scale(1.04);
+}
+
+.home-cta__email-submit:disabled {
+    cursor: wait;
+    opacity: 1;
+    transform: none;
 }
 
 .home-cta__email-submit svg {
@@ -173,15 +205,87 @@
     flex-shrink: 0;
     /* Optical center: arrow path is slightly left-weighted */
     transform: translateX(0.5px);
+    transition: opacity 0.15s ease;
 }
 
+.home-cta__email-submit.is-loading svg {
+    opacity: 0;
+}
+
+.home-cta__email-submit.is-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: home-cta-spin 0.65s linear infinite;
+}
+
+@keyframes home-cta-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Success: hide email field; send button becomes a blue pill with white message */
 .home-cta__email-form.is-success .home-cta__email {
-    background: #fff;
-    border-color: var(--brand);
+    display: none;
 }
 
-.home-cta__email-form.is-success .home-cta__email-input {
-    color: var(--brand);
+.home-cta__email-form.is-success .home-cta__email-submit {
+    width: auto;
+    max-width: 280px;
+    min-width: 44px;
+    padding: 0 22px;
+    border-radius: 999px;
+    cursor: default;
+    pointer-events: none;
+    line-height: 24px;
+}
+
+.home-cta__email-form.is-success .home-cta__email-submit svg {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.home-cta__email-form.is-success .home-cta__email-submit:not(.is-loading)::after {
+    content: attr(data-success);
+    display: block;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.01em;
+    color: #fff;
+    white-space: nowrap;
+    animation: home-cta-success-in 0.32s ease both;
+}
+
+@keyframes home-cta-success-in {
+    from {
+        opacity: 0;
+        transform: translateY(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.home-cta__email-form.is-error .home-cta__email {
+    border-color: #c45c4a;
+}
+
+.home-cta__email-form.is-error .home-cta__email-input {
+    color: #c45c4a;
 }
 
 .home-cta__socials {
@@ -229,12 +333,24 @@
 
     .home-cta__email-submit {
         width: 40px;
+        max-width: 40px;
         height: 40px;
     }
 
     .home-cta__email-submit svg {
         width: 18px;
         height: 18px;
+    }
+
+    .home-cta__email-form.is-success .home-cta__email-submit {
+        min-width: 40px;
+        max-width: min(280px, 92vw);
+        padding: 0 16px;
+    }
+
+    .home-cta__email-form.is-success .home-cta__email-submit:not(.is-loading)::after {
+        font-size: 14px;
+        line-height: 20px;
     }
 }
 
@@ -245,7 +361,6 @@
 
     .home-cta__email {
         min-width: 148px;
-        max-width: 200px;
     }
 
     .home-cta__email-input {

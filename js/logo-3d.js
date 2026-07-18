@@ -8,7 +8,7 @@ export function initBrandLogo3D(canvas, { autoRotate = true, float = true } = {}
   if (!canvas) return null;
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.35;
@@ -50,7 +50,7 @@ export function initBrandLogo3D(canvas, { autoRotate = true, float = true } = {}
   const DEPTH = 3.5;
   const BEVEL = { depth: DEPTH, bevelEnabled: true, bevelThickness: 0.5, bevelSize: 0.35, bevelSegments: 4 };
 
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(18.6475, 2.48974 / 2, 24, 120), mat);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(18.6475, 2.48974 / 2, 16, 64), mat);
   ring.position.z = DEPTH / 2;
   group.add(ring);
 
@@ -89,7 +89,7 @@ export function initBrandLogo3D(canvas, { autoRotate = true, float = true } = {}
         return v.set(rx * Math.cos(t * Math.PI * 2), ry * Math.sin(t * Math.PI * 2), 0);
       }
     }
-    const mesh = new THREE.Mesh(new THREE.TubeGeometry(new EllipseCurve(), 120, 2.48974 / 2, 16, true), mat);
+    const mesh = new THREE.Mesh(new THREE.TubeGeometry(new EllipseCurve(), 64, 2.48974 / 2, 12, true), mat);
     mesh.position.z = DEPTH / 2;
     group.add(mesh);
     return mesh;

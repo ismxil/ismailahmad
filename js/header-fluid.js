@@ -5,8 +5,8 @@
 
 const MEDIUM = {
   simResolution: 128,
-  dyeResolution: 512,
-  pressureIterations: 12,
+  dyeResolution: 256,
+  pressureIterations: 8,
   curl: 24,
   densityDissipation: 0.965,
   velocityDissipation: 0.985,
@@ -699,7 +699,7 @@ class HeaderFluidEffect {
     this.render();
 
     this.fillFrame += 1;
-    if (this.fillFrame % 2 === 0) this.applyFill();
+    if (this.fillFrame % 3 === 0) this.applyFill();
 
     this.raf = requestAnimationFrame(this.loop);
   };
