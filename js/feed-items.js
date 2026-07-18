@@ -6,7 +6,7 @@ import { sanityConfig, isSanityConfigured } from './sanity-config.js';
 
 const FEED_DATA_URL = 'data/feed-items.json';
 
-/** Placeholder modal content — shown until you replace per project in Sanity/JSON */
+/** Placeholder modal content — used only when a field is missing */
 const MODAL_PLACEHOLDER = {
   tagline: 'A no-code shader design tool for the web — design the visual, walk away with the code.',
   problemBody:
@@ -31,6 +31,7 @@ function normalizePreviewMedia(media) {
   return media
     .map((item) => {
       if (!item) return null;
+      if (typeof item === 'string') return item;
       const src = item.url || item.src || item.asset || '';
       if (!src) return null;
       return typeof src === 'string' ? src : src.url || '';
@@ -39,12 +40,15 @@ function normalizePreviewMedia(media) {
 }
 
 function applyModalPlaceholders(item) {
+  const tagline = item.tagline || item.headline || '';
+  const problemBody = item.problemBody || item.content || item.description || '';
   return {
     ...item,
-    tagline: MODAL_PLACEHOLDER.tagline,
-    problemBody: MODAL_PLACEHOLDER.problemBody,
-    content: MODAL_PLACEHOLDER.problemBody,
-    ctaLabel: MODAL_PLACEHOLDER.ctaLabel,
+    tagline: tagline || MODAL_PLACEHOLDER.tagline,
+    headline: tagline || item.headline || MODAL_PLACEHOLDER.tagline,
+    problemBody: problemBody || MODAL_PLACEHOLDER.problemBody,
+    content: problemBody || MODAL_PLACEHOLDER.problemBody,
+    ctaLabel: item.ctaLabel || MODAL_PLACEHOLDER.ctaLabel,
     heroImage: item.heroImage || item.cover,
   };
 }
@@ -65,6 +69,10 @@ function normalizeItem(item) {
   const problemBody = item.problemBody || item.content || item.description || '';
   const ctaUrl = item.ctaUrl || liveUrl || '';
   const ctaLabel = item.ctaLabel || "Let's talk";
+  const layout = item.layout || (Array.isArray(item.caseBlocks) && item.caseBlocks.length ? 'case' : 'simple');
+  const tags = Array.isArray(item.tags) ? item.tags.filter(Boolean) : [];
+  const caseBlocks = Array.isArray(item.caseBlocks) ? item.caseBlocks : [];
+  const metrics = Array.isArray(item.metrics) ? item.metrics : [];
 
   return applyModalPlaceholders({
     id: item.id || item.slug || '',
@@ -78,6 +86,7 @@ function normalizeItem(item) {
     projectType,
     category: projectType,
     type: projectType,
+    tags,
     liveUrl,
     link: liveUrl,
     url: liveUrl,
@@ -93,6 +102,10 @@ function normalizeItem(item) {
     description: item.description || problemBody,
     ctaLabel,
     ctaUrl,
+    layout,
+    caseBlocks,
+    metrics,
+    nextProject: item.nextProject || null,
   });
 }
 
@@ -115,6 +128,11 @@ async function fetchFromSanity() {
     ctaLabel,
     ctaUrl,
     problemBody,
+    layout,
+    tags,
+    metrics,
+    nextProject,
+    caseBlocks,
     "logo": logo.asset->url,
     "cover": coalesce(cover.asset->url, previewMedia[0].asset->url),
     "previewMedia": previewMedia[].asset->url,
@@ -128,6 +146,41 @@ async function fetchFromSanity() {
   const items = normalizeItems(data.result);
   if (!items.length) throw new Error('Sanity returned no feed items');
   return items;
+}
+
+/** Merge Sanity rows with local JSON so case studies keep full image stacks. */
+function mergeWithLocalCaseData(primary, localItems) {
+  if (!localItems?.length) return primary;
+  const byId = new Map();
+  localItems.forEach((item) => {
+    const id = item.id || item.slug;
+    if (id) byId.set(id, item);
+  });
+  return primary.map((item) => {
+    const local = byId.get(item.id) || byId.get(item.slug);
+    if (!local) return item;
+    const caseBlocks =
+      Array.isArray(item.caseBlocks) && item.caseBlocks.length
+        ? item.caseBlocks
+        : local.caseBlocks;
+    const previewMedia =
+      Array.isArray(item.previewMedia) && item.previewMedia.length
+        ? item.previewMedia
+        : local.previewMedia;
+    return {
+      ...local,
+      ...item,
+      layout: item.layout || local.layout,
+      caseBlocks: caseBlocks || [],
+      previewMedia: previewMedia || [],
+      metrics: item.metrics?.length ? item.metrics : local.metrics,
+      tags: item.tags?.length ? item.tags : local.tags,
+      nextProject: item.nextProject || local.nextProject,
+      logo: item.logo || local.logo,
+      cover: item.cover || local.cover,
+      heroImage: item.heroImage || local.heroImage,
+    };
+  });
 }
 
 async function fetchFromJson() {
@@ -147,6 +200,13 @@ export function getFeedItem(index) {
   if (!feedItems.length) return null;
   const i = ((index % feedItems.length) + feedItems.length) % feedItems.length;
   return feedItems[i];
+}
+
+export function getFeedItemById(id) {
+  if (!id) return null;
+  const index = feedItems.findIndex((item) => item.id === id || item.slug === id);
+  if (index < 0) return null;
+  return { item: feedItems[index], index };
 }
 
 export function getFeedItemCount() {
@@ -170,17 +230,26 @@ export async function loadFeedItems(force = false) {
   if (loadPromise) return loadPromise;
 
   loadPromise = (async () => {
+    let localItems = [];
+    try {
+      localItems = await fetchFromJson();
+    } catch (jsonErr) {
+      console.warn('[feed-items] local JSON unavailable', jsonErr);
+    }
+
     try {
       if (isSanityConfigured()) {
-        feedItems = await fetchFromSanity();
+        const sanityItems = await fetchFromSanity();
+        feedItems = mergeWithLocalCaseData(sanityItems, localItems);
         return feedItems;
       }
-      feedItems = await fetchFromJson();
+      feedItems = localItems;
+      if (!feedItems.length) throw new Error('Feed data is empty');
       return feedItems;
     } catch (sanityOrJsonErr) {
       console.warn('[feed-items] primary source failed, trying fallback JSON', sanityOrJsonErr);
       try {
-        feedItems = await fetchFromJson();
+        feedItems = localItems.length ? localItems : await fetchFromJson();
         return feedItems;
       } catch (jsonErr) {
         console.error('[feed-items]', jsonErr);

@@ -371,6 +371,239 @@
     display: block;
 }
 
+.feed-modal.is-case {
+    width: min(1120px, 100%);
+    height: min(860px, calc(100vh - 48px));
+}
+
+.feed-modal__case {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+.feed-modal__case[hidden] {
+    display: none;
+}
+
+.feed-modal__case-inner {
+    padding: 40px 36px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.feed-modal__case-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding-right: 48px;
+}
+
+.feed-modal__case-tagline {
+    margin: 0;
+    max-width: 42rem;
+    font-family: var(--font-display, 'Reckless', Georgia, serif);
+    font-size: clamp(28px, 3.4vw, 44px);
+    line-height: 1.15;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text-primary, #09090b);
+}
+
+.feed-modal__case-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.feed-modal__case-image {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f4f4f5;
+    /* Reserve space so the scroll column stays tall while images decode */
+    min-height: clamp(200px, 36vw, 420px);
+}
+
+.feed-modal__case-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.feed-modal__case-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.feed-modal__case-section {
+    display: grid;
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+    gap: 28px 40px;
+    align-items: start;
+    padding: 24px 0;
+}
+
+.feed-modal__case-label {
+    margin: 0;
+    font-family: var(--font-display, 'Reckless', Georgia, serif);
+    font-size: clamp(20px, 2.2vw, 24px);
+    line-height: 1.3;
+    font-weight: 500;
+    color: var(--text-tertiary, #71717a);
+}
+
+.feed-modal__case-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
+    font-size: clamp(18px, 1.8vw, 24px);
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--text-primary, #09090b);
+}
+
+.feed-modal__case-copy > *:first-child {
+    margin-top: 0;
+}
+
+.feed-modal__case-copy > *:last-child {
+    margin-bottom: 0;
+}
+
+.feed-modal__case-copy p {
+    margin: 0;
+}
+
+.feed-modal__case-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.feed-modal__case-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 10px 20px;
+    border: 1.5px solid var(--brand, #393bfe);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--brand, #393bfe);
+    font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
+    font-size: 15px;
+    line-height: 1.2;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.18s ease;
+}
+
+.feed-modal__case-btn:hover {
+    opacity: 0.78;
+}
+
+.feed-modal__case-btn--primary {
+    background: var(--brand, #393bfe);
+    color: #fff;
+}
+
+.feed-modal__case-results {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.feed-modal__case-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.feed-modal__case-metric {
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 36px 16px 20px;
+    border-radius: 20px;
+    background: #f8f8f7;
+}
+
+.feed-modal__case-metric-value {
+    margin: 0;
+    font-family: var(--font-display, 'Reckless', Georgia, serif);
+    font-size: clamp(40px, 4.5vw, 56px);
+    line-height: 1;
+    font-weight: 600;
+    color: var(--feed-modal-accent, #059669);
+}
+
+.feed-modal__case-metric-text {
+    margin: 0;
+    font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
+    font-size: 15px;
+    line-height: 1.35;
+    font-weight: 500;
+    color: var(--text-primary, #09090b);
+}
+
+.feed-modal__case-next {
+    display: grid;
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+    gap: 28px 40px;
+    align-items: start;
+    width: 100%;
+    padding: 32px 0 8px;
+    border: none;
+    border-top: 1px solid #e4e4e7;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
+.feed-modal__case-next-label {
+    font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-tertiary, #71717a);
+}
+
+.feed-modal__case-next-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.feed-modal__case-next-title {
+    font-family: var(--font-display, 'Reckless', Georgia, serif);
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.05;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text-primary, #09090b);
+}
+
+.feed-modal__case-next-subtitle {
+    font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--text-secondary, #52525b);
+}
+
+.feed-modal__case-next:hover .feed-modal__case-next-title {
+    color: var(--brand, #393bfe);
+}
+
 .feed-modal__link-pill {
     position: absolute;
     top: 20px;
@@ -424,6 +657,10 @@ body.feed-modal-open .feeds-chrome {
         border-radius: 16px 16px 0 0;
     }
 
+    .feed-modal.is-case {
+        height: min(94vh, 960px);
+    }
+
     .feed-modal__split {
         grid-template-columns: 1fr;
         grid-template-rows: minmax(220px, 34vh) minmax(0, 1fr);
@@ -445,5 +682,32 @@ body.feed-modal-open .feeds-chrome {
         width: 40px;
         height: 40px;
         border-radius: 10px;
+    }
+
+    .feed-modal__case-inner {
+        padding: 28px 20px 48px;
+        gap: 28px;
+    }
+
+    .feed-modal__case-blocks {
+        gap: 32px;
+    }
+
+    .feed-modal__case-section,
+    .feed-modal__case-next {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .feed-modal__case-pair {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-modal__case-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-modal__case-metric {
+        min-height: 220px;
     }
 }

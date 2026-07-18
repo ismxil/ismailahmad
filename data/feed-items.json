@@ -119,14 +119,211 @@
       "accent": "#66cb29"
     },
     {
-      "id": "feed-10",
+      "id": "lemfi",
+      "name": "Lemfi",
       "client": "Lemfi",
-      "headline": "Debit card program designed for diaspora communities in the UK",
-      "category": "Product Design",
-      "years": "2021 - 2024",
-      "description": "Designed a premium, trustworthy debit card experience aligned with Lemfi's remittance product.",
-      "cover": "assets/feeds/image_10.jpg",
-      "accent": "#393bfe"
+      "slug": "lemfi",
+      "layout": "case",
+      "year": 2024,
+      "projectType": "Card",
+      "category": "Card",
+      "years": "2024",
+      "tags": ["Card", "Lead Product Designer", "2024"],
+      "tagline": "Lemfi moved millions across borders. Spending it required another bank. I designed the card feature to close the gap.",
+      "headline": "Lemfi moved millions across borders. Spending it required another bank. I designed the card feature to close the gap.",
+      "liveUrl": "https://lemfi.com/cards",
+      "link": "https://lemfi.com/cards",
+      "logo": "assets/clients/lemfi.svg",
+      "accent": "#059669",
+      "cover": "assets/feeds/lemfi/01.png",
+      "heroImage": "assets/feeds/lemfi/01.png",
+      "previewMedia": [
+        "assets/feeds/lemfi/01.png",
+        "assets/feeds/lemfi/02.png",
+        "assets/feeds/lemfi/03.png",
+        "assets/feeds/lemfi/04.png",
+        "assets/feeds/lemfi/05.png",
+        "assets/feeds/lemfi/06.png",
+        "assets/feeds/lemfi/07.png",
+        "assets/feeds/lemfi/08.png",
+        "assets/feeds/lemfi/09.png",
+        "assets/feeds/lemfi/10.png",
+        "assets/feeds/lemfi/11.png",
+        "assets/feeds/lemfi/12.png",
+        "assets/feeds/lemfi/13.png",
+        "assets/feeds/lemfi/14.png",
+        "assets/feeds/lemfi/15.png",
+        "assets/feeds/lemfi/16.png",
+        "assets/feeds/lemfi/17.png"
+      ],
+      "problemBody": "Lemfi is a fintech built for the global diaspora: cross-border transfers, multi-currency accounts, and a platform that helps people keep money moving between continents.\n\nMoving money to Lemfi was solved. Spending it was not. We designed a card experience that closed the gap.",
+      "ctaLabel": "Let's talk",
+      "metrics": [
+        {
+          "value": "25%",
+          "text": "Fewer customer complaints across platform related to spending, target was 45%"
+        },
+        {
+          "value": "+32.1k",
+          "text": "The number of new users onboarded to the card feature jumped, the target was 30K"
+        },
+        {
+          "value": "£58m",
+          "text": "Raised through the card feature strategy, a new revenue stream"
+        }
+      ],
+      "nextProject": {
+        "id": "cadana",
+        "name": "Cadana",
+        "subtitle": "Debit card feature program"
+      },
+      "caseBlocks": [
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/01.png",
+          "alt": "Lemfi debit card and app hero"
+        },
+        {
+          "type": "section",
+          "label": "Intro",
+          "body": "Lemfi is a fintech built for the global diaspora: cross-border transfers, multi-currency accounts, and a platform that helps people keep money moving between continents.\n\nThe people using it had left their home countries for the UK, the US, and Canada. They were sending money to family, managing balances in multiple currencies, and building lives in new cities.\n\nMoving money to Lemfi was solved. Spending it wasn't. We designed a card experience that closed the gap.",
+          "actions": [
+            { "label": "Let's talk", "action": "talk" },
+            { "label": "See it live", "href": "https://lemfi.com/cards", "primary": true }
+          ]
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/02.png",
+          "alt": "Lemfi card home experience — say goodbye to fees"
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/03.png",
+          "alt": "Lemfi card overview on purple"
+        },
+        {
+          "type": "section",
+          "label": "Problem",
+          "body": "Sending money back home when you live in London. You have to enter your Barclays card details every single time. Trying to pay a friend back and finding out they needed to be on Lemfi too, or it wasn't happening. Hitting a card limit error you didn't understand, shown before you'd even tried to save a card."
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/04.png",
+          "alt": "Lemfi send method and funding flow"
+        },
+        {
+          "type": "section",
+          "label": "Voice of the customers",
+          "body": "These were people describing the exact problem we knew existed."
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/05.png",
+          "alt": "Lemfi physical and virtual card screens"
+        },
+        {
+          "type": "section",
+          "label": "Solution",
+          "body": "We focused on reducing spending-related complaints, onboarding a new cohort of card users, and opening a new revenue stream while making the card feel like a natural extension of the remittance product."
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/06.png",
+          "alt": "Lemfi card feature flow"
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/07.png",
+          "alt": "Lemfi card onboarding and verification"
+        },
+        {
+          "type": "section",
+          "label": "Pivot",
+          "body": "We first introduced fees, which was derailing people. So we decided to take and chunk the process."
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/08.png",
+          "alt": "Lemfi card benefits and control screens"
+        },
+        {
+          "type": "pair",
+          "images": [
+            { "src": "assets/feeds/lemfi/09.png", "alt": "Lemfi card lifestyle visual" },
+            { "src": "assets/feeds/lemfi/10.png", "alt": "Lemfi physical debit card" }
+          ]
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/11.png",
+          "alt": "Lemfi card management phone row"
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/12.png",
+          "alt": "Lemfi card marketing composition"
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/13.png",
+          "alt": "Lemfi currency and market icons"
+        },
+        {
+          "type": "section",
+          "label": "Solution",
+          "body": "The product remembered funding methods, made peer payments work beyond the Lemfi network, and surfaced card limits before people hit a wall — so spending felt as reliable as sending money home."
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/14.png",
+          "alt": "Lemfi card management detail"
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/15.png",
+          "alt": "Lemfi web and laptop experience"
+        },
+        {
+          "type": "results",
+          "summary": "The card design received strong positive feedback for its look and feel. Brand loyalty strengthened. Transaction volume increased significantly in the UK market following launch.",
+          "metrics": [
+            {
+              "value": "25%",
+              "text": "Fewer customer complaints across platform related to spending, target was 45%"
+            },
+            {
+              "value": "+32.1k",
+              "text": "The number of new users onboarded to the card feature jumped, the target was 30K"
+            },
+            {
+              "value": "£58m",
+              "text": "Raised through the card feature strategy, a new revenue stream"
+            }
+          ]
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/16.png",
+          "alt": "Lemfi multi-phone card showcase"
+        },
+        {
+          "type": "image",
+          "src": "assets/feeds/lemfi/17.png",
+          "alt": "Lemfi final card experience"
+        },
+        {
+          "type": "section",
+          "label": "Reflection",
+          "body": "The card feature made Lemfi feel more complete for people living across borders. It reduced friction around spending, strengthened trust in the product, and showed how tightly product design and business growth could reinforce each other."
+        },
+        {
+          "type": "next",
+          "id": "cadana",
+          "name": "Cadana",
+          "subtitle": "Debit card feature program"
+        }
+      ]
     },
     {
       "id": "feed-11",

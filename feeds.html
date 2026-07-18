@@ -414,7 +414,8 @@
                     <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
             </button>
-            <div class="feed-modal__split">
+
+            <div id="feed-modal-simple" class="feed-modal__split">
                 <div class="feed-modal__content">
                     <div class="feed-modal__header">
                         <div id="feed-modal-icon" class="feed-modal__icon" aria-hidden="true">
@@ -433,6 +434,22 @@
                 </div>
                 <div class="feed-modal__media">
                     <img id="feed-modal-hero-img" src="" alt="" />
+                </div>
+            </div>
+
+            <div id="feed-modal-case" class="feed-modal__case" hidden>
+                <div class="feed-modal__case-inner">
+                    <header class="feed-modal__case-header">
+                        <div id="feed-modal-case-icon" class="feed-modal__icon" aria-hidden="true">
+                            <img id="feed-modal-case-logo" class="feed-modal__logo" alt="" hidden />
+                        </div>
+                        <div class="feed-modal__title-wrap">
+                            <h2 id="feed-modal-case-title" class="feed-modal__title"></h2>
+                            <div id="feed-modal-case-meta" class="feed-modal__meta-row"></div>
+                        </div>
+                    </header>
+                    <p id="feed-modal-case-tagline" class="feed-modal__case-tagline"></p>
+                    <div id="feed-modal-case-blocks" class="feed-modal__case-blocks"></div>
                 </div>
             </div>
         </div>

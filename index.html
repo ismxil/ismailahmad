@@ -500,7 +500,7 @@
             opacity: 0.92;
         }
 
-        .home-project:hover .home-project__cover img {
+        .home-project:hover .home-project__cover > img {
             transform: scale(1.04);
         }
 
@@ -518,7 +518,7 @@
             transition: opacity 0.2s ease;
         }
 
-        .home-project__cover img {
+        .home-project__cover > img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -1098,12 +1098,28 @@
             letter-spacing: 0;
         }
 
+        #modal-title.has-logo {
+            font-size: 0;
+            line-height: 0;
+            margin-bottom: 24px;
+        }
+
+        .project-modal__title-logo {
+            display: block;
+            height: 24px; /* 50% of prior 48px title logo */
+            width: auto;
+            max-width: min(160px, 100%);
+            object-fit: contain;
+            object-position: left center;
+            margin-bottom: 0;
+        }
+
         #modal-subtitle {
             margin: 0;
-            font-size: clamp(22px, 3vw, 32px);
+            font-size: 40px;
             line-height: 1.375;
             font-weight: 500;
-            color: var(--text-secondary);
+            color: #000;
         }
 
         .project-modal__tags {
@@ -1118,12 +1134,13 @@
             justify-content: center;
             height: 48px;
             padding: 8px 24px;
-            border: 1.5px solid var(--brand);
+            border: none;
             border-radius: 50px;
+            background: var(--text-secondary);
             font-size: 16px;
             line-height: 24px;
             font-weight: 500;
-            color: var(--brand);
+            color: #fff;
             white-space: nowrap;
         }
 
@@ -1278,6 +1295,48 @@
             display: block;
         }
 
+        /* Case-study images: full width, natural height (no crop) */
+        .project-case__image {
+            width: 100%;
+            height: auto;
+            min-height: clamp(180px, 28vw, 320px);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 0;
+            background: #e4e4e7;
+        }
+
+        .project-case__image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .project-case__pair {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .project-modal__inner.is-case {
+            width: min(1200px, 100%);
+            gap: 80px;
+        }
+
+        .project-modal__inner.is-case .project-modal__blocks {
+            --case-blocks-gap: 80px;
+            gap: var(--case-blocks-gap);
+        }
+
+        /* Net 20px between consecutive case images/pairs (sections keep their own margins) */
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__image + .project-case__image,
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__image + .project-case__pair,
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__pair + .project-case__image,
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__pair + .project-case__pair {
+            margin-top: calc(20px - var(--case-blocks-gap));
+        }
+
         .project-modal__split {
             display: grid;
             grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
@@ -1398,7 +1457,7 @@
         #modal-next-title {
             margin: 0;
             font-family: var(--font-display);
-            font-size: clamp(40px, 6vw, 72px);
+            font-size: 48px;
             line-height: 1;
             font-weight: 600;
             color: var(--text-primary);
@@ -1406,7 +1465,7 @@
 
         #modal-next-subtitle {
             margin: 0;
-            font-size: clamp(22px, 3vw, 32px);
+            font-size: 24px;
             line-height: 1.375;
             font-weight: 500;
             color: var(--text-secondary);
@@ -1485,12 +1544,14 @@
             grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
             gap: 32px;
             align-items: start;
+            margin-top: 84px;
+            margin-bottom: 200px;
         }
 
         .project-case__label {
             margin: 0;
             font-family: var(--font-display);
-            font-size: clamp(20px, 2.5vw, 24px);
+            font-size: 24px;
             line-height: 1.33;
             font-weight: 500;
             color: #71717a;
@@ -1504,7 +1565,8 @@
 
         .project-case__content p {
             margin: 0;
-            font-size: clamp(22px, 3vw, 32px);
+            padding-right: 152px;
+            font-size: 24px;
             line-height: 1.375;
             font-weight: 500;
             color: var(--text-primary);
@@ -1569,6 +1631,7 @@
             padding: 48px 16px 24px;
             border-radius: 24px;
             background: #f8f8f7;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         }
 
         .project-case__result-value {
@@ -1599,6 +1662,10 @@
                 padding-top: 96px;
             }
 
+            #modal-subtitle {
+                font-size: 26px;
+            }
+
             .project-modal__inner {
                 gap: 80px;
             }
@@ -1613,6 +1680,15 @@
                 gap: 80px;
             }
 
+            .project-case__label,
+            .project-case__content p {
+                font-size: 18px;
+            }
+
+            .project-case__content p {
+                padding-right: 64px;
+            }
+
             .project-case__content {
                 gap: 32px;
             }
@@ -1623,6 +1699,19 @@
 
             .project-case__result-card {
                 min-height: 320px;
+            }
+
+            .project-case__pair {
+                grid-template-columns: 1fr;
+            }
+
+            .project-modal__inner.is-case {
+                gap: 64px;
+            }
+
+            .project-modal__inner.is-case .project-modal__blocks {
+                --case-blocks-gap: 64px;
+                gap: var(--case-blocks-gap);
             }
 
             .project-modal__metric {
@@ -2306,7 +2395,7 @@
 
                     <section class="project-modal__next">
                         <div class="project-modal__next-row">
-                            <span class="project-modal__next-label">See other work</span>
+                            <span class="project-modal__next-label">Next</span>
                             <button type="button" id="modal-next-project">
                                 <span id="modal-next-title"></span>
                                 <span id="modal-next-subtitle"></span>
@@ -2382,6 +2471,7 @@
         var cards = [
             {
                 title: 'Lemfi',
+                logo: 'assets/clients/lemfi.svg',
                 subtitle: 'Lemfi moved millions across borders. Spending it required another bank. I designed the card feature to close the gap.',
                 year: '2024',
                 tags: ['Card', 'Lead Product Designer', '2024'],
@@ -2426,20 +2516,147 @@
                         }
                     ]
                 },
-                caseStudy: {
-                    heroImage: { src: 'assets/lemfi-case/lemfi-hero.png', alt: 'Lemfi debit card hero visual' },
-                    solutionImage: { src: 'assets/lemfi-case/lemfi-solution.png', alt: 'Lemfi card experience screen' },
-                    flowImage: { src: 'assets/lemfi-case/lemfi-flow.png', alt: 'Lemfi card feature flow diagram' },
-                    intro: [
-                        'Lemfi is a fintech built for the global diaspora: cross-border transfers, multi-currency accounts, and a platform that helps people keep money moving between continents.',
-                        'The people using it had left their home countries for the UK, the US, and Canada. They were sending money to family, managing balances in multiple currencies, and building lives in new cities.',
-                        'Moving money to Lemfi was solved. Spending it was not. We designed a card experience that closed the gap.'
-                    ],
-                    problem: 'Sending money back home when you live in London meant entering your Barclays card details every single time. Paying a friend back could fail if they were not on Lemfi too. And card-limit errors often showed up before you had even tried to save a card.',
-                    solution: 'We focused on reducing spending-related complaints, onboarding a new cohort of card users, and opening a new revenue stream while making the card feel like a natural extension of the remittance product.',
-                    reflection: 'The card feature made Lemfi feel more complete for people living across borders. It reduced friction around spending, strengthened trust in the product, and showed how tightly product design and business growth could reinforce each other.',
-                    resultsSummary: 'The card design received strong positive feedback for its look and feel. Brand loyalty strengthened. Transaction volume increased significantly in the UK market following launch.'
-                }
+                caseBlocks: [
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/01.png',
+                        alt: 'Lemfi debit card and app hero'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Intro',
+                        body: 'Lemfi is a fintech built for the global diaspora: cross-border transfers, multi-currency accounts, and a platform that helps people keep money moving between continents.\n\nThe people using it had left their home countries for the UK, the US, and Canada. They were sending money to family, managing balances in multiple currencies, and building lives in new cities.\n\nMoving money to Lemfi was solved. Spending it wasn\'t. We designed a card experience that closed the gap.',
+                        actions: [
+                            { label: 'Let\'s talk', action: 'talk' },
+                            { label: 'See it live', href: 'https://lemfi.com/cards', primary: true }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/02.png',
+                        alt: 'Lemfi card home experience — say goodbye to fees'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/03.png',
+                        alt: 'Lemfi card overview on purple'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Problem',
+                        body: 'Sending money back home when you live in London. You have to enter your Barclays card details every single time. Trying to pay a friend back and finding out they needed to be on Lemfi too, or it wasn\'t happening. Hitting a card limit error you didn\'t understand, shown before you\'d even tried to save a card.'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/04.png',
+                        alt: 'Lemfi send method and funding flow'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Voice of the customers',
+                        body: 'These were people describing the exact problem we knew existed.'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/05.png',
+                        alt: 'Lemfi physical and virtual card screens'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Solution',
+                        body: 'We focused on reducing spending-related complaints, onboarding a new cohort of card users, and opening a new revenue stream while making the card feel like a natural extension of the remittance product.'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/06.png',
+                        alt: 'Lemfi card feature flow'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/07.png',
+                        alt: 'Lemfi card onboarding and verification'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Pivot',
+                        body: 'We first introduced fees, which was derailing people. So we decided to take and chunk the process.'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/08.png',
+                        alt: 'Lemfi card benefits and control screens'
+                    },
+                    {
+                        type: 'pair',
+                        images: [
+                            { src: 'assets/feeds/lemfi/09.png', alt: 'Lemfi card lifestyle visual' },
+                            { src: 'assets/feeds/lemfi/10.png', alt: 'Lemfi physical debit card' }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/11.png',
+                        alt: 'Lemfi card management phone row'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/12.png',
+                        alt: 'Lemfi card marketing composition'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/13.png',
+                        alt: 'Lemfi currency and market icons'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Solution',
+                        body: 'The product remembered funding methods, made peer payments work beyond the Lemfi network, and surfaced card limits before people hit a wall — so spending felt as reliable as sending money home.'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/14.png',
+                        alt: 'Lemfi card management detail'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/15.png',
+                        alt: 'Lemfi web and laptop experience'
+                    },
+                    {
+                        type: 'results',
+                        summary: 'The card design received strong positive feedback for its look and feel. Brand loyalty strengthened. Transaction volume increased significantly in the UK market following launch.',
+                        metrics: [
+                            {
+                                value: '25%',
+                                text: 'Fewer customer complaints across platform related to spending, target was 45%'
+                            },
+                            {
+                                value: '+32.1k',
+                                text: 'The number of new users onboarded to the card feature jumped, the target was 30K'
+                            },
+                            {
+                                value: '£58m',
+                                text: 'Raised through the card feature strategy, a new revenue stream'
+                            }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/16.png',
+                        alt: 'Lemfi multi-phone card showcase'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/lemfi/17.png',
+                        alt: 'Lemfi final card experience'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Reflection',
+                        body: 'The card feature made Lemfi feel more complete for people living across borders. It reduced friction around spending, strengthened trust in the product, and showed how tightly product design and business growth could reinforce each other.'
+                    }
+                ]
             },
             {
                 title: 'Mezovest',
@@ -2467,6 +2684,7 @@
             },
             {
                 title: 'Cadana',
+                logo: 'assets/clients/cadana.svg',
                 subtitle: 'Payment infrastructure brand identity',
                 year: '2026',
                 tags: ['Branding', '2026'],
@@ -2517,6 +2735,7 @@
             },
             {
                 title: 'Gomoney',
+                logo: 'assets/clients/gomoney.svg',
                 subtitle: 'Digital bank onboarding and brand refresh',
                 year: '2026',
                 tags: ['App Design', '2026'],
@@ -2542,6 +2761,7 @@
             },
             {
                 title: 'Commerzbank',
+                logo: 'assets/clients/commerz.svg',
                 subtitle: 'Banking app research, audit, and redesign',
                 year: '2026',
                 tags: ['App Design', '2026'],
@@ -2566,6 +2786,7 @@
             },
             {
                 title: 'Etihad Credit Bureau',
+                logo: 'assets/clients/eithad.svg',
                 subtitle: 'National credit bureau digital platform',
                 year: '2026',
                 tags: ['Web Design', '2026'],
@@ -2748,6 +2969,45 @@
             });
         }
 
+        function isCaseLayout(card) {
+            return !!(card && ((card.caseBlocks && card.caseBlocks.length) || card.caseStudy));
+        }
+
+        function splitCaseBody(body) {
+            if (!body) return [];
+            if (Array.isArray(body)) return body.filter(Boolean);
+            return String(body).split(/\n\n+/).map(function (part) {
+                return part.trim();
+            }).filter(Boolean);
+        }
+
+        function mapCaseActions(actions) {
+            return (actions || []).map(function (action) {
+                if (!action || !action.label) return null;
+                if (action.action === 'talk' || action.action === 'contact') {
+                    return {
+                        type: 'button',
+                        label: action.label,
+                        primary: !!action.primary,
+                        onClick: function () {
+                            if (typeof window.openContactPanel === 'function') {
+                                window.openContactPanel();
+                            }
+                        }
+                    };
+                }
+                if (action.href) {
+                    return {
+                        type: 'link',
+                        label: action.label,
+                        href: action.href,
+                        primary: !!action.primary
+                    };
+                }
+                return null;
+            }).filter(Boolean);
+        }
+
         function createCaseSection(labelText, paragraphs, actions) {
             var section = document.createElement('section');
             section.className = 'project-case__section';
@@ -2795,20 +3055,46 @@
 
         function createCaseImage(image) {
             var wrap = document.createElement('div');
-            wrap.className = 'project-modal__image';
-            renderVisual(wrap, image, { title: image.alt || 'Project image', accentColor: '#e4e4e7' });
+            wrap.className = 'project-case__image';
+            if (image && image.src) {
+                var img = document.createElement('img');
+                img.src = image.src;
+                img.alt = image.alt || 'Project image';
+                img.loading = 'eager';
+                img.decoding = 'async';
+                wrap.appendChild(img);
+            }
             return wrap;
         }
 
-        function createCaseResults(card) {
+        function createCasePair(block) {
+            var wrap = document.createElement('div');
+            wrap.className = 'project-case__pair';
+            (block.images || []).forEach(function (image) {
+                if (!image || !image.src) return;
+                wrap.appendChild(createCaseImage(image));
+            });
+            return wrap;
+        }
+
+        function createCaseResults(card, block) {
             var wrap = document.createElement('section');
             wrap.className = 'project-case__results';
-            wrap.appendChild(createCaseSection('Results', [card.caseStudy.resultsSummary]));
+            var summary = (block && block.summary) ||
+                (card.caseStudy && card.caseStudy.resultsSummary) ||
+                '';
+            if (summary) {
+                wrap.appendChild(createCaseSection('Results', [summary]));
+            }
 
             var grid = document.createElement('div');
             grid.className = 'project-case__results-grid';
 
-            (card.metrics || []).forEach(function (metric) {
+            var metrics = (block && block.metrics && block.metrics.length)
+                ? block.metrics
+                : (card.metrics || []);
+
+            metrics.forEach(function (metric) {
                 var item = document.createElement('article');
                 item.className = 'project-case__result-card';
 
@@ -2863,8 +3149,39 @@
             }
         }
 
+        function renderCaseBlocks(card) {
+            modalBlocks.innerHTML = '';
+            (card.caseBlocks || []).forEach(function (block) {
+                if (!block || !block.type) return;
+                if (block.type === 'image' && block.src) {
+                    modalBlocks.appendChild(createCaseImage({ src: block.src, alt: block.alt }));
+                    return;
+                }
+                if (block.type === 'pair') {
+                    modalBlocks.appendChild(createCasePair(block));
+                    return;
+                }
+                if (block.type === 'section') {
+                    modalBlocks.appendChild(createCaseSection(
+                        block.label || '',
+                        splitCaseBody(block.body || block.paragraphs),
+                        mapCaseActions(block.actions)
+                    ));
+                    return;
+                }
+                if (block.type === 'results') {
+                    modalBlocks.appendChild(createCaseResults(card, block));
+                }
+                // type "next" skipped — homepage has dedicated next-project footer
+            });
+        }
+
         function renderModalBlocks(card) {
             modalBlocks.innerHTML = '';
+            if (card.caseBlocks && card.caseBlocks.length) {
+                renderCaseBlocks(card);
+                return;
+            }
             if (card.caseStudy) {
                 modalBlocks.appendChild(createCaseImage(card.caseStudy.heroImage));
                 modalBlocks.appendChild(createCaseSection('Intro', card.caseStudy.intro, [
@@ -2950,14 +3267,33 @@
             modalNextPreview.setAttribute('aria-label', 'Open ' + nextCard.title);
         }
 
+        function renderModalTitle(card) {
+            var logoSrc = card.logo || card.logoSrc;
+            modalTitle.innerHTML = '';
+            if (logoSrc) {
+                var img = document.createElement('img');
+                img.className = 'project-modal__title-logo';
+                img.src = logoSrc;
+                img.alt = card.title;
+                modalTitle.appendChild(img);
+                modalTitle.classList.add('has-logo');
+            } else {
+                modalTitle.textContent = card.title;
+                modalTitle.classList.remove('has-logo');
+            }
+        }
+
         function renderModal(idx) {
             var card = cards[idx];
             currentIndex = idx;
+            var caseMode = isCaseLayout(card);
 
-            modalTitle.textContent = card.title;
+            renderModalTitle(card);
             modalSubtitle.textContent = card.subtitle || card.brief || '';
             renderModalTags(card);
-            if (card.caseStudy) {
+            document.querySelector('.project-modal__inner').classList.toggle('is-case', caseMode);
+
+            if (caseMode) {
                 modalGallery.hidden = true;
                 modalOverview.hidden = true;
                 modalGallery.innerHTML = '';
@@ -2980,7 +3316,7 @@
             }
 
             renderModalBlocks(card);
-            if (!card.caseStudy) {
+            if (!caseMode) {
                 renderModalMetrics(card);
             }
             renderModalNext(idx);
