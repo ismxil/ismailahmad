@@ -21,7 +21,7 @@
             background: #fff
         }
     </style>
-    <title>Ismail Ahmad — Portfolio 2026</title>
+    <title>Ismail Ahmad - Senior Product Designer</title>
     <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
@@ -1116,7 +1116,7 @@
 
         #modal-subtitle {
             margin: 0;
-            font-size: 40px;
+            font-size: 32px;
             line-height: 1.375;
             font-weight: 500;
             color: #000;
@@ -1132,15 +1132,15 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 48px;
-            padding: 8px 24px;
+            height: 44px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 50px;
-            background: var(--text-secondary);
+            border-radius: 999px;
+            background: #e4e4e7;
             font-size: 16px;
             line-height: 24px;
             font-weight: 500;
-            color: #fff;
+            color: #71717a;
             white-space: nowrap;
         }
 
@@ -1299,11 +1299,11 @@
         .project-case__image {
             width: 100%;
             height: auto;
-            min-height: clamp(180px, 28vw, 320px);
+            min-height: 0;
             border-radius: 16px;
             overflow: hidden;
             margin: 0;
-            background: #e4e4e7;
+            background: transparent;
         }
 
         .project-case__image img {
@@ -1329,11 +1329,16 @@
             gap: var(--case-blocks-gap);
         }
 
-        /* Net 20px between consecutive case images/pairs (sections keep their own margins) */
+        /* Net 20px between consecutive media/callout blocks (sections keep their own margins) */
         .project-modal__inner.is-case .project-modal__blocks > .project-case__image + .project-case__image,
         .project-modal__inner.is-case .project-modal__blocks > .project-case__image + .project-case__pair,
         .project-modal__inner.is-case .project-modal__blocks > .project-case__pair + .project-case__image,
-        .project-modal__inner.is-case .project-modal__blocks > .project-case__pair + .project-case__pair {
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__pair + .project-case__pair,
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__callout + .project-case__pair,
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__pair + .project-case__overlay,
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__callout + .project-case__overlay,
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__image + .project-case__overlay,
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__overlay + .project-case__image {
             margin-top: calc(20px - var(--case-blocks-gap));
         }
 
@@ -1414,14 +1419,23 @@
         }
 
         .project-modal__next-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            display: grid;
+            grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
             gap: 32px;
-            width: min(991px, 100%);
-            margin: 0 auto;
+            align-items: start;
+            width: 100%;
+            margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        .project-modal__next-stack {
+            grid-column: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            min-width: 0;
         }
 
         .project-modal__next-label {
@@ -1636,6 +1650,12 @@
             color: #f8f8f7;
         }
 
+        .project-case__button--dark {
+            background: #09090b;
+            border-color: #09090b;
+            color: #f8f8f7;
+        }
+
         .project-case__button svg {
             flex-shrink: 0;
             transition: transform 0.28s ease;
@@ -1672,6 +1692,7 @@
 
         .project-case__quote-text {
             margin: 0;
+            padding-right: 32px;
             font-family: var(--font-display);
             font-size: 18px;
             line-height: 26px;
@@ -1720,16 +1741,143 @@
             color: var(--text-primary);
         }
 
+        .project-case__callout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+            width: 100%;
+            padding: 120px 80px 168px;
+            border-radius: 24px;
+            background: #ffcf23;
+            text-align: center;
+        }
+
+        .project-case__callout-label {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: 24px;
+            line-height: 32px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__callout-body {
+            margin: 0;
+            max-width: 920px;
+            font-family: var(--font-body);
+            font-size: 40px;
+            line-height: 46px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__result-title {
+            margin: 0 0 8px;
+            font-family: var(--font-body);
+            font-size: 20px;
+            line-height: 24px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__result-text {
+            margin: 0;
+            font-size: 20px;
+            line-height: 24px;
+            font-weight: 400;
+            color: var(--text-primary);
+        }
+
+        .project-case__nda {
+            margin: 0;
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__overlay {
+            position: relative;
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #ffcf23;
+        }
+
+        .project-case__overlay-media {
+            width: 100%;
+            display: block;
+        }
+
+        .project-case__overlay-media img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .project-case__overlay-content {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 120px 48px 104px;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.72) 34%, #ffffff 78%);
+        }
+
+        .project-case__overlay-label {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: 24px;
+            line-height: 32px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__overlay-body {
+            margin: 0;
+            max-width: 740px;
+            font-family: var(--font-body);
+            font-size: 28px;
+            line-height: 40px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__overlay-note {
+            margin: 0;
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__overlay-content .project-case__actions {
+            justify-content: center;
+        }
+
         .project-case__results {
             display: flex;
             flex-direction: column;
-            gap: 48px;
+            gap: 0;
+        }
+
+        .project-case__results > .project-case__section {
+            margin-top: 0;
+            margin-bottom: 120px;
         }
 
         .project-case__results-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 16px;
+            margin: 0;
         }
 
         .project-case__result-card {
@@ -1743,21 +1891,30 @@
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         }
 
+        .project-case__result-lead {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            height: 72px;
+            width: 100%;
+        }
+
         .project-case__result-value {
             margin: 0;
             font-family: var(--font-display);
             font-size: clamp(56px, 6vw, 72px);
-            line-height: 1;
+            line-height: 72px;
             font-weight: 600;
             color: var(--text-primary);
         }
 
-        .project-case__result-text {
-            margin: 0;
-            font-size: 20px;
-            line-height: 24px;
-            font-weight: 400;
-            color: var(--text-primary);
+        .project-case__result-icon {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            object-position: left center;
+            display: block;
+            flex-shrink: 0;
         }
 
         @media (max-width: 900px) {
@@ -1772,7 +1929,18 @@
             }
 
             #modal-subtitle {
-                font-size: 26px;
+                font-size: 24px;
+            }
+
+            .project-modal__tags {
+                gap: 6px;
+            }
+
+            .project-modal__tag {
+                height: 33px;
+                padding: 6px 12px;
+                font-size: 12px;
+                line-height: 18px;
             }
 
             .project-modal__inner {
@@ -1808,6 +1976,26 @@
 
             .project-case__result-card {
                 min-height: 320px;
+            }
+
+            .project-case__callout {
+                padding: 64px 24px 112px;
+                gap: 24px;
+            }
+
+            .project-case__callout-body {
+                font-size: 24px;
+                line-height: 32px;
+            }
+
+            .project-case__overlay-content {
+                padding: 72px 24px 80px;
+                gap: 16px;
+            }
+
+            .project-case__overlay-body {
+                font-size: 18px;
+                line-height: 28px;
             }
 
             .project-case__pair {
@@ -1848,7 +2036,11 @@
             }
 
             .project-modal__next-row {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+            }
+
+            .project-modal__next-stack {
+                grid-column: 1;
             }
         }
 
@@ -2517,11 +2709,13 @@
 
                     <section class="project-modal__next">
                         <div class="project-modal__next-row">
-                            <span class="project-modal__next-label">Next</span>
-                            <button type="button" id="modal-next-project">
-                                <span id="modal-next-title"></span>
-                                <span id="modal-next-subtitle"></span>
-                            </button>
+                            <div class="project-modal__next-stack">
+                                <span class="project-modal__next-label">Next</span>
+                                <button type="button" id="modal-next-project">
+                                    <span id="modal-next-title"></span>
+                                    <span id="modal-next-subtitle"></span>
+                                </button>
+                            </div>
                         </div>
                         <button type="button" class="project-modal__next-preview" id="modal-next-preview"
                             aria-label="Open next project"></button>
@@ -2584,7 +2778,7 @@
         initSiteNav();
         initSpaNav();
 
-        // Featured grid order — Figma 504:1343: Lemfi, Cadana, Gomoney, Mezovest
+        // Featured grid order — Figma 504:1343: Lemfi, Cadana, Gomoney, AECB
         var homeProjectIndices = [0, 2, 3, 1];
 
         // ────────────────────────────────
@@ -2804,27 +2998,135 @@
                 ]
             },
             {
-                title: 'Mezovest',
-                subtitle: 'Small-business loan and management platform',
-                year: '2026',
-                tags: ['Product Design', '2026'],
-                accent: '#393bfe',
-                accentColor: '#393bfe',
-                desc: 'Mezovest is a technology solution helping small businesses access loans to grow. The project involved designing business management tools for vendors, customer touchpoints, and dashboards for internal teams and investors.',
-                brief: 'Small-business loan and management platform',
-                url: '',
-                images: [{ src: 'assets/cover/mezovest.png', alt: 'Mezovest project preview' }],
+                title: 'AECB',
+                logo: 'assets/clients/eithad.svg',
+                subtitle: 'Al Etihad Bureau Credit had every customer\'s credit data. Most couldn\'t use it to make a decision.',
+                year: '2024',
+                tags: ['Web & Portal UX', 'Senior UX Designer', '2024'],
+                accent: '#ffcf23',
+                accentColor: '#ffcf23',
+                desc: 'Etihad Credit Bureau is a government-owned entity that gathers and maintains credit information for individuals and companies across the UAE.',
+                brief: 'Al Etihad Bureau Credit had every customer\'s credit data. Most couldn\'t use it to make a decision.',
+                url: 'https://etihadbureau.ae',
+                storyUrl: 'https://etihadbureau.ae',
+                images: [{ src: 'assets/cover/ecb.png', alt: 'AECB project preview' }],
                 details: [
-                    { title: 'Services', items: ['Product Design', 'Web Design'] },
-                    { title: 'Industries', items: ['Small Business Finance', 'Lending'] },
-                    { title: 'Challenges', text: 'The platform needed to connect vendors, customers, internal operators, and investors into one clear business overview.' },
-                    { title: 'Stage', text: 'Product design for vendor tools, customer journeys, and operational dashboards across the lending lifecycle.' },
-                    { title: 'My Role', items: ['Mapped the key business workflows', 'Designed vendor and customer touchpoints', 'Created dashboard experiences for operations and investment visibility'] },
-                    { title: 'Results', items: ['Clarified the product structure for multiple user groups', 'Created a foundation for loan decisioning and business monitoring'] }
+                    { title: 'Services', items: ['Web Design', 'Portal Design', 'App Design'] },
+                    { title: 'Industries', items: ['Government Services', 'Credit Data'] },
+                    { title: 'Challenges', text: 'Customer struggle to check-out and find the whole idea of credit cumbersome. A lot of them only use the platform once a year, for ECB this needs to change.' },
+                    { title: 'Stage', text: 'National credit bureau website, portal, and mobile experience.' },
+                    { title: 'My Role', items: ['Senior UX Designer'] },
+                    { title: 'Results', items: ['12+ awards', 'Strategic clarity', 'Public reception'] }
                 ],
                 sections: [
-                    { label: 'Research', content: 'Mapped lending workflows across vendors, customers, operators, and investors to understand where visibility and decision-making broke down.' },
-                    { label: 'Impact', content: 'Created a clearer product structure for multiple user groups and a stronger foundation for loan decisioning and business monitoring.' }
+                    { label: 'Research', content: 'Most people in the UAE know they should be improving their finances but not what to actually do about it.' },
+                    { label: 'Impact', content: 'Recognised for making credit information transparent and accessible to ordinary consumers.' }
+                ],
+                metrics: [
+                    { value: '20.3m+', text: 'Individuals and businesses covered' },
+                    { value: '25.5m+', text: 'Credit facilities and contracts' },
+                    { value: '33.1m+', text: 'IBANs in the database' }
+                ],
+                caseBlocks: [
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/ecb/01.png',
+                        alt: 'AECB credit report on desktop and mobile'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Intro',
+                        body: 'Etihad Credit Bureau is a government-owned entity that gathers and maintains credit information for individuals and companies across the UAE. With offices in Dubai and Abu Dhabi, it acts as the official UAE credit reporting agency, providing reliable financial insights.\n\nThe bureau helps businesses and resident monitor and improve their credit well-being by simplifying financial data into easy-to-understand reports.',
+                        actions: [
+                            { label: 'Read more', action: 'readmore' },
+                            { label: 'See it live', href: 'https://etihadbureau.ae', primary: true }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/ecb/02.png',
+                        alt: 'AECB website and mobile navigation'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Context',
+                        body: 'Most people in the UAE know they should be improving their finances but not what to actually do about it. They lack a clear picture of the steps that would raise their credit score and strengthen their overall financial health and even when they set a budget, holding to it is difficult in cities like Dubai where comfortable spending is the norm and the pressure to keep up is constant. The advice available to them doesn\'t close this gap, it\'s generic, one-size-fits-all guidance that ignores their income, spending patterns, and goals, so it rarely translates into action.'
+                    },
+                    {
+                        type: 'results',
+                        label: 'The stakes',
+                        summary: 'This wasn\'t a niche product. AECB\'s own published figures give a sense of scale.',
+                        metrics: [
+                            { value: '20.3m+', text: 'Individuals and businesses covered' },
+                            { value: '25.5m+', text: 'Credit facilities and contracts' },
+                            { value: '33.1m+', text: 'IBANs in the database' }
+                        ]
+                    },
+                    {
+                        type: 'callout',
+                        label: 'The design question',
+                        body: 'How do we organise a national credit platform around what people came to do, rather than around how the institution is built?'
+                    },
+                    {
+                        type: 'pair',
+                        images: [
+                            { src: 'assets/feeds/ecb/03.png', alt: 'AECB create account lifestyle' },
+                            { src: 'assets/feeds/ecb/04.png', alt: 'AECB mobile onboarding with card' }
+                        ]
+                    },
+                    {
+                        type: 'overlay',
+                        src: 'assets/feeds/ecb/05.png',
+                        alt: 'AECB credit report portal',
+                        label: 'Challenges',
+                        body: 'Customer struggle to check-out and find the whole idea of credit cumbersome. A lot of them only use the platform once a year, for ECB this needs to change.',
+                        note: 'This project is under NDA',
+                        actions: [
+                            { label: 'Contact for casestudy', action: 'contact', dark: true }
+                        ]
+                    },
+                    {
+                        type: 'section',
+                        label: 'My role',
+                        body: 'I built out detailed wireframes for the site and the portal, establishing structure and hierarchy before any visual design began. On a project with this many stakeholders, the sequencing does something specific, it keeps the review conversation about whether the thing is clear, before anyone can make it about whether the thing is pretty. But the UX foundation guided final outcome of the UIs. There were extended research done by the team and those were translated into structures.'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/ecb/06.png',
+                        alt: 'AECB create account laptop mockup'
+                    },
+                    {
+                        type: 'results',
+                        label: 'Results',
+                        summary: 'I left the team when the platform launched, so what follows isn\'t a measured before-and-after. I don\'t have post-launch numbers to report. What I can speak to is what the work was built to move, measured against the research findings that defined success.',
+                        metrics: [
+                            {
+                                value: '12+',
+                                title: 'Awards',
+                                text: 'Number of Award won so far from MENA Design Awards, and one from the major design iF Design Award'
+                            },
+                            {
+                                icon: 'assets/feeds/ecb/right.svg',
+                                title: 'Strategic Clarity',
+                                text: 'A renewed sense of purpose and growing enthusiasm within the team, deepening engagement and operation'
+                            },
+                            {
+                                icon: 'assets/feeds/ecb/up.svg',
+                                title: 'Public reception',
+                                text: 'Recognised for making credit information transparent and accessible to ordinary consumers'
+                            }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/ecb/07.png',
+                        alt: 'AECB mobile UI mosaic'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Reflection',
+                        body: 'Architecture is the design decision. Everything else is downstream. The visible work on this project was interface. The work that determined whether it succeeded was deciding what sat next to what, and why. Getting that right made every later decision easier and portable enough that someone else could extend it to a surface I never touched.'
+                    }
                 ]
             },
             {
@@ -3325,6 +3627,7 @@
                         type: 'button',
                         label: action.label,
                         primary: !!action.primary,
+                        dark: !!action.dark,
                         onClick: function () {
                             if (typeof window.openContactPanel === 'function') {
                                 window.openContactPanel();
@@ -3346,8 +3649,21 @@
 
         var CASE_EXTERNAL_ARROW = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10" /></svg>';
         var CASE_CHEVRON_DOWN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>';
+        var CASE_LOCK = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>';
 
-        function createCaseSection(labelText, paragraphs, actions) {
+        function caseActionClass(action) {
+            var cls = 'project-case__button';
+            if (action.dark) cls += ' project-case__button--dark';
+            else if (action.primary) cls += ' project-case__button--primary';
+            return cls;
+        }
+
+        function caseActionIcon(action) {
+            if (action.dark || action.icon === 'lock') return CASE_LOCK;
+            return CASE_EXTERNAL_ARROW;
+        }
+
+        function createCaseSection(labelText, paragraphs, actions, note) {
             var section = document.createElement('section');
             section.className = 'project-case__section';
 
@@ -3391,6 +3707,13 @@
                 });
             }
 
+            if (note) {
+                var noteEl = document.createElement('p');
+                noteEl.className = 'project-case__nda';
+                noteEl.textContent = note;
+                content.appendChild(noteEl);
+            }
+
             if (actions && actions.length) {
                 var row = document.createElement('div');
                 row.className = 'project-case__actions';
@@ -3412,16 +3735,16 @@
                     } else if (action.type === 'button') {
                         el = document.createElement('button');
                         el.type = 'button';
-                        el.className = 'project-case__button' + (action.primary ? ' project-case__button--primary' : '');
-                        el.innerHTML = action.label + CASE_EXTERNAL_ARROW;
+                        el.className = caseActionClass(action);
+                        el.innerHTML = action.label + caseActionIcon(action);
                         el.addEventListener('click', action.onClick);
                     } else {
                         el = document.createElement('a');
                         el.href = action.href;
                         el.target = '_blank';
                         el.rel = 'noopener';
-                        el.className = 'project-case__button' + (action.primary ? ' project-case__button--primary' : '');
-                        el.innerHTML = action.label + CASE_EXTERNAL_ARROW;
+                        el.className = caseActionClass(action);
+                        el.innerHTML = action.label + caseActionIcon(action);
                     }
                     row.appendChild(el);
                 });
@@ -3504,14 +3827,105 @@
             return wrap;
         }
 
+        function createCaseCallout(block) {
+            var wrap = document.createElement('section');
+            wrap.className = 'project-case__callout';
+
+            if (block.label) {
+                var label = document.createElement('h3');
+                label.className = 'project-case__callout-label';
+                label.textContent = block.label;
+                wrap.appendChild(label);
+            }
+
+            if (block.body) {
+                var body = document.createElement('p');
+                body.className = 'project-case__callout-body';
+                body.textContent = block.body;
+                wrap.appendChild(body);
+            }
+
+            return wrap;
+        }
+
+        function createCaseOverlay(block) {
+            var wrap = document.createElement('section');
+            wrap.className = 'project-case__overlay';
+
+            var media = document.createElement('div');
+            media.className = 'project-case__overlay-media';
+            if (block.src) {
+                var img = document.createElement('img');
+                img.src = block.src;
+                img.alt = block.alt || '';
+                img.loading = 'eager';
+                img.decoding = 'async';
+                media.appendChild(img);
+            }
+            wrap.appendChild(media);
+
+            var content = document.createElement('div');
+            content.className = 'project-case__overlay-content';
+
+            if (block.label) {
+                var label = document.createElement('h3');
+                label.className = 'project-case__overlay-label';
+                label.textContent = block.label;
+                content.appendChild(label);
+            }
+
+            if (block.body) {
+                var body = document.createElement('p');
+                body.className = 'project-case__overlay-body';
+                body.textContent = block.body;
+                content.appendChild(body);
+            }
+
+            if (block.note) {
+                var note = document.createElement('p');
+                note.className = 'project-case__overlay-note';
+                note.textContent = block.note;
+                content.appendChild(note);
+            }
+
+            var actions = mapCaseActions(block.actions);
+            if (actions.length) {
+                var row = document.createElement('div');
+                row.className = 'project-case__actions';
+                actions.forEach(function (action) {
+                    var el;
+                    if (action.type === 'button') {
+                        el = document.createElement('button');
+                        el.type = 'button';
+                        el.className = caseActionClass(action);
+                        el.innerHTML = action.label + caseActionIcon(action);
+                        el.addEventListener('click', action.onClick);
+                    } else if (action.href) {
+                        el = document.createElement('a');
+                        el.href = action.href;
+                        el.target = '_blank';
+                        el.rel = 'noopener';
+                        el.className = caseActionClass(action);
+                        el.innerHTML = action.label + caseActionIcon(action);
+                    }
+                    if (el) row.appendChild(el);
+                });
+                content.appendChild(row);
+            }
+
+            wrap.appendChild(content);
+            return wrap;
+        }
+
         function createCaseResults(card, block) {
             var wrap = document.createElement('section');
             wrap.className = 'project-case__results';
             var summary = (block && block.summary) ||
                 (card.caseStudy && card.caseStudy.resultsSummary) ||
                 '';
+            var labelText = (block && block.label) || 'Results';
             if (summary) {
-                wrap.appendChild(createCaseSection('Results', [summary]));
+                wrap.appendChild(createCaseSection(labelText, [summary]));
             }
 
             var grid = document.createElement('div');
@@ -3525,16 +3939,37 @@
                 var item = document.createElement('article');
                 item.className = 'project-case__result-card';
 
-                var value = document.createElement('p');
-                value.className = 'project-case__result-value';
-                value.textContent = metric.value;
+                var lead = document.createElement('div');
+                lead.className = 'project-case__result-lead';
+                if (metric.icon) {
+                    var icon = document.createElement('img');
+                    icon.className = 'project-case__result-icon';
+                    icon.src = metric.icon;
+                    icon.alt = '';
+                    icon.setAttribute('aria-hidden', 'true');
+                    lead.appendChild(icon);
+                } else if (metric.value) {
+                    var value = document.createElement('p');
+                    value.className = 'project-case__result-value';
+                    value.textContent = metric.value;
+                    lead.appendChild(value);
+                }
+                item.appendChild(lead);
 
-                var text = document.createElement('p');
-                text.className = 'project-case__result-text';
-                text.textContent = metric.text;
-
-                item.appendChild(value);
-                item.appendChild(text);
+                var textWrap = document.createElement('div');
+                if (metric.title) {
+                    var title = document.createElement('p');
+                    title.className = 'project-case__result-title';
+                    title.textContent = metric.title;
+                    textWrap.appendChild(title);
+                }
+                if (metric.text) {
+                    var text = document.createElement('p');
+                    text.className = 'project-case__result-text';
+                    text.textContent = metric.text;
+                    textWrap.appendChild(text);
+                }
+                item.appendChild(textWrap);
                 grid.appendChild(item);
             });
 
@@ -3592,8 +4027,17 @@
                     modalBlocks.appendChild(createCaseSection(
                         block.label || '',
                         splitCaseBody(block.body || block.paragraphs),
-                        mapCaseActions(block.actions)
+                        mapCaseActions(block.actions),
+                        block.note || ''
                     ));
+                    return;
+                }
+                if (block.type === 'callout') {
+                    modalBlocks.appendChild(createCaseCallout(block));
+                    return;
+                }
+                if (block.type === 'overlay') {
+                    modalBlocks.appendChild(createCaseOverlay(block));
                     return;
                 }
                 if (block.type === 'quotes') {
