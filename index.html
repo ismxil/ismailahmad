@@ -1644,6 +1644,81 @@
             transform: rotate(180deg);
         }
 
+        .project-case__quotes {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__section:has(+ .project-case__quotes) {
+            margin-bottom: 0;
+        }
+
+        .project-modal__inner.is-case .project-modal__blocks > .project-case__section + .project-case__quotes {
+            margin-top: calc(var(--case-blocks-gap) * -1 + 92px);
+            margin-bottom: 120px;
+        }
+
+        .project-case__quote {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 32px;
+            min-height: 262px;
+        }
+
+        .project-case__quote-text {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: 18px;
+            line-height: 26px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__quote-person {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .project-case__quote-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center top;
+            flex-shrink: 0;
+            filter: blur(2px);
+        }
+
+        .project-case__quote-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .project-case__quote-name {
+            margin: 0;
+            font-family: var(--font-body);
+            font-size: 20px;
+            line-height: 27.5px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .project-case__quote-role {
+            margin: 0;
+            font-family: var(--font-body);
+            font-size: 10px;
+            line-height: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
         .project-case__results {
             display: flex;
             flex-direction: column;
@@ -1736,6 +1811,25 @@
 
             .project-case__pair {
                 grid-template-columns: 1fr;
+            }
+
+            .project-case__quotes {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .project-modal__inner.is-case .project-modal__blocks > .project-case__section + .project-case__quotes {
+                margin-bottom: 80px;
+            }
+
+            .project-case__quote {
+                min-height: 0;
+                gap: 24px;
+            }
+
+            .project-case__quote-text {
+                font-size: 18px;
+                line-height: 26px;
             }
 
             .project-modal__inner.is-case {
@@ -2506,8 +2600,8 @@
                 accentColor: '#66cb29',
                 desc: 'Lemfi is a financial technology company offering remittance and money services designed for people in the diaspora. I worked across mobile, web, portal, and community touchpoints.',
                 brief: 'Diaspora remittance and product ecosystem',
-                url: 'https://lemfi.com/cards',
-                storyUrl: 'https://lemfi.com/cards',
+                url: 'https://lemfi.com/en-gb/credit',
+                storyUrl: 'https://lemfi.com/en-gb/credit',
                 images: [{ src: 'assets/cover/lemfi.png', alt: 'Lemfi project preview' }],
                 details: [
                     { title: 'Services', items: ['Product Design', 'Web Design'] },
@@ -2555,7 +2649,7 @@
                         body: 'Lemfi is a fintech built for the global diaspora: cross-border transfers, multi-currency accounts, and a platform that helps people keep money moving between continents.\n\nThe people using it had left their home countries for the UK, the US, and Canada. They were sending money to family, managing balances in multiple currencies, and building lives in new cities.\n\nMoving money to Lemfi was solved. Spending it wasn\'t. We designed a card experience that closed the gap.',
                         actions: [
                             { label: 'Read more', action: 'readmore' },
-                            { label: 'See it live', href: 'https://lemfi.com/cards', primary: true }
+                            { label: 'See it live', href: 'https://lemfi.com/en-gb/credit', primary: true }
                         ]
                     },
                     {
@@ -2582,6 +2676,29 @@
                         type: 'section',
                         label: 'Voice of the customers',
                         body: 'These were people describing the exact problem we knew existed.'
+                    },
+                    {
+                        type: 'quotes',
+                        items: [
+                            {
+                                quote: 'I have to go out of the app just to spend the money. What\'s the point of having money on Lemfi if I can\'t use it there? Plus some of the minor fee.',
+                                name: 'Obinna',
+                                role: 'Top 10% Lemfi Customer',
+                                avatar: 'assets/feeds/lemfi/quotes/obinna.png'
+                            },
+                            {
+                                quote: 'Every time I want to send, I have to put my card details in again. It\'s very stressful. I\'ve done it so many times I know my card number by heart now and that can\'t be right.',
+                                name: 'Bisi',
+                                role: 'New Customer in Canada',
+                                avatar: 'assets/feeds/lemfi/quotes/bisi.png'
+                            },
+                            {
+                                quote: 'I\'d use Lemfi more if I could just pay with it. Right now I only open it to send money to family, then I go back to my normal bank.',
+                                name: 'Aisyah',
+                                role: 'Customer lives in the UK',
+                                avatar: 'assets/feeds/lemfi/quotes/aisyah.png'
+                            }
+                        ]
                     },
                     {
                         type: 'image',
@@ -2681,7 +2798,7 @@
                     {
                         type: 'section',
                         label: 'Reflection',
-                        body: 'The card feature made Lemfi feel more complete for people living across borders. It reduced friction around spending, strengthened trust in the product, and showed how tightly product design and business growth could reinforce each other.'
+                        body: 'Trust is built in the details.\n\nBuilding a spending card across countries showed how much weight security cues, localisation, and transparency carry. Users moving money internationally already carry anxiety about it. Every state, every label, every error message either builds confidence or chips away at it.'
                     }
                 ]
             },
@@ -3208,6 +3325,54 @@
             return wrap;
         }
 
+        function createCaseQuotes(block) {
+            var wrap = document.createElement('div');
+            wrap.className = 'project-case__quotes';
+            (block.items || []).forEach(function (item) {
+                if (!item) return;
+                var card = document.createElement('article');
+                card.className = 'project-case__quote';
+
+                var quote = document.createElement('p');
+                quote.className = 'project-case__quote-text';
+                quote.textContent = item.quote || '';
+                card.appendChild(quote);
+
+                var person = document.createElement('div');
+                person.className = 'project-case__quote-person';
+
+                if (item.avatar) {
+                    var avatar = document.createElement('img');
+                    avatar.className = 'project-case__quote-avatar';
+                    avatar.src = item.avatar;
+                    avatar.alt = item.name || '';
+                    avatar.loading = 'lazy';
+                    avatar.decoding = 'async';
+                    person.appendChild(avatar);
+                }
+
+                var meta = document.createElement('div');
+                meta.className = 'project-case__quote-meta';
+
+                var name = document.createElement('p');
+                name.className = 'project-case__quote-name';
+                name.textContent = item.name || '';
+                meta.appendChild(name);
+
+                if (item.role) {
+                    var role = document.createElement('p');
+                    role.className = 'project-case__quote-role';
+                    role.textContent = item.role;
+                    meta.appendChild(role);
+                }
+
+                person.appendChild(meta);
+                card.appendChild(person);
+                wrap.appendChild(card);
+            });
+            return wrap;
+        }
+
         function createCaseResults(card, block) {
             var wrap = document.createElement('section');
             wrap.className = 'project-case__results';
@@ -3298,6 +3463,10 @@
                         splitCaseBody(block.body || block.paragraphs),
                         mapCaseActions(block.actions)
                     ));
+                    return;
+                }
+                if (block.type === 'quotes') {
+                    modalBlocks.appendChild(createCaseQuotes(block));
                     return;
                 }
                 if (block.type === 'results') {
