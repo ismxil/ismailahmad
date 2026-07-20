@@ -1578,6 +1578,34 @@
             gap: 16px;
         }
 
+        .project-case__body {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .project-case__body-more {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            overflow: hidden;
+            transition: max-height 0.35s ease, opacity 0.28s ease;
+        }
+
+        .project-case__content.is-collapsed .project-case__body-more {
+            max-height: 2.75em;
+            opacity: 0.32;
+            mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+        }
+
+        .project-case__content.is-expanded .project-case__body-more {
+            max-height: 1200px;
+            opacity: 1;
+            mask-image: none;
+            -webkit-mask-image: none;
+        }
+
         .project-case__button {
             display: inline-flex;
             align-items: center;
@@ -1609,6 +1637,11 @@
 
         .project-case__button svg {
             flex-shrink: 0;
+            transition: transform 0.28s ease;
+        }
+
+        .project-case__button.is-expanded svg {
+            transform: rotate(180deg);
         }
 
         .project-case__results {
@@ -2314,10 +2347,8 @@
                         <h3 class="home-card__title">Branding</h3>
                         <ul class="home-card__list">
                             <li>Research</li>
-                            <li>Positioning</li>
                             <li>Brand Strategy</li>
                             <li>Visual Identity</li>
-                            <li>Voice &amp; Tone</li>
                             <li>Brand Assets</li>
                         </ul>
                     </div>
@@ -2328,9 +2359,7 @@
                         <ul class="home-card__list">
                             <li>Market Analysis</li>
                             <li>UX &amp; Architecture</li>
-                            <li>Copywriting</li>
                             <li>Interface Design</li>
-                            <li>Motion &amp; Interactions</li>
                             <li>Development</li>
                         </ul>
                     </div>
@@ -2342,8 +2371,6 @@
                             <li>User Research</li>
                             <li>UX &amp; Architecture</li>
                             <li>Interface Design</li>
-                            <li>Product Writing</li>
-                            <li>Front-end Development</li>
                             <li>Design Systems</li>
                         </ul>
                     </div>
@@ -2462,8 +2489,8 @@
         initSiteNav();
         initSpaNav();
 
-        // Featured grid order — Figma 504:1343: Lemfi, Cadana, gomoney, Mezovest
-        var homeProjectIndices = [0, 2, 4, 1];
+        // Featured grid order — Figma 504:1343: Lemfi, Cadana, Gomoney, Mezovest
+        var homeProjectIndices = [0, 2, 3, 1];
 
         // ────────────────────────────────
         // Card data
@@ -2527,7 +2554,7 @@
                         label: 'Intro',
                         body: 'Lemfi is a fintech built for the global diaspora: cross-border transfers, multi-currency accounts, and a platform that helps people keep money moving between continents.\n\nThe people using it had left their home countries for the UK, the US, and Canada. They were sending money to family, managing balances in multiple currencies, and building lives in new cities.\n\nMoving money to Lemfi was solved. Spending it wasn\'t. We designed a card experience that closed the gap.',
                         actions: [
-                            { label: 'Let\'s talk', action: 'talk' },
+                            { label: 'Read more', action: 'readmore' },
                             { label: 'See it live', href: 'https://lemfi.com/cards', primary: true }
                         ]
                     },
@@ -2709,42 +2736,17 @@
                 ]
             },
             {
-                title: 'Motel One',
-                subtitle: 'Hotel guest app and digital check-in',
-                year: '2026',
-                tags: ['App Design', '2026'],
-                accent: '#059669',
-                accentColor: '#00db2e',
-                desc: 'Motel One needed a mobile experience that could become a digital companion for hotel guests, from booking support to check-in and key access.',
-                brief: 'Hotel guest app and digital check-in',
-                url: 'https://motel-one.com/check-in',
-                storyUrl: 'https://motel-one.com/check-in',
-                images: [{ src: 'assets/cover/motel-one.png', alt: 'Motel One project preview' }],
-                details: [
-                    { title: 'Services', items: ['App Design', 'Experience Design'] },
-                    { title: 'Industries', items: ['Travel', 'Hospitality'] },
-                    { title: 'Challenges', text: 'The app needed to simplify guest tasks while making digital check-in and mobile key access feel natural.' },
-                    { title: 'Stage', text: 'Guest companion app spanning booking support, digital check-in, and mobile key access.' },
-                    { title: 'My Role', items: ['Designed the app experience', 'Worked through check-in and key-access flows', 'Structured the product around guest needs'] },
-                    { title: 'Results', items: ['Supported a smoother hotel arrival experience', 'Helped position the app as a full guest companion'] }
-                ],
-                sections: [
-                    { label: 'Research', content: 'Studied guest arrival pain points across booking, check-in, and in-stay support to define a single companion experience.' },
-                    { label: 'Impact', content: 'Supported a smoother hotel arrival experience and helped position the app as a full guest companion.' }
-                ]
-            },
-            {
                 title: 'Gomoney',
                 logo: 'assets/clients/gomoney.svg',
-                subtitle: 'Digital bank onboarding and brand refresh',
-                year: '2026',
-                tags: ['App Design', '2026'],
-                accent: '#393bfe',
-                accentColor: '#393bfe',
+                subtitle: 'Turning registration drop-off into sign-ups for gomoney.',
+                year: '2024',
+                tags: ['Card', 'Lead Product Designer', '2024'],
+                accent: '#f5c400',
+                accentColor: '#f5c400',
                 desc: 'Gomoney is a digital bank in Nigeria that helps young people access financial tools and manage their money conveniently. The work focused on reducing registration drop-off and improving onboarding.',
-                brief: 'Digital bank onboarding and brand refresh',
-                url: 'https://gomoney.global/account',
-                storyUrl: 'https://gomoney.global/account',
+                brief: 'Turning registration drop-off into sign-ups for gomoney.',
+                url: 'https://gomoney.global/product/account',
+                storyUrl: 'https://gomoney.global/product/account',
                 images: [{ src: 'assets/cover/gomoney.png', alt: 'Gomoney project preview' }],
                 details: [
                     { title: 'Services', items: ['App Design', 'Brand Refresh'] },
@@ -2757,57 +2759,136 @@
                 sections: [
                     { label: 'Research', content: 'Audited registration drop-off points and tested a simpler onboarding model for first-time banking customers.' },
                     { label: 'Impact', content: 'Reduced friction in registration and strengthened product engagement with a refreshed brand expression.' }
-                ]
-            },
-            {
-                title: 'Commerzbank',
-                logo: 'assets/clients/commerz.svg',
-                subtitle: 'Banking app research, audit, and redesign',
-                year: '2026',
-                tags: ['App Design', '2026'],
-                accent: '#393bfe',
-                accentColor: '#393bfe',
-                desc: 'A mobile banking design effort for Commerz Bank focused on research, audit, and app experience improvements across key banking flows.',
-                brief: 'Banking app research, audit, and redesign',
-                url: 'https://commerzbank.com',
-                images: [{ color: '#d8d8d8', label: 'Commerzbank' }],
-                details: [
-                    { title: 'Services', items: ['Competitor Research', 'Design Audit', 'App Design'] },
-                    { title: 'Industries', items: ['Business Banking', 'Financial Services'] },
-                    { title: 'Challenges', text: 'The experience needed clearer mobile flows, stronger usability patterns, and a more confident digital banking interface.' },
-                    { title: 'Stage', text: 'Research, audit, and mobile app redesign for core banking tasks.' },
-                    { title: 'My Role', items: ['Audited the existing product experience', 'Researched competitor patterns', 'Designed app improvements for banking tasks'] },
-                    { title: 'Results', items: ['Established clearer design direction', 'Created a stronger base for mobile banking improvements'] }
                 ],
-                sections: [
-                    { label: 'Research', content: 'Audited the existing mobile experience and benchmarked competitor patterns across key banking flows.' },
-                    { label: 'Impact', content: 'Established clearer design direction and a stronger base for mobile banking improvements.' }
-                ]
-            },
-            {
-                title: 'Etihad Credit Bureau',
-                logo: 'assets/clients/eithad.svg',
-                subtitle: 'National credit bureau digital platform',
-                year: '2026',
-                tags: ['Web Design', '2026'],
-                accent: '#393bfe',
-                accentColor: '#393bfe',
-                desc: 'Etihad Credit Bureau needed a unified digital presence across its public website, secure user portal, and mobile app for UAE credit data services.',
-                brief: 'National credit bureau digital platform',
-                url: 'https://etihadbureau.ae',
-                storyUrl: 'https://etihadbureau.ae',
-                images: [{ src: 'assets/cover/ecb.png', alt: 'Etihad Credit Bureau project preview' }],
-                details: [
-                    { title: 'Services', items: ['Web Design', 'App Design', 'Portal Design'] },
-                    { title: 'Industries', items: ['Government Services', 'Credit Data'] },
-                    { title: 'Challenges', text: 'The digital ecosystem needed to make credit information easier to understand while serving public users, authenticated customers, and mobile audiences.' },
-                    { title: 'Stage', text: 'Unified website, portal, and app experience for a national credit data service.' },
-                    { title: 'My Role', items: ['Redesigned the public website experience', 'Worked across portal and app touchpoints', 'Unified interaction patterns across the service'] },
-                    { title: 'Results', items: ['Created a cohesive digital service experience', 'Supported award-winning work across the platform'] }
+                metrics: [
+                    { value: '18%', text: 'The volume of account related queries fell once the updated was launched.', accent: '#f5c400' },
+                    { value: '+22.3k', text: 'Users who had been stalling mid-onboarding started completing.', accent: '#f5c400' },
+                    { value: '32%', text: 'Self-service and correct routing reduced support tickets by roughly 32%', accent: '#f5c400' }
                 ],
-                sections: [
-                    { label: 'Research', content: 'Mapped distinct needs across public users, authenticated customers, and mobile audiences within a national credit service.' },
-                    { label: 'Impact', content: 'Created a cohesive digital service experience and supported award-winning work across the platform.' }
+                caseBlocks: [
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/01.png',
+                        alt: 'Gomoney onboarding hero'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Intro',
+                        body: 'gomoney was seeing a high drop-off rate during registration — new users were starting the sign-up process but not completing it. The goal was to find exactly where users were getting stuck, redesign the flow to remove that friction, and make it clear how to unlock more features by upgrading their account.\n\nWe worked closely with gomoney\'s product and engineering teams from the start to keep design and implementation aligned.',
+                        actions: [
+                            { label: 'Read more', action: 'readmore' },
+                            { label: 'See it live', href: 'https://gomoney.global/product/account', primary: true }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/02.png',
+                        alt: 'Gomoney registration experience'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/03.png',
+                        alt: 'Gomoney account upgrade journey'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Problem',
+                        body: 'Registration is often a new user\'s first real interaction with a product, and for gomoney, too many people were dropping off before finishing it. We needed to understand where and why that was happening, then rebuild the flow to be faster and more intuitive — while still helping users understand the value of upgrading their account along the way.'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/04.png',
+                        alt: 'Gomoney home and transactions experience'
+                    },
+                    {
+                        type: 'pair',
+                        images: [
+                            { src: 'assets/feeds/gomoney/05.png', alt: 'Gomoney verification step' },
+                            { src: 'assets/feeds/gomoney/06.png', alt: 'Gomoney account tier status' }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/07.png',
+                        alt: 'Gomoney onboarding flow screens'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Solution',
+                        body: 'I designed a flow that tells customers where their account stands. What tier they\'re on, what they can do with it, and what\'s still missing. If they get stuck, a document won\'t go through, a detail doesn\'t match, they can send more information right there instead of leaving the app or giving up. The request goes straight to the team that handles verification, so it gets fixed quickly.'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/08.png',
+                        alt: 'Gomoney verification failure recovery'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/09.png',
+                        alt: 'Gomoney support and document upload'
+                    },
+                    {
+                        type: 'pair',
+                        images: [
+                            { src: 'assets/feeds/gomoney/10.png', alt: 'Gomoney phone verification experience' },
+                            { src: 'assets/feeds/gomoney/11.png', alt: 'Gomoney countdown and progress' }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/12.png',
+                        alt: 'Gomoney feature unlock marketing'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/13.png',
+                        alt: 'Gomoney multi-phone onboarding showcase'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/14.png',
+                        alt: 'Gomoney in-app account status'
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/15.png',
+                        alt: 'Gomoney upgraded account experience'
+                    },
+                    {
+                        type: 'pair',
+                        images: [
+                            { src: 'assets/feeds/gomoney/16.png', alt: 'Gomoney tier benefits' },
+                            { src: 'assets/feeds/gomoney/17.png', alt: 'Gomoney completion confirmation' }
+                        ]
+                    },
+                    {
+                        type: 'results',
+                        summary: 'The update took real workload off the support desk, and the onboarding complaints we\'d been fielding for months quietened down. The funnel that had been clogging at verification started moving consistently.',
+                        metrics: [
+                            {
+                                value: '18%',
+                                text: 'The volume of account related queries fell once the updated was launched.'
+                            },
+                            {
+                                value: '+22.3k',
+                                text: 'Users who had been stalling mid-onboarding started completing.'
+                            },
+                            {
+                                value: '32%',
+                                text: 'Self-service and correct routing reduced support tickets by roughly 32%'
+                            }
+                        ]
+                    },
+                    {
+                        type: 'image',
+                        src: 'assets/feeds/gomoney/18.png',
+                        alt: 'Gomoney final product experience'
+                    },
+                    {
+                        type: 'section',
+                        label: 'Reflection',
+                        body: 'The highest-leverage decision in this project was the least visible one, where a stuck user\'s request goes. A flow that only works when everything works isn\'t finished. Designing the failure route protected the customer experience and the operations budget at the same time.'
+                    }
                 ]
             }
         ];
@@ -2984,6 +3065,13 @@
         function mapCaseActions(actions) {
             return (actions || []).map(function (action) {
                 if (!action || !action.label) return null;
+                if (action.action === 'readmore') {
+                    return {
+                        type: 'readmore',
+                        label: action.label || 'Read more',
+                        primary: !!action.primary
+                    };
+                }
                 if (action.action === 'talk' || action.action === 'contact') {
                     return {
                         type: 'button',
@@ -3008,6 +3096,9 @@
             }).filter(Boolean);
         }
 
+        var CASE_EXTERNAL_ARROW = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10" /></svg>';
+        var CASE_CHEVRON_DOWN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>';
+
         function createCaseSection(labelText, paragraphs, actions) {
             var section = document.createElement('section');
             section.className = 'project-case__section';
@@ -3020,30 +3111,70 @@
             var content = document.createElement('div');
             content.className = 'project-case__content';
 
-            (paragraphs || []).forEach(function (text) {
-                if (!text) return;
-                var p = document.createElement('p');
-                p.textContent = text;
-                content.appendChild(p);
+            var paras = (paragraphs || []).filter(Boolean);
+            var hasReadMore = (actions || []).some(function (action) {
+                return action && action.type === 'readmore';
             });
+            var useAccordion = hasReadMore && paras.length > 1;
+
+            if (useAccordion) {
+                content.classList.add('is-collapsed');
+                var body = document.createElement('div');
+                body.className = 'project-case__body';
+
+                var first = document.createElement('p');
+                first.textContent = paras[0];
+                body.appendChild(first);
+
+                var more = document.createElement('div');
+                more.className = 'project-case__body-more';
+                paras.slice(1).forEach(function (text) {
+                    var p = document.createElement('p');
+                    p.textContent = text;
+                    more.appendChild(p);
+                });
+                body.appendChild(more);
+                content.appendChild(body);
+            } else {
+                paras.forEach(function (text) {
+                    var p = document.createElement('p');
+                    p.textContent = text;
+                    content.appendChild(p);
+                });
+            }
 
             if (actions && actions.length) {
                 var row = document.createElement('div');
                 row.className = 'project-case__actions';
                 actions.forEach(function (action) {
                     var el;
-                    if (action.type === 'button') {
+                    if (action.type === 'readmore') {
                         el = document.createElement('button');
                         el.type = 'button';
+                        el.className = 'project-case__button';
+                        el.setAttribute('aria-expanded', 'false');
+                        el.innerHTML = 'Read more' + CASE_CHEVRON_DOWN;
+                        el.addEventListener('click', function () {
+                            var expanded = content.classList.toggle('is-expanded');
+                            content.classList.toggle('is-collapsed', !expanded);
+                            el.classList.toggle('is-expanded', expanded);
+                            el.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                            el.innerHTML = (expanded ? 'Read less' : 'Read more') + CASE_CHEVRON_DOWN;
+                        });
+                    } else if (action.type === 'button') {
+                        el = document.createElement('button');
+                        el.type = 'button';
+                        el.className = 'project-case__button' + (action.primary ? ' project-case__button--primary' : '');
+                        el.innerHTML = action.label + CASE_EXTERNAL_ARROW;
                         el.addEventListener('click', action.onClick);
                     } else {
                         el = document.createElement('a');
                         el.href = action.href;
                         el.target = '_blank';
                         el.rel = 'noopener';
+                        el.className = 'project-case__button' + (action.primary ? ' project-case__button--primary' : '');
+                        el.innerHTML = action.label + CASE_EXTERNAL_ARROW;
                     }
-                    el.className = 'project-case__button' + (action.primary ? ' project-case__button--primary' : '');
-                    el.innerHTML = action.label + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10" /></svg>';
                     row.appendChild(el);
                 });
                 content.appendChild(row);
@@ -3257,8 +3388,12 @@
         }
 
         function renderModalNext(idx) {
-            var nextIdx = (idx + 1) % cards.length;
+            var pool = homeProjectIndices.length ? homeProjectIndices : cards.map(function (_, i) { return i; });
+            var pos = pool.indexOf(idx);
+            if (pos < 0) pos = 0;
+            var nextIdx = pool[(pos + 1) % pool.length];
             var nextCard = cards[nextIdx];
+            if (!nextCard) return;
             modalNextTitle.textContent = nextCard.title;
             modalNextSubtitle.textContent = nextCard.subtitle || nextCard.brief || '';
             renderVisual(modalNextPreview, (nextCard.images && nextCard.images[0]) || { color: nextCard.accentColor || '#e4e4e7' }, nextCard);
