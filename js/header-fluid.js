@@ -317,9 +317,17 @@ class HeaderFluidEffect {
     }
     window.addEventListener('resize', this.onResize);
     if (document.fonts) {
-      document.fonts.ready.then(() => {
+      const refreshAfterFonts = () => {
         this.resize();
-      });
+        if (this.active) this.applyFill();
+      };
+      // Explicitly load the brand face — fonts.ready can settle on a fallback
+      // before Reckless arrives (font-display: swap), leaving wrong metrics.
+      Promise.all([
+        document.fonts.load('500 1em "Reckless"').catch(() => {}),
+        document.fonts.load('400 1em "Reckless"').catch(() => {}),
+        document.fonts.ready.catch(() => {}),
+      ]).then(refreshAfterFonts);
     }
     if (this.logo && !this.logo.complete) {
       this.logo.addEventListener('load', () => {
