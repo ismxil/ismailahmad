@@ -4,6 +4,25 @@ html {
     scroll-behavior: smooth;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* legacy Edge */
+
+    /* UI chrome — fluid on mid desktops so pills don’t look toy-sized next to hero type */
+    --control-h: 44px;
+    --control-fs: 16px;
+    --control-lh: 24px;
+    --control-pad-x: 16px;
+    --control-pad-y: 10px;
+    --control-gap: 24px;
+}
+
+@media (min-width: 769px) {
+    html {
+        --control-h: clamp(50px, 5.2vw, 56px);
+        --control-fs: clamp(17px, 1.7vw, 18px);
+        --control-lh: clamp(24px, 2.2vw, 28px);
+        --control-pad-x: clamp(18px, 1.9vw, 22px);
+        --control-pad-y: clamp(11px, 1.2vw, 14px);
+        --control-gap: clamp(24px, 2.4vw, 32px);
+    }
 }
 
 html::-webkit-scrollbar,

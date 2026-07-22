@@ -28,17 +28,17 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/base.css?v=control-1">
     <link rel="stylesheet" href="css/site-loader.css">
     <link rel="modulepreload" href="js/site-loader.js">
     <link rel="modulepreload" href="js/site-loader-logo.js">
     <script type="module" src="js/site-loader.js"></script>
     <link rel="stylesheet" href="css/header-fluid.css">
-    <link rel="stylesheet" href="css/site-nav.css">
+    <link rel="stylesheet" href="css/site-nav.css?v=control-1">
     <link rel="stylesheet" href="css/contact-panel.css">
     <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/insights.css">
-    <link rel="stylesheet" href="css/music-player.css">
+    <link rel="stylesheet" href="css/music-player.css?v=control-1">
     <style>
         :root {
             --brand: #393bfe;
@@ -73,12 +73,12 @@
         }
 
         .pill {
-            font-size: 16px;
+            font-size: var(--control-fs, 16px);
             font-weight: 500;
-            line-height: 24px;
+            line-height: var(--control-lh, 24px);
             color: var(--text-primary);
             border-radius: 999px;
-            padding: 10px 16px;
+            padding: var(--control-pad-y, 10px) var(--control-pad-x, 16px);
             text-decoration: none;
             cursor: pointer;
             transition: opacity 0.18s ease, color 0.18s ease;
@@ -87,9 +87,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 44px;
+            height: var(--control-h, 44px);
             width: fit-content;
             font-family: inherit;
+            box-sizing: border-box;
         }
 
         .pill--cream {

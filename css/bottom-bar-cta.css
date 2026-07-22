@@ -77,7 +77,7 @@
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    height: 44px;
+    height: var(--control-h, 44px);
     min-height: 44px;
     min-width: 182px;
     padding: 0 16px;

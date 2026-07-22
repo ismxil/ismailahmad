@@ -231,8 +231,8 @@
 
 /* ─── Soundbar / play button ─────────────────────────────────────*/
 #play-btn {
-    width: 44px;
-    height: 44px;
+    width: var(--control-h, 44px);
+    height: var(--control-h, 44px);
     border-radius: 50%;
     background: var(--brand);
     border: none;

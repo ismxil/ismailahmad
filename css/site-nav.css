@@ -38,7 +38,7 @@
 
 .site-header__nav {
     --nav-closed-w: 180px;
-    --nav-closed-h: 44px;
+    --nav-closed-h: var(--control-h, 44px);
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
@@ -52,7 +52,7 @@
 
 .nav-morph {
     --nav-closed-w: max-content;
-    --nav-closed-h: 44px;
+    --nav-closed-h: var(--control-h, 44px);
     --nav-open-w: 220px;
     --nav-open-h: 300px;
     position: absolute;
@@ -87,7 +87,7 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    height: 44px;
+    height: var(--control-h, 44px);
     padding: 0 40px 0 6px;
     background: transparent;
     border-radius: inherit;
@@ -106,8 +106,10 @@
 
 .site-header__nav-pills .pill {
     background: transparent;
-    height: 36px;
+    height: calc(var(--control-h, 44px) - 8px);
     padding: 8px 12px;
+    font-size: var(--control-fs, 16px);
+    line-height: var(--control-lh, 24px);
 }
 
 .nav-dot-btn {
@@ -115,8 +117,8 @@
     top: 4px;
     right: 4px;
     z-index: 4;
-    width: 36px;
-    height: 36px;
+    width: calc(var(--control-h, 44px) - 8px);
+    height: calc(var(--control-h, 44px) - 8px);
     border-radius: 999px;
     background: transparent;
     border: none;
