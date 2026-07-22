@@ -124,8 +124,7 @@
         <header class="about-topbar" aria-label="About header">
             <div class="about-brand header-fluid" data-header-fluid aria-label="About title">
                 <div class="header-fluid__content">
-                    <h1>Hi</h1>
-                    <canvas id="about-header-logo-c" class="site-header__logo" aria-hidden="true"></canvas>
+                    <h1>About</h1>
                 </div>
             </div>
 
@@ -273,7 +272,7 @@
     </div>
 
     <footer class="about-footer" aria-label="Page footer">
-        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
+        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
         <div class="bottom-bar__cta" aria-label="Stay in touch" aria-hidden="true" inert>
             <div class="home-cta__touch">
                 <p class="home-cta__label">Stay in touch</p>
@@ -437,8 +436,8 @@
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
     <script src="js/bottom-bar-cta.js"></script>
-    <script src="js/about-gallery-pin.js"></script>
-    <script src="js/smooth-scroll.js"></script>
+    <script src="js/about-gallery-pin.js?v=finite-1"></script>
+    <script src="js/smooth-scroll.js?v=axis-1"></script>
     <script src="js/spa-nav.js"></script>
     <script>
         initContactPanel();
@@ -449,11 +448,9 @@
         initSpaNav();
     </script>
     <script type="module">
-        import { initBrandLogo3D } from './js/logo-3d.js';
         import { initAllHeaderFluids } from './js/header-fluid.js';
 
         await (window.siteReady ?? Promise.resolve());
-        initBrandLogo3D(document.getElementById('about-header-logo-c'));
         initAllHeaderFluids();
     </script>
 </body>

@@ -21,7 +21,7 @@
             background: #fff
         }
     </style>
-    <title>Insights — Ismail Ahmad</title>
+    <title>Insight — Ismail Ahmad</title>
     <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script type="importmap">
     { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
@@ -118,8 +118,7 @@
         <header class="insights-topbar" aria-label="Insights header">
             <div class="insights-brand header-fluid" data-header-fluid aria-label="Insights title">
                 <div class="header-fluid__content">
-                    <h1>Insights</h1>
-                    <canvas id="insights-header-logo-c" class="site-header__logo" aria-hidden="true"></canvas>
+                    <h1>Insight</h1>
                 </div>
             </div>
 
@@ -176,46 +175,11 @@
                     <div class="insights-grid" id="insights-grid"></div>
                 </section>
             </div>
-
-            <section class="insights-cta" aria-labelledby="insights-cta-title">
-                <div class="insights-cta__title-fluid header-fluid" data-header-fluid>
-                    <div class="header-fluid__content">
-                        <h2 id="insights-cta-title" class="insights-cta__title">Keep up to date</h2>
-                    </div>
-                </div>
-                <form class="insights-subscribe js-subscribe-form" id="insights-subscribe"
-                    action="/api/subscribe" method="post"
-                    data-subscribe-source="website_insights">
-                    <label class="insights-email" id="insights-email-field" data-subscribe-field>
-                        <span class="insights-email__icon" aria-hidden="true">
-                            <svg width="24" height="24" viewBox="0 0 18.8003 16.4" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M1.00017 4.6L8.80497 9.0592C9.17337 9.2704 9.62697 9.2704 9.99537 9.0592L17.8002 4.6"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M14.2002 1H4.60017C2.61195 1 1.00017 2.61177 1.00017 4.6V11.8C1.00017 13.7882 2.61195 15.4 4.60017 15.4H14.2002C16.1884 15.4 17.8002 13.7882 17.8002 11.8V4.6C17.8002 2.61177 16.1884 1 14.2002 1Z"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                        </span>
-                        <input class="insights-email__input" type="email" name="email" placeholder="Your email"
-                            autocomplete="email" required />
-                    </label>
-                    <button type="submit" class="insights-email__submit" aria-label="Subscribe">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                        </svg>
-                    </button>
-                </form>
-            </section>
         </main>
     </div>
 
     <footer class="insights-footer" aria-label="Page footer">
-        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
+        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
         <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
             <div id="music-stack" aria-hidden="true">
                 <div id="music-glow" aria-hidden="true">
@@ -256,86 +220,58 @@
         </div>
     </footer>
 
-    <div id="insight-backdrop" aria-hidden="true">
-        <div id="insight-modal" role="dialog" aria-modal="true" aria-label="Insight article">
-            <button type="button" id="insight-close" aria-label="Close insight">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" aria-hidden="true">
-                    <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-            </button>
-            <div id="insight-frame-wrap">
-                <div id="insight-loading" style="display:none">Loading…</div>
-                <iframe id="insight-frame" title="Insight article" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-        </div>
-    </div>
-
     <script>
+        var SUBSTACK_HOME = 'https://wandarer.com';
         var INSIGHTS = [
             {
                 title: 'Offboarding, in product.',
                 subtitle: 'The risk, approach and what to look out for in your offboarding.',
-                date: 'Feb 20, 2025',
-                url: 'https://wandarer.com/p/off-boarding-is-as-important-as-onboarding',
-                color: '#00db2e'
+                date: 'Feb 20, 2025'
             },
             {
                 title: 'Product and souls.',
                 subtitle: 'Why most products are lacks soul in the time and day.',
-                date: 'Feb 17, 2025',
-                url: 'https://wandarer.com/p/why-are-we-doing-this',
-                color: '#ff4300'
+                date: 'Feb 17, 2025'
             },
             {
                 title: 'AI panic.',
                 subtitle: 'Enough doomsaying, tune out and start focusing on the fundamental...',
-                date: 'Jan 03, 2025',
-                url: 'https://wandarer.com/p/tune-out-the-ai-doomsayer-envagelist',
-                color: '#393bfe'
+                date: 'Jan 03, 2025'
             },
             {
                 title: 'Scrolljacking',
                 subtitle: 'It seems appealing, but can be deadly.',
-                date: 'Nov 28, 2024',
-                url: 'https://wandarer.com/p/scrolljacking',
-                color: '#ff4300'
+                date: 'Nov 28, 2024'
             },
             {
                 title: 'UX is not UI',
                 subtitle: 'If we only deliver the UI then what is UX.',
-                date: 'Jun 04, 2022',
-                url: 'https://wandarer.com/p/ux-is-not-ui',
-                color: '#00db2e'
+                date: 'Jun 04, 2022'
             },
             {
                 title: 'Starting your design journey.',
                 subtitle: 'Getting started with UX, UI or Product Design in 2024.',
-                date: 'Oct 14, 2024',
-                url: 'https://wandarer.com/p/get-started-with-uxui-design',
-                color: '#393bfe'
+                date: 'Oct 14, 2024'
             }
         ];
 
         var grid = document.getElementById('insights-grid');
-        var insightBackdrop = document.getElementById('insight-backdrop');
-        var insightFrame = document.getElementById('insight-frame');
-        var insightClose = document.getElementById('insight-close');
-        var insightLoading = document.getElementById('insight-loading');
-        var insightOpen = false;
 
         function renderInsights() {
             grid.innerHTML = '';
-            INSIGHTS.forEach(function (item, idx) {
-                var card = document.createElement('article');
+            INSIGHTS.forEach(function (item) {
+                var card = document.createElement('a');
                 card.className = 'insight-card';
+                card.href = SUBSTACK_HOME;
+                card.target = '_blank';
+                card.rel = 'noopener noreferrer';
+                card.setAttribute('aria-label', item.title + ' — opens Substack');
 
-                var thumb = document.createElement('div');
-                thumb.className = 'insight-card__thumb';
-                thumb.style.background = item.color;
+                var copy = document.createElement('div');
+                copy.className = 'insight-card__copy';
 
-                var body = document.createElement('div');
-                body.className = 'insight-card__body';
+                var titles = document.createElement('div');
+                titles.className = 'insight-card__titles';
 
                 var kicker = document.createElement('p');
                 kicker.className = 'insight-card__kicker';
@@ -345,72 +281,26 @@
                 headline.className = 'insight-card__headline';
                 headline.textContent = item.subtitle;
 
-                var meta = document.createElement('div');
-                meta.className = 'insight-card__meta';
+                titles.appendChild(kicker);
+                titles.appendChild(headline);
 
-                var read = document.createElement('button');
-                read.type = 'button';
-                read.className = 'pill pill--cream insight-card__read';
-                read.textContent = 'Read';
-                read.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    openInsight(idx);
-                });
-
-                var date = document.createElement('span');
+                var date = document.createElement('p');
                 date.className = 'insight-card__date';
                 date.textContent = item.date;
 
-                meta.appendChild(read);
-                meta.appendChild(date);
+                copy.appendChild(titles);
+                copy.appendChild(date);
 
-                body.appendChild(kicker);
-                body.appendChild(headline);
-                body.appendChild(meta);
+                var arrow = document.createElement('span');
+                arrow.className = 'insight-card__arrow';
+                arrow.setAttribute('aria-hidden', 'true');
+                arrow.innerHTML = '<img src="assets/insights/arrow-up-right.svg" alt="" width="24" height="24" />';
 
-                card.appendChild(thumb);
-                card.appendChild(body);
-
-                card.style.cursor = 'pointer';
-                card.addEventListener('click', function () { openInsight(idx); });
+                card.appendChild(copy);
+                card.appendChild(arrow);
                 grid.appendChild(card);
             });
         }
-
-        function openInsight(idx) {
-            var item = INSIGHTS[idx];
-            if (!item) return;
-            if (insightOpen) closeInsight();
-            insightOpen = true;
-            insightBackdrop.classList.add('is-open');
-            insightBackdrop.setAttribute('aria-hidden', 'false');
-            document.body.style.overflow = 'hidden';
-            insightLoading.style.display = '';
-            insightFrame.src = item.url;
-        }
-
-        function closeInsight() {
-            if (!insightOpen) return;
-            insightOpen = false;
-            insightBackdrop.classList.remove('is-open');
-            insightBackdrop.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = '';
-            insightLoading.style.display = 'none';
-            insightFrame.src = 'about:blank';
-        }
-
-        insightClose.addEventListener('click', closeInsight);
-        insightBackdrop.addEventListener('click', function (e) {
-            if (e.target === insightBackdrop) e.preventDefault();
-        });
-        document.addEventListener('keydown', function (e) {
-            if (!insightOpen) return;
-            if (e.key === 'Escape') e.preventDefault();
-        });
-        insightFrame.addEventListener('load', function () {
-            if (!insightOpen) return;
-            insightLoading.style.display = 'none';
-        });
 
         renderInsights();
     </script>
@@ -478,21 +368,15 @@
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
     <script src="js/bottom-bar-cta.js"></script>
-    <script src="js/smooth-scroll.js"></script>
+    <script src="js/smooth-scroll.js?v=axis-1"></script>
     <script src="js/spa-nav.js"></script>
     <script type="module">
-        import { initBrandLogo3D } from './js/logo-3d.js';
         import { initAllHeaderFluids } from './js/header-fluid.js';
         await (window.siteReady ?? Promise.resolve());
-        initBrandLogo3D(document.getElementById('insights-header-logo-c'));
-        initBrandLogo3D(document.getElementById('insights-logo-c'));
         initAllHeaderFluids();
         initContactPanel();
         initSiteNav();
         initMusicPlayer();
-        initSubscribeForm(document.getElementById('insights-subscribe'), {
-            source: 'website_insights'
-        });
         initSpaNav();
     </script>
 </body>

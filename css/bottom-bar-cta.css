@@ -13,7 +13,7 @@
     transition: opacity 0.28s ease, visibility 0.28s ease;
 }
 
-/* Collapsed until page end — Info + music stay space-between without mid gap */
+/* Collapsed until page end — Contact + music stay space-between without mid gap */
 #bottom-bar:not(.is-at-bottom),
 .about-footer:not(.is-at-bottom),
 .page-footer:not(.is-at-bottom) {

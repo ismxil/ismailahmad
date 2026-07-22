@@ -273,14 +273,18 @@ export class Carousel {
   }
 
   _onWheel(e) {
+    // Only hijack wheel while the pointer is over this carousel.
+    if (!this.root.contains(e.target)) return;
     if (e.target.closest('#modal-backdrop.is-open')) return;
     if (e.target.closest('#story-sheet-backdrop.is-open')) return;
     if (e.target.closest('#page-backdrop.is-open')) return;
     if (e.target.closest('#insight-backdrop.is-open')) return;
     if (e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+    // Keep vertical page scroll free — only take horizontal-dominant pans.
+    if (Math.abs(e.deltaY) >= Math.abs(e.deltaX)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    const delta = e.deltaX;
     this.targetScrollX += delta / (this.fitScale || 1);
     this._ensureTick();
   }

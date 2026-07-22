@@ -26,6 +26,11 @@
     pointer-events: none;
 }
 
+.header-fluid__content h1,
+.header-fluid__content h2 {
+    color: var(--text-primary, #09090b);
+}
+
 .header-fluid.is-active .header-fluid__content h1,
 .header-fluid.is-active .header-fluid__content h2 {
     color: transparent !important;

@@ -126,7 +126,7 @@
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
-    color: var(--brand, #393bfe);
+    color: var(--text-primary, #09090b);
     transition:
         top 0.42s cubic-bezier(0.22, 1, 0.36, 1),
         right 0.42s cubic-bezier(0.22, 1, 0.36, 1),
@@ -145,7 +145,7 @@
     right: 16px;
     width: 28px;
     height: 28px;
-    background: color-mix(in srgb, var(--brand, #393bfe) 12%, #fff);
+    background: color-mix(in srgb, var(--text-primary, #09090b) 8%, #fff);
     opacity: 1;
 }
 
@@ -280,7 +280,7 @@
     font-size: 20px;
     line-height: 24px;
     font-weight: 500;
-    color: var(--brand, #393bfe);
+    color: var(--text-secondary, #52525b);
 }
 
 .header-nav-menu__tz {

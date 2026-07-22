@@ -54,7 +54,7 @@
     line-height: 0.95;
     letter-spacing: -1.2px;
     font-weight: 500;
-    color: var(--brand, #393bfe);
+    color: var(--text-primary, #09090b);
 }
 
 .about-brand img,
@@ -164,10 +164,26 @@
     scrollbar-width: none;
     padding-bottom: 4px;
     overscroll-behavior-x: contain;
+    overscroll-behavior-y: none;
+    touch-action: pan-x;
+    cursor: default;
+}
+
+.about-gallery.is-drag-enabled {
+    cursor: grab;
 }
 
 .about-gallery::-webkit-scrollbar {
     display: none;
+}
+
+.about-gallery.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.about-gallery.is-dragging img {
+    pointer-events: none;
 }
 
 .about-gallery__track {
@@ -177,7 +193,8 @@
     min-width: 100%;
     padding-left: var(--about-content-start);
     padding-right: 20px;
-    will-change: transform;
+    will-change: auto;
+    transform: none !important;
 }
 
 .about-gallery__item {
@@ -194,10 +211,20 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    -webkit-user-drag: none;
+    user-select: none;
 }
 
 .about-gallery-pin.is-pin-driven .about-gallery {
-    overflow-x: hidden;
+    overflow-x: auto;
+}
+
+/* Never keep a ScrollTrigger pin-spacer height on this page — it creates
+   a multi-thousand-px “infinite” vertical scrub on tablet/mobile. */
+.about-page .pin-spacer {
+    height: auto !important;
+    padding: 0 !important;
+    display: contents;
 }
 
 .about-section__label {
@@ -474,16 +501,33 @@
         overflow-y: hidden;
         max-width: 100%;
         overscroll-behavior-x: contain;
+        overscroll-behavior-y: none;
         -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        cursor: default;
+    }
+
+    .about-gallery.is-drag-enabled {
+        cursor: grab;
+    }
+
+    .about-gallery.is-dragging {
+        cursor: grabbing;
+        user-select: none;
+    }
+
+    .about-gallery.is-dragging img {
+        pointer-events: none;
     }
 
     .about-gallery__track {
+        gap: 12px;
         padding-left: var(--about-pad);
         /* JS sets an exact end pad from gallery.clientWidth; this is the CSS fallback. */
         padding-right: var(--about-pad);
         scroll-padding-inline: var(--about-pad);
         will-change: auto;
-        transform: none;
+        transform: none !important;
     }
 
     .about-gallery-pin.is-pin-driven .about-gallery {

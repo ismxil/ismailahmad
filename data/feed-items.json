@@ -1,24 +1,6 @@
 {
   "items": [
     {
-      "id": "huegrid",
-      "name": "HueGrid",
-      "client": "HueGrid",
-      "year": 2023,
-      "projectType": "Web App",
-      "category": "Web App",
-      "years": "2023",
-      "tagline": "A no-code shader design tool for the web — design the visual, walk away with the code.",
-      "headline": "A no-code shader design tool for the web — design the visual, walk away with the code.",
-      "liveUrl": "https://huegrid.app",
-      "link": "https://huegrid.app",
-      "accent": "#d946ef",
-      "cover": "assets/feeds/huegrid-hero.png",
-      "heroImage": "assets/feeds/huegrid-hero.png",
-      "problemBody": "WebGL and shader programming are powerful but impenetrable for non-technical designers. HueGrid bridges that gap by letting anyone create and tweak real-time visual effects directly in the browser — no code required.",
-      "ctaLabel": "Let's talk"
-    },
-    {
       "id": "lemfi-community",
       "client": "Lemfi",
       "headline": "Building a community that let's people bond and stay connected within the app, to build conscious money habit",
@@ -59,26 +41,6 @@
       "accent": "#ff4300"
     },
     {
-      "id": "mezovest",
-      "client": "Mezovest",
-      "headline": "Small-business loan tools that connect vendors, customers, and investors",
-      "category": "Product Design",
-      "years": "2024 - 2026",
-      "description": "Mapped key business workflows and designed vendor, customer, and dashboard experiences for lending operations.",
-      "cover": "assets/feeds/image_4.jpg",
-      "accent": "#393bfe"
-    },
-    {
-      "id": "commerzbank",
-      "client": "Commerz Bank",
-      "headline": "Mobile banking flows shaped by research, audit, and redesign",
-      "category": "App Design",
-      "years": "2023 - 2024",
-      "description": "Audited the existing product experience, researched competitor patterns, and designed app improvements for banking tasks.",
-      "cover": "assets/feeds/image_5.jpg",
-      "accent": "#393bfe"
-    },
-    {
       "id": "ecb",
       "client": "Etihad Credit Bureau",
       "headline": "A unified digital platform for national credit data services",
@@ -86,26 +48,6 @@
       "years": "2021 - 2023",
       "description": "Redesigned the public website and unified interaction patterns across portal and app touchpoints.",
       "cover": "assets/feeds/image_6.jpg",
-      "accent": "#393bfe"
-    },
-    {
-      "id": "brass",
-      "client": "Brass",
-      "headline": "Business banking tools designed for African entrepreneurs",
-      "category": "Product Design",
-      "years": "2020 - 2021",
-      "description": "Shaped product flows for accounts, payments, and team management across web and mobile banking.",
-      "cover": "assets/feeds/image_7.jpg",
-      "accent": "#393bfe"
-    },
-    {
-      "id": "salarify",
-      "client": "Salarify",
-      "headline": "Payroll and benefits experiences for growing teams",
-      "category": "Product Design",
-      "years": "2021 - 2022",
-      "description": "Designed payroll workflows and employee-facing touchpoints for salary access and benefits management.",
-      "cover": "assets/feeds/image_8.jpg",
       "accent": "#393bfe"
     },
     {
@@ -383,16 +325,6 @@
       "years": "2021 - 2023",
       "description": "Unified interaction patterns across public, portal, and mobile audiences.",
       "cover": "assets/feeds/image_16.jpg",
-      "accent": "#393bfe"
-    },
-    {
-      "id": "feed-17",
-      "client": "Brass",
-      "headline": "Team management and payments across web and mobile banking",
-      "category": "Product Design",
-      "years": "2020 - 2021",
-      "description": "Designed flows for accounts, payments, and team permissions for business owners.",
-      "cover": "assets/feeds/image_17.jpg",
       "accent": "#393bfe"
     },
     {

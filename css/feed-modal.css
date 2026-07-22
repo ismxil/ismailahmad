@@ -77,6 +77,39 @@
     height: 100%;
 }
 
+.feed-modal__viewer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.feed-modal__viewer .feed-modal__media {
+    flex: 1;
+    min-height: 0;
+}
+
+.feed-modal__caption {
+    position: absolute;
+    left: 20px;
+    right: 56px;
+    bottom: 16px;
+    margin: 0;
+    z-index: 2;
+    font-family: var(--font-body, 'Suisse Intl', system-ui, sans-serif);
+    font-size: 11px;
+    line-height: 1.3;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: rgba(9, 9, 11, 0.55);
+    pointer-events: none;
+    text-shadow: 0 1px 8px rgba(255, 255, 255, 0.85);
+}
+
+.feed-modal__caption:empty {
+    display: none;
+}
+
 .feed-modal__content {
     display: flex;
     flex-direction: column;
@@ -369,6 +402,22 @@
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+.feed-modal__viewer .feed-modal__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background: #f4f4f5;
+}
+
+.feed-modal.is-image-fit {
+    width: var(--feed-modal-w, min(1120px, 100%));
+    height: var(--feed-modal-h, min(720px, calc(100vh - 48px)));
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 48px);
 }
 
 .feed-modal.is-case {
@@ -664,6 +713,22 @@ body.feed-modal-open .feeds-chrome {
     .feed-modal__split {
         grid-template-columns: 1fr;
         grid-template-rows: minmax(220px, 34vh) minmax(0, 1fr);
+    }
+
+    .feed-modal__viewer {
+        min-height: 0;
+    }
+
+    .feed-modal.is-image-fit {
+        max-width: calc(100vw - 24px);
+        max-height: min(92vh, calc(100vh - 24px));
+    }
+
+    .feed-modal__caption {
+        left: 16px;
+        right: 52px;
+        bottom: 14px;
+        font-size: 10px;
     }
 
     .feed-modal__content {

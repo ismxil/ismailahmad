@@ -14,6 +14,7 @@ let problemBodyEl;
 let ctaEl;
 let ctaLabelEl;
 let heroImg;
+let captionEl;
 let closeBtn;
 let caseIconEl;
 let caseLogoEl;
@@ -43,6 +44,7 @@ function cacheElements() {
   ctaEl = document.getElementById('feed-modal-cta');
   ctaLabelEl = document.getElementById('feed-modal-cta-label');
   heroImg = document.getElementById('feed-modal-hero-img');
+  captionEl = document.getElementById('feed-modal-caption');
   closeBtn = document.getElementById('feed-modal-close');
   caseIconEl = document.getElementById('feed-modal-case-icon');
   caseLogoEl = document.getElementById('feed-modal-case-logo');
@@ -319,37 +321,64 @@ function renderCaseBlocks(data) {
   });
 }
 
+function resolveSimpleCaption(data, index) {
+  if (data.caption) return data.caption;
+  if (data.modalTitle) return data.modalTitle;
+  // Prefer explicit image-number titles once provided via feed data.
+  if (data.imageTitle) return data.imageTitle;
+  const cover = data.cover || data.heroImage || '';
+  const match = String(cover).match(/image_(\d+)/i);
+  if (match && data.imageTitles && data.imageTitles[match[1]]) {
+    return data.imageTitles[match[1]];
+  }
+  return data.name || data.client || data.title || (Number.isFinite(index) ? `Image ${index}` : '');
+}
+
+function fitSimpleModalToImage() {
+  if (!modal || !heroImg) return;
+  const nw = heroImg.naturalWidth;
+  const nh = heroImg.naturalHeight;
+  if (!nw || !nh) return;
+
+  const maxW = Math.min(1120, window.innerWidth - 48);
+  const maxH = Math.min(window.innerHeight - 48, window.innerHeight * 0.92);
+  const ratio = nw / nh;
+
+  let width = maxW;
+  let height = width / ratio;
+  if (height > maxH) {
+    height = maxH;
+    width = height * ratio;
+  }
+
+  modal.classList.add('is-image-fit');
+  modal.style.setProperty('--feed-modal-w', Math.round(width) + 'px');
+  modal.style.setProperty('--feed-modal-h', Math.round(height) + 'px');
+}
+
+function clearSimpleModalFit() {
+  if (!modal) return;
+  modal.classList.remove('is-image-fit');
+  modal.style.removeProperty('--feed-modal-w');
+  modal.style.removeProperty('--feed-modal-h');
+}
+
 function populateSimple(data, index) {
   const accent = data.accent || '#393bfe';
   const cover = data.heroImage || resolveFeedCover(data, index);
   const title = data.name || data.title || data.client || 'Project';
-  const tagline = data.tagline || data.headline || '';
+  const caption = resolveSimpleCaption(data, index);
 
   modal.style.setProperty('--feed-modal-accent', accent);
-  setLogo(iconEl, logoEl, data, title);
-  setText(titleEl, title);
-  setText(taglineEl, tagline);
-  setHidden(taglineEl, !tagline);
-  renderMeta(metaEl, data);
-
-  const problemHtml = renderMarkdown(data.problemBody || data.content || data.description || '');
-  if (problemBodyEl) {
-    const labeled = problemHtml
-      ? `<h3>Context</h3>${problemHtml.startsWith('<') ? problemHtml : `<p>${problemHtml}</p>`}`
-      : '';
-    problemBodyEl.innerHTML = labeled;
-  }
-  setHidden(problemBodyEl, !problemHtml);
-
-  if (ctaEl && ctaLabelEl) {
-    ctaLabelEl.textContent = data.ctaLabel || "Let's talk";
-    ctaEl.hidden = false;
-  }
 
   if (heroImg) {
+    const applyFit = () => fitSimpleModalToImage();
+    heroImg.onload = applyFit;
     heroImg.src = cover;
     heroImg.alt = title + ' preview';
+    if (heroImg.complete && heroImg.naturalWidth) applyFit();
   }
+  setText(captionEl, caption);
 }
 
 function populateCase(data) {
@@ -381,8 +410,12 @@ function populate(data, index) {
   setHidden(simpleEl, isCase);
   setHidden(caseEl, !isCase);
 
-  if (isCase) populateCase(data);
-  else populateSimple(data, index);
+  if (isCase) {
+    clearSimpleModalFit();
+    populateCase(data);
+  } else {
+    populateSimple(data, index);
+  }
 
   modal.setAttribute('aria-label', (data.name || data.client || 'Project') + ' project details');
   return true;

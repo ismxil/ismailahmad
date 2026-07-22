@@ -106,7 +106,7 @@
             font-size: clamp(56px, 8vw, 120px);
             line-height: 0.95;
             letter-spacing: -1.2px;
-            color: var(--brand);
+            color: var(--text-primary, #09090b);
             font-weight: 500;
         }
 
@@ -282,7 +282,6 @@
             <div class="brand header-fluid" data-header-fluid aria-label="Feed title">
                 <div class="header-fluid__content">
                     <h1>Feed</h1>
-                    <canvas id="feeds-header-logo-c" class="site-header__logo" aria-hidden="true"></canvas>
                 </div>
             </div>
 
@@ -326,7 +325,7 @@
         </header>
 
         <footer class="page-footer">
-            <button type="button" id="open-contact" class="pill pill--cream pill--muted">Info</button>
+            <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
             <div class="bottom-bar__cta" aria-label="Stay in touch" aria-hidden="true" inert>
                 <div class="home-cta__touch">
                     <p class="home-cta__label">Stay in touch</p>
@@ -415,25 +414,10 @@
                 </svg>
             </button>
 
-            <div id="feed-modal-simple" class="feed-modal__split">
-                <div class="feed-modal__content">
-                    <div class="feed-modal__header">
-                        <div id="feed-modal-icon" class="feed-modal__icon" aria-hidden="true">
-                            <img id="feed-modal-logo" class="feed-modal__logo" alt="" hidden />
-                        </div>
-                        <div class="feed-modal__title-wrap">
-                            <h2 id="feed-modal-title" class="feed-modal__title"></h2>
-                            <div id="feed-modal-meta" class="feed-modal__meta-row"></div>
-                        </div>
-                    </div>
-                    <p id="feed-modal-tagline" class="feed-modal__tagline"></p>
-                    <div id="feed-modal-problem-body" class="feed-modal__body" hidden></div>
-                    <button type="button" id="feed-modal-cta" class="feed-modal__cta" hidden>
-                        <span id="feed-modal-cta-label">Let's talk</span>
-                    </button>
-                </div>
+            <div id="feed-modal-simple" class="feed-modal__viewer">
                 <div class="feed-modal__media">
                     <img id="feed-modal-hero-img" src="" alt="" />
+                    <p id="feed-modal-caption" class="feed-modal__caption"></p>
                 </div>
             </div>
 
@@ -516,7 +500,7 @@
     <script src="js/site-nav.js"></script>
     <script src="js/music-player.js"></script>
     <script src="js/bottom-bar-cta.js"></script>
-    <script src="js/smooth-scroll.js"></script>
+    <script src="js/smooth-scroll.js?v=axis-1"></script>
     <script src="js/spa-nav.js"></script>
     <script>
         initContactPanel();

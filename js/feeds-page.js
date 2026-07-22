@@ -1,8 +1,7 @@
 /**
- * Feeds page bootstrap — grid, modal, logos. Safe to re-run after SPA navigation.
+ * Feeds page bootstrap — grid, modal. Safe to re-run after SPA navigation.
  */
 
-import { initBrandLogo3D } from './logo-3d.js';
 import { initAllHeaderFluids } from './header-fluid.js';
 
 let initPromise = null;
@@ -34,8 +33,6 @@ export async function initFeedsPage() {
     await grid.initFeedsGrid(document.getElementById('feeds-grid'));
 
     try {
-      const headerLogo = document.getElementById('feeds-header-logo-c');
-      if (headerLogo) initBrandLogo3D(headerLogo);
       initAllHeaderFluids();
     } catch (err) {
       console.warn('[feeds-page] optional chrome init failed', err);

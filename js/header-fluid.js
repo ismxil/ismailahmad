@@ -301,7 +301,7 @@ class HeaderFluidEffect {
     this.fillFrame = 0;
     this.pointer = { x: 0, y: 0, dx: 0, dy: 0, moved: false };
     this.hue = Math.random();
-    this.brandColor = [0.224, 0.231, 0.996];
+    this.brandColor = [0.035, 0.035, 0.043]; // #09090b
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (this.reducedMotion || !this.initGL()) {
@@ -722,16 +722,7 @@ class HeaderFluidEffect {
 export function initHeaderFluid(root) {
   if (!root || root.dataset.headerFluidReady) return null;
   root.dataset.headerFluidReady = '1';
-  const brand = getComputedStyle(root).getPropertyValue('--brand').trim();
-  const effect = new HeaderFluidEffect(root);
-  if (brand.startsWith('#') && effect.gl) {
-    const hex = brand.slice(1);
-    const r = parseInt(hex.slice(0, 2), 16) / 255;
-    const g = parseInt(hex.slice(2, 4), 16) / 255;
-    const b = parseInt(hex.slice(4, 6), 16) / 255;
-    effect.brandColor = [r, g, b];
-  }
-  return effect;
+  return new HeaderFluidEffect(root);
 }
 
 export function initAllHeaderFluids(selector = '[data-header-fluid]') {

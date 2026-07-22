@@ -1,13 +1,16 @@
 /**
  * Lightweight wheel smoothing via native scrollY lerp.
  * Keeps real document scroll (GSAP ScrollTrigger pins keep working).
- * Skips touch, reduced-motion, nested overflow, and non-scrolling pages (Feeds).
+ * Skips touch, reduced-motion, and nested vertical overflow.
+ *
+ * Horizontal-only carousels (overflow-x) must NOT swallow vertical wheel —
+ * that feels like laggy / stuck scrolling when the cursor is over them.
  */
 (function () {
     if (window.__smoothScrollReady) return;
     window.__smoothScrollReady = true;
 
-    var LERP = 0.14;
+    var LERP = 0.18;
     var STOP_EPS = 0.35;
     var current = window.scrollY || 0;
     var target = current;
@@ -29,25 +32,43 @@
         return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     }
 
-    function isScrollableAncestor(el) {
-        var node = el;
-        while (node && node !== document.body && node !== document.documentElement) {
+    function isHidden(style) {
+        return style.pointerEvents === 'none' || style.visibility === 'hidden' || style.display === 'none';
+    }
+
+    function canScrollY(node, style) {
+        var oy = style.overflowY;
+        if (!(oy === 'auto' || oy === 'scroll' || oy === 'overlay')) return false;
+        return node.scrollHeight > node.clientHeight + 1;
+    }
+
+    function canScrollX(node, style) {
+        var ox = style.overflowX;
+        if (!(ox === 'auto' || ox === 'scroll' || ox === 'overlay')) return false;
+        return node.scrollWidth > node.clientWidth + 1;
+    }
+
+    function isHorizontalOnly(node, style) {
+        return canScrollX(node, style) && !canScrollY(node, style);
+    }
+
+    function hasHorizontalOnlyBetween(from, until) {
+        var node = from;
+        while (node && node !== until) {
             if (node.nodeType === 1) {
                 var style = window.getComputedStyle(node);
-                var oy = style.overflowY;
-                var ox = style.overflowX;
-                if (
-                    ((oy === 'auto' || oy === 'scroll' || oy === 'overlay') &&
-                        node.scrollHeight > node.clientHeight + 1) ||
-                    ((ox === 'auto' || ox === 'scroll' || ox === 'overlay') &&
-                        node.scrollWidth > node.clientWidth + 1)
-                ) {
-                    return true;
-                }
+                if (!isHidden(style) && isHorizontalOnly(node, style)) return true;
             }
             node = node.parentElement;
         }
         return false;
+    }
+
+    function normalizeDeltaY(e) {
+        var dy = e.deltaY;
+        if (e.deltaMode === 1) dy *= 16;
+        else if (e.deltaMode === 2) dy *= window.innerHeight;
+        return dy;
     }
 
     function scrollInstant(y) {
@@ -80,18 +101,33 @@
 
     function onWheel(e) {
         if (reduceMotion || touching || e.ctrlKey || e.defaultPrevented) return;
+        // Trackpad horizontal pans: leave to the browser / carousels.
         if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
-        if (isScrollableAncestor(e.target)) return;
+
+        var dy = normalizeDeltaY(e);
+
+        // Prefer a nested vertical scroller (e.g. project modal). If the cursor
+        // is over a horizontal carousel inside it, forward delta manually so
+        // the carousel cannot convert vertical wheel into sideways scroll.
+        var node = e.target;
+        while (node && node !== document.body && node !== document.documentElement) {
+            if (node.nodeType === 1) {
+                var style = window.getComputedStyle(node);
+                if (!isHidden(style) && canScrollY(node, style)) {
+                    if (hasHorizontalOnlyBetween(e.target, node)) {
+                        e.preventDefault();
+                        node.scrollTop += dy;
+                    }
+                    return;
+                }
+            }
+            node = node.parentElement;
+        }
 
         var max = maxScroll();
         if (max <= 1) return;
 
-        // Keep in sync if something else moved scroll (anchor, ST, SPA).
         if (!raf) syncFromNative();
-
-        var dy = e.deltaY;
-        if (e.deltaMode === 1) dy *= 16;
-        else if (e.deltaMode === 2) dy *= window.innerHeight;
 
         e.preventDefault();
         target = Math.max(0, Math.min(max, target + dy));
@@ -114,7 +150,6 @@
             ' ': 1
         };
         if (!keys[e.key]) return;
-        // Let native keyboard scroll land, then resync.
         if (raf) {
             cancelAnimationFrame(raf);
             raf = 0;
@@ -151,7 +186,6 @@
         if (!raf) syncFromNative();
     }, { passive: true });
 
-    // After SPA body swaps, scroll position / height change.
     window.addEventListener('spa:page-ready', function () {
         if (raf) {
             cancelAnimationFrame(raf);

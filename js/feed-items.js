@@ -6,13 +6,7 @@ import { sanityConfig, isSanityConfigured } from './sanity-config.js';
 
 const FEED_DATA_URL = 'data/feed-items.json';
 
-/** Placeholder modal content — used only when a field is missing */
-const MODAL_PLACEHOLDER = {
-  tagline: 'A no-code shader design tool for the web — design the visual, walk away with the code.',
-  problemBody:
-    'WebGL and shader programming are powerful but impenetrable for non-technical designers. HueGrid bridges that gap by letting anyone create and tweak real-time visual effects directly in the browser — no code required.',
-  ctaLabel: "Let's talk",
-};
+const DEFAULT_CTA_LABEL = "Let's talk";
 
 let feedItems = [];
 let loadPromise = null;
@@ -39,20 +33,6 @@ function normalizePreviewMedia(media) {
     .filter(Boolean);
 }
 
-function applyModalPlaceholders(item) {
-  const tagline = item.tagline || item.headline || '';
-  const problemBody = item.problemBody || item.content || item.description || '';
-  return {
-    ...item,
-    tagline: tagline || MODAL_PLACEHOLDER.tagline,
-    headline: tagline || item.headline || MODAL_PLACEHOLDER.tagline,
-    problemBody: problemBody || MODAL_PLACEHOLDER.problemBody,
-    content: problemBody || MODAL_PLACEHOLDER.problemBody,
-    ctaLabel: item.ctaLabel || MODAL_PLACEHOLDER.ctaLabel,
-    heroImage: item.heroImage || item.cover,
-  };
-}
-
 function normalizeItem(item) {
   if (!item) return null;
 
@@ -68,13 +48,13 @@ function normalizeItem(item) {
   const logo = item.logo || '';
   const problemBody = item.problemBody || item.content || item.description || '';
   const ctaUrl = item.ctaUrl || liveUrl || '';
-  const ctaLabel = item.ctaLabel || "Let's talk";
+  const ctaLabel = item.ctaLabel || DEFAULT_CTA_LABEL;
   const layout = item.layout || (Array.isArray(item.caseBlocks) && item.caseBlocks.length ? 'case' : 'simple');
   const tags = Array.isArray(item.tags) ? item.tags.filter(Boolean) : [];
   const caseBlocks = Array.isArray(item.caseBlocks) ? item.caseBlocks : [];
   const metrics = Array.isArray(item.metrics) ? item.metrics : [];
 
-  return applyModalPlaceholders({
+  return {
     id: item.id || item.slug || '',
     name,
     title: name,
@@ -100,13 +80,16 @@ function normalizeItem(item) {
     problemBody,
     content: problemBody,
     description: item.description || problemBody,
+    caption: item.caption || item.modalTitle || item.imageTitle || '',
+    modalTitle: item.modalTitle || item.caption || '',
+    imageTitle: item.imageTitle || '',
     ctaLabel,
     ctaUrl,
     layout,
     caseBlocks,
     metrics,
     nextProject: item.nextProject || null,
-  });
+  };
 }
 
 function normalizeItems(items) {
@@ -148,37 +131,42 @@ async function fetchFromSanity() {
   return items;
 }
 
-/** Merge Sanity rows with local JSON so case studies keep full image stacks. */
-function mergeWithLocalCaseData(primary, localItems) {
-  if (!localItems?.length) return primary;
-  const byId = new Map();
-  localItems.forEach((item) => {
+/** Merge local JSON (canonical list) with Sanity enrichment for matching ids. */
+function mergeWithLocalCaseData(sanityItems, localItems) {
+  if (!localItems?.length) return sanityItems || [];
+  if (!sanityItems?.length) return localItems;
+
+  const remoteById = new Map();
+  sanityItems.forEach((item) => {
     const id = item.id || item.slug;
-    if (id) byId.set(id, item);
+    if (id) remoteById.set(id, item);
   });
-  return primary.map((item) => {
-    const local = byId.get(item.id) || byId.get(item.slug);
-    if (!local) return item;
+
+  // Local JSON is the allowlist — removals there stay removed even if Sanity still has them.
+  return localItems.map((local) => {
+    const remote = remoteById.get(local.id) || remoteById.get(local.slug);
+    if (!remote) return local;
     const caseBlocks =
-      Array.isArray(item.caseBlocks) && item.caseBlocks.length
-        ? item.caseBlocks
+      Array.isArray(remote.caseBlocks) && remote.caseBlocks.length
+        ? remote.caseBlocks
         : local.caseBlocks;
     const previewMedia =
-      Array.isArray(item.previewMedia) && item.previewMedia.length
-        ? item.previewMedia
+      Array.isArray(remote.previewMedia) && remote.previewMedia.length
+        ? remote.previewMedia
         : local.previewMedia;
     return {
       ...local,
-      ...item,
-      layout: item.layout || local.layout,
+      ...remote,
+      // Prefer local cover/paths so broken Sanity assets don't win.
+      cover: local.cover || remote.cover,
+      heroImage: local.heroImage || remote.heroImage,
+      layout: remote.layout || local.layout,
       caseBlocks: caseBlocks || [],
       previewMedia: previewMedia || [],
-      metrics: item.metrics?.length ? item.metrics : local.metrics,
-      tags: item.tags?.length ? item.tags : local.tags,
-      nextProject: item.nextProject || local.nextProject,
-      logo: item.logo || local.logo,
-      cover: item.cover || local.cover,
-      heroImage: item.heroImage || local.heroImage,
+      metrics: remote.metrics?.length ? remote.metrics : local.metrics,
+      tags: remote.tags?.length ? remote.tags : local.tags,
+      nextProject: remote.nextProject || local.nextProject,
+      logo: remote.logo || local.logo,
     };
   });
 }
