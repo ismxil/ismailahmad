@@ -1,7 +1,20 @@
 /**
  * GPU fluid clipped to header brand text — Medium preset inspired by
  * https://haxiomic.github.io/GPU-Fluid-Experiments/html5/?q=Medium
+ *
+ * Disabled on small screens, coarse pointers, and reduced-motion: the
+ * hover fill path can flash badly there (unsafe / epilepsy risk).
  */
+
+function prefersStaticHeaderFluid() {
+  if (typeof window.matchMedia !== 'function') return false;
+  return (
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    window.matchMedia('(hover: none)').matches ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    window.matchMedia('(max-width: 1024px)').matches
+  );
+}
 
 const MEDIUM = {
   simResolution: 128,
@@ -303,16 +316,23 @@ class HeaderFluidEffect {
     this.hue = Math.random();
     this.brandColor = [0.035, 0.035, 0.043]; // #09090b
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.staticMode = prefersStaticHeaderFluid();
+    this._mqHandlers = [];
 
-    if (this.reducedMotion || !this.initGL()) {
+    if (this.staticMode || this.reducedMotion || !this.initGL()) {
       this.canvas.remove();
+      this.canvas = null;
       return;
     }
 
     this.resize();
     this.bindEvents();
+    this.bindMediaGuards();
     if (window.ResizeObserver) {
-      this.ro = new ResizeObserver(() => this.resize());
+      this.ro = new ResizeObserver(() => {
+        if (this.root.classList.contains('is-scaling')) return;
+        this.resize();
+      });
       this.ro.observe(this.content);
     }
     window.addEventListener('resize', this.onResize);
@@ -336,7 +356,39 @@ class HeaderFluidEffect {
     }
   }
 
-  onResize = () => this.resize();
+  onResize = () => {
+    if (this.root.classList.contains('is-scaling')) return;
+    this.resize();
+  };
+
+  bindMediaGuards() {
+    if (typeof window.matchMedia !== 'function') return;
+    const queries = [
+      '(prefers-reduced-motion: reduce)',
+      '(hover: none)',
+      '(pointer: coarse)',
+      '(max-width: 1024px)',
+    ];
+    queries.forEach((q) => {
+      const mq = window.matchMedia(q);
+      const onChange = () => {
+        if (prefersStaticHeaderFluid()) this.disableEffect();
+      };
+      if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onChange);
+      else if (typeof mq.addListener === 'function') mq.addListener(onChange);
+      this._mqHandlers.push({ mq, onChange });
+    });
+  }
+
+  disableEffect() {
+    this.setActive(false);
+    this.destroy();
+    if (this.canvas && this.canvas.parentNode) this.canvas.remove();
+    this.canvas = null;
+    this.gl = null;
+    this.root.classList.remove('is-active');
+    this.clearFill();
+  }
 
   initGL() {
     const gl =
@@ -437,13 +489,17 @@ class HeaderFluidEffect {
   }
 
   resize() {
-    if (!this.gl) return;
+    if (!this.gl || !this.canvas) return;
+    if (this.root.classList.contains('is-scaling')) return;
     const rect = this.content.getBoundingClientRect();
+    if (rect.width < 8 || rect.height < 8) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const padX = 40;
     const padY = 56;
     const w = Math.max(1, Math.ceil((rect.width + padX) * dpr));
     const h = Math.max(1, Math.ceil((rect.height + padY) * dpr));
+    // Skip no-op resizes — recreating FBOs mid-hover causes flash.
+    if (this.canvas.width === w && this.canvas.height === h) return;
     this.canvas.width = w;
     this.canvas.height = h;
     this.canvas.style.left = `${-padX * 0.5}px`;
@@ -466,7 +522,14 @@ class HeaderFluidEffect {
   }
 
   applyFill() {
-    const url = this.canvas.toDataURL();
+    if (!this.canvas || !this.gl || !this.active) return;
+    if (prefersStaticHeaderFluid() || this.root.classList.contains('is-scaling')) return;
+    let url;
+    try {
+      url = this.canvas.toDataURL();
+    } catch (err) {
+      return;
+    }
 
     if (this.title) {
       const bg = this.canvasBackgroundStyles(this.title);
@@ -519,7 +582,10 @@ class HeaderFluidEffect {
 
   bindEvents() {
     const onMove = (clientX, clientY) => {
+      if (!this.canvas || prefersStaticHeaderFluid()) return;
+      if (this.root.classList.contains('is-scaling')) return;
       const rect = this.canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
       const nx = (clientX - rect.left) / rect.width;
       const ny = 1 - (clientY - rect.top) / rect.height;
       if (nx < 0 || nx > 1 || ny < 0 || ny > 1) return;
@@ -531,17 +597,15 @@ class HeaderFluidEffect {
       this.setActive(true);
     };
 
-    this.canvas.addEventListener('pointerenter', () => this.setActive(true));
-    this.canvas.addEventListener('pointermove', (e) => onMove(e.clientX, e.clientY));
-    this.canvas.addEventListener('pointerdown', (e) => {
-      this.canvas.setPointerCapture(e.pointerId);
+    this.canvas.addEventListener('pointerenter', (e) => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      this.setActive(true);
+    });
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
       onMove(e.clientX, e.clientY);
     });
-    this.canvas.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      const t = e.targetTouches[0];
-      if (t) onMove(t.clientX, t.clientY);
-    }, { passive: false });
+    // No touchmove handler — touch must never drive this effect.
 
     this.root.addEventListener('pointerleave', () => {
       clearTimeout(this.idleTimer);
@@ -550,6 +614,10 @@ class HeaderFluidEffect {
   }
 
   setActive(value) {
+    if (!this.gl || !this.canvas) return;
+    if (value && (prefersStaticHeaderFluid() || this.root.classList.contains('is-scaling'))) {
+      return;
+    }
     if (this.active === value) {
       if (value && !this.raf) this.raf = requestAnimationFrame(this.loop);
       return;
@@ -686,7 +754,11 @@ class HeaderFluidEffect {
 
   loop = (time) => {
     this.raf = 0;
-    if (!this.active) return;
+    if (!this.active || !this.gl || !this.canvas) return;
+    if (prefersStaticHeaderFluid() || this.root.classList.contains('is-scaling')) {
+      this.setActive(false);
+      return;
+    }
 
     const dt = Math.min(0.033, (time - this.lastTime) / 1000 || 0.016);
     this.lastTime = time;
@@ -706,8 +778,9 @@ class HeaderFluidEffect {
     this.step(dt);
     this.render();
 
+    // Update text fill less often to avoid flashy toDataURL thrash.
     this.fillFrame += 1;
-    if (this.fillFrame % 3 === 0) this.applyFill();
+    if (this.fillFrame % 5 === 0) this.applyFill();
 
     this.raf = requestAnimationFrame(this.loop);
   };
@@ -716,6 +789,13 @@ class HeaderFluidEffect {
     if (this.ro) this.ro.disconnect();
     window.removeEventListener('resize', this.onResize);
     if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = 0;
+    clearTimeout(this.idleTimer);
+    (this._mqHandlers || []).forEach(({ mq, onChange }) => {
+      if (typeof mq.removeEventListener === 'function') mq.removeEventListener('change', onChange);
+      else if (typeof mq.removeListener === 'function') mq.removeListener(onChange);
+    });
+    this._mqHandlers = [];
   }
 }
 

@@ -33,7 +33,7 @@
     <link rel="modulepreload" href="js/site-loader.js">
     <link rel="modulepreload" href="js/site-loader-logo.js">
     <script type="module" src="js/site-loader.js"></script>
-    <link rel="stylesheet" href="css/header-fluid.css">
+    <link rel="stylesheet" href="css/header-fluid.css?v=safe-1">
     <link rel="stylesheet" href="css/site-nav.css?v=control-1">
     <link rel="stylesheet" href="css/contact-panel.css">
     <link rel="stylesheet" href="css/contact-shimmer.css">
@@ -372,7 +372,7 @@
     <script src="js/smooth-scroll.js?v=axis-1"></script>
     <script src="js/spa-nav.js"></script>
     <script type="module">
-        import { initAllHeaderFluids } from './js/header-fluid.js';
+        import { initAllHeaderFluids } from './js/header-fluid.js?v=safe-1';
         await (window.siteReady ?? Promise.resolve());
         initAllHeaderFluids();
         initContactPanel();

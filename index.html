@@ -37,7 +37,7 @@
     <link rel="modulepreload" href="js/site-loader.js">
     <link rel="modulepreload" href="js/site-loader-logo.js">
     <script type="module" src="js/site-loader.js"></script>
-    <link rel="stylesheet" href="css/header-fluid.css">
+    <link rel="stylesheet" href="css/header-fluid.css?v=safe-1">
     <link rel="stylesheet" href="css/site-nav.css?v=control-1">
     <link rel="stylesheet" href="css/contact-panel.css">
     <link rel="stylesheet" href="css/contact-shimmer.css">
@@ -2474,8 +2474,7 @@
     <div class="home-page">
         <section class="home-hero" aria-label="Introduction">
             <div class="home-hero__inner">
-                <p class="home-hero__copy">Product &amp; UX designer specialised in financial brands, and products
-                    for the world’s ambitious companies.</p>
+                <p class="home-hero__copy">Product &amp; UX designer building digital products for ambitious companies, from financial services and beyond.</p>
                 <a class="pill pill--cream home-hero__cta" href="#work">View work</a>
             </div>
             <div class="home-hero__foot">
@@ -4451,7 +4450,7 @@
             update();
         })();
 
-        import('./js/header-fluid.js').then(function (mod) {
+        import('./js/header-fluid.js?v=safe-1').then(function (mod) {
             mod.initAllHeaderFluids();
         });
     </script>

@@ -331,7 +331,14 @@ function resolveSimpleCaption(data, index) {
   if (match && data.imageTitles && data.imageTitles[match[1]]) {
     return data.imageTitles[match[1]];
   }
-  return data.name || data.client || data.title || (Number.isFinite(index) ? `Image ${index}` : '');
+  return (
+    data.tagline ||
+    data.headline ||
+    data.name ||
+    data.client ||
+    data.title ||
+    (Number.isFinite(index) ? `Image ${index}` : '')
+  );
 }
 
 function fitSimpleModalToImage() {
@@ -400,22 +407,11 @@ function populateCase(data) {
 function populate(data, index) {
   if (!data || !modal) return false;
 
-  const caseBlocks = resolveCaseBlocks(data);
-  const isCase = data.layout === 'case' && caseBlocks.length > 0;
-  // Ensure populateCase always receives the full resolved block list.
-  if (isCase) {
-    data = { ...data, caseBlocks };
-  }
-  modal.classList.toggle('is-case', isCase);
-  setHidden(simpleEl, isCase);
-  setHidden(caseEl, !isCase);
-
-  if (isCase) {
-    clearSimpleModalFit();
-    populateCase(data);
-  } else {
-    populateSimple(data, index);
-  }
+  // Feed modal is image + caption only — full case studies live on Home.
+  modal.classList.remove('is-case');
+  setHidden(simpleEl, false);
+  setHidden(caseEl, true);
+  populateSimple(data, index);
 
   modal.setAttribute('aria-label', (data.name || data.client || 'Project') + ' project details');
   return true;

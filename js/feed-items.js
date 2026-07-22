@@ -160,7 +160,7 @@ function mergeWithLocalCaseData(sanityItems, localItems) {
       // Prefer local cover/paths so broken Sanity assets don't win.
       cover: local.cover || remote.cover,
       heroImage: local.heroImage || remote.heroImage,
-      layout: remote.layout || local.layout,
+      layout: local.layout || remote.layout,
       caseBlocks: caseBlocks || [],
       previewMedia: previewMedia || [],
       metrics: remote.metrics?.length ? remote.metrics : local.metrics,

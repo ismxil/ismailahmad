@@ -64,16 +64,23 @@
     display: block;
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce),
+  (hover: none),
+  (pointer: coarse),
+  (max-width: 1024px) {
     .header-fluid__canvas {
         display: none !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
     }
 
     .header-fluid.is-active .header-fluid__content h1,
     .header-fluid.is-active .header-fluid__content h2 {
-        color: inherit !important;
-        -webkit-text-fill-color: inherit !important;
+        color: var(--text-primary, #09090b) !important;
+        -webkit-text-fill-color: var(--text-primary, #09090b) !important;
         background-image: none !important;
+        background-clip: border-box !important;
+        -webkit-background-clip: border-box !important;
     }
 
     .header-fluid.is-active .header-fluid__logo-wrap img {

@@ -2,7 +2,7 @@
  * Feeds page bootstrap — grid, modal. Safe to re-run after SPA navigation.
  */
 
-import { initAllHeaderFluids } from './header-fluid.js';
+import { initAllHeaderFluids } from './header-fluid.js?v=safe-1';
 
 let initPromise = null;
 let feedsGridApi = null;
