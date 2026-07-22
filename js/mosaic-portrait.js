@@ -8,11 +8,20 @@
  */
 (function () {
     var MOSAIC_CELL = 18;
+    /** Finer blocks on iPad / 13" Mac so the mosaic reads cleaner at mid sizes. */
+    var MOSAIC_CELL_COMPACT = 10;
     var DURATION_MS = 420;
     var VISIBLE_EPS = 0.015;
     var EASE = function (t) {
         return 1 - Math.pow(1 - t, 3);
     };
+
+    function mosaicCellMax() {
+        var w = window.innerWidth || 0;
+        var h = window.innerHeight || 0;
+        if (w >= 769 && (w <= 1440 || h <= 900)) return MOSAIC_CELL_COMPACT;
+        return MOSAIC_CELL;
+    }
 
     var btn = null;
     var img = null;
@@ -49,7 +58,8 @@
     }
 
     function intensityToCell(t) {
-        return 1 + clamp01(t) * (MOSAIC_CELL - 1);
+        var max = mosaicCellMax();
+        return 1 + clamp01(t) * (max - 1);
     }
 
     function targetIntensity() {
