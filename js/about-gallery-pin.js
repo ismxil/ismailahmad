@@ -116,7 +116,12 @@
         var item = track && track.querySelector('.about-gallery__item');
         if (!gallery || !track || !item) return;
 
-        if (!isTouchUi()) {
+        // Desktop large canvases keep the design’s right pad; small/mid + touch
+        // get an end pad so the last card can sit flush to the left edge.
+        var compactMq = window.matchMedia
+            ? window.matchMedia('(max-width: 1280px)')
+            : null;
+        if (!isTouchUi() && !(compactMq && compactMq.matches)) {
             track.style.removeProperty('padding-right');
             return;
         }
@@ -125,6 +130,10 @@
         var padRaw = page ? getComputedStyle(page).getPropertyValue('--about-pad') : '';
         var pad = parseFloat(padRaw) || 16;
         var itemWidth = item.getBoundingClientRect().width;
+        if (!itemWidth || itemWidth < 80) {
+            track.style.removeProperty('padding-right');
+            return;
+        }
         var endPad = Math.max(pad, Math.round(gallery.clientWidth - itemWidth - pad));
         track.style.paddingRight = endPad + 'px';
     }
@@ -221,10 +230,8 @@
 
         syncEndPadding();
         if (gallery) {
-            // Clamp to a real finite range — never loop / wrap.
-            var max = Math.max(0, gallery.scrollWidth - gallery.clientWidth);
-            if (gallery.scrollLeft > max) gallery.scrollLeft = max;
-            if (gallery.scrollLeft < 0) gallery.scrollLeft = 0;
+            // Always restart at the first card after layout/viewport changes.
+            gallery.scrollLeft = 0;
             setupDragScroll(gallery);
         }
 

@@ -152,8 +152,9 @@
 }
 
 .about-gallery-breakout {
-    width: calc(100% + 2 * var(--about-pad));
-    margin-left: calc(-1 * var(--about-pad));
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
     overflow: hidden;
 }
 
@@ -167,6 +168,7 @@
     overscroll-behavior-y: none;
     touch-action: pan-x;
     cursor: default;
+    width: 100%;
 }
 
 .about-gallery.is-drag-enabled {
@@ -188,6 +190,9 @@
 
 .about-gallery__track {
     display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
     gap: 24px;
     width: max-content;
     min-width: 100%;
@@ -195,11 +200,15 @@
     padding-right: 20px;
     will-change: auto;
     transform: none !important;
+    box-sizing: border-box;
 }
 
 .about-gallery__item {
+    /* Prefer width over flex-basis — Safari can collapse clamp() in flex-basis. */
     position: relative;
-    flex: 0 0 clamp(320px, 42vw, 820px);
+    flex: none;
+    width: clamp(320px, 42vw, 820px);
+    min-width: clamp(320px, 42vw, 820px);
     height: clamp(280px, 42vw, 597px);
     border-radius: 32px;
     background: #e4e4e7;
@@ -402,6 +411,25 @@
     }
 }
 
+@media (max-width: 1280px) {
+    .about-gallery-pin__inner {
+        gap: 72px;
+    }
+
+    .about-gallery__track {
+        padding-left: var(--about-pad);
+        padding-right: var(--about-pad);
+        gap: 16px;
+    }
+
+    .about-gallery__item {
+        width: min(78vw, 560px);
+        min-width: min(78vw, 560px);
+        height: min(70vw, 480px);
+        border-radius: 28px;
+    }
+}
+
 @media (max-width: 1040px) {
     .about-section {
         grid-template-columns: 1fr;
@@ -428,11 +456,6 @@
     .about-card {
         min-height: auto;
         gap: 32px;
-    }
-
-    .about-gallery__track {
-        padding-left: var(--about-pad);
-        padding-right: var(--about-pad);
     }
 }
 
@@ -536,7 +559,8 @@
 
     .about-gallery__item {
         border-radius: 24px;
-        flex-basis: min(82vw, 520px);
+        width: min(82vw, 520px);
+        min-width: min(82vw, 520px);
         height: clamp(220px, 56vw, 400px);
     }
 
