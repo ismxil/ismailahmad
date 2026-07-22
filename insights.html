@@ -222,37 +222,42 @@
     </footer>
 
     <script>
-        var SUBSTACK_HOME = 'https://wandarer.com';
         var INSIGHTS = [
             {
                 title: 'Offboarding, in product.',
                 subtitle: 'The risk, approach and what to look out for in your offboarding.',
-                date: 'Feb 20, 2025'
+                date: 'Feb 20, 2025',
+                url: 'https://wandarer.com/p/off-boarding-is-as-important-as-onboarding'
             },
             {
                 title: 'Product and souls.',
                 subtitle: 'Why most products are lacks soul in the time and day.',
-                date: 'Feb 17, 2025'
+                date: 'Feb 17, 2025',
+                url: 'https://wandarer.com/p/why-are-we-doing-this'
             },
             {
                 title: 'AI panic.',
                 subtitle: 'Enough doomsaying, tune out and start focusing on the fundamental...',
-                date: 'Jan 03, 2025'
+                date: 'Jan 03, 2025',
+                url: 'https://wandarer.com/p/tune-out-the-ai-doomsayer-envagelist'
             },
             {
                 title: 'Scrolljacking',
                 subtitle: 'It seems appealing, but can be deadly.',
-                date: 'Nov 28, 2024'
+                date: 'Nov 28, 2024',
+                url: 'https://wandarer.com/p/scrolljacking'
             },
             {
                 title: 'UX is not UI',
                 subtitle: 'If we only deliver the UI then what is UX.',
-                date: 'Jun 04, 2022'
+                date: 'Jun 04, 2022',
+                url: 'https://wandarer.com/p/ux-is-not-ui'
             },
             {
                 title: 'Starting your design journey.',
                 subtitle: 'Getting started with UX, UI or Product Design in 2024.',
-                date: 'Oct 14, 2024'
+                date: 'Oct 14, 2024',
+                url: 'https://wandarer.com/p/get-started-with-uxui-design'
             }
         ];
 
@@ -263,10 +268,10 @@
             INSIGHTS.forEach(function (item) {
                 var card = document.createElement('a');
                 card.className = 'insight-card';
-                card.href = SUBSTACK_HOME;
+                card.href = item.url;
                 card.target = '_blank';
                 card.rel = 'noopener noreferrer';
-                card.setAttribute('aria-label', item.title + ' — opens Substack');
+                card.setAttribute('aria-label', item.title + ' — opens on Substack');
 
                 var copy = document.createElement('div');
                 copy.className = 'insight-card__copy';

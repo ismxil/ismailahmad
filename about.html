@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="css/contact-panel.css">
     <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/image-hover.css">
-    <link rel="stylesheet" href="css/about.css?v=gallery-2">
+    <link rel="stylesheet" href="css/about.css?v=story-modal-2">
     <link rel="stylesheet" href="css/music-player.css?v=control-1">
     <link rel="stylesheet" href="css/bottom-bar-cta.css?v=control-1">
     <style>
@@ -172,12 +172,15 @@
             <div class="about-stack">
                 <div class="about-gallery-pin">
                     <div class="about-gallery-pin__inner">
-                        <section class="about-section about-intro" aria-labelledby="about-intro-title">
+                        <section class="about-section about-intro" aria-labelledby="about-intro-lead">
                             <span class="about-section__label about-section__label--spacer" aria-hidden="true"></span>
                             <div class="about-section__content">
-                                <h3 class="about-section__title">Welcome to my corner, I am Ahmad</h3>
-                                <p class="about-intro__lead">I help ambitious financial companies turn bold ideas into category
-                                    defining brands, products and websites</p>
+                                <div class="about-intro__lead-block">
+                                    <p class="about-intro__lead" id="about-intro-lead">I am Ismail Ahmad, I believe great design should create value for everyone involved. That belief began long before my career. It started in my father's print shop.</p>
+                                    <button type="button" class="about-intro__read-more" id="about-intro-full-story" aria-haspopup="dialog" aria-controls="about-story-modal">
+                                        Read my story
+                                    </button>
+                                </div>
                             </div>
                         </section>
 
@@ -372,6 +375,29 @@
         </div>
     </footer>
 
+    <div id="about-story-backdrop" class="about-story-backdrop" aria-hidden="true">
+        <div id="about-story-modal" class="about-story-modal" role="dialog" aria-modal="true"
+            aria-labelledby="about-story-title" tabindex="-1">
+            <button type="button" id="about-story-close" class="about-story-modal__close" aria-label="Close full story">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="about-story-modal__scroll">
+                <h3 id="about-story-title" class="about-story-modal__title">My dad led me to design.</h3>
+                <div class="about-story-modal__body">
+                    <p>My journey into design began in my father's print shop. When I told him I wanted to become an architect, he took me to visit an architecture studio. Instead, I became fascinated by its printing equipment.</p>
+                    <p>My father then asked, "What if you designed the things I print?" That question changed my direction. I began learning graphic design and helping his customers bring their ideas to life.</p>
+                    <p>Making things look good was never enough for me. I wanted to understand what each customer hoped to achieve, who they wanted to reach, and what would make the work valuable. Those conversations taught me that design begins with curiosity, not appearance.</p>
+                    <p>That curiosity eventually led me into digital product design. Working with banks and technology companies showed me how thoughtful design can make complex systems easier to understand. Financial products became especially meaningful because I know how much confidence can come from feeling in control of your money.</p>
+                    <p>Today, I design products that help people navigate complexity with clarity and confidence. I want every solution to create genuine value for the people using it and meaningful results for the organization behind it.</p>
+                    <p class="about-story-modal__closing">My father opened the door to design. Curiosity carried me through it, and serving others continues to give my work purpose.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <audio id="site-audio" preload="auto"></audio>
 
     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
@@ -447,6 +473,46 @@
         initAllSubscribeForms();
         initBottomBarCta();
         initSpaNav();
+
+        (function initAboutStoryModal() {
+            var openBtn = document.getElementById('about-intro-full-story');
+            var backdrop = document.getElementById('about-story-backdrop');
+            var modal = document.getElementById('about-story-modal');
+            var closeBtn = document.getElementById('about-story-close');
+            if (!openBtn || !backdrop || !modal || !closeBtn) return;
+
+            var lastFocus = null;
+
+            function openModal() {
+                lastFocus = document.activeElement;
+                backdrop.classList.add('is-open');
+                backdrop.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('about-story-modal-open');
+                closeBtn.focus();
+            }
+
+            function closeModal() {
+                backdrop.classList.remove('is-open');
+                backdrop.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('about-story-modal-open');
+                if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+            }
+
+            openBtn.addEventListener('click', openModal);
+            closeBtn.addEventListener('click', closeModal);
+            backdrop.addEventListener('click', function (e) {
+                if (e.target === backdrop) closeModal();
+            });
+            modal.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && backdrop.classList.contains('is-open')) {
+                    e.preventDefault();
+                    closeModal();
+                }
+            });
+        })();
     </script>
     <script type="module">
         import { initAllHeaderFluids } from './js/header-fluid.js?v=safe-1';
