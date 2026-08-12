@@ -722,6 +722,13 @@ body.feed-modal-open .feeds-chrome {
     .feed-modal.is-image-fit {
         max-width: calc(100vw - 24px);
         max-height: min(92vh, calc(100vh - 24px));
+        /* Image-only modals are sized to the image's aspect ratio, so they are
+           often far shorter than the viewport. The sheet's align-items:flex-end
+           would strand one at the bottom under a tall band of empty backdrop, so
+           centre it as a floating card: auto block margins absorb the free space
+           and take precedence over align-items. */
+        margin-block: auto;
+        border-radius: 16px;
     }
 
     .feed-modal__caption {

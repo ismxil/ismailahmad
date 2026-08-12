@@ -43,21 +43,20 @@
         }
 
         function measureClosedSize() {
-            if (!morph || nav.classList.contains('is-menu-open')) return;
-            morph.style.width = 'max-content';
-            morph.style.height = 'auto';
-            morph.style.removeProperty('--nav-closed-w');
-            morph.style.removeProperty('--nav-closed-h');
-            nav.style.removeProperty('--nav-closed-w');
-            nav.style.removeProperty('--nav-closed-h');
-            var width = morph.offsetWidth;
-            var height = morph.offsetHeight || (pills ? pills.offsetHeight : 44);
+            if (!morph || !pills || nav.classList.contains('is-menu-open')) return;
+            // Measure the pills row, which is already sized to its natural
+            // content width. Sizing `morph` itself with max-content/auto to
+            // take the reading would leave those keywords as the transition's
+            // start value, and keyword -> length is not interpolable, so the
+            // open animation would snap instead of morphing.
+            var width = pills.offsetWidth;
+            var height = pills.offsetHeight || 44;
+            if (!width) return;
             morph.style.setProperty('--nav-closed-w', width + 'px');
             morph.style.setProperty('--nav-closed-h', height + 'px');
+            morph.style.setProperty('--nav-measured-w', width + 'px');
             nav.style.setProperty('--nav-closed-w', width + 'px');
             nav.style.setProperty('--nav-closed-h', height + 'px');
-            morph.style.width = '';
-            morph.style.height = '';
         }
 
         function setMenuOpen(open) {
