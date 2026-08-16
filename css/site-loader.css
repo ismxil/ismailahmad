@@ -39,8 +39,22 @@ html.is-loading body {
     justify-content: center;
 }
 
-#site-loader-canvas {
+#site-loader-signature {
     width: 100%;
     height: 100%;
     display: block;
+    overflow: visible;
+}
+
+#site-loader-signature path {
+    fill: none;
+    stroke: var(--brand, #393bfe);
+    stroke-width: 6px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* Fallback hidden state so nothing flashes fully drawn before
+       site-loader-signature.js measures the real path length and takes
+       over stroke-dasharray/dashoffset. 2000 comfortably exceeds it. */
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
 }

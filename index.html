@@ -26,17 +26,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 
-    <!-- Three.js + GSAP for 3D logo -->
-    <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
-    </script>
+    <!-- GSAP for signature loader trace -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/base.css?v=control-1">
-    <link rel="stylesheet" href="css/site-loader.css">
-    <link rel="modulepreload" href="js/site-loader.js">
-    <link rel="modulepreload" href="js/site-loader-logo.js">
-    <script type="module" src="js/site-loader.js"></script>
+    <link rel="stylesheet" href="css/site-loader.css?v=signature-1">
+    <link rel="modulepreload" href="js/site-loader.js?v=signature-1">
+    <link rel="modulepreload" href="js/site-loader-signature.js?v=signature-1">
+    <script type="module" src="js/site-loader.js?v=signature-1"></script>
     <link rel="stylesheet" href="css/header-fluid.css?v=safe-1">
     <link rel="stylesheet" href="css/site-nav.css?v=control-1">
     <link rel="stylesheet" href="css/contact-panel.css">
@@ -489,10 +486,6 @@
             scroll-margin-top: 96px;
         }
 
-        .home-more {
-            margin: 120px 0;
-        }
-
         .home-project {
             display: flex;
             flex-direction: column;
@@ -521,6 +514,7 @@
         }
 
         .home-project__cover {
+            position: relative;
             width: 100%;
             aspect-ratio: 996 / 560;
             overflow: hidden;
@@ -536,6 +530,31 @@
             object-position: center;
             display: block;
             transition: transform 0.3s ease;
+        }
+
+        /* Sibling of the <img>, so the cover's hover zoom scales the artwork
+           underneath while this stays put. */
+        .home-project__service {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.92);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            font-family: var(--font-body);
+            font-size: 14px;
+            line-height: 24px;
+            font-weight: 500;
+            color: var(--text-primary, #09090b);
+            white-space: nowrap;
+            pointer-events: none;
         }
 
         .home-project__meta {
@@ -609,7 +628,7 @@
         }
 
         .home-brands__group img {
-            height: 21px;
+            height: 17px;
             width: auto;
             flex-shrink: 0;
             object-fit: contain;
@@ -617,7 +636,7 @@
         }
 
         .home-brands__group img[src*="deutsche-bank"] {
-            height: 16px;
+            height: 13px;
         }
 
         @keyframes home-brands-scroll {
@@ -634,36 +653,6 @@
             .home-brands__track {
                 animation: none;
             }
-        }
-
-        /* ── See more work ── */
-        .home-more {
-            display: flex;
-            justify-content: center;
-            padding: 0 24px;
-        }
-
-        .home-more__btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 54px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 999px;
-            background: var(--bg-cream, #f3f2ef);
-            color: var(--text-secondary, #71717a);
-            font-family: var(--font-body);
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 24px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: opacity 0.18s ease;
-        }
-
-        .home-more__btn:hover {
-            opacity: 0.8;
         }
 
         /* ── Capabilities ── */
@@ -923,11 +912,11 @@
             }
 
             .home-brands__group img {
-                height: 16px;
+                height: 13px;
             }
 
             .home-brands__group img[src*="deutsche-bank"] {
-                height: 12px;
+                height: 10px;
             }
 
             .home-projects {
@@ -947,8 +936,12 @@
                 line-height: 28px;
             }
 
-            .home-more {
-                margin: 120px 0;
+            .home-project__service {
+                left: 12px;
+                bottom: 12px;
+                height: 30px;
+                padding: 4px 12px;
+                font-size: 13px;
             }
 
             .home-detail {
@@ -2367,7 +2360,9 @@
 
     <div id="site-loader" class="site-loader" role="status" aria-label="Loading">
         <div class="site-loader__mark">
-            <canvas id="site-loader-canvas" aria-hidden="true"></canvas>
+            <svg id="site-loader-signature" viewBox="0 0 396 343" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M81.835,2477.796C81.835,2477.796 454.435,2205.149 415.719,2153C391.288,2120.092 319.22,2165.049 264.098,2227.977C185.773,2317.394 137.217,2440.199 152,2466C195.388,2541.727 425.12,2278.143 398.36,2246.234C380.475,2224.908 259.394,2377.005 303.697,2394.225C317.936,2394.225 342.875,2367.296 362.519,2336.515C362.519,2336.515 340.584,2392.821 348,2383.894C357.934,2371.936 371.523,2347.692 378,2354.454C384.298,2361.03 367.523,2385 375,2382C382.477,2379 389.012,2356.526 394.083,2357.822C401.202,2359.641 384.576,2384.823 391.288,2381.407C398,2377.991 415.719,2353.418 415.719,2357.822C415.719,2362.225 399.711,2392.818 415.413,2381.407C431.115,2369.995 440.179,2361.437 440.179,2361.437C440.179,2361.437 422.227,2378.92 425.613,2381.407C429,2383.894 454.025,2362.844 456,2357.822C457.975,2352.799 439.964,2381.131 448.039,2383.894C454.796,2386.207 459.93,2371.936 466,2371.936C466,2371.936 463,2384.407 472,2378.407" transform="matrix(1,0,0,1,-79.334514,-2139.421278)" />
+            </svg>
         </div>
     </div>
 
@@ -2636,10 +2631,6 @@
         </section>
 
         <section class="home-projects" id="work" aria-label="Featured projects"></section>
-
-        <div class="home-more">
-            <a class="home-more__btn" href="feeds.html">See more work</a>
-        </div>
 
         <section class="home-detail" aria-labelledby="home-capabilities-label">
             <div class="home-detail__head">
@@ -4385,6 +4376,23 @@
                     img.loading = 'lazy';
                     cover.appendChild(img);
                 }
+
+                // Prefer the Services detail over tags[0] — tags lead with a
+                // project descriptor on some cards ("Card"), not a service.
+                var serviceSection = (card.details || []).find(function (item) {
+                    return item.title === 'Services';
+                });
+                var serviceLabel = serviceSection && serviceSection.items && serviceSection.items.length
+                    ? serviceSection.items[0]
+                    : (card.tags && card.tags[0]) || '';
+
+                if (serviceLabel) {
+                    var service = document.createElement('span');
+                    service.className = 'home-project__service';
+                    service.textContent = serviceLabel;
+                    cover.appendChild(service);
+                }
+
                 btn.appendChild(cover);
 
                 var meta = document.createElement('div');

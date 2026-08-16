@@ -1,7 +1,11 @@
 /**
- * Site loader — white overlay + logo construct/deconstruct on every page.
+ * Site loader — white overlay + signature construct/deconstruct on every page.
  */
-import { runSiteLoaderLogo } from './site-loader-logo.js';
+// Version query kept in step with the ?v= on the <script>/<link> tags in the
+// HTML. Without it a returning visitor's cached copy of this module would keep
+// importing the deleted 3D-logo module, the import would fail, and the loader
+// would never run — leaving a white screen until the inline 7s fallback fires.
+import { runSiteLoaderSignature } from './site-loader-signature.js?v=signature-1';
 
 const HOLD_MS = 180;
 const FONTS_MS = 1500;
@@ -33,9 +37,9 @@ function waitForFonts() {
   return withTimeout(loads, FONTS_MS);
 }
 
-function shouldSkipLogoAnim() {
+function shouldSkipSignatureAnim() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
-  return !window.gsap || !document.getElementById('site-loader-canvas');
+  return !window.gsap || !document.getElementById('site-loader-signature');
 }
 
 function clearLoadingState() {
@@ -69,11 +73,11 @@ function holdAssembled() {
 
 async function runLoader() {
   const fonts = waitForFonts();
-  const canvas = document.getElementById('site-loader-canvas');
+  const svg = document.getElementById('site-loader-signature');
 
   try {
-    if (!shouldSkipLogoAnim()) {
-      await runSiteLoaderLogo(canvas, {
+    if (!shouldSkipSignatureAnim()) {
+      await runSiteLoaderSignature(svg, {
         beforeDeconstruct: () => Promise.all([fonts, holdAssembled()]),
       });
     } else {

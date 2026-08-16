@@ -18,16 +18,13 @@
     <style>html.is-loading,html.is-loading body{background:#fff}</style>
     <title>Feed — Ismail Ahmad</title>
     <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
-    <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/base.css?v=control-1">
-    <link rel="stylesheet" href="css/site-loader.css">
-    <link rel="modulepreload" href="js/site-loader.js">
-    <link rel="modulepreload" href="js/site-loader-logo.js">
-    <script type="module" src="js/site-loader.js"></script>
+    <link rel="stylesheet" href="css/site-loader.css?v=signature-1">
+    <link rel="modulepreload" href="js/site-loader.js?v=signature-1">
+    <link rel="modulepreload" href="js/site-loader-signature.js?v=signature-1">
+    <script type="module" src="js/site-loader.js?v=signature-1"></script>
     <link rel="stylesheet" href="css/header-fluid.css?v=safe-1">
     <link rel="stylesheet" href="css/site-nav.css?v=control-1">
     <link rel="stylesheet" href="css/contact-panel.css">
@@ -270,7 +267,9 @@
 <body>
     <div id="site-loader" class="site-loader" role="status" aria-label="Loading">
         <div class="site-loader__mark">
-            <canvas id="site-loader-canvas" aria-hidden="true"></canvas>
+            <svg id="site-loader-signature" viewBox="0 0 396 343" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M81.835,2477.796C81.835,2477.796 454.435,2205.149 415.719,2153C391.288,2120.092 319.22,2165.049 264.098,2227.977C185.773,2317.394 137.217,2440.199 152,2466C195.388,2541.727 425.12,2278.143 398.36,2246.234C380.475,2224.908 259.394,2377.005 303.697,2394.225C317.936,2394.225 342.875,2367.296 362.519,2336.515C362.519,2336.515 340.584,2392.821 348,2383.894C357.934,2371.936 371.523,2347.692 378,2354.454C384.298,2361.03 367.523,2385 375,2382C382.477,2379 389.012,2356.526 394.083,2357.822C401.202,2359.641 384.576,2384.823 391.288,2381.407C398,2377.991 415.719,2353.418 415.719,2357.822C415.719,2362.225 399.711,2392.818 415.413,2381.407C431.115,2369.995 440.179,2361.437 440.179,2361.437C440.179,2361.437 422.227,2378.92 425.613,2381.407C429,2383.894 454.025,2362.844 456,2357.822C457.975,2352.799 439.964,2381.131 448.039,2383.894C454.796,2386.207 459.93,2371.936 466,2371.936C466,2371.936 463,2384.407 472,2378.407" transform="matrix(1,0,0,1,-79.334514,-2139.421278)" />
+            </svg>
         </div>
     </div>
 
