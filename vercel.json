@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/profile",
+      "destination": "https://drive.google.com/file/d/1s1-IkLAjnAIgxNgbeaUURLnHbWOGhsJQ/view?usp=sharing",
+      "permanent": false
+    }
+  ]
+}
