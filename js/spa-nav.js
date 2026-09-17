@@ -33,6 +33,7 @@
         if (typeof window.teardownBottomBarCta === 'function') window.teardownBottomBarCta();
         if (typeof window.teardownFeedsPage === 'function') window.teardownFeedsPage();
         if (typeof window.teardownAboutGalleryPin === 'function') window.teardownAboutGalleryPin();
+        if (typeof window.teardownAboutPhotoStack === 'function') window.teardownAboutPhotoStack();
         if (typeof window.teardownFeedModal === 'function') window.teardownFeedModal();
         if (typeof window.teardownMosaicPortrait === 'function') window.teardownMosaicPortrait();
         if (window.ScrollTrigger && typeof window.ScrollTrigger.getAll === 'function') {

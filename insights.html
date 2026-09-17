@@ -47,12 +47,10 @@
     <link rel="modulepreload" href="js/site-loader.js?v=signature-1">
     <link rel="modulepreload" href="js/site-loader-signature.js?v=signature-1">
     <script type="module" src="js/site-loader.js?v=signature-1"></script>
-    <link rel="stylesheet" href="css/header-fluid.css?v=safe-1">
-    <link rel="stylesheet" href="css/site-nav.css?v=control-1">
-    <link rel="stylesheet" href="css/contact-panel.css">
+    <link rel="stylesheet" href="css/site-nav.css?v=control-2">
+    <link rel="stylesheet" href="css/contact-panel.css?v=contact-2">
     <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/insights.css">
-    <link rel="stylesheet" href="css/music-player.css?v=control-1">
     <style>
         :root {
             --brand: #393bfe;
@@ -133,10 +131,8 @@
 
     <div class="insights-page">
         <header class="insights-topbar" aria-label="Insights header">
-            <div class="insights-brand header-fluid" data-header-fluid aria-label="Insights title">
-                <div class="header-fluid__content">
-                    <h1>Insight</h1>
-                </div>
+            <div class="insights-brand" aria-label="Insights title">
+                <h1>Insight</h1>
             </div>
 
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
@@ -158,8 +154,8 @@
                             <div class="header-nav-menu__links">
                                 <a href="index.html">Home</a>
                                 <a href="about.html">About</a>
-                                <a href="insights.html">Insights</a>
                                 <a href="feeds.html">Feeds</a>
+                                <a href="https://blog.ismailahmad.com" target="_blank" rel="noopener">Blog</a>
                                 <button type="button" id="nav-menu-contact">Contact</button>
                             </div>
                             <span class="header-nav-menu__close-slot" aria-hidden="true"></span>
@@ -196,9 +192,8 @@
     </div>
 
     <footer class="insights-footer" aria-label="Page footer">
-        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
-        <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
-            <div id="music-stack" aria-hidden="true">
+        <div class="bottom-bar__contact" aria-label="Contact">
+            <div id="music-stack" aria-hidden="true" hidden>
                 <div id="music-glow" aria-hidden="true">
                     <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
                 </div>
@@ -225,13 +220,13 @@
                     </div>
                 </div>
             </div>
-            <button id="play-btn" type="button" aria-label="Toggle music player">
-                <svg width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
-                    <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-3" d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-4" d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-5" d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+            <button type="button" class="contact-launcher" data-open-contact aria-label="Open contact">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20 11.5A8 8 0 1 1 16.5 5a8 8 0 0 1 3.5 6.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="m8.5 18.4-3.8 1 1.15-3.45" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="9" cy="11.5" r="1" fill="currentColor" />
+                    <circle cx="12" cy="11.5" r="1" fill="currentColor" />
+                    <circle cx="15" cy="11.5" r="1" fill="currentColor" />
                 </svg>
             </button>
         </div>
@@ -327,7 +322,6 @@
         renderInsights();
     </script>
 
-    <audio id="site-audio" preload="auto"></audio>
 
     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
         <defs>
@@ -387,18 +381,14 @@
     </aside>
 
     <script src="js/contact-panel.js"></script>
-    <script src="js/site-nav.js"></script>
-    <script src="js/music-player.js"></script>
+    <script src="js/site-nav.js?v=footer-1"></script>
     <script src="js/bottom-bar-cta.js"></script>
     <script src="js/smooth-scroll.js?v=axis-1"></script>
     <script src="js/spa-nav.js"></script>
     <script type="module">
-        import { initAllHeaderFluids } from './js/header-fluid.js?v=safe-1';
         await (window.siteReady ?? Promise.resolve());
-        initAllHeaderFluids();
         initContactPanel();
         initSiteNav();
-        initMusicPlayer();
         initSpaNav();
     </script>
 </body>

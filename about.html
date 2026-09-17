@@ -48,13 +48,11 @@
     <link rel="modulepreload" href="js/site-loader.js?v=signature-1">
     <link rel="modulepreload" href="js/site-loader-signature.js?v=signature-1">
     <script type="module" src="js/site-loader.js?v=signature-1"></script>
-    <link rel="stylesheet" href="css/header-fluid.css?v=safe-1">
-    <link rel="stylesheet" href="css/site-nav.css?v=control-1">
-    <link rel="stylesheet" href="css/contact-panel.css">
+    <link rel="stylesheet" href="css/site-nav.css?v=control-2">
+    <link rel="stylesheet" href="css/contact-panel.css?v=contact-2">
     <link rel="stylesheet" href="css/contact-shimmer.css">
     <link rel="stylesheet" href="css/image-hover.css">
-    <link rel="stylesheet" href="css/about.css?v=story-modal-2">
-    <link rel="stylesheet" href="css/music-player.css?v=control-1">
+    <link rel="stylesheet" href="css/about.css?v=photo-stack-3">
     <link rel="stylesheet" href="css/bottom-bar-cta.css?v=control-1">
     <style>
         :root {
@@ -139,10 +137,8 @@
 
     <div class="about-page">
         <header class="about-topbar" aria-label="About header">
-            <div class="about-brand header-fluid" data-header-fluid aria-label="About title">
-                <div class="header-fluid__content">
-                    <h1>About</h1>
-                </div>
+            <div class="about-brand" aria-label="About title">
+                <h1>About</h1>
             </div>
 
             <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
@@ -164,8 +160,8 @@
                             <div class="header-nav-menu__links">
                                 <a href="index.html">Home</a>
                                 <a href="about.html">About</a>
-                                <a href="insights.html">Insights</a>
                                 <a href="feeds.html">Feeds</a>
+                                <a href="https://blog.ismailahmad.com" target="_blank" rel="noopener">Blog</a>
                                 <button type="button" id="nav-menu-contact">Contact</button>
                             </div>
                             <span class="header-nav-menu__close-slot" aria-hidden="true"></span>
@@ -186,52 +182,44 @@
 
         <main class="about-panel" aria-label="About content">
             <div class="about-stack">
-                <div class="about-gallery-pin">
-                    <div class="about-gallery-pin__inner">
-                        <section class="about-section about-intro" aria-labelledby="about-intro-lead">
-                            <span class="about-section__label about-section__label--spacer" aria-hidden="true"></span>
-                            <div class="about-section__content">
-                                <div class="about-intro__lead-block">
-                                    <p class="about-intro__lead" id="about-intro-lead">Entrepreneur with a demonstrated history of working in the financial industry. Responsible for complex projects across banking, finance and hospitality, within cross-functional teams and challenging tasks. Skilled and experienced in Building Digital Products, Branding, Art Direction, and Leading.</p>
-                                    <a class="about-cv-btn" href="assets/cv.pdf" target="_blank" rel="noopener">
-                                        <svg width="20" height="20" viewBox="0 0 12 12" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path
-                                                d="m6.75,4.25h3.5c0-.321-.127-.627-.353-.853l-2.295-2.295c-.226-.226-.532-.353-.851-.353v3.5Z"
-                                                fill="currentColor" stroke-width="0" />
-                                            <polyline points="6.75 .75 6.75 4.25 10.25 4.25" stroke="currentColor" stroke-width="1"
-                                                stroke-linecap="round" stroke-linejoin="round" />
-                                            <path
-                                                d="m7.603,1.103l2.294,2.294c.226.226.353.532.353.852v5.001c0,1.105-.895,2-2,2H3.75c-1.105,0-2-.895-2-2V2.75C1.75,1.645,2.645.75,3.75.75h3.001c.32,0,.626.127.852.353Z"
-                                                stroke="currentColor" stroke-width="1" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </svg>
-                                        Download CV
-                                    </a>
-                                </div>
-                            </div>
-                        </section>
+                <section class="about-profile" aria-labelledby="about-intro-lead">
+                    <div class="about-photo-stack" data-photo-stack aria-label="About photo stack">
+                        <button type="button" class="about-photo-card" aria-label="Portrait of Ismail Ahmad. Reveal next photo.">
+                            <img src="assets/about/gallery-1.jpg" alt="Ismail Ahmad portrait" loading="eager" width="800" height="597" draggable="false" />
+                        </button>
+                        <button type="button" class="about-photo-card" aria-label="Ismail Ahmad with collaborators. Reveal next photo.">
+                            <img src="assets/about/gallery-2.jpg" alt="Ismail Ahmad with collaborators" loading="eager" width="800" height="597" draggable="false" />
+                        </button>
+                        <button type="button" class="about-photo-card" aria-label="Ismail Ahmad at UX Camp Europe. Reveal next photo.">
+                            <img src="assets/about/gallery-3.jpg" alt="Ismail Ahmad at UX Camp Europe" loading="eager" width="800" height="597" draggable="false" />
+                        </button>
+                        <button type="button" class="about-photo-card" aria-label="Ismail Ahmad working in a studio. Reveal next photo.">
+                            <img src="assets/about/gallery-4.jpg" alt="Ismail Ahmad working in a studio" loading="eager" width="800" height="597" draggable="false" />
+                        </button>
+                        <p class="sr-only" data-photo-status aria-live="polite">Photo 1 of 4</p>
+                    </div>
 
-                        <div class="about-gallery-breakout" aria-label="Work highlights">
-                            <div class="about-gallery">
-                                <div class="about-gallery__track">
-                                    <div class="about-gallery__item image-hover">
-                                        <img src="assets/about/gallery-1.jpg" alt="" loading="eager" width="800" height="597" />
-                                    </div>
-                                    <div class="about-gallery__item image-hover">
-                                        <img src="assets/about/gallery-2.jpg" alt="" loading="eager" width="800" height="597" />
-                                    </div>
-                                    <div class="about-gallery__item image-hover">
-                                        <img src="assets/about/gallery-3.jpg" alt="" loading="eager" width="800" height="597" />
-                                    </div>
-                                    <div class="about-gallery__item image-hover">
-                                        <img src="assets/about/gallery-4.jpg" alt="" loading="eager" width="800" height="597" />
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="about-profile__content">
+                        <div class="about-intro__lead-block">
+                            <p class="about-intro__lead" id="about-intro-lead">Entrepreneur with a demonstrated history of working in the financial industry. Responsible for complex projects across banking, finance and hospitality, within cross-functional teams and challenging tasks. Skilled and experienced in Building Digital Products, Branding, Art Direction, and Leading.</p>
+                            <a class="about-cv-btn" href="assets/cv.pdf" target="_blank" rel="noopener">
+                                <svg width="20" height="20" viewBox="0 0 12 12" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path
+                                        d="m6.75,4.25h3.5c0-.321-.127-.627-.353-.853l-2.295-2.295c-.226-.226-.532-.353-.851-.353v3.5Z"
+                                        fill="currentColor" stroke-width="0" />
+                                    <polyline points="6.75 .75 6.75 4.25 10.25 4.25" stroke="currentColor" stroke-width="1"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="m7.603,1.103l2.294,2.294c.226.226.353.532.353.852v5.001c0,1.105-.895,2-2,2H3.75c-1.105,0-2-.895-2-2V2.75C1.75,1.645,2.645.75,3.75.75h3.001c.32,0,.626.127.852.353Z"
+                                        stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                Download CV
+                            </a>
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <section class="about-section" aria-labelledby="about-expertise-label">
                     <p id="about-expertise-label" class="about-section__label">Expertise</p>
@@ -289,7 +277,6 @@
     </div>
 
     <footer class="about-footer" aria-label="Page footer">
-        <button type="button" id="open-contact" class="pill pill--cream pill--muted">Contact</button>
         <div class="bottom-bar__cta" aria-label="Stay in touch" aria-hidden="true" inert>
             <div class="home-cta__touch">
                 <p class="home-cta__label">Stay in touch</p>
@@ -329,8 +316,8 @@
                 <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
             </nav>
         </div>
-        <div class="bottom-bar__music" id="bottom-bar-music" aria-label="Music controls">
-            <div id="music-stack" aria-hidden="true">
+        <div class="bottom-bar__contact" aria-label="Contact">
+            <div id="music-stack" aria-hidden="true" hidden>
                 <div id="music-glow" aria-hidden="true">
                     <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
                 </div>
@@ -374,15 +361,13 @@
                     </div>
                 </div>
             </div>
-            <button id="play-btn" type="button" aria-label="Toggle music player">
-                <svg width="24" height="24" viewBox="0 0 18 12" fill="none" aria-hidden="true">
-                    <path class="bar bar-1" d="M17 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
-                        stroke-linecap="square" />
-                    <path class="bar bar-2" d="M1 6.005V5.995" stroke="#F3F2EF" stroke-width="2"
-                        stroke-linecap="square" />
-                    <path class="bar bar-3" d="M5 9V3" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-4" d="M13 7V5" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
-                    <path class="bar bar-5" d="M9 11V1" stroke="#F3F2EF" stroke-width="2" stroke-linecap="square" />
+            <button type="button" class="contact-launcher" data-open-contact aria-label="Open contact">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20 11.5A8 8 0 1 1 16.5 5a8 8 0 0 1 3.5 6.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="m8.5 18.4-3.8 1 1.15-3.45" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="9" cy="11.5" r="1" fill="currentColor" />
+                    <circle cx="12" cy="11.5" r="1" fill="currentColor" />
+                    <circle cx="15" cy="11.5" r="1" fill="currentColor" />
                 </svg>
             </button>
         </div>
@@ -411,7 +396,6 @@
         </div>
     </div>
 
-    <audio id="site-audio" preload="auto"></audio>
 
     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
         style="position:absolute;width:0;height:0;overflow:hidden">
@@ -473,16 +457,14 @@
     </aside>
 
     <script src="js/contact-panel.js"></script>
-    <script src="js/site-nav.js"></script>
-    <script src="js/music-player.js"></script>
+    <script src="js/site-nav.js?v=footer-1"></script>
     <script src="js/bottom-bar-cta.js"></script>
-    <script src="js/about-gallery-pin.js?v=gallery-2"></script>
+    <script src="js/about-photo-stack.js?v=photo-stack-2"></script>
     <script src="js/smooth-scroll.js?v=axis-1"></script>
     <script src="js/spa-nav.js"></script>
     <script>
         initContactPanel();
         initSiteNav();
-        initMusicPlayer();
         initAllSubscribeForms();
         initBottomBarCta();
         initSpaNav();
@@ -526,12 +508,6 @@
                 }
             });
         })();
-    </script>
-    <script type="module">
-        import { initAllHeaderFluids } from './js/header-fluid.js?v=safe-1';
-
-        await (window.siteReady ?? Promise.resolve());
-        initAllHeaderFluids();
     </script>
 </body>
 

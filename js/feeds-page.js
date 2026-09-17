@@ -2,8 +2,6 @@
  * Feeds page bootstrap — grid, modal. Safe to re-run after SPA navigation.
  */
 
-import { initAllHeaderFluids } from './header-fluid.js?v=safe-1';
-
 let initPromise = null;
 let feedsGridApi = null;
 let feedModalApi = null;
@@ -32,11 +30,6 @@ export async function initFeedsPage() {
     await items.loadFeedItems(true);
     await grid.initFeedsGrid(document.getElementById('feeds-grid'));
 
-    try {
-      initAllHeaderFluids();
-    } catch (err) {
-      console.warn('[feeds-page] optional chrome init failed', err);
-    }
   })().catch((err) => {
     initPromise = null;
     console.error('[feeds-page] init failed', err);

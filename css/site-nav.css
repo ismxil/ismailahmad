@@ -69,7 +69,7 @@
     align-items: start;
     width: var(--nav-closed-w);
     height: var(--nav-closed-h);
-    background: var(--bg-cream, #f3f2ef);
+    background: transparent;
     border-radius: 999px;
     overflow: hidden;
     transform-origin: top right;
@@ -82,6 +82,7 @@
 .site-header__nav.is-menu-open .nav-morph {
     width: min(max(var(--nav-open-w), var(--nav-measured-w)), calc(100vw - 48px));
     height: var(--nav-open-h);
+    background: var(--bg-cream, #f3f2ef);
     border-radius: 16px;
 }
 

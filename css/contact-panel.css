@@ -19,7 +19,7 @@
 
 .contact-modal {
     position: fixed;
-    left: 24px;
+    right: 24px;
     bottom: 76px;
     width: 326px;
     max-width: calc(100vw - 48px);
@@ -41,6 +41,45 @@
 #contact-panel.is-open .contact-modal {
     transform: translateY(0) scale(1);
     opacity: 1;
+}
+
+/* Floating contact launcher shared by every page footer. */
+.bottom-bar__contact {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.contact-launcher {
+    width: var(--control-h, 44px);
+    height: var(--control-h, 44px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--brand, #393bfe);
+    color: var(--bg-cream, #f3f2ef);
+    cursor: pointer;
+    transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.contact-launcher:hover {
+    background: #2b2ecc;
+    transform: scale(1.04);
+}
+
+.contact-launcher:focus-visible {
+    outline: 2px solid var(--brand, #393bfe);
+    outline-offset: 4px;
+}
+
+.contact-launcher svg {
+    display: block;
 }
 
 .contact-modal__close {
