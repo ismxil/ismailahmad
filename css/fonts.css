@@ -1,22 +1,4 @@
-/* Portfolio typography — Reckless (serif) + Suisse Intl (sans) */
-
-@font-face {
-    font-family: 'Reckless';
-    src: url('../assets/fonts/reckless/Reckless-Regular.woff2') format('woff2'),
-        url('../assets/fonts/reckless/Reckless-Regular.otf') format('opentype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Reckless';
-    src: url('../assets/fonts/reckless/Reckless-Medium.woff2') format('woff2'),
-        url('../assets/fonts/reckless/Reckless-Medium.otf') format('opentype');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
+/* Portfolio typography — Suisse Intl for everything (display + text) */
 
 @font-face {
     font-family: 'Suisse Intl';

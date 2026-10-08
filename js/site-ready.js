@@ -3,8 +3,6 @@
  * Avoid awaiting document.fonts.ready — it can hang when faces 404.
  */
 const FONTS = [
-  '400 1em "Reckless"',
-  '500 1em "Reckless"',
   '400 1em "Suisse Intl"',
   '500 1em "Suisse Intl"',
 ];

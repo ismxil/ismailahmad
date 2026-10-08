@@ -30,7 +30,7 @@
 
 .insights-brand h1 {
     margin: 0;
-    font-family: var(--font-display, 'Reckless', Georgia, serif);
+    font-family: var(--font-display, 'Suisse Intl', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     font-size: clamp(56px, 8vw, 120px);
     line-height: 0.95;
     letter-spacing: -1.2px;
@@ -76,7 +76,7 @@
 
 .insights-intro__kicker {
     margin: 0;
-    font-family: var(--font-display, 'Reckless', Georgia, serif);
+    font-family: var(--font-display, 'Suisse Intl', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     font-size: 24px;
     line-height: 32px;
     font-weight: 500;
@@ -138,7 +138,7 @@
 
 .insight-card__kicker {
     margin: 0;
-    font-family: var(--font-display, 'Reckless', Georgia, serif);
+    font-family: var(--font-display, 'Suisse Intl', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     font-size: 20px;
     line-height: 28px;
     font-weight: 500;

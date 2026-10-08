@@ -1,0 +1,82 @@
+/* ─────────────────────────────────────────────────────────────
+   v2 design tokens
+   One sans family (Suisse Intl), a 5-step grey ramp, and a small
+   set of surfaces. Light is the default; .dark flips the ink.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+    /* Layout */
+    --content-width: 720px;
+    --gutter: 24px;
+
+    /* Type — Suisse Intl for display and text alike */
+    --font-sans: 'Suisse Intl', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-display: var(--font-sans);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --text-size: 16px;
+
+    /* Surfaces */
+    --background: #fbfbfb;
+    --surface: #f2f2f2;
+    --surface-hover: #ebebeb;
+    --raised: #ffffff;
+    --control: #ececec;
+    --control-hover: #e4e4e4;
+
+    /* Ink */
+    --ink: #000000;
+    --text-primary: #171717;
+    --text-secondary: #6b6b6b;
+    --text-tertiary: #737373;
+
+    /* Edges — derived from --ink so dark mode inverts for free */
+    --edge-gain: 1;
+    --border: rgb(from var(--ink) r g b / calc(0.06 * var(--edge-gain)));
+    --border-strong: rgb(from var(--ink) r g b / calc(0.15 * var(--edge-gain)));
+    --ring: rgb(from var(--ink) r g b / calc(0.09 * var(--edge-gain)));
+
+    --tray-shadow: 0 0 0 1px #0000000f, 0 1px 2px -1px #0000000f, 0 2px 4px 0 #0000000a;
+    --tray-shadow-hover: 0 0 0 1px #00000014, 0 1px 3px -1px #00000014, 0 4px 8px -2px #0000000f;
+    --popover-shadow: 0 0 0 1px #0000000f, 0 4px 8px -2px #0000000f, 0 12px 24px -4px #00000014;
+
+    /* Accents */
+    --btn-bg: #171717;
+    --btn-fg: #fbfbfb;
+    --accent: #393bfe;
+    --accent-soft: #393bfe1f;
+    --live: #15803d;
+    --live-soft: #16a34a1a;
+
+    /* Radii */
+    --r-sm: 8px;
+    --r-md: 13px;
+    --r-lg: 14px;
+    --r-xl: 20px;
+}
+
+.dark {
+    --ink: #ffffff;
+    --edge-gain: 1.4;
+
+    --background: #1a1a1a;
+    --surface: #232323;
+    --surface-hover: #2a2a2a;
+    --raised: #262626;
+    --control: #2a2a2a;
+    --control-hover: #333333;
+
+    --text-primary: #f2f2f2;
+    --text-secondary: #9c9c9c;
+    --text-tertiary: #8f8f8f;
+
+    --tray-shadow: 0 0 0 1px #ffffff12;
+    --tray-shadow-hover: 0 0 0 1px #ffffff1c;
+    --popover-shadow: 0 0 0 1px #ffffff14, 0 16px 40px -12px #00000099;
+
+    --btn-bg: #f2f2f2;
+    --btn-fg: #1a1a1a;
+    --accent: #7f80ff;
+    --accent-soft: #7f80ff29;
+    --live: #3ccf6e;
+    --live-soft: #3ccf6e1f;
+}

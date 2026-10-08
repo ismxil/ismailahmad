@@ -11,8 +11,6 @@ const HOLD_MS = 180;
 const FONTS_MS = 1500;
 const LOADER_MAX_MS = 5500;
 const FONTS = [
-  '400 1em "Reckless"',
-  '500 1em "Reckless"',
   '400 1em "Suisse Intl"',
   '500 1em "Suisse Intl"',
 ];
