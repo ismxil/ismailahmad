@@ -7,7 +7,7 @@
  * the set without closing.
  */
 
-const LIMIT = 9;
+const HOME_LIMIT = 9;
 
 let items = [];
 let index = 0;
@@ -48,7 +48,6 @@ function build() {
         <div class="lightbox__bar">
             <span class="lightbox__meta">
                 <span class="lightbox__title"></span>
-                <span class="lightbox__years"></span>
             </span>
             <span class="lightbox__nav">
                 <button type="button" data-step="-1" aria-label="Previous item">
@@ -104,7 +103,6 @@ function paint() {
     img.alt = label(item);
 
     dialog.querySelector('.lightbox__title').textContent = label(item);
-    dialog.querySelector('.lightbox__years').textContent = item.years || '';
     dialog.querySelector('.lightbox__count').textContent = `${index + 1} / ${items.length}`;
 }
 
@@ -133,7 +131,7 @@ function open(i) {
 
 /* ── Grid ────────────────────────────────────────────────── */
 
-export async function renderArchive(mount) {
+export async function renderArchive(mount, { limit = HOME_LIMIT } = {}) {
     if (!mount) return;
 
     let all = [];
@@ -146,11 +144,11 @@ export async function renderArchive(mount) {
         console.warn('[archive] could not load data/feed-items.json', err);
         mount.innerHTML =
             '<li><p class="section__note">The archive is taking a moment. ' +
-            '<a href="/feeds.html" style="color:var(--text-primary)">Open it directly</a>.</p></li>';
+            '<a href="/archive" style="color:var(--text-primary)">Open it directly</a>.</p></li>';
         return;
     }
 
-    items = all.slice(0, LIMIT);
+    items = Number.isFinite(limit) ? all.slice(0, limit) : all;
 
     mount.innerHTML = items
         .map((item, i) => `<li>

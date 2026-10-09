@@ -9,6 +9,7 @@ resolve the same way they do in production. Plain `python3 -m http.server`
     python3 serve.py [port]
 """
 
+import os
 import re
 import sys
 from functools import partial
@@ -26,9 +27,14 @@ class Handler(SimpleHTTPRequestHandler):
         clean = path.split("?", 1)[0].split("#", 1)[0]
         for pattern, target in REWRITES:
             if pattern.match(clean):
-                path = target
-                break
-        return super().translate_path(path)
+                return super().translate_path(target)
+
+        resolved = super().translate_path(path)
+        # "cleanUrls": true in vercel.json serves /work from work.html. Mirror
+        # that here, or every extensionless link 404s locally.
+        if not os.path.exists(resolved) and os.path.exists(resolved + ".html"):
+            return resolved + ".html"
+        return resolved
 
     def log_message(self, fmt, *args):
         sys.stderr.write("%s %s\n" % (self.address_string(), fmt % args))

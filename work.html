@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Case — Ismail Ahmad</title>
-    <meta name="description" content="A case study by Ismail Ahmad, product and UX designer." />
+    <title>Work — Ismail Ahmad</title>
+    <meta name="description" content="Case studies by Ismail Ahmad, product and UX designer." />
 
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
@@ -29,10 +29,9 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/v2/tokens.css" />
     <link rel="stylesheet" href="/css/v2/app.css" />
-    <link rel="stylesheet" href="/css/v2/case.css" />
 </head>
 
-<body class="case-page">
+<body>
     <main class="shell">
 
         <header class="site-header site-header--sticky">
@@ -45,9 +44,7 @@
                     </svg>
                 </a>
                 <span class="crumbs__sep" aria-hidden="true">/</span>
-                <a class="crumbs__link" href="/work">work</a>
-                <span class="crumbs__sep" aria-hidden="true">/</span>
-                <span class="crumbs__current" id="crumb-case">Case</span>
+                <span class="crumbs__current">work</span>
             </nav>
 
             <div class="header-actions">
@@ -67,7 +64,13 @@
             </div>
         </header>
 
-        <article id="case"></article>
+        <section class="index-head">
+            <h1 class="index-title">Work</h1>
+            <p class="index-note">Case studies — the problem, the decisions and what shipped.</p>
+        </section>
+
+        <ul class="case-grid" id="work-list"></ul>
+
 
         <footer class="site-footer">
             <span class="site-footer__left">
@@ -78,13 +81,14 @@
                 </svg>
                 © <span id="footer-year">2026</span> ismailahmad
             </span>
-            <span class="site-footer__hint"><a href="/work">Back to work</a></span>
+            <span class="site-footer__hint">Press <kbd>/</kbd> to jump anywhere</span>
         </footer>
     </main>
 
     <script type="module">
-        import { renderCase } from '/js/v2/case.js';
+        import { renderWork } from '/js/v2/work.js';
         import { initDock } from '/js/v2/dock.js';
+        renderWork(document.getElementById('work-list'));
         initDock();
 
         const btn = document.getElementById('theme-toggle');
@@ -92,18 +96,6 @@
             const dark = document.documentElement.classList.toggle('dark');
             try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) { }
         });
-
-        const header = document.querySelector('.site-header--sticky');
-        function updateHeader() {
-            // Separate enter/exit thresholds keep the pill stable near the top.
-            const threshold = header.classList.contains('is-scrolled') ? 16 : 48;
-            header.classList.toggle('is-scrolled', window.scrollY > threshold);
-        }
-        window.addEventListener('scroll', updateHeader, { passive: true });
-        window.addEventListener('pageshow', updateHeader);
-        updateHeader();
-
-        renderCase();
         document.getElementById('footer-year').textContent = String(new Date().getFullYear());
     </script>
 </body>

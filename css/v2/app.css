@@ -190,6 +190,79 @@ ul {
     display: block;
 }
 
+/* ── Secondary-page header ──────────────────────────────── */
+
+.site-header--sticky {
+    position: sticky;
+    top: max(12px, env(safe-area-inset-top, 0px));
+    z-index: 20;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 58px;
+    padding: 12px 0;
+    margin: -12px auto 0;
+    border-radius: 0;
+    background: transparent;
+    transition: max-width 0.3s ease, padding 0.3s ease,
+        border-radius 0.3s ease, background-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.site-header--sticky.is-scrolled {
+    max-width: 440px;
+    padding-inline: 18px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--background) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--popover-shadow);
+}
+
+.site-header--sticky .crumbs { flex: 1; }
+.site-header--sticky .crumbs > :not(.crumbs__current),
+.site-header--sticky .header-actions { flex-shrink: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+    .site-header--sticky { transition: none; }
+}
+
+/* ── Breadcrumbs ─────────────────────────────────────────── */
+
+.crumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: 15px;
+}
+
+.crumbs .sig {
+    height: 26px;
+}
+
+.crumbs__sep {
+    color: var(--text-tertiary);
+}
+
+.crumbs__link {
+    color: var(--text-secondary);
+    transition: color 0.15s ease-out;
+}
+
+.crumbs__link:hover {
+    color: var(--text-primary);
+}
+
+.crumbs__current {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
 /* ── Hero ────────────────────────────────────────────────── */
 
 .intro {
@@ -332,6 +405,39 @@ ul {
 
 .chip__meta {
     color: var(--text-tertiary);
+}
+
+/* ── Index pages (/work, /archive) ───────────────────────── */
+
+.index-head {
+    margin: 48px 0 32px;
+}
+
+.index-title {
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.012em;
+}
+
+@media (min-width: 640px) {
+    .index-title {
+        font-size: 40px;
+    }
+}
+
+.index-note {
+    margin-top: 12px;
+    max-width: 560px;
+    font-size: 17px;
+    color: var(--text-secondary);
+    text-wrap: pretty;
+}
+
+/* These grids carry the page on an index, so they need the bottom room the
+   home page gets from the sections that follow them. */
+.index-head~.case-grid,
+.index-head~.archive-grid {
+    margin-bottom: 96px;
 }
 
 /* ── Sections ────────────────────────────────────────────── */
