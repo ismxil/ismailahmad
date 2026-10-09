@@ -8,6 +8,9 @@
  */
 
 const HOME_LIMIT = 9;
+// The first rows are above the fold on /archive — leaving them lazy meant the
+// page arrived as a wall of empty plates while they decoded.
+const EAGER = 6;
 
 let items = [];
 let index = 0;
@@ -154,8 +157,8 @@ export async function renderArchive(mount, { limit = HOME_LIMIT } = {}) {
         .map((item, i) => `<li>
             <button type="button" class="archive-tile" data-index="${i}"
                 aria-haspopup="dialog" aria-label="${escape(label(item))}, open larger">
-                <img src="/${escape(cover(item, i))}" alt="" aria-hidden="true" loading="lazy"
-                    decoding="async" />
+                <img src="/${escape(cover(item, i))}" alt="" aria-hidden="true"
+                    loading="${i < EAGER ? 'eager' : 'lazy'}" decoding="async" />
                 <span class="archive-tile__label" aria-hidden="true">${escape(label(item))}</span>
             </button>
         </li>`)
