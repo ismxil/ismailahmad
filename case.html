@@ -63,6 +63,7 @@
                         <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" />
                     </svg>
                 </button>
+                <button type="button" class="menu-trigger" data-dock-open aria-haspopup="dialog" aria-controls="dock" aria-expanded="false" title="Explore pages and actions (/ or ⌘K)">Menu <kbd>/</kbd></button>
             </div>
         </header>
 
@@ -83,12 +84,24 @@
 
     <script type="module">
         import { renderCase } from '/js/v2/case.js';
+        import { initDock } from '/js/v2/dock.js';
+        initDock();
 
         const btn = document.getElementById('theme-toggle');
         btn.addEventListener('click', () => {
             const dark = document.documentElement.classList.toggle('dark');
             try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) { }
         });
+
+        const header = document.querySelector('.site-header--sticky');
+        function updateHeader() {
+            // Separate enter/exit thresholds keep the pill stable near the top.
+            const threshold = header.classList.contains('is-scrolled') ? 16 : 48;
+            header.classList.toggle('is-scrolled', window.scrollY > threshold);
+        }
+        window.addEventListener('scroll', updateHeader, { passive: true });
+        window.addEventListener('pageshow', updateHeader);
+        updateHeader();
 
         renderCase();
         document.getElementById('footer-year').textContent = String(new Date().getFullYear());

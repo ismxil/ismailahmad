@@ -1,5 +1,5 @@
 /**
- * Jump dock — the fixed pill at the bottom of the page.
+ * Compact bottom menu shared by the home and project pages.
  *
  * `/` focuses it from anywhere, Escape closes it, arrows and Enter pick a
  * result. Targets are the page's own sections plus the work items, so one
@@ -13,122 +13,130 @@ const PAGES = [
     { label: 'Experience', kind: 'section', href: '#experience' },
     { label: 'Work', kind: 'section', href: '#work' },
     { label: 'Writing', kind: 'section', href: '#writing' },
-    { label: 'Clients', kind: 'section', href: '#clients' },
     { label: 'Stay in touch', kind: 'section', href: '#contact' },
-    { label: 'About', kind: 'page', href: 'about.html' },
+    { label: 'About', kind: 'page', href: '/profile' },
     { label: 'All work', kind: 'page', href: 'feeds.html' },
     { label: 'All writing', kind: 'page', href: 'insights.html' },
-    { label: 'CV', kind: 'page', href: '/profile' },
+    { label: 'CV', kind: 'page', href: '/assets/cv.pdf' },
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
 ];
 
 export function initDock() {
-    const dock = document.getElementById('dock');
-    const input = document.getElementById('dock-input');
-    const results = document.getElementById('dock-results');
-    if (!dock || !input || !results) return;
-
-    const targets = cases
-        .map((c) => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` }))
-        .concat(PAGES)
-        .concat(experienceItems.map((e) => ({ label: e.company, kind: 'role', href: e.url })));
-
+    if (document.getElementById('dock')) return;
+    const dock = document.createElement('dialog');
+    dock.id = 'dock';
+    dock.className = 'command-menu';
+    dock.setAttribute('aria-label', 'Pages and actions');
+    const searchIcon = '<svg class="dock__mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>';
+    dock.innerHTML = `<div class="command-menu__bar">${searchIcon}
+        <input id="dock-input" type="search" placeholder="Jump to…" aria-label="Jump to" autocomplete="off" spellcheck="false" />
+        <button type="button" data-menu-close aria-label="Close menu"><kbd>esc</kbd></button>
+        </div><div class="command-menu__results" id="dock-results"></div>`;
+    document.body.appendChild(dock);
+    const launcher = document.createElement('button');
+    launcher.type = 'button';
+    launcher.className = 'dock-launcher';
+    launcher.setAttribute('data-dock-open', '');
+    launcher.setAttribute('aria-haspopup', 'dialog');
+    launcher.setAttribute('aria-controls', 'dock');
+    launcher.setAttribute('aria-expanded', 'false');
+    launcher.innerHTML = `${searchIcon}<span>Jump to…</span><kbd>/</kbd>`;
+    document.body.appendChild(launcher);
+    const input = dock.querySelector('input');
+    const results = dock.querySelector('#dock-results');
+    const triggers = document.querySelectorAll('[data-dock-open]');
+    const onHome = location.pathname === '/' || location.pathname === '/index.html';
+    const targets = cases.map(c => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` }))
+        .concat(PAGES.map(t => ({ ...t, href: t.href.startsWith('#') ? (onHome ? t.href : '/' + t.href) : '/' + t.href.replace(/^\//, '') })))
+        .concat(experienceItems.map(e => ({ label: e.company, href: e.url, kind: 'role' })));
     let active = 0;
     let matches = [];
+    let previousFocus;
+    let previousOverflow = '';
 
-    function render(query) {
-        const q = query.trim().toLowerCase();
-        matches = q
-            ? targets.filter((t) => t.label.toLowerCase().includes(q))
-            : targets;
+    function highlight() {
+        const links = results.querySelectorAll('a');
+        links.forEach((link, i) => link.classList.toggle('is-selected', i === active));
+        links[active]?.scrollIntoView({ block: 'nearest' });
+    }
 
-        if (active >= matches.length) active = 0;
-
-        if (!matches.length) {
-            results.innerHTML = '<li class="dock__empty">Nothing matches that.</li>';
-            return;
-        }
-
-        results.innerHTML = matches
-            .map((t, i) => `<li aria-selected="${i === active}">
-                <a href="${t.href}" data-index="${i}">
-                    <span>${t.label}</span>
-                    <span class="dock__kind">${t.kind}</span>
-                </a>
-            </li>`)
-            .join('');
+    function render() {
+        const query = input.value.trim().toLowerCase();
+        matches = targets.filter(t => t.label.toLowerCase().includes(query));
+        active = 0;
+        results.replaceChildren();
+        matches.forEach((target, index) => {
+            const link = document.createElement('a');
+            link.href = target.href;
+            link.dataset.index = String(index);
+            const label = document.createElement('span');
+            label.textContent = target.label;
+            const kind = document.createElement('span');
+            kind.className = 'dock__kind';
+            kind.textContent = target.kind;
+            link.append(label, kind);
+            results.appendChild(link);
+        });
+        if (!matches.length) results.innerHTML = '<p class="command-menu__empty">No actions found.</p>';
+        highlight();
+        results.scrollTop = 0;
     }
 
     function open() {
-        dock.classList.add('dock--open');
-        render(input.value);
+        if (dock.open) return;
+        previousFocus = document.activeElement;
+        previousOverflow = document.body.style.overflow;
+        input.value = '';
+        render();
+        dock.showModal();
+        launcher.hidden = true;
+        document.body.style.overflow = 'hidden';
+        triggers.forEach(btn => btn.setAttribute('aria-expanded', 'true'));
         input.focus();
     }
 
-    function close() {
-        dock.classList.remove('dock--open');
-        input.value = '';
-        input.blur();
-        active = 0;
-    }
-
-    function go(index) {
-        const target = matches[index];
-        if (!target) return;
-        close();
-        if (target.href.startsWith('#')) {
-            const el = document.querySelector(target.href);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            history.replaceState(null, '', target.href);
-        } else {
-            window.location.href = target.href;
-        }
-    }
-
-    input.addEventListener('focus', open);
-    input.addEventListener('input', () => render(input.value));
-
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+    function close() { if (dock.open) dock.close(); }
+    dock.addEventListener('close', () => {
+        document.body.style.overflow = previousOverflow;
+        launcher.hidden = false;
+        triggers.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+        if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+    });
+    dock.querySelector('[data-menu-close]').addEventListener('click', close);
+    input.addEventListener('input', render);
+    dock.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
             e.preventDefault();
-            close();
-        } else if (e.key === 'ArrowDown') {
+            if (matches.length) active = (active + (e.key === 'ArrowDown' ? 1 : -1) + matches.length) % matches.length;
+            highlight();
+        } else if (e.key === 'Enter' && e.target === input) {
             e.preventDefault();
-            active = Math.min(active + 1, matches.length - 1);
-            render(input.value);
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            active = Math.max(active - 1, 0);
-            render(input.value);
-        } else if (e.key === 'Enter') {
-            e.preventDefault();
-            go(active);
+            results.querySelectorAll('a')[active]?.click();
         }
     });
-
-    results.addEventListener('click', (e) => {
-        const link = e.target.closest('a[data-index]');
+    results.addEventListener('click', e => {
+        const link = e.target.closest('a');
         if (!link) return;
+        close();
+        if (link.getAttribute('href').startsWith('#')) {
+            e.preventDefault();
+            const target = document.querySelector(link.getAttribute('href'));
+            target?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+            history.replaceState(null, '', link.getAttribute('href'));
+        }
+    });
+    dock.addEventListener('click', e => {
+        if (e.target !== dock) return;
+        const box = dock.getBoundingClientRect();
+        if (e.clientX < box.left || e.clientX > box.right || e.clientY < box.top || e.clientY > box.bottom) close();
+    });
+    triggers.forEach(btn => btn.addEventListener('click', open));
+    document.addEventListener('keydown', e => {
+        const editing = e.target instanceof Element && (e.target.isContentEditable || e.target.closest('input, textarea, select, [contenteditable], [role="textbox"]'));
+        const slash = e.key === '/' && !editing && !e.metaKey && !e.ctrlKey && !e.altKey;
+        const commandK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k';
+        if (!slash && !commandK) return;
         e.preventDefault();
-        go(Number(link.dataset.index));
-    });
-
-    document.querySelectorAll('[data-dock-open]').forEach((btn) => {
-        btn.addEventListener('click', open);
-    });
-
-    // `/` is a shortcut only when the user is not already typing somewhere
-    document.addEventListener('keydown', (e) => {
-        if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
-        const tag = (e.target.tagName || '').toLowerCase();
-        if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
-        e.preventDefault();
-        open();
-    });
-
-    // Clicking away dismisses, but only while the panel is actually open
-    document.addEventListener('click', (e) => {
-        if (!dock.classList.contains('dock--open')) return;
-        if (!dock.contains(e.target) && !e.target.closest('[data-dock-open]')) close();
+        if (dock.open) close(); else open();
     });
 }

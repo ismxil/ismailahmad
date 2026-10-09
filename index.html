@@ -63,13 +63,7 @@
                         <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" />
                     </svg>
                 </button>
-                <button type="button" class="icon-btn" data-dock-open aria-label="Jump to a section">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" aria-hidden="true">
-                        <circle cx="11" cy="11" r="7" />
-                        <path d="m16.5 16.5 4 4" />
-                    </svg>
-                </button>
+                <button type="button" class="menu-trigger" data-dock-open aria-haspopup="dialog" aria-controls="dock" aria-expanded="false" title="Explore pages and actions (/ or ⌘K)">Menu <kbd>/</kbd></button>
             </div>
         </header>
 
@@ -81,7 +75,7 @@
                 </span>
                 <div class="identity__text">
                     <h1 class="identity__name">Ismail Ahmad</h1>
-                    <p class="identity__role">Product &amp; UX designer, Berlin</p>
+                    <p class="identity__role">Designer. Product &amp; Business.</p>
                     <span class="badge-live">
                         <span class="badge-live__dot"></span>
                         Open to work
@@ -89,7 +83,7 @@
                 </div>
             </div>
 
-            <p>Hey, I'm <strong>Ismail</strong>. I design financial products end to end — from the
+            <p>Hey, I'm <strong>Ismail</strong>, based in Berlin. I design financial products end to end — from the
                 <strong>screen someone taps at a cash machine</strong> to the rules underneath it, and I care most
                 about the small details that make money feel trustworthy.
             </p>
@@ -193,33 +187,6 @@
             </div>
         </section>
 
-        <!-- ── Clients ────────────────────────────────────── -->
-        <section class="section" id="clients">
-            <div class="section__head">
-                <h2 class="section__title">Clients</h2>
-                <span class="section__count">9</span>
-                <span class="section__more-wrap">
-                    <a class="section__more" href="about.html">About me
-                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M7.25 4.75 11.5 9l-4.25 4.25" />
-                        </svg>
-                    </a>
-                </span>
-            </div>
-            <ul class="clients">
-                <li><img src="assets/clients/accenture.svg" alt="Accenture" /></li>
-                <li><img src="assets/clients/lemfi.svg" alt="Lemfi" /></li>
-                <li><img src="assets/clients/sterling.svg" alt="Sterling" /></li>
-                <li><img src="assets/clients/commerz.svg" alt="Commerzbank" /></li>
-                <li><img src="assets/clients/cadana.svg" alt="Cadana" /></li>
-                <li><img src="assets/clients/deutsche-bank.svg" alt="Deutsche Bank" /></li>
-                <li><img src="assets/clients/gomoney.svg" alt="Gomoney" /></li>
-                <li><img src="assets/clients/landor.svg" alt="Landor" /></li>
-                <li><img src="assets/clients/eithad.svg" alt="Etihad Credit Bureau" /></li>
-            </ul>
-        </section>
-
         <!-- ── Contact ────────────────────────────────────── -->
         <section class="section" id="contact">
             <div class="section__head">
@@ -264,20 +231,6 @@
     <div class="dock-spacer" aria-hidden="true"></div>
 
     <!-- ── Jump dock ──────────────────────────────────────── -->
-    <div class="dock" id="dock">
-        <div class="dock__inner">
-            <div class="dock__bar">
-                <svg class="dock__mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-                    <circle cx="11" cy="11" r="7" /><path d="m16.5 16.5 4 4" />
-                </svg>
-                <input class="dock__input" id="dock-input" type="text" placeholder="Jump to…" aria-label="Jump to"
-                    autocomplete="off" spellcheck="false" />
-                <kbd>/</kbd>
-            </div>
-            <ul class="dock__results" id="dock-results"></ul>
-        </div>
-    </div>
-
     <script src="blog-cache.js"></script>
     <script type="module" src="js/v2/app.js"></script>
 </body>

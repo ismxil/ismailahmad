@@ -4,18 +4,50 @@
    and a meta grid between the lede and the body.
    ───────────────────────────────────────────────────────────── */
 
+.case-page {
+    /* Shared by .case-pair columns and the .case-body rows */
+    --case-gap: 12px;
+    /* The wider rhythm that prose keeps, as a top-up on --case-gap */
+    --case-prose-gap: 36px;
+}
+
 .case-page .shell {
     padding-bottom: 0;
 }
 
 .site-header--sticky {
     position: sticky;
-    top: 0;
+    top: max(12px, env(safe-area-inset-top, 0px));
     z-index: 20;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 58px;
     padding: 12px 0;
-    margin-top: -12px;
-    background: color-mix(in srgb, var(--background) 86%, transparent);
-    backdrop-filter: blur(10px);
+    margin: -12px auto 0;
+    border-radius: 0;
+    background: transparent;
+    transition: max-width 0.3s ease, padding 0.3s ease,
+        border-radius 0.3s ease, background-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.site-header--sticky.is-scrolled {
+    max-width: 440px;
+    padding-inline: 18px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--background) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--popover-shadow);
+}
+
+.site-header--sticky .crumbs { flex: 1; }
+.site-header--sticky .crumbs > :not(.crumbs__current),
+.site-header--sticky .header-actions { flex-shrink: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+    .site-header--sticky { transition: none; }
 }
 
 /* ── Breadcrumbs ─────────────────────────────────────────── */
@@ -140,10 +172,14 @@
 
 /* ── Body ────────────────────────────────────────────────── */
 
+/* Stacked imagery sits on the same gap as the columns inside a pair, so a
+   run of images reads as one grid rather than a list of separate figures.
+   Prose keeps the wider rhythm, added back as margin on the text blocks
+   and on whatever follows them. */
 .case-body {
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    gap: var(--case-gap);
     margin-top: 72px;
 }
 
@@ -151,6 +187,16 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+}
+
+/* Text blocks, and anything following one, get the wider spacing back */
+.case-body > :is(.case-block, .case-callout, .case-quotes),
+.case-body > :is(.case-block, .case-callout, .case-quotes) + * {
+    margin-top: var(--case-prose-gap);
+}
+
+.case-body > :first-child {
+    margin-top: 0;
 }
 
 .case-block__title {
@@ -174,7 +220,7 @@
 .case-pair {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--case-gap);
 }
 
 @media (min-width: 560px) {

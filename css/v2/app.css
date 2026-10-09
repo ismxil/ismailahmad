@@ -415,8 +415,8 @@ ul {
     background: var(--surface-hover);
 }
 
-/* Client marks are horizontal lockups rather than square icons, so the
-   plate gives them the full width and only pads the short edge. */
+/* Wordmark lockups are horizontal, so the plate gives them the full width
+   and only pads the short edge. */
 .row__mark img {
     width: 36px;
     height: 26px;
@@ -426,6 +426,22 @@ ul {
 /* Most lockups are near-black, which would vanish on the dark plate */
 .dark .row__mark img {
     filter: invert(1) hue-rotate(180deg);
+}
+
+/* A square brand icon brings its own fill and corner radius, so the plate
+   steps out of the way and the artwork runs edge to edge — and it keeps its
+   own colours in dark mode rather than being inverted. */
+.row__mark--icon,
+.row:hover .row__mark--icon {
+    background: none;
+}
+
+.row__mark--icon img,
+.dark .row__mark--icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: none;
 }
 
 .row__monogram {
@@ -460,29 +476,52 @@ ul {
     color: var(--text-secondary);
 }
 
-.row__years {
+.row__ext {
     flex-shrink: 0;
-    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
     color: var(--text-tertiary);
-    font-variant-numeric: tabular-nums;
     transition: color 0.15s ease-out;
 }
 
-.row:hover .row__years {
+.row__ext svg {
+    width: 16px;
+    height: 16px;
+    transition: translate 0.15s ease-out;
+}
+
+.row:hover .row__ext {
     color: var(--text-primary);
+}
+
+.row:hover .row__ext svg {
+    translate: 2px -2px;
 }
 
 /* ── Case cards ─────────────────────────────────────────── */
 
 .case-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 32px 20px;
+    columns: 1;
+    column-gap: 20px;
+}
+
+.case-grid > li {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 32px;
+    break-inside: avoid;
+    vertical-align: top;
 }
 
 @media (min-width: 560px) {
     .case-grid {
-        grid-template-columns: 1fr 1fr;
+        columns: 2;
+    }
+
+    /* Alternate tall and wide covers without forcing shared row heights. */
+    .case-grid > li:nth-child(4n + 1) .case-card__art,
+    .case-grid > li:nth-child(4n) .case-card__art {
+        aspect-ratio: 1;
     }
 }
 
@@ -595,45 +634,6 @@ ul {
 
 .lede:hover .lede__date {
     color: var(--text-primary);
-}
-
-/* ── Clients ─────────────────────────────────────────────── */
-
-.clients {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    margin-top: 20px;
-    border-radius: var(--r-lg);
-    overflow: hidden;
-    background: var(--border);
-}
-
-
-
-.clients li {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 72px;
-    background: var(--background);
-}
-
-.clients img {
-    max-width: 92px;
-    max-height: 24px;
-    object-fit: contain;
-    filter: grayscale(1);
-    opacity: 0.6;
-    transition: opacity 0.2s ease-out;
-}
-
-.dark .clients img {
-    filter: grayscale(1) invert(1) hue-rotate(180deg);
-}
-
-.clients li:hover img {
-    opacity: 1;
 }
 
 /* ── Contact ─────────────────────────────────────────────── */
@@ -762,117 +762,65 @@ kbd {
     font-size: 11px;
 }
 
-/* ── Jump dock ───────────────────────────────────────────── */
-
-.dock-spacer {
-    height: 96px;
-    flex-shrink: 0;
+/* ── Command menu ────────────────────────────────────────── */
+.dock-spacer { height: 96px; flex-shrink: 0; }
+.header-actions { gap: 8px; }
+.menu-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 34px;
+    padding: 5px 10px 5px 12px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--control);
+    color: var(--text-secondary);
+    font: 500 14px/1.4 var(--font-sans);
+    cursor: pointer;
 }
-
-.dock {
+.menu-trigger:hover { background: var(--control-hover); color: var(--text-primary); }
+.menu-trigger kbd {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: color-mix(in srgb, currentColor 8%, transparent);
+    font: inherit;
+}
+.command-menu {
     position: fixed;
-    inset-inline: 0;
-    bottom: 0;
-    z-index: 30;
-    display: flex;
-    justify-content: center;
-    padding: 0 12px 16px;
-    pointer-events: none;
-}
-
-@media (min-width: 640px) {
-    .dock {
-        padding-bottom: 24px;
-    }
-}
-
-.dock__inner {
-    pointer-events: auto;
-    width: 300px;
-    max-width: 100%;
-    overflow: hidden;
+    inset: auto 0 16px;
+    margin: 0 auto;
+    width: min(420px, calc(100vw - 24px));
+    max-width: none;
+    max-height: calc(100dvh - 48px);
+    padding: 0;
+    border: 0;
     border-radius: var(--r-xl);
     background: var(--raised);
+    color: var(--text-primary);
     box-shadow: var(--popover-shadow);
-    transition: width 240ms cubic-bezier(0.23, 1, 0.32, 1);
+    overflow: hidden;
+    font: 15px/1.5 var(--font-sans);
 }
+.command-menu[open] { display: flex; flex-direction: column; }
+.command-menu::backdrop { background: #0006; backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); }
+.command-menu__bar { display: flex; align-items: center; gap: 12px; height: 48px; flex-shrink: 0; padding: 0 10px 0 16px; border-bottom: 1px solid var(--border); }
+.command-menu__bar input { flex: 1; min-width: 0; border: 0; padding: 0; outline: none; background: transparent; color: inherit; font: inherit; }
+.command-menu__bar input::placeholder { color: var(--text-tertiary); }
+.command-menu__bar button { background: transparent; color: var(--text-secondary); border: 0; cursor: pointer; }
+.command-menu kbd { padding: 2px 5px; border-radius: 4px; background: var(--control); font: 12px/1.4 var(--font-sans); }
+.command-menu__results { max-height: 280px; overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 8px; }
 
-.dock--open .dock__inner {
-    width: 420px;
-}
+.command-menu__results a { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; padding: 9px 10px; border-radius: 10px; }
+.dock__kind { color: var(--text-tertiary); font-size: 12px; }
+.command-menu__results a.is-selected, .command-menu__results a:hover { background: var(--control); }
+.command-menu__empty { padding: 16px 8px; color: var(--text-secondary); }
 
-.dock__bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    height: 48px;
-    padding-inline: 16px 10px;
-}
-
-.dock__mark {
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-    fill: none;
-    stroke: currentColor;
-    color: var(--text-tertiary);
-}
-
-.dock__input {
-    flex: 1;
-    min-width: 0;
-    border: 0;
-    background: transparent;
-    color: var(--text-primary);
-    font-family: inherit;
-    font-size: 15px;
-}
-
-.dock__input:focus {
-    outline: none;
-}
-
-.dock__input::placeholder {
-    color: var(--text-tertiary);
-}
-
-.dock__results {
-    max-height: 280px;
-    overflow-y: auto;
-    padding: 0 8px 8px;
-    border-top: 1px solid var(--border);
-}
-
-.dock:not(.dock--open) .dock__results {
-    display: none;
-}
-
-.dock__results li a {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 9px 10px;
-    margin-top: 4px;
-    border-radius: 10px;
-    font-size: 15px;
-    color: var(--text-primary);
-}
-
-.dock__results li a:hover,
-.dock__results li[aria-selected='true'] a {
-    background: var(--control);
-}
-
-.dock__results .dock__kind {
-    font-size: 12px;
-    color: var(--text-tertiary);
-}
-
-.dock__empty {
-    padding: 12px 10px;
-    font-size: 14px;
-    color: var(--text-tertiary);
+@media (max-width: 400px) {
+    .case-page .site-header { gap: 8px; }
+    .case-page .crumbs { gap: 5px; }
+    .case-page .site-header--sticky.is-scrolled { padding-inline: 12px; }
+    .case-page .header-actions { gap: 4px; }
+    .case-page .menu-trigger { gap: 5px; padding-inline: 8px; }
 }
 
 /* ── Entrance ───────────────────────────────────────────────
@@ -880,8 +828,7 @@ kbd {
    the signature draw in the header is the only timed moment.
    ─────────────────────────────────────────────────────────── */
 
-.shell,
-.dock {
+.shell {
     animation: fade-in 0.25s ease-out both;
 }
 
@@ -897,8 +844,41 @@ kbd {
 
 @media (prefers-reduced-motion: reduce) {
 
-    .shell,
-    .dock {
+    .shell {
         animation: none;
+    }
+}
+
+.dock__mark { width: 17px; height: 17px; flex-shrink: 0; color: var(--text-tertiary); }
+.dock-launcher {
+    position: fixed;
+    inset: auto 0 16px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: min(300px, calc(100vw - 24px));
+    height: 48px;
+    margin: 0 auto;
+    padding: 0 10px 0 16px;
+    border: 0;
+    border-radius: var(--r-xl);
+    background: var(--raised);
+    color: var(--text-tertiary);
+    box-shadow: var(--popover-shadow);
+    font: 15px/1.5 var(--font-sans);
+    cursor: pointer;
+}
+.dock-launcher[hidden] { display: none; }
+.dock-launcher span { flex: 1; text-align: left; }
+.dock-launcher kbd { font: 12px var(--font-sans); padding: 2px 5px; border-radius: 4px; background: var(--control); }
+@media (min-width: 640px) {
+    .command-menu, .dock-launcher { bottom: 24px; }
+}
+
+@media (min-width: 840px) {
+    .command-menu {
+        inset: 0;
+        margin: auto;
     }
 }

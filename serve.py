@@ -16,6 +16,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 # source pattern -> file actually served
 REWRITES = [
+    (re.compile(r"^/profile/?$"), "/about.html"),
     (re.compile(r"^/work/[^/]+/?$"), "/case.html"),
 ]
 

@@ -1,0 +1,29 @@
+/* One portrait and a quiet reading column, shared with the v2 site. */
+.about-content { margin-top: 32px; }
+.about-portrait {
+    width: min(50%, 336px);
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: 50% 42%;
+    border-radius: 6px;
+}
+.about-bio { margin-top: 40px; }
+.about-content { font-size: 15px; line-height: 1.5; letter-spacing: 0; color: var(--text-primary); }
+.about-label { font: inherit; font-size: 14px; letter-spacing: 0; color: var(--text-tertiary); }
+.about-bio p + p { margin-top: 16px; }
+.about-details { display: flex; flex-direction: column; gap: 28px; margin-top: 56px; }
+.about-details__columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; align-items: start; }
+.about-details__sidebar { display: flex; flex-direction: column; gap: 28px; }
+.about-details__columns > section { min-width: 0; }
+.about-experience { display: flex; flex-direction: column; gap: 24px; margin-top: 6px; }
+.about-experience__years { color: var(--text-tertiary); font-size: 14px; }
+.about-experience__company { font-weight: 500; }
+.about-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 12px; }
+.about-links a { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--border-strong); }
+.about-links a:hover { text-decoration-color: currentColor; }
+@media (max-width: 559px) {
+    .about-details__columns { grid-template-columns: 1fr; gap: 36px; }
+    .about-bio { margin-top: 32px; }
+    .about-details { margin-top: 48px; }
+}

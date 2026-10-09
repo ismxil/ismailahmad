@@ -4,511 +4,111 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile — Ismail Ahmad — Designer. Product &amp; Business.</title>
+    <meta name="description"
+        content="Product and UX designer based in Berlin. I design financial products end to end — banks, neobanks and regulated fintech." />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/assets/favicon-180.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ismail Ahmad — Product &amp; UX Designer" />
+    <meta property="og:description" content="Designing financial products people understand and trust." />
+    <meta property="og:image" content="/assets/og-1200.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Theme is resolved before first paint so dark mode never flashes white -->
     <script>
-        document.documentElement.classList.add('is-loading');
-        /* Hard fallback if site-loader.js never runs (module/CDN failure). */
-        window.setTimeout(function () {
-            document.documentElement.classList.remove('is-loading');
-            var el = document.getElementById('site-loader');
-            if (!el) return;
-            el.classList.add('is-done', 'is-revealing');
-            window.setTimeout(function () { el.remove(); }, 600);
-        }, 7000);
-    </script>
-    <style>
-        html.is-loading,
-        html.is-loading body {
-            background: #fff
-        }
-    </style>
-    <title>About — Ismail Ahmad</title>
-    <meta name="description" content="I believe great design should create value for everyone involved. Over ten years designing for financial brands, websites, and products.">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Ismail Ahmad">
-    <meta property="og:url" content="https://www.ismailahmad.com/about.html">
-    <meta property="og:title" content="About — Ismail Ahmad">
-    <meta property="og:description" content="I believe great design should create value for everyone involved. Over ten years designing for financial brands, websites, and products.">
-    <meta property="og:image" content="https://www.ismailahmad.com/assets/og-1200.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="675">
-    <meta property="og:image:alt" content="Ismail Ahmad, Senior Product & UX Designer">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="About — Ismail Ahmad">
-    <meta name="twitter:description" content="I believe great design should create value for everyone involved. Over ten years designing for financial brands, websites, and products.">
-    <meta name="twitter:image" content="https://www.ismailahmad.com/assets/og-1200.jpg">
-    <meta name="twitter:image:alt" content="Ismail Ahmad, Senior Product & UX Designer">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="css/fonts.css">
-    <link rel="stylesheet" href="css/base.css?v=control-1">
-    <link rel="stylesheet" href="css/site-loader.css?v=signature-1">
-    <link rel="modulepreload" href="js/site-loader.js?v=signature-1">
-    <link rel="modulepreload" href="js/site-loader-signature.js?v=signature-1">
-    <script type="module" src="js/site-loader.js?v=signature-1"></script>
-    <link rel="stylesheet" href="css/site-nav.css?v=control-2">
-    <link rel="stylesheet" href="css/contact-panel.css?v=contact-2">
-    <link rel="stylesheet" href="css/contact-shimmer.css">
-    <link rel="stylesheet" href="css/image-hover.css">
-    <link rel="stylesheet" href="css/about.css?v=photo-stack-3">
-    <link rel="stylesheet" href="css/bottom-bar-cta.css?v=control-1">
-    <style>
-        :root {
-            --brand: #393bfe;
-            --text-primary: #09090b;
-            --text-secondary: #52525b;
-            --text-tertiary: #71717a;
-            --bg-cream: #f3f2ef;
-            --bg-white: #ffffff;
-            --font-display: 'Suisse Intl', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            --font-body: 'Suisse Intl', system-ui, sans-serif;
-        }
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            min-height: 100%;
-        }
-
-        html {
-            overflow-y: auto;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background: var(--bg-white);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            font-weight: 500;
-            overflow-x: hidden;
-        }
-
-        .pill {
-            font-size: var(--control-fs, 16px);
-            font-weight: 500;
-            line-height: var(--control-lh, 24px);
-            color: var(--text-primary);
-            border-radius: 999px;
-            padding: var(--control-pad-y, 10px) var(--control-pad-x, 16px);
-            text-decoration: none;
-            cursor: pointer;
-            transition: opacity 0.18s ease, color 0.18s ease;
-            border: none;
-            background: transparent;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: var(--control-h, 44px);
-            width: fit-content;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-
-        .pill--cream {
-            background: var(--bg-cream);
-        }
-
-        .pill--active {
-            color: var(--brand);
-        }
-
-        .pill:hover {
-            opacity: 0.75;
-        }
-    </style>
-</head>
-
-<body>
-    <div id="site-loader" class="site-loader" role="status" aria-label="Loading">
-        <div class="site-loader__mark">
-            <svg id="site-loader-signature" viewBox="0 0 396 343" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M81.835,2477.796C81.835,2477.796 454.435,2205.149 415.719,2153C391.288,2120.092 319.22,2165.049 264.098,2227.977C185.773,2317.394 137.217,2440.199 152,2466C195.388,2541.727 425.12,2278.143 398.36,2246.234C380.475,2224.908 259.394,2377.005 303.697,2394.225C317.936,2394.225 342.875,2367.296 362.519,2336.515C362.519,2336.515 340.584,2392.821 348,2383.894C357.934,2371.936 371.523,2347.692 378,2354.454C384.298,2361.03 367.523,2385 375,2382C382.477,2379 389.012,2356.526 394.083,2357.822C401.202,2359.641 384.576,2384.823 391.288,2381.407C398,2377.991 415.719,2353.418 415.719,2357.822C415.719,2362.225 399.711,2392.818 415.413,2381.407C431.115,2369.995 440.179,2361.437 440.179,2361.437C440.179,2361.437 422.227,2378.92 425.613,2381.407C429,2383.894 454.025,2362.844 456,2357.822C457.975,2352.799 439.964,2381.131 448.039,2383.894C454.796,2386.207 459.93,2371.936 466,2371.936C466,2371.936 463,2384.407 472,2378.407" transform="matrix(1,0,0,1,-79.334514,-2139.421278)" />
-            </svg>
-        </div>
-    </div>
-
-    <div class="about-page">
-        <header class="about-topbar" aria-label="About header">
-            <div class="about-brand" aria-label="About title">
-                <h1>About</h1>
-            </div>
-
-            <nav class="site-header__nav" id="site-header-nav" aria-label="Site navigation">
-                <div class="nav-morph" id="nav-morph">
-                    <div class="site-header__nav-pills" id="header-nav-pills">
-                        <a class="pill pill--cream" href="index.html">Home</a>
-                        <a class="pill pill--cream pill--active" href="about.html" aria-current="page">About</a>
-                        <a class="pill pill--cream" href="feeds.html">Feed</a>
-                    </div>
-                    <button type="button" class="nav-dot-btn" id="more-btn" aria-expanded="false"
-                        aria-controls="header-nav-menu" aria-label="Open menu">
-                        <span class="nav-menu-icon" aria-hidden="true">
-                            <span class="nav-menu-icon__bar"></span>
-                            <span class="nav-menu-icon__bar"></span>
-                        </span>
-                    </button>
-                    <div class="header-nav-menu" id="header-nav-menu" aria-hidden="true">
-                        <div class="header-nav-menu__top">
-                            <div class="header-nav-menu__links">
-                                <a href="index.html">Home</a>
-                                <a href="about.html">About</a>
-                                <a href="feeds.html">Feeds</a>
-                                <a href="https://blog.ismailahmad.com" target="_blank" rel="noopener">Blog</a>
-                                <button type="button" id="nav-menu-contact">Contact</button>
-                            </div>
-                            <span class="header-nav-menu__close-slot" aria-hidden="true"></span>
-                        </div>
-                        <div class="header-nav-menu__footer">
-                            <div class="header-nav-menu__clock" id="header-nav-clock" aria-live="polite">
-                                <span id="nav-clock-month"></span><br>
-                                <span id="nav-clock-weekday"></span><br>
-                                <span id="nav-clock-time"></span><br>
-                                <span class="header-nav-menu__tz" id="nav-clock-tz"></span>
-                            </div>
-                            <span class="header-nav-menu__version">V.26</span>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </header>
-
-        <main class="about-panel" aria-label="About content">
-            <div class="about-stack">
-                <section class="about-profile" aria-labelledby="about-intro-lead">
-                    <div class="about-photo-stack" data-photo-stack aria-label="About photo stack">
-                        <button type="button" class="about-photo-card" aria-label="Portrait of Ismail Ahmad. Reveal next photo.">
-                            <img src="assets/about/gallery-1.jpg" alt="Ismail Ahmad portrait" loading="eager" width="800" height="597" draggable="false" />
-                        </button>
-                        <button type="button" class="about-photo-card" aria-label="Ismail Ahmad with collaborators. Reveal next photo.">
-                            <img src="assets/about/gallery-2.jpg" alt="Ismail Ahmad with collaborators" loading="eager" width="800" height="597" draggable="false" />
-                        </button>
-                        <button type="button" class="about-photo-card" aria-label="Ismail Ahmad at UX Camp Europe. Reveal next photo.">
-                            <img src="assets/about/gallery-3.jpg" alt="Ismail Ahmad at UX Camp Europe" loading="eager" width="800" height="597" draggable="false" />
-                        </button>
-                        <button type="button" class="about-photo-card" aria-label="Ismail Ahmad working in a studio. Reveal next photo.">
-                            <img src="assets/about/gallery-4.jpg" alt="Ismail Ahmad working in a studio" loading="eager" width="800" height="597" draggable="false" />
-                        </button>
-                        <p class="sr-only" data-photo-status aria-live="polite">Photo 1 of 4</p>
-                    </div>
-
-                    <div class="about-profile__content">
-                        <div class="about-intro__lead-block">
-                            <p class="about-intro__lead" id="about-intro-lead">Entrepreneur with a demonstrated history of working in the financial industry. Responsible for complex projects across banking, finance and hospitality, within cross-functional teams and challenging tasks. Skilled and experienced in Building Digital Products, Branding, Art Direction, and Leading.</p>
-                            <a class="about-cv-btn" href="assets/cv.pdf" target="_blank" rel="noopener">
-                                <svg width="20" height="20" viewBox="0 0 12 12" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path
-                                        d="m6.75,4.25h3.5c0-.321-.127-.627-.353-.853l-2.295-2.295c-.226-.226-.532-.353-.851-.353v3.5Z"
-                                        fill="currentColor" stroke-width="0" />
-                                    <polyline points="6.75 .75 6.75 4.25 10.25 4.25" stroke="currentColor" stroke-width="1"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                    <path
-                                        d="m7.603,1.103l2.294,2.294c.226.226.353.532.353.852v5.001c0,1.105-.895,2-2,2H3.75c-1.105,0-2-.895-2-2V2.75C1.75,1.645,2.645.75,3.75.75h3.001c.32,0,.626.127.852.353Z"
-                                        stroke="currentColor" stroke-width="1" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                                Download CV
-                            </a>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="about-section" aria-labelledby="about-expertise-label">
-                    <p id="about-expertise-label" class="about-section__label">Expertise</p>
-                    <div class="about-section__stack">
-                        <h3 class="about-section__title">Focused on Financial Tech.</h3>
-                        <p class="about-section__body">Since 2017, I have helped financial banks startups, scaleups, and
-                            global financial companies stand out, build trust, and accelerate adoption.</p>
-                    </div>
-                </section>
-
-                <section class="about-section about-section--cards" aria-labelledby="about-approach-label">
-                    <p id="about-approach-label" class="about-section__label">Approach</p>
-                    <div class="about-section__stack about-section__stack--tight">
-                        <p class="about-section__subtitle">Quality execution that feel cohesive</p>
-                        <p class="about-section__body">I follow these simple framework to ensure I deliver the best
-                            possible results.</p>
-                    </div>
-                    <div class="about-cards">
-                        <article class="about-card about-card--icon">
-                            <div class="about-card__content">
-                                <h4 class="about-card__title">Strategy</h4>
-                                <p class="about-card__text">I immerse myself into your goals, users, and constraints,
-                                    questioning, and synthesizing insights into a clear, defensible position grounding
-                                    all design decisions.</p>
-                            </div>
-                            <img class="about-card__icon" src="assets/about/icon-strategy.svg" alt="" width="64"
-                                height="64" />
-                        </article>
-                        <article class="about-card about-card--icon">
-                            <div class="about-card__content">
-                                <h4 class="about-card__title">Design</h4>
-                                <p class="about-card__text">I design within strategic guardrails to solve for
-                                    conversion, comprehension, and trust, testing and refining until the experience
-                                    works flawlessly at scale.</p>
-                            </div>
-                            <img class="about-card__icon" src="assets/about/icon-design.svg" alt="" width="64"
-                                height="64" />
-                        </article>
-                        <article class="about-card about-card--icon">
-                            <div class="about-card__content">
-                                <h4 class="about-card__title">Build</h4>
-                                <p class="about-card__text">I work in the space between design and development, I design
-                                    with code in mind, and partner with developers to ensure the final product matches
-                                    what was design.</p>
-                            </div>
-                            <img class="about-card__icon" src="assets/about/icon-build.svg" alt="" width="64"
-                                height="64" />
-                        </article>
-                    </div>
-                </section>
-            </div>
-
-            <div class="page-end-sentinel" aria-hidden="true"></div>
-        </main>
-    </div>
-
-    <footer class="about-footer" aria-label="Page footer">
-        <div class="bottom-bar__cta" aria-label="Stay in touch" aria-hidden="true" inert>
-            <div class="home-cta__touch">
-                <p class="home-cta__label">Stay in touch</p>
-                <form class="home-cta__email-form" id="about-subscribe"
-                    action="/api/collect-email"
-                    method="post"
-                    data-subscribe-source="website_footer">
-                    <label class="home-cta__email" id="about-email-field" data-subscribe-field>
-                        <span class="home-cta__email-icon" aria-hidden="true">
-                            <svg width="24" height="24" viewBox="0 0 18.8003 16.4" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M1.00017 4.6L8.80497 9.0592C9.17337 9.2704 9.62697 9.2704 9.99537 9.0592L17.8002 4.6"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M14.2002 1H4.60017C2.61195 1 1.00017 2.61177 1.00017 4.6V11.8C1.00017 13.7882 2.61195 15.4 4.60017 15.4H14.2002C16.1884 15.4 17.8002 13.7882 17.8002 11.8V4.6C17.8002 2.61177 16.1884 1 14.2002 1Z"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                        </span>
-                        <input class="home-cta__email-input" type="email" name="email" placeholder="Your email"
-                            autocomplete="email" required aria-label="Your email" />
-                    </label>
-                    <button type="submit" class="home-cta__email-submit" aria-label="Send email">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
-            <nav class="home-cta__socials" aria-label="Social links">
-                <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
-                <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
-                <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
-                <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
-            </nav>
-        </div>
-        <div class="bottom-bar__contact" aria-label="Contact">
-            <div id="music-stack" aria-hidden="true" hidden>
-                <div id="music-glow" aria-hidden="true">
-                    <img class="music-glow__bg" src="assets/music/glow-bg.webp" alt="" width="520" height="457" />
-                </div>
-                <div id="music-player" aria-hidden="true" aria-label="Music player">
-                    <div class="music-player__thumbs" id="music-player-thumbs"></div>
-                    <div class="music-player__art">
-                        <img id="music-player-art" src="assets/audio/01-cover.jpg" alt="Essence cover art"
-                            width="200" height="200" />
-                    </div>
-                    <div class="music-player__meta">
-                        <p class="music-player__artist" id="music-player-artist">TWO LANES</p>
-                        <p class="music-player__title" id="music-player-title">Essence</p>
-                    </div>
-                    <div class="music-player__controls">
-                        <button type="button" class="music-player__btn music-player__btn--side" id="music-prev"
-                            aria-label="Previous track">
-                            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
-                                <path d="M0.5 0.5V9.5M10 1L3.5 5L10 9" stroke="currentColor" stroke-width="1.2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                        <button type="button" class="music-player__btn music-player__btn--main" id="music-play-pause"
-                            aria-label="Play">
-                            <svg id="music-main-icon-play" width="10" height="12" viewBox="0 0 10 12"
-                                fill="currentColor" aria-hidden="true">
-                                <path d="M1 1L9 6L1 11V1Z" />
-                            </svg>
-                            <svg id="music-main-icon-pause" width="10" height="12" viewBox="0 0 10 12"
-                                fill="currentColor" aria-hidden="true" style="display:none">
-                                <rect x="1" y="1" width="2.5" height="10" rx="0.5" />
-                                <rect x="6.5" y="1" width="2.5" height="10" rx="0.5" />
-                            </svg>
-                        </button>
-                        <button type="button" class="music-player__btn music-player__btn--side" id="music-next"
-                            aria-label="Next track">
-                            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden="true">
-                                <path d="M10.5 0.5V9.5M1 1L7.5 5L1 9" stroke="currentColor" stroke-width="1.2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <button type="button" class="contact-launcher" data-open-contact aria-label="Open contact">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M20 11.5A8 8 0 1 1 16.5 5a8 8 0 0 1 3.5 6.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="m8.5 18.4-3.8 1 1.15-3.45" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    <circle cx="9" cy="11.5" r="1" fill="currentColor" />
-                    <circle cx="12" cy="11.5" r="1" fill="currentColor" />
-                    <circle cx="15" cy="11.5" r="1" fill="currentColor" />
-                </svg>
-            </button>
-        </div>
-    </footer>
-
-    <div id="about-story-backdrop" class="about-story-backdrop" aria-hidden="true">
-        <div id="about-story-modal" class="about-story-modal" role="dialog" aria-modal="true"
-            aria-labelledby="about-story-title" tabindex="-1">
-            <button type="button" id="about-story-close" class="about-story-modal__close" aria-label="Close full story">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" aria-hidden="true">
-                    <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-            </button>
-            <div class="about-story-modal__scroll">
-                <h3 id="about-story-title" class="about-story-modal__title">My dad led me to design.</h3>
-                <div class="about-story-modal__body">
-                    <p>My journey into design began in my father's print shop. When I told him I wanted to become an architect, he took me to visit an architecture studio. Instead, I became fascinated by its printing equipment.</p>
-                    <p>My father then asked, "What if you designed the things I print?" That question changed my direction. I began learning graphic design and helping his customers bring their ideas to life.</p>
-                    <p>Making things look good was never enough for me. I wanted to understand what each customer hoped to achieve, who they wanted to reach, and what would make the work valuable. Those conversations taught me that design begins with curiosity, not appearance.</p>
-                    <p>That curiosity eventually led me into digital product design. Working with banks and technology companies showed me how thoughtful design can make complex systems easier to understand. Financial products became especially meaningful because I know how much confidence can come from feeling in control of your money.</p>
-                    <p>Today, I design products that help people navigate complexity with clarity and confidence. I want every solution to create genuine value for the people using it and meaningful results for the organization behind it.</p>
-                    <p class="about-story-modal__closing">My father opened the door to design. Curiosity carried me through it, and serving others continues to give my work purpose.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-        style="position:absolute;width:0;height:0;overflow:hidden">
-        <defs>
-            <filter id="music-paper-texture" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.65 0.55" numOctaves="5" stitchTiles="stitch" seed="3"
-                    result="noise" />
-                <feColorMatrix in="noise" type="saturate" values="0" result="gray" />
-                <feComponentTransfer in="gray" result="crumple">
-                    <feFuncR type="linear" slope="0.12" intercept="0.04" />
-                    <feFuncG type="linear" slope="0.11" intercept="0.035" />
-                    <feFuncB type="linear" slope="0.10" intercept="0.03" />
-                </feComponentTransfer>
-                <feBlend in="crumple" in2="SourceGraphic" mode="screen" />
-            </filter>
-        </defs>
-    </svg>
-
-    <aside id="contact-panel" aria-label="Contact" aria-hidden="true">
-        <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
-            <button type="button" id="close-contact" class="contact-modal__close" aria-label="Close contact">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-                    aria-hidden="true">
-                    <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-            </button>
-            <div class="contact-modal__intro">
-                <p class="contact-modal__bio" id="contact-modal-title">I love working at the intersection of design and
-                    business. I love working in conditions where decisions have real impact and good work actually
-                    ships.</p>
-            </div>
-            <div class="contact-modal__polaroids" aria-hidden="true">
-                <figure class="contact-polaroid contact-polaroid--profile">
-                    <img src="assets/contact/profile.jpg" alt="" width="137" height="164" />
-                    <figcaption class="contact-polaroid__caption">
-                        <span>ID</span>
-                        <span>PROFILE PICTURE</span>
-                    </figcaption>
-                </figure>
-                <figure class="contact-polaroid contact-polaroid--coffee">
-                    <img src="assets/contact/coffee.jpg" alt="" width="95" height="114" />
-                    <figcaption class="contact-polaroid__caption">
-                        <span>ID</span>
-                        <span>☕ coffeeeee...</span>
-                    </figcaption>
-                </figure>
-            </div>
-            <div class="contact-modal__footer">
-                <div class="contact-modal__links" aria-label="Social links">
-                    <a href="https://linkedin.com/in/ismxil" target="_blank" rel="noopener">LinkedIn</a>
-                    <a href="https://github.com/ismxil" target="_blank" rel="noopener">Github</a>
-                    <a href="https://www.behance.net/ismxil" target="_blank" rel="noopener">Behance</a>
-                    <a href="https://instagram.com/ismxilahmad" target="_blank" rel="noopener">Instagram</a>
-                    <a href="https://x.com/ismxilahmad" target="_blank" rel="noopener">X</a>
-                </div>
-                <img class="contact-modal__qr" src="assets/ahmadQR.svg" alt="QR code" width="67" height="67" />
-            </div>
-        </div>
-    </aside>
-
-    <script src="js/contact-panel.js"></script>
-    <script src="js/site-nav.js?v=footer-1"></script>
-    <script src="js/bottom-bar-cta.js"></script>
-    <script src="js/about-photo-stack.js?v=photo-stack-2"></script>
-    <script src="js/smooth-scroll.js?v=axis-1"></script>
-    <script src="js/spa-nav.js"></script>
-    <script>
-        initContactPanel();
-        initSiteNav();
-        initAllSubscribeForms();
-        initBottomBarCta();
-        initSpaNav();
-
-        (function initAboutStoryModal() {
-            var openBtn = document.getElementById('about-intro-full-story');
-            var backdrop = document.getElementById('about-story-backdrop');
-            var modal = document.getElementById('about-story-modal');
-            var closeBtn = document.getElementById('about-story-close');
-            if (!openBtn || !backdrop || !modal || !closeBtn) return;
-
-            var lastFocus = null;
-
-            function openModal() {
-                lastFocus = document.activeElement;
-                backdrop.classList.add('is-open');
-                backdrop.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('about-story-modal-open');
-                closeBtn.focus();
-            }
-
-            function closeModal() {
-                backdrop.classList.remove('is-open');
-                backdrop.setAttribute('aria-hidden', 'true');
-                document.body.classList.remove('about-story-modal-open');
-                if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-            }
-
-            openBtn.addEventListener('click', openModal);
-            closeBtn.addEventListener('click', closeModal);
-            backdrop.addEventListener('click', function (e) {
-                if (e.target === backdrop) closeModal();
-            });
-            modal.addEventListener('click', function (e) {
-                e.stopPropagation();
-            });
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && backdrop.classList.contains('is-open')) {
-                    e.preventDefault();
-                    closeModal();
-                }
-            });
+        (function () {
+            try {
+                var saved = localStorage.getItem('theme');
+                var dark = saved ? saved === 'dark'
+                    : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (dark) document.documentElement.classList.add('dark');
+            } catch (e) { }
         })();
     </script>
-</body>
 
+    <link rel="preload" href="/assets/fonts/suisse/SuisseIntl-Regular.woff2" as="font" type="font/woff2"
+        crossorigin />
+    <link rel="preload" href="/assets/fonts/suisse/SuisseIntl-Medium.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/v2/tokens.css" />
+    <link rel="stylesheet" href="/css/v2/app.css" />
+    <link rel="stylesheet" href="/css/v2/about.css" />
+</head>
+
+
+<body class="about-page">
+    <main class="shell">
+        <header class="site-header">
+            <nav aria-label="Breadcrumb">
+                <a class="crumb" href="/" aria-label="Ismail Ahmad, home">
+                    <svg class="sig sig--draw" viewBox="0 0 396 343" fill="none" aria-hidden="true">
+                        <path d="M81.835,2477.796C81.835,2477.796 454.435,2205.149 415.719,2153C391.288,2120.092 319.22,2165.049 264.098,2227.977C185.773,2317.394 137.217,2440.199 152,2466C195.388,2541.727 425.12,2278.143 398.36,2246.234C380.475,2224.908 259.394,2377.005 303.697,2394.225C317.936,2394.225 342.875,2367.296 362.519,2336.515C362.519,2336.515 340.584,2392.821 348,2383.894C357.934,2371.936 371.523,2347.692 378,2354.454C384.298,2361.03 367.523,2385 375,2382C382.477,2379 389.012,2356.526 394.083,2357.822C401.202,2359.641 384.576,2384.823 391.288,2381.407C398,2377.991 415.719,2353.418 415.719,2357.822C415.719,2362.225 399.711,2392.818 415.413,2381.407C431.115,2369.995 440.179,2361.437 440.179,2361.437C440.179,2361.437 422.227,2378.92 425.613,2381.407C429,2383.894 454.025,2362.844 456,2357.822C457.975,2352.799 439.964,2381.131 448.039,2383.894C454.796,2386.207 459.93,2371.936 466,2371.936C466,2371.936 463,2384.407 472,2378.407" transform="matrix(1,0,0,1,-79.334514,-2139.421278)" />
+                    </svg>
+                </a>
+            </nav>
+
+            <div class="header-actions">
+                <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle colour theme">
+                    <svg class="icon-btn__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
+                    </svg>
+                    <svg class="icon-btn__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" />
+                    </svg>
+                </button>
+                <button type="button" class="menu-trigger" data-dock-open aria-haspopup="dialog" aria-controls="dock" aria-expanded="false" title="Explore pages and actions (/ or ⌘K)">Menu <kbd>/</kbd></button>
+            </div>
+        </header>
+        <article class="about-content" aria-labelledby="about-heading">
+            <img class="about-portrait" src="/assets/about/gallery-1.jpg" alt="Ismail Ahmad" width="800" height="597" fetchpriority="high" />
+            <section class="about-bio">
+                <h1 class="about-label" id="about-heading">About</h1>
+                <p>I'm Ismail, a designer based in Berlin working across product and business. Since 2017, I've helped banks, startups, scaleups, and global financial companies stand out, build trust, and accelerate adoption.</p>
+                <p>My work spans complex projects across banking, finance, and hospitality, bringing together cross-functional teams to build digital products, brands, and experiences.</p>
+                <p>I work across strategy, design, and development: understanding goals, users, and constraints; designing for conversion, comprehension, and trust; and partnering with developers to bring the details into the final product.</p>
+            </section>
+            <div class="about-details">
+                <section aria-labelledby="about-years">
+                    <h2 class="about-label" id="about-years">Years active</h2>
+                    <p>2017–present</p>
+                </section>
+                <div class="about-details__columns">
+                    <div class="about-details__sidebar">
+                        <section aria-labelledby="about-skills">
+                            <h2 class="about-label" id="about-skills">Skills &amp; specializations</h2>
+                            <ul><li>Product Design</li><li>Branding &amp; Art Direction</li><li>Design Strategy</li><li>User Research</li><li>UX &amp; Architecture</li><li>Interface Design</li><li>Design Systems</li></ul>
+                        </section>
+                        <section aria-labelledby="about-contact-heading">
+                            <h2 class="about-label" id="about-contact-heading">Let's work together</h2>
+                            <p>I'm open to work.</p>
+                            <div class="about-links"><a href="/#contact">Get in touch ↗</a><a href="/assets/cv.pdf" target="_blank" rel="noopener">Download CV ↗</a></div>
+                        </section>
+                    </div>
+                    <section aria-labelledby="about-experience-heading">
+                        <h2 class="about-label" id="about-experience-heading">Experience</h2>
+                        <div class="about-experience" id="about-experience"></div>
+                    </section>
+                </div>
+            </div>
+        </article>
+        <footer class="site-footer">
+            <span class="site-footer__left">
+                <svg class="sig sig--sm site-footer__mark" viewBox="0 0 396 343" fill="none" aria-hidden="true">
+                    <path d="M81.835,2477.796C81.835,2477.796 454.435,2205.149 415.719,2153C391.288,2120.092 319.22,2165.049 264.098,2227.977C185.773,2317.394 137.217,2440.199 152,2466C195.388,2541.727 425.12,2278.143 398.36,2246.234C380.475,2224.908 259.394,2377.005 303.697,2394.225C317.936,2394.225 342.875,2367.296 362.519,2336.515C362.519,2336.515 340.584,2392.821 348,2383.894C357.934,2371.936 371.523,2347.692 378,2354.454C384.298,2361.03 367.523,2385 375,2382C382.477,2379 389.012,2356.526 394.083,2357.822C401.202,2359.641 384.576,2384.823 391.288,2381.407C398,2377.991 415.719,2353.418 415.719,2357.822C415.719,2362.225 399.711,2392.818 415.413,2381.407C431.115,2369.995 440.179,2361.437 440.179,2361.437C440.179,2361.437 422.227,2378.92 425.613,2381.407C429,2383.894 454.025,2362.844 456,2357.822C457.975,2352.799 439.964,2381.131 448.039,2383.894C454.796,2386.207 459.93,2371.936 466,2371.936C466,2371.936 463,2384.407 472,2378.407" transform="matrix(1,0,0,1,-79.334514,-2139.421278)" />
+                </svg>
+                © <span id="footer-year">2026</span> ismailahmad
+            </span>
+            <span class="site-footer__hint">Press <kbd>/</kbd> to jump anywhere</span>
+        </footer>
+        <div class="dock-spacer" aria-hidden="true"></div>
+    </main>
+    <script type="module" src="/js/v2/about.js"></script>
+</body>
 </html>
