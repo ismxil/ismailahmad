@@ -51,18 +51,16 @@ export const workItems = [
     },
 ];
 
-const ARROW = `<svg class="row__arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor"
+const ARROW = `<svg class="work-card__arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor"
     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M6.5 11.5 11.5 6.5M7.5 6.5h4v4" /></svg>`;
 
-/** Monogram fallback for a case with no cover in assets/cover/. */
-function mark(item) {
+/** Cover art, or a monogram plate for a case with nothing in assets/cover/. */
+function art(item) {
     if (item.cover) {
-        return `<img src="${item.cover}" alt="" aria-hidden="true" loading="lazy" />`;
+        return `<img src="${item.cover}" alt="" aria-hidden="true" loading="lazy" decoding="async" />`;
     }
-    return `<span aria-hidden="true" style="font-size:15px;font-weight:500;color:var(--text-primary)">${
-        item.title.charAt(0)
-    }</span>`;
+    return `<span class="work-card__monogram" aria-hidden="true">${item.title.charAt(0)}</span>`;
 }
 
 export function renderWork(mount) {
@@ -74,13 +72,12 @@ export function renderWork(mount) {
                 ? ' target="_blank" rel="noopener noreferrer"'
                 : '';
             return `<li>
-                <a class="row" href="${item.url}"${target}>
-                    <span class="row__mark">${mark(item)}</span>
-                    <span class="row__text">
-                        <span class="row__title">${item.title}</span>
-                        <span class="row__desc">${item.desc}</span>
+                <a class="work-card" href="${item.url}"${target}>
+                    <span class="work-card__art">${art(item)}</span>
+                    <span class="work-card__text">
+                        <span class="work-card__title">${item.title}${ARROW}</span>
+                        <span class="work-card__desc">${item.desc}</span>
                     </span>
-                    ${ARROW}
                 </a>
             </li>`;
         })
