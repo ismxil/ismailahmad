@@ -2,8 +2,8 @@
  * v2 entry point — wires the home page together.
  */
 
+import { renderExperience } from './experience.js';
 import { renderWork } from './work.js';
-import { renderFeed } from './feed.js';
 import { renderWriting } from './writing.js';
 import { initDock } from './dock.js';
 
@@ -73,9 +73,9 @@ function initSubscribe() {
 
 function boot() {
     initTheme();
+    renderExperience(document.getElementById('experience-list'));
     renderWork(document.getElementById('work-list'));
     renderWriting(document.getElementById('writing-list'));
-    renderFeed(document.getElementById('feed-grid'));
     initDock();
     initSubscribe();
 

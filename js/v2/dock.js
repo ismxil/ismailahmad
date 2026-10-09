@@ -6,11 +6,11 @@
  * keystroke reaches anything on the site.
  */
 
-import { workItems } from './work.js';
+import { experienceItems } from './experience.js';
 
 const PAGES = [
+    { label: 'Experience', kind: 'section', href: '#experience' },
     { label: 'Work', kind: 'section', href: '#work' },
-    { label: 'Feed', kind: 'section', href: '#feed' },
     { label: 'Writing', kind: 'section', href: '#writing' },
     { label: 'Clients', kind: 'section', href: '#clients' },
     { label: 'Stay in touch', kind: 'section', href: '#contact' },
@@ -28,7 +28,7 @@ export function initDock() {
     if (!dock || !input || !results) return;
 
     const targets = PAGES.concat(
-        workItems.map((w) => ({ label: w.title, kind: 'work', href: w.url }))
+        experienceItems.map((e) => ({ label: e.company, kind: 'role', href: e.url }))
     );
 
     let active = 0;

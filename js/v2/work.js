@@ -1,88 +1,54 @@
 /**
- * Work — the six case studies shown as rows on the home page.
+ * Work — a masonry grid of case covers drawn from data/feed-items.json.
  *
- * Copy and links are lifted from the v1 card data so the two versions tell
- * the same story. Items without a public client URL point at the feed page,
- * which is where their case lives.
+ * This is the same source the full feed page reads, so adding an item there
+ * surfaces it here too. Tiles link into that page by anchor.
  */
 
-export const workItems = [
-    {
-        title: 'Lemfi',
-        desc: 'Diaspora remittance and product ecosystem.',
-        cover: 'assets/cover/lemfi.png',
-        url: 'https://lemfi.com/en-gb/credit',
-        external: true,
-    },
-    {
-        title: 'Cadana',
-        desc: 'A payroll brand young workers trust before their employer tells them to.',
-        cover: 'assets/cover/cadana.png',
-        url: 'https://cadanapay.com',
-        external: true,
-    },
-    {
-        title: 'Gomoney',
-        desc: 'Turning registration drop-off into sign-ups.',
-        cover: 'assets/cover/gomoney.png',
-        url: 'https://gomoney.global/product/account',
-        external: true,
-    },
-    {
-        title: 'Etihad Credit Bureau',
-        desc: 'Every customer had their credit data. Most could not use it to decide anything.',
-        cover: 'assets/cover/ecb.png',
-        url: 'https://etihadbureau.ae',
-        external: true,
-    },
-    {
-        title: 'Commerzbank',
-        desc: 'Research into how corporate clients actually read their own money.',
-        cover: 'assets/cover/commerze.png',
-        url: 'feeds.html#feed-15',
-        external: false,
-    },
-    {
-        title: 'Motel One',
-        desc: 'The digital stay — booking, check-in and the room key in one app.',
-        cover: 'assets/cover/motel-one.webp',
-        url: 'feeds.html#motel-one',
-        external: false,
-    },
-];
+const LIMIT = 9;
 
-const ARROW = `<svg class="work-card__arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor"
-    stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M6.5 11.5 11.5 6.5M7.5 6.5h4v4" /></svg>`;
-
-/** Cover art, or a monogram plate for a case with nothing in assets/cover/. */
-function art(item) {
+/** Mirrors resolveFeedCover() in js/feed-items.js. */
+function cover(item, index) {
     if (item.cover) {
-        return `<img src="${item.cover}" alt="" aria-hidden="true" loading="lazy" decoding="async" />`;
+        if (item.cover.startsWith('http')) return item.cover;
+        return item.cover.replace('assets/feeds/covers/', 'assets/feeds/');
     }
-    return `<span class="work-card__monogram" aria-hidden="true">${item.title.charAt(0)}</span>`;
+    return `assets/feeds/image_${index}.jpg`;
 }
 
-export function renderWork(mount) {
+export async function renderWork(mount) {
     if (!mount) return;
 
-    mount.innerHTML = workItems
-        .map((item) => {
-            const target = item.external
-                ? ' target="_blank" rel="noopener noreferrer"'
-                : '';
+    let items = [];
+    try {
+        const res = await fetch('data/feed-items.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        items = Array.isArray(data.items) ? data.items : [];
+    } catch (err) {
+        console.warn('[work] could not load data/feed-items.json', err);
+        mount.innerHTML =
+            '<li><p class="section__note">The work grid is taking a moment. ' +
+            '<a href="feeds.html" style="color:var(--text-primary)">Open it directly</a>.</p></li>';
+        return;
+    }
+
+    const picks = items.slice(0, LIMIT);
+
+    mount.innerHTML = picks
+        .map((item, i) => {
+            const src = cover(item, i);
+            const label = [item.client, item.category].filter(Boolean).join(' · ');
             return `<li>
-                <a class="work-card" href="${item.url}"${target}>
-                    <span class="work-card__art">${art(item)}</span>
-                    <span class="work-card__text">
-                        <span class="work-card__title">${item.title}${ARROW}</span>
-                        <span class="work-card__desc">${item.desc}</span>
-                    </span>
+                <a class="work-tile" href="feeds.html#${item.id}"
+                   aria-label="${label}, opens the case">
+                    <img src="${src}" alt="" loading="lazy" decoding="async" />
+                    <span class="work-tile__label" aria-hidden="true">${label}</span>
                 </a>
             </li>`;
         })
         .join('');
 
     const count = document.querySelector('[data-count="work"]');
-    if (count) count.textContent = String(workItems.length);
+    if (count) count.textContent = String(picks.length);
 }

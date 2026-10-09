@@ -20,9 +20,9 @@ Single-column, 720px-wide, sans-only layout structured after
 | Section | Content |
 |---|---|
 | Header | wordmark breadcrumb |
-| Hero | cover visual, avatar, name, role, "open to work" badge, intro prose with inline pill links |
-| Work | 6 case studies as icon + title + one-liner rows |
-| Feed | masonry grid from `data/feed-items.json` |
+| Hero | avatar, name, role, "open to work" badge, intro prose with inline pill links |
+| Experience | résumé snippet — one row per company: logo, role, years |
+| Work | masonry grid of case covers from `data/feed-items.json` |
 | Writing | dotted-leader list + dates, live from the Substack feed |
 | Clients | logo wall (replaces the reference's GitHub graph) |
 | Contact | email capture + socials (replaces the reference's guestbook) |
