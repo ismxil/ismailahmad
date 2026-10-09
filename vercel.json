@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/profile",
-      "destination": "/about.html"
+      "destination": "/about"
     },
     {
       "source": "/work/:slug",
-      "destination": "/case.html"
+      "destination": "/case"
     }
   ],
   "cleanUrls": true
