@@ -16,12 +16,12 @@ export const experienceItems = [
         external: true,
     },
     {
-        company: 'Commerzbank',
+        company: 'Deutsche Bank',
         role: 'Design Research',
         years: '2023 — 2024',
-        logo: 'assets/clients/commerz.svg',
-        url: 'feeds.html#feed-15',
-        external: false,
+        icon: 'assets/clients/icons/deutsche-bank.svg',
+        url: 'https://www.db.com',
+        external: true,
     },
     {
         company: 'Motel One',
