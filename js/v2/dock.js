@@ -13,9 +13,9 @@ const PAGES = [
     { label: 'Experience', kind: 'section', href: '#experience' },
     { label: 'Work', kind: 'section', href: '#work' },
     { label: 'Writing', kind: 'section', href: '#writing' },
-    { label: 'Stay in touch', kind: 'section', href: '#contact' },
+    { label: 'Archive', kind: 'section', href: '#archive' },
     { label: 'About', kind: 'page', href: '/profile' },
-    { label: 'All work', kind: 'page', href: 'feeds.html' },
+    { label: 'All archive', kind: 'page', href: 'feeds.html' },
     { label: 'All writing', kind: 'page', href: 'insights.html' },
     { label: 'CV', kind: 'page', href: '/assets/cv.pdf' },
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
@@ -95,13 +95,25 @@ export function initDock() {
         input.focus();
     }
 
-    function close() { if (dock.open) dock.close(); }
-    dock.addEventListener('close', () => {
+    // release() must run on every dismissal route. Hanging it off the
+    // dialog's 'close' event alone was not enough — that event does not fire
+    // reliably, which left body overflow pinned to hidden (page unscrollable)
+    // and the launcher hidden after the menu had gone. It is idempotent, so
+    // calling it from the explicit path and the events is safe.
+    function release() {
         document.body.style.overflow = previousOverflow;
         launcher.hidden = false;
         triggers.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
         if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
-    });
+    }
+
+    function close() {
+        release();
+        if (dock.open) dock.close();
+    }
+
+    dock.addEventListener('cancel', close);   // Escape
+    dock.addEventListener('close', release);  // backstop
     dock.querySelector('[data-menu-close]').addEventListener('click', close);
     input.addEventListener('input', render);
     dock.addEventListener('keydown', e => {

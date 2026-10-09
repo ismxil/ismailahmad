@@ -596,6 +596,201 @@ ul {
     color: var(--text-tertiary);
 }
 
+/* ── Archive ─────────────────────────────────────────────── */
+
+.archive-grid {
+    margin-top: 20px;
+    columns: 2;
+    column-gap: 12px;
+}
+
+@media (min-width: 640px) {
+    .archive-grid {
+        columns: 3;
+    }
+}
+
+.archive-grid li {
+    margin-bottom: 12px;
+    break-inside: avoid;
+}
+
+.archive-tile {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--tray-shadow);
+    cursor: zoom-in;
+    transition: box-shadow 0.2s ease-out, scale 0.2s ease-out;
+}
+
+.archive-tile:hover {
+    box-shadow: var(--tray-shadow-hover);
+    scale: 1.01;
+}
+
+.archive-tile img {
+    width: 100%;
+    height: auto;
+}
+
+.archive-tile__label {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: var(--r-sm);
+    background: var(--raised);
+    box-shadow: var(--tray-shadow);
+    color: var(--text-primary);
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 0 4px;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out, translate 0.2s ease-out;
+}
+
+.archive-tile:hover .archive-tile__label,
+.archive-tile:focus-visible .archive-tile__label {
+    opacity: 1;
+    translate: 0 0;
+}
+
+/* ── Lightbox ────────────────────────────────────────────── */
+
+/* Same construction as .command-menu: a native <dialog> opened with
+   showModal(), so focus trapping, Escape and the backdrop come free. */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(960px, calc(100vw - 24px));
+    max-width: none;
+    max-height: calc(100dvh - 48px);
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-xl);
+    background: var(--raised);
+    color: var(--text-primary);
+    box-shadow: var(--popover-shadow);
+    overflow: hidden;
+    font: 15px/1.5 var(--font-sans);
+}
+
+.lightbox[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.lightbox::backdrop {
+    background: #0006;
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+
+.lightbox__figure {
+    margin: 0;
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+}
+
+.lightbox__img {
+    max-width: 100%;
+    max-height: calc(100dvh - 48px - 56px);
+    object-fit: contain;
+}
+
+.lightbox__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 56px;
+    flex-shrink: 0;
+    padding: 0 10px 0 16px;
+    border-top: 1px solid var(--border);
+}
+
+.lightbox__meta {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.lightbox__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.lightbox__years {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+}
+
+.lightbox__nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.lightbox__nav button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+.lightbox__nav button:hover {
+    background: var(--control);
+    color: var(--text-primary);
+}
+
+.lightbox__nav svg {
+    width: 18px;
+    height: 18px;
+}
+
+.lightbox__count {
+    min-width: 54px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+}
+
+.lightbox kbd {
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: var(--control);
+    font: 12px/1.4 var(--font-sans);
+}
+
 /* ── Writing list ────────────────────────────────────────── */
 
 .lede {

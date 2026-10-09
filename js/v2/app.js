@@ -5,6 +5,7 @@
 import { renderExperience } from './experience.js';
 import { renderWork } from './work.js';
 import { renderWriting } from './writing.js';
+import { renderArchive } from './archive.js';
 import { initDock } from './dock.js';
 
 /* ── Theme ───────────────────────────────────────────────── */
@@ -76,6 +77,7 @@ function boot() {
     renderExperience(document.getElementById('experience-list'));
     renderWork(document.getElementById('work-list'));
     renderWriting(document.getElementById('writing-list'));
+    renderArchive(document.getElementById('archive-grid'));
     initDock();
     initSubscribe();
 
