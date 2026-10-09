@@ -7,6 +7,7 @@
  */
 
 import { experienceItems } from './experience.js';
+import { cases } from '../../data/cases.js';
 
 const PAGES = [
     { label: 'Experience', kind: 'section', href: '#experience' },
@@ -27,9 +28,10 @@ export function initDock() {
     const results = document.getElementById('dock-results');
     if (!dock || !input || !results) return;
 
-    const targets = PAGES.concat(
-        experienceItems.map((e) => ({ label: e.company, kind: 'role', href: e.url }))
-    );
+    const targets = cases
+        .map((c) => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` }))
+        .concat(PAGES)
+        .concat(experienceItems.map((e) => ({ label: e.company, kind: 'role', href: e.url })));
 
     let active = 0;
     let matches = [];

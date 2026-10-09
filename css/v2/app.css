@@ -472,68 +472,89 @@ ul {
     color: var(--text-primary);
 }
 
-/* ── Work grid ───────────────────────────────────────────── */
+/* ── Case cards ─────────────────────────────────────────── */
 
-.work-grid {
-    margin-top: 20px;
-    columns: 2;
-    column-gap: 12px;
+.case-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px 20px;
 }
 
-@media (min-width: 640px) {
-    .work-grid {
-        columns: 3;
+@media (min-width: 560px) {
+    .case-grid {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
-.work-grid li {
-    margin-bottom: 12px;
-    break-inside: avoid;
+.case-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.work-tile {
-    position: relative;
+.case-card__art {
     display: block;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
     border-radius: var(--r-lg);
     background: var(--surface);
     box-shadow: var(--tray-shadow);
-    transition: box-shadow 0.2s ease-out, scale 0.2s ease-out;
+    transition: box-shadow 0.2s ease-out;
 }
 
-.work-tile:hover {
+.case-card:hover .case-card__art {
     box-shadow: var(--tray-shadow-hover);
-    scale: 1.01;
 }
 
-.work-tile img {
+.case-card__art img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.35s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.work-tile__label {
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
+.case-card:hover .case-card__art img {
+    scale: 1.03;
+}
+
+.case-card__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1.45;
+}
+
+.case-card__title {
     display: flex;
     align-items: center;
-    height: 24px;
-    padding: 0 8px;
-    border-radius: var(--r-sm);
-    background: var(--raised);
-    box-shadow: var(--tray-shadow);
+    gap: 4px;
+    font-weight: 500;
     color: var(--text-primary);
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    translate: 0 4px;
-    pointer-events: none;
-    transition: opacity 0.2s ease-out, translate 0.2s ease-out;
 }
 
-.work-tile:hover .work-tile__label {
-    opacity: 1;
-    translate: 0 0;
+.case-card__arrow {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--text-tertiary);
+    transition: color 0.15s ease-out, translate 0.15s ease-out;
+}
+
+.case-card:hover .case-card__arrow {
+    color: var(--text-primary);
+    translate: 2px 0;
+}
+
+.case-card__desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    text-wrap: pretty;
+}
+
+.case-card__meta {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--text-tertiary);
 }
 
 /* ── Writing list ────────────────────────────────────────── */
