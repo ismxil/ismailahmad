@@ -1608,14 +1608,22 @@ kbd {
 }
 
 .case-card__art .case-card__next { position: absolute; inset: 0; }
-.cover-motion {
-    padding: 4px 8px;
-    margin-right: 8px;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    background: transparent;
-    color: var(--text-secondary);
-    font: 12px/1.4 var(--font-sans);
-    cursor: pointer;
+
+/* Give the studio the full desktop canvas, keeping the compact mobile card. */
+@media (min-width: 900px) {
+    .contact-card {
+        width: min(1440px, calc(100vw - 96px));
+        max-height: calc(100dvh - 64px);
+    }
+    .contact-card[open] { gap: 20px; }
+    .card-city { font-size: 22px; }
+    .card-hero { aspect-ratio: auto; height: clamp(240px, 45dvh, 560px); flex-shrink: 0; }
+    .card-hero img { object-position: center 55%; }
+    .card-hero__hello { left: 24px; bottom: 24px; }
+    .card-hero__value { font-size: 26px; }
+    .card-tiles { gap: 20px; }
+    .card-tile { aspect-ratio: auto; height: clamp(120px, 20dvh, 200px); }
+    .card-disc img { width: auto; height: 78%; aspect-ratio: 1; }
+    .card-disc__hole { width: auto; height: 16%; }
+    .card-tile__tag { left: 12px; bottom: 12px; font-size: 13px; }
 }
-.cover-motion:hover { background: var(--control); color: var(--text-primary); }

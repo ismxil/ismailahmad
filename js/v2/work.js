@@ -74,22 +74,12 @@ export function renderWork(mount, { shuffleCovers = false } = {}) {
 // keep the current artwork in place throughout the directional wipe.
 function rotateCovers(mount) {
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
-    const control = document.createElement('button');
-    control.type = 'button';
-    control.className = 'cover-motion';
     let paused = motion.matches;
     let cursor = 0;
     let timer;
     let busy = false;
     let transitionIndex = 0;
-    function updateControl() {
-        control.textContent = paused ? 'Resume covers' : 'Pause covers';
-        control.setAttribute('aria-label', paused ? 'Resume project cover slideshow' : 'Pause project cover slideshow');
-    }
-    updateControl();
-    mount.closest('section').querySelector('.section__more-wrap').prepend(control);
-    control.addEventListener('click', () => { paused = !paused; updateControl(); });
-    motion.addEventListener('change', () => { paused = motion.matches; updateControl(); });
+    motion.addEventListener('change', () => { paused = motion.matches; });
 
     async function advance() {
         if (paused || busy || document.hidden || document.querySelector('dialog[open]')) return;
