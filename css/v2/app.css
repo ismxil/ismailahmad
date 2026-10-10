@@ -488,7 +488,7 @@ dialog[tabindex="-1"]:focus-visible {
     position: fixed;
     inset: 0;
     margin: auto;
-    width: min(400px, calc(100vw - 32px));
+    width: min(calc(var(--content-width) - 2 * var(--gutter)), calc(100vw - 2 * var(--gutter)));
     max-width: none;
     max-height: calc(100dvh - 48px);
     padding: 0;
@@ -1608,22 +1608,3 @@ kbd {
 }
 
 .case-card__art .case-card__next { position: absolute; inset: 0; }
-
-/* Give the studio the full desktop canvas, keeping the compact mobile card. */
-@media (min-width: 900px) {
-    .contact-card {
-        width: min(1440px, calc(100vw - 96px));
-        max-height: calc(100dvh - 64px);
-    }
-    .contact-card[open] { gap: 20px; }
-    .card-city { font-size: 22px; }
-    .card-hero { aspect-ratio: auto; height: clamp(240px, 45dvh, 560px); flex-shrink: 0; }
-    .card-hero img { object-position: center 55%; }
-    .card-hero__hello { left: 24px; bottom: 24px; }
-    .card-hero__value { font-size: 26px; }
-    .card-tiles { gap: 20px; }
-    .card-tile { aspect-ratio: auto; height: clamp(120px, 20dvh, 200px); }
-    .card-disc img { width: auto; height: 78%; aspect-ratio: 1; }
-    .card-disc__hole { width: auto; height: 16%; }
-    .card-tile__tag { left: 12px; bottom: 12px; font-size: 13px; }
-}
