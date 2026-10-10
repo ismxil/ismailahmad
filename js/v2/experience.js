@@ -28,7 +28,7 @@ export const experienceItems = [
         role: 'Product Designer',
         years: '2022 — 2024',
         icon: 'assets/clients/icons/motel-one.svg',
-        url: 'feeds.html#motel-one',
+        url: '/archive',
         external: false,
     },
     {

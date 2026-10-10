@@ -10,8 +10,9 @@ import { experienceItems } from './experience.js';
 import { cases } from '../../data/cases.js';
 
 const PAGES = [
-    { label: 'Experience', kind: 'section', href: '#experience' },
+    // Same order as the page itself
     { label: 'Work', kind: 'section', href: '#work' },
+    { label: 'Experience', kind: 'section', href: '#experience' },
     { label: 'Writing', kind: 'section', href: '#writing' },
     { label: 'Archive', kind: 'section', href: '#archive' },
     { label: 'About', kind: 'page', href: '/profile' },
@@ -47,8 +48,11 @@ export function initDock() {
     const results = dock.querySelector('#dock-results');
     const triggers = document.querySelectorAll('[data-dock-open]');
     const onHome = location.pathname === '/' || location.pathname === '/index.html';
-    const targets = cases.map(c => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` }))
-        .concat(PAGES.map(t => ({ ...t, href: t.href.startsWith('#') ? (onHome ? t.href : '/' + t.href) : '/' + t.href.replace(/^\//, '') })))
+    // Navigation leads; cases and companies follow. An empty query is the
+    // common case, so what sits at the top is what most people act on.
+    const targets = PAGES
+        .map(t => ({ ...t, href: t.href.startsWith('#') ? (onHome ? t.href : '/' + t.href) : '/' + t.href.replace(/^\//, '') }))
+        .concat(cases.map(c => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` })))
         .concat(experienceItems.map(e => ({ label: e.company, href: e.url, kind: 'role' })));
     let active = 0;
     let matches = [];

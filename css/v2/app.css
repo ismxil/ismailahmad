@@ -440,6 +440,167 @@ ul {
     margin-bottom: 96px;
 }
 
+/* ── Contact card ────────────────────────────────────────── */
+
+.identity__avatar--button {
+    cursor: pointer;
+    transition: scale 0.15s ease-out;
+}
+
+.identity__avatar--button:hover {
+    scale: 1.04;
+}
+
+.identity__avatar--button:active {
+    scale: 0.98;
+}
+
+/* Floating panel, not a full-screen sheet — small enough to read as an
+   aside over the page. */
+.contact-card {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(340px, calc(100vw - 24px));
+    max-width: none;
+    max-height: calc(100dvh - 48px);
+    padding: 16px;
+    border: 0;
+    border-radius: var(--r-xl);
+    background: var(--raised);
+    color: var(--text-primary);
+    box-shadow: var(--popover-shadow);
+    overflow: auto;
+    font: 15px/1.5 var(--font-sans);
+}
+
+.contact-card[open] {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-card::backdrop {
+    background: #0006;
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+
+.card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.card-city {
+    font-weight: 500;
+}
+
+.card-head button {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 6px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease-out;
+}
+
+.card-head button:hover {
+    background: var(--control);
+}
+
+.contact-card kbd {
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: var(--control);
+    font: 12px/1.4 var(--font-sans);
+}
+
+.card-tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.card-photo,
+.card-clock {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: var(--r-md);
+    background: var(--surface);
+}
+
+.card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-clock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+}
+
+.card-clock__face {
+    width: 72%;
+    height: 72%;
+}
+
+.card-clock__time {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: var(--raised);
+    box-shadow: var(--tray-shadow);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.card-hello {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border-radius: var(--r-md);
+    background: var(--surface);
+    line-height: 1.35;
+    transition: background-color 0.15s ease-out;
+}
+
+.card-hello:hover {
+    background: var(--surface-hover);
+}
+
+.card-hello__label {
+    font-size: 13px;
+    color: var(--text-tertiary);
+}
+
+.card-hello__value {
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.card-links .chip {
+    margin-inline: 0;
+    translate: none;
+}
+
 /* ── Sections ────────────────────────────────────────────── */
 
 .section {
@@ -1175,6 +1336,21 @@ kbd {
 .dock-launcher kbd { font: 12px var(--font-sans); padding: 2px 5px; border-radius: 4px; background: var(--control); }
 @media (min-width: 640px) {
     .command-menu, .dock-launcher { bottom: 24px; }
+}
+
+/* On a phone the software keyboard — and on iOS its accessory bar of
+   up/down arrows and Done — covers anything pinned to the bottom, which
+   buried the input and the results the moment the menu opened. Anchor it
+   to the top instead, where the keyboard cannot reach it. */
+@media (max-width: 639px) {
+    .command-menu {
+        inset: 12px 0 auto;
+        max-height: calc(100dvh - 24px);
+    }
+
+    .command-menu__results {
+        max-height: min(380px, calc(100dvh - 140px));
+    }
 }
 
 @media (min-width: 840px) {
