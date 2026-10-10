@@ -10,13 +10,13 @@
 
 export const experienceItems = [
     {
-        company: 'Sterling Bank',
-        role: 'Head of Product Design, Contract',
+        company: 'Cadara Studio',
+        role: 'Founder Designer',
         years: '2025 — Present',
-        location: 'Lagos, remote',
-        logo: 'assets/clients/sterling.svg',
-        url: 'https://sterling.ng',
-        external: true,
+        location: 'Berlin',
+        logo: '',
+        url: '/work',
+        external: false,
     },
     {
         company: 'Accenture Song',

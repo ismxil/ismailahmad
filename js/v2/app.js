@@ -2,7 +2,7 @@
  * v2 entry point — wires the home page together.
  */
 
-import { renderExperience } from './experience.js';
+import { renderProjects } from './projects.js';
 import { renderWork } from './work.js';
 import { renderWriting } from './writing.js';
 import { renderArchive } from './archive.js';
@@ -75,7 +75,7 @@ function initSubscribe() {
 
 function boot() {
     initTheme();
-    renderExperience(document.getElementById('experience-list'));
+    renderProjects(document.getElementById('experience-list'));
     renderWork(document.getElementById('work-list'));
     renderWriting(document.getElementById('writing-list'));
     renderArchive(document.getElementById('archive-grid'));

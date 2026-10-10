@@ -6,7 +6,7 @@
  * keystroke reaches anything on the site.
  */
 
-import { experienceItems } from './experience.js';
+import { projectItems } from './projects.js';
 import { cases } from '../../data/cases.js';
 
 const PAGES = [
@@ -51,7 +51,7 @@ export function initDock() {
     const targets = PAGES
         .map(t => ({ ...t, href: t.href.startsWith('#') ? (onHome ? t.href : '/' + t.href) : '/' + t.href.replace(/^\//, '') }))
         .concat(cases.map(c => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` })))
-        .concat(experienceItems.map(e => ({ label: e.company, href: e.url, kind: 'role' })));
+        .concat(projectItems.map(p => ({ label: p.name, href: p.url, kind: 'project' })));
     let active = 0;
     let matches = [];
     let previousFocus;
