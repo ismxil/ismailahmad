@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "@portabletext/to-html": "^6.0.0",
+    "@vercel/analytics": "^2.0.1"
+  },
+  "devDependencies": {
+    "@portabletext/block-tools": "^6.0.4",
+    "@sanity/schema": "^6.18.0",
+    "esbuild": "^0.28.2",
+    "jsdom": "^29.1.1"
+  },
+  "name": "ismailahmad-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "blog:prepare": "node scripts/import-substack.mjs",
+    "blog:import": "cd sanity && npx sanity exec scripts/import-blog.mjs --with-user-token"
+  }
+}

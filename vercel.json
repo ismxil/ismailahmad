@@ -7,7 +7,17 @@
     {
       "source": "/work/:slug",
       "destination": "/case"
+    },
+    {
+      "source": "/writing",
+      "destination": "/blog"
+    },
+    {
+      "source": "/writing/:slug",
+      "destination": "/post"
     }
   ],
-  "cleanUrls": true
+  "cleanUrls": true,
+  "buildCommand": "npm run build",
+  "outputDirectory": "public"
 }

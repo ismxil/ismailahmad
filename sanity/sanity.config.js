@@ -5,7 +5,7 @@ import { schemaTypes } from './schemas';
 
 export default defineConfig({
   name: 'default',
-  title: 'Ismail Ahmad — Feed CMS',
+  title: 'Ismail Ahmad — Content',
   projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'x7x0om5p',
   dataset: process.env.SANITY_STUDIO_DATASET || 'production',
   plugins: [structureTool(), visionTool()],

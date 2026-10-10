@@ -3,3 +3,8 @@
 sanity/node_modules
 sanity/dist
 sanity/.env
+
+node_modules/
+public/
+js/generated/
+sanity/.sanity/
