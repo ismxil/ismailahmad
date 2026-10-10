@@ -1,59 +1,67 @@
 /**
- * Experience — the résumé snippet: one row per company.
+ * Experience — the résumé snippet: one row per role.
  *
- * Roles come from the v1 case tags; dates come from data/feed-items.json.
- * Only companies where both are known are listed, so nothing here is
- * invented. Rows carry the company logo and nothing else by way of art.
+ * Taken verbatim from the CV (Ismail Ahmad Resume, 2026), so these are
+ * employers rather than clients. An earlier version listed Cadana, Etihad,
+ * Motel One and the rest here, but those are project clients — Etihad,
+ * Deutsche Bank, Commerzbank and Motel One all sit under Accenture Song,
+ * and Gomoney under Sterling Bank. They belong in Work, not here.
  */
 
 export const experienceItems = [
     {
-        company: 'Cadana',
-        role: 'Lead Product Designer',
-        years: '2023 — 2024',
-        icon: 'assets/clients/icons/cadana.svg',
-        url: 'https://cadanapay.com',
+        company: 'Sterling Bank',
+        role: 'Head of Product Design, Contract',
+        years: '2025 — Present',
+        location: 'Lagos, remote',
+        logo: 'assets/clients/sterling.svg',
+        url: 'https://sterling.ng',
         external: true,
     },
     {
-        company: 'Deutsche Bank',
-        role: 'Design Research',
+        company: 'Accenture Song',
+        role: 'Senior Product Designer, UX',
         years: '2023 — 2024',
-        icon: 'assets/clients/icons/deutsche-bank.svg',
-        url: 'https://www.db.com',
-        external: true,
-    },
-    {
-        company: 'Motel One',
-        role: 'Product Designer',
-        years: '2022 — 2024',
-        icon: 'assets/clients/icons/motel-one.svg',
-        url: '/archive',
+        location: 'Berlin',
+        logo: 'assets/clients/accenture.svg',
+        url: '/work',
         external: false,
     },
     {
         company: 'Lemfi',
-        role: 'Lead Product Designer',
-        years: '2021 — 2024',
+        role: 'Senior Product Designer, Mobile Lead',
+        years: '2022 — 2023',
+        location: 'California, remote',
         icon: 'assets/clients/icons/lemfi.svg',
         url: 'https://lemfi.com/en-gb/credit',
         external: true,
     },
     {
-        company: 'Etihad Credit Bureau',
-        role: 'Senior UX Designer',
+        company: 'Sterling Bank',
+        role: 'Senior Product Designer',
         years: '2021 — 2023',
-        icon: 'assets/clients/icons/etihad.svg',
-        url: 'https://etihadbureau.ae',
+        location: 'Lagos',
+        logo: 'assets/clients/sterling.svg',
+        url: 'https://gomoney.global/product/account',
         external: true,
     },
     {
-        company: 'Gomoney',
-        role: 'Lead Product Designer',
-        years: '2020 — 2022',
-        icon: 'assets/clients/icons/gomoney.svg',
-        url: 'https://gomoney.global/product/account',
-        external: true,
+        company: 'Mezovest',
+        role: 'Senior Product Designer',
+        years: '2020 — 2021',
+        location: 'Lagos',
+        logo: '',
+        url: '/archive',
+        external: false,
+    },
+    {
+        company: 'NCK Technology',
+        role: 'Designer',
+        years: '2017 — 2020',
+        location: 'Lagos',
+        logo: '',
+        url: '/archive',
+        external: false,
     },
 ];
 
@@ -95,12 +103,7 @@ export function renderExperience(mount) {
                         <span class="row__title">${item.company}</span>
                         <span class="row__desc">${item.role}</span>
                     </span>
-                    <span class="row__ext" aria-hidden="true">
-                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M6.5 11.5 11.5 6.5M11.5 6.5H6.5M11.5 6.5v5" />
-                        </svg>
-                    </span>
+                    <span class="row__years">${item.years}</span>
                 </a>
             </li>`;
         })

@@ -69,6 +69,7 @@ function build() {
                 <button type="button" data-close aria-label="Close"><kbd>esc</kbd></button>
             </span>
         </div>`;
+    dialog.tabIndex = -1;
     document.body.appendChild(dialog);
 
     // Every dismissal route funnels through hide() so the scroll lock is
@@ -130,6 +131,7 @@ function open(i) {
     previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     dialog.showModal();
+    dialog.focus();
 }
 
 /* ── Grid ────────────────────────────────────────────────── */

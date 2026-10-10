@@ -10,16 +10,14 @@ import { experienceItems } from './experience.js';
 import { cases } from '../../data/cases.js';
 
 const PAGES = [
-    // Same order as the page itself
-    { label: 'Work', kind: 'section', href: '#work' },
-    { label: 'Experience', kind: 'section', href: '#experience' },
+    // Real pages first — these are the navigation. The in-page section
+    // jumps come after, since they only work from home.
+    { label: 'Work', kind: 'page', href: 'work' },
+    { label: 'Archive', kind: 'page', href: 'archive' },
+    { label: 'About', kind: 'page', href: 'profile' },
+    { label: 'CV', kind: 'page', href: 'assets/cv.pdf' },
     { label: 'Writing', kind: 'section', href: '#writing' },
-    { label: 'Archive', kind: 'section', href: '#archive' },
-    { label: 'About', kind: 'page', href: '/profile' },
-    { label: 'All work', kind: 'page', href: 'work' },
-    { label: 'All archive', kind: 'page', href: 'archive' },
-    { label: 'All writing', kind: 'page', href: 'insights.html' },
-    { label: 'CV', kind: 'page', href: '/assets/cv.pdf' },
+    { label: 'Experience', kind: 'section', href: '#experience' },
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
 ];
 

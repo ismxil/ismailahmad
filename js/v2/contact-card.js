@@ -6,7 +6,7 @@
  * so the backdrop, focus trap and Escape all come from the browser.
  */
 
-const EMAIL = 'ismxilahmad@gmail.com';
+const EMAIL = 'work@ismailahmad.com';
 const CITY = 'Berlin';
 const TZ = 'Europe/Berlin';
 
@@ -107,6 +107,7 @@ function build() {
             ${LINKS.map((l) => `<a class="chip" href="${l.href}" target="_blank"
                 rel="noopener noreferrer">${l.label}</a>`).join('')}
         </div>`;
+    dialog.tabIndex = -1;
     document.body.appendChild(dialog);
 
     dialog.querySelector('[data-close]').addEventListener('click', hide);
@@ -127,6 +128,7 @@ function open() {
     previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     dialog.showModal();
+    dialog.focus();
 }
 
 export function initContactCard() {

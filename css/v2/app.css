@@ -440,6 +440,17 @@ ul {
     margin-bottom: 96px;
 }
 
+/* A dialog takes focus on open so the close button does not show a ring.
+   The dialog is only a focus holder, so it should not show one either —
+   real keyboard navigation inside still does. */
+.contact-card:focus,
+.contact-card:focus-visible,
+.lightbox:focus,
+.lightbox:focus-visible,
+dialog[tabindex="-1"]:focus-visible {
+    outline: none;
+}
+
 /* ── Contact card ────────────────────────────────────────── */
 
 .identity__avatar--button {
