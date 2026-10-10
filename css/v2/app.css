@@ -156,19 +156,22 @@ ul {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     padding: 0;
     border: 0;
-    border-radius: 10px;
-    background: transparent;
+    flex-shrink: 0;
+    border-radius: 9px;
+    /* A soft plate of its own. With a transparent background the glyph
+       vanished against whatever sat behind it as the page scrolled. */
+    background: var(--control);
     color: var(--text-secondary);
     cursor: pointer;
     transition: background-color 0.15s ease-out, color 0.15s ease-out;
 }
 
 .icon-btn:hover {
-    background: var(--control);
+    background: var(--control-hover);
     color: var(--text-primary);
 }
 
@@ -398,9 +401,14 @@ ul {
 
 .chip svg,
 .chip img {
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
+}
+
+/* The brand marks are square app icons now, so keep their corner radius */
+.chip img {
+    border-radius: 3px;
 }
 
 .chip__meta {
@@ -480,29 +488,31 @@ dialog[tabindex="-1"]:focus-visible {
     position: fixed;
     inset: 0;
     margin: auto;
-    width: min(380px, calc(100vw - 24px));
+    width: min(400px, calc(100vw - 32px));
     max-width: none;
     max-height: calc(100dvh - 48px);
-    padding: 14px;
+    padding: 0;
     border: 0;
-    border-radius: var(--r-xl);
-    background: var(--raised);
-    color: var(--text-primary);
-    box-shadow: var(--popover-shadow);
+    /* No panel: the pieces sit straight on the blurred scrim so they can
+       breathe, the way Koto's city card sits on the page. */
+    background: transparent;
+    box-shadow: none;
+    color: #fff;
     overflow: auto;
+    overscroll-behavior: contain;
     font: 15px/1.5 var(--font-sans);
 }
 
 .contact-card[open] {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 16px;
 }
 
 .contact-card::backdrop {
-    background: #0006;
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
+    background: #000000a6;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .card-head {
@@ -510,11 +520,12 @@ dialog[tabindex="-1"]:focus-visible {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding-inline: 2px;
 }
 
 .card-city {
+    font-size: 17px;
     font-weight: 500;
+    color: #fff;
 }
 
 .card-head button {
@@ -524,19 +535,20 @@ dialog[tabindex="-1"]:focus-visible {
     border: 0;
     border-radius: 8px;
     background: transparent;
-    color: var(--text-secondary);
+    color: #ffffffa6;
     cursor: pointer;
-    transition: background-color 0.15s ease-out;
+    transition: color 0.15s ease-out;
 }
 
 .card-head button:hover {
-    background: var(--control);
+    color: #fff;
 }
 
 .contact-card kbd {
     padding: 2px 5px;
     border-radius: 4px;
-    background: var(--control);
+    background: #ffffff1f;
+    color: inherit;
     font: 12px/1.4 var(--font-sans);
 }
 
@@ -547,8 +559,8 @@ dialog[tabindex="-1"]:focus-visible {
     display: block;
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    border-radius: var(--r-md);
-    background: var(--surface);
+    border-radius: var(--r-lg);
+    background: #ffffff14;
 }
 
 .card-hero img {
@@ -603,7 +615,7 @@ dialog[tabindex="-1"]:focus-visible {
     /* minmax(0,…) not 1fr: the tags are nowrap, and their min-content width
        would otherwise push the three tiles onto two rows */
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+    gap: 10px;
 }
 
 .card-tile {
@@ -614,24 +626,62 @@ dialog[tabindex="-1"]:focus-visible {
     aspect-ratio: 1;
     overflow: hidden;
     border-radius: var(--r-md);
-    background: var(--surface);
-    color: var(--text-primary);
+    background: #ffffff14;
+    color: #fff;
 }
 
 .card-tile__tag {
     position: absolute;
     left: 6px;
     bottom: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     max-width: calc(100% - 12px);
-    padding: 2px 6px;
-    border-radius: 6px;
-    background: var(--raised);
-    box-shadow: var(--tray-shadow);
-    font-size: 11px;
-    line-height: 1.4;
+    padding: 3px 7px;
+    border: 0;
+    border-radius: 7px;
+    background: #000000a3;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    font: 11px/1.4 var(--font-sans);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* ── Play control on the record tile ─────────────────────── */
+
+.card-play {
+    min-height: 32px;
+    min-width: 72px;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background-color 0.15s ease-out;
+}
+
+.card-play:hover {
+    background: #000000cc;
+}
+
+.card-play__icon {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    fill: currentColor;
+}
+
+.card-play__bars {
+    display: none;
+}
+
+.card-disc.is-playing .card-play__tri {
+    display: none;
+}
+
+.card-disc.is-playing .card-play__bars {
+    display: block;
 }
 
 /* The disc: album art as a record, with a spindle hole */
@@ -641,6 +691,11 @@ dialog[tabindex="-1"]:focus-visible {
     object-fit: cover;
     border-radius: 999px;
     animation: spin 14s linear infinite;
+    animation-play-state: paused;
+}
+
+.card-disc.is-playing img {
+    animation-play-state: running;
 }
 
 .card-disc__hole {
@@ -651,8 +706,8 @@ dialog[tabindex="-1"]:focus-visible {
     aspect-ratio: 1;
     translate: -50% -50%;
     border-radius: 999px;
-    background: var(--surface);
-    box-shadow: 0 0 0 2px rgb(from var(--ink) r g b / 0.08) inset;
+    background: #2a2a2a;
+    box-shadow: 0 0 0 2px #ffffff1a inset;
 }
 
 @keyframes spin {
@@ -674,22 +729,18 @@ dialog[tabindex="-1"]:focus-visible {
 
 .card-clock__zone {
     margin-left: 4px;
-    color: var(--text-tertiary);
+    opacity: 0.6;
 }
 
 .card-clock__time {
     font-variant-numeric: tabular-nums;
 }
 
+/* The scrim is dark in both themes, so the map always inverts */
 .card-map img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* The tile is already desaturated; lift it to sit on a dark panel */
-    opacity: 0.9;
-}
-
-.dark .card-map img {
     filter: invert(1);
     opacity: 0.75;
 }
@@ -700,20 +751,25 @@ dialog[tabindex="-1"]:focus-visible {
     right: 6px;
     font-size: 8px;
     line-height: 1;
-    color: var(--text-tertiary);
-    opacity: 0.8;
+    color: #ffffff8c;
 }
 
 .card-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    padding-top: 2px;
+    gap: 8px;
 }
 
 .card-links .chip {
     margin-inline: 0;
     translate: none;
+    padding: 6px 12px;
+    background: #ffffff1f;
+    color: #fff;
+}
+
+.card-links .chip:hover {
+    background: #ffffff33;
 }
 
 /* ── Index pages (/work, /archive) ───────────────────────── */
@@ -959,6 +1015,7 @@ dialog[tabindex="-1"]:focus-visible {
 }
 
 .case-card__art {
+    position: relative;
     display: block;
     aspect-ratio: 16 / 10;
     overflow: hidden;
@@ -1525,3 +1582,40 @@ kbd {
         margin: auto;
     }
 }
+
+/* Keep navigation fluid without moving the reading layout. */
+@view-transition { navigation: auto; }
+
+@media (prefers-reduced-motion: no-preference) {
+    body { transition: background-color 180ms ease, color 180ms ease; }
+    ::view-transition-old(root) { animation: fade-in 160ms ease reverse both; }
+    ::view-transition-new(root) { animation: fade-in 220ms ease both; }
+    html:active-view-transition .shell { animation: none; }
+    .contact-card[open] { animation: contact-enter 220ms ease-out both; }
+    .contact-card[open]::backdrop { animation: fade-in 180ms ease-out both; }
+}
+
+@keyframes contact-enter {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-audio-status { color: #fff; font-size: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+.case-card__art .case-card__next { position: absolute; inset: 0; }
+.cover-motion {
+    padding: 4px 8px;
+    margin-right: 8px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-secondary);
+    font: 12px/1.4 var(--font-sans);
+    cursor: pointer;
+}
+.cover-motion:hover { background: var(--control); color: var(--text-primary); }

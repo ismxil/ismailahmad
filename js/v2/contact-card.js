@@ -10,6 +10,7 @@
  */
 
 const EMAIL = 'work@ismailahmad.com';
+const PLACE = 'Studio, Berlin';
 const CITY = 'Berlin';
 const TZ = 'Europe/Berlin';
 
@@ -17,6 +18,7 @@ const TRACK = {
     title: 'Essence',
     artist: 'TWO LANES',
     cover: '/assets/audio/01-cover.jpg',
+    src: '/assets/audio/01-essence.m4a',
 };
 
 const LINKS = [
@@ -27,6 +29,7 @@ const LINKS = [
 ];
 
 let dialog;
+let audio;
 let tick;
 let previousOverflow = '';
 
@@ -77,10 +80,20 @@ function setTime() {
     if (m) m.setAttribute('transform', `rotate(${minute * 6} 50 50)`);
 }
 
+function setPlaying(on) {
+    const card = dialog?.querySelector('.card-disc');
+    const btn = dialog?.querySelector('[data-play]');
+    if (!card || !btn) return;
+    card.classList.toggle('is-playing', on);
+    btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', `${on ? 'Pause' : 'Play'} ${TRACK.title} by ${TRACK.artist}`);
+}
+
 function release() {
     document.body.style.overflow = previousOverflow;
     clearInterval(tick);
     tick = undefined;
+    audio?.pause();
 }
 
 function hide() {
@@ -97,7 +110,7 @@ function build() {
     dialog.tabIndex = -1;
     dialog.innerHTML = `
         <div class="card-head">
-            <span class="card-city">${CITY}</span>
+            <span class="card-city">${PLACE}</span>
             <button type="button" data-close aria-label="Close"><kbd>esc</kbd></button>
         </div>
 
@@ -111,10 +124,20 @@ function build() {
         </a>
 
         <div class="card-tiles">
-            <span class="card-tile card-disc" title="${TRACK.title} — ${TRACK.artist}">
+            <span class="card-tile card-disc">
                 <img src="${TRACK.cover}" alt="" aria-hidden="true" />
                 <span class="card-disc__hole" aria-hidden="true"></span>
-                <span class="card-tile__tag">${TRACK.title}</span>
+                <button type="button" class="card-tile__tag card-play" data-play
+                    aria-pressed="false" aria-label="Play ${TRACK.title} by ${TRACK.artist}">
+                    <span>${TRACK.title}</span>
+                    <svg class="card-play__icon" viewBox="0 0 16 16" aria-hidden="true">
+                        <path class="card-play__tri" d="M5 3.5v9l8-4.5-8-4.5Z" />
+                        <g class="card-play__bars">
+                            <rect x="4.5" y="3.5" width="2.5" height="9" rx="1" />
+                            <rect x="9" y="3.5" width="2.5" height="9" rx="1" />
+                        </g>
+                    </svg>
+                </button>
             </span>
 
             <span class="card-tile card-clock">
@@ -130,11 +153,35 @@ function build() {
             </span>
         </div>
 
+        <p class="card-audio-status" role="status" hidden></p>
+
         <div class="card-links">
             ${LINKS.map((l) => `<a class="chip" href="${l.href}" target="_blank"
                 rel="noopener noreferrer">${l.label}</a>`).join('')}
         </div>`;
     document.body.appendChild(dialog);
+
+    audio = new Audio(TRACK.src);
+    audio.preload = 'none';
+    audio.addEventListener('ended', () => setPlaying(false));
+    audio.addEventListener('pause', () => setPlaying(false));
+    audio.addEventListener('play', () => setPlaying(true));
+
+    const status = dialog.querySelector('.card-audio-status');
+    function playbackError() {
+        setPlaying(false);
+        status.hidden = false;
+        status.textContent = 'Could not play this track. Please try again.';
+    }
+    audio.addEventListener('error', playbackError);
+    dialog.querySelector('[data-play]').addEventListener('click', () => {
+        status.hidden = true;
+        if (audio.paused) {
+            audio.play().catch(playbackError);
+        } else {
+            audio.pause();
+        }
+    });
 
     dialog.querySelector('[data-close]').addEventListener('click', hide);
     dialog.addEventListener('cancel', hide);

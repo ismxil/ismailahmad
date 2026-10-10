@@ -76,7 +76,7 @@ function initSubscribe() {
 function boot() {
     initTheme();
     renderProjects(document.getElementById('experience-list'));
-    renderWork(document.getElementById('work-list'));
+    renderWork(document.getElementById('work-list'), { shuffleCovers: true });
     renderWriting(document.getElementById('writing-list'));
     renderArchive(document.getElementById('archive-grid'));
     initContactCard();

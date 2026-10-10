@@ -29,6 +29,7 @@ export const projectItems = [
         years: '2022 — 2024',
         icon: 'assets/clients/icons/motel-one.svg',
         url: '/archive',
+        website: 'https://www.motel-one.com/',
         external: false,
     },
     {
@@ -37,6 +38,7 @@ export const projectItems = [
         years: '2021 — 2024',
         icon: 'assets/clients/icons/lemfi.svg',
         url: '/work/lemfi',
+        website: 'https://lemfi.com/en-gb/credit',
         external: false,
     },
     {
@@ -45,6 +47,7 @@ export const projectItems = [
         years: '2021 — 2023',
         icon: 'assets/clients/icons/etihad.svg',
         url: '/work/etihad',
+        website: 'https://etihadbureau.ae',
         external: false,
     },
     {
@@ -53,6 +56,7 @@ export const projectItems = [
         years: '2020 — 2022',
         icon: 'assets/clients/icons/gomoney.svg',
         url: '/work/gomoney',
+        website: 'https://gomoney.global/product/account',
         external: false,
     },
 ];
@@ -73,17 +77,19 @@ export function renderProjects(mount) {
 
     mount.innerHTML = projectItems
         .map((item) => {
-            const target = item.external
-                ? ' target="_blank" rel="noopener noreferrer"'
-                : '';
+            const target = ' target="_blank" rel="noopener noreferrer"';
             return `<li>
-                <a class="row" href="${item.url}"${target}>
+                <a class="row" href="${item.website || item.url}"${target} aria-label="${item.name} website (opens in a new tab)">
                     ${mark(item)}
                     <span class="row__text">
                         <span class="row__title">${item.name}</span>
                         <span class="row__desc">${item.role}</span>
                     </span>
-                    <span class="row__years">${item.years}</span>
+                    <span class="row__ext" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 17 17 7M7 7h10v10" />
+                        </svg>
+                    </span>
                 </a>
             </li>`;
         })
