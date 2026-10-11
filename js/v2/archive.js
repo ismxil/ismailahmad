@@ -146,5 +146,5 @@ export async function renderArchive(mount, { limit = HOME_LIMIT } = {}) {
     });
 
     const count = document.querySelector('[data-count="archive"]');
-    if (count) count.textContent = String(items.length);
+    if (count) count.textContent = String(all.length);
 }
