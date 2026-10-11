@@ -499,25 +499,28 @@ dialog[tabindex="-1"]:focus-visible {
 .card-head button {
     display: inline-flex;
     align-items: center;
-    padding: 4px 6px;
+    padding: 0;
     border: 0;
-    border-radius: 8px;
     background: transparent;
-    color: #ffffffa6;
-    cursor: pointer;
-    transition: color 0.15s ease-out;
-}
-
-.card-head button:hover {
     color: #fff;
+    cursor: pointer;
 }
 
-.contact-card kbd {
-    padding: 2px 5px;
-    border-radius: 4px;
+/* esc is one of the card's chips — same padding, radius and type as the
+   social links at the foot, so the two ends of the card match. */
+.contact-card kbd,
+.lightbox kbd {
+    padding: 6px 12px;
+    border-radius: var(--r-sm);
     background: #ffffff1f;
     color: inherit;
-    font: 12px/1.4 var(--font-sans);
+    font: 14px/1.4 var(--font-sans);
+    transition: background-color 0.15s ease-out;
+}
+
+.card-head button:hover kbd,
+.lightbox__top button:hover kbd {
+    background: #ffffff33;
 }
 
 /* ── Hero: the studio, carrying the address ──────────────── */
@@ -1152,35 +1155,34 @@ dialog[tabindex="-1"]:focus-visible {
     object-fit: contain;
 }
 
-/* esc sits above the image rather than on a bar across it */
+/* The name and esc sit above the image rather than on a bar across it,
+   the same head the contact card uses. */
 .lightbox__top {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     margin-bottom: 10px;
+}
+
+.lightbox__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
 }
 
 .lightbox__top button {
     display: inline-flex;
     align-items: center;
-    padding: 5px 8px;
+    padding: 0;
     border: 0;
-    border-radius: 8px;
     background: transparent;
-    color: #ffffffa6;
-    cursor: pointer;
-    transition: color 0.15s ease-out;
-}
-
-.lightbox__top button:hover {
     color: #fff;
-}
-
-.lightbox kbd {
-    padding: 2px 6px;
-    border-radius: 5px;
-    background: #ffffff1f;
-    color: inherit;
-    font: 12px/1.4 var(--font-sans);
+    cursor: pointer;
 }
 
 /* ── Writing list ────────────────────────────────────────── */

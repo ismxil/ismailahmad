@@ -42,6 +42,7 @@ function build() {
     dialog.setAttribute('aria-label', 'Archive item');
     dialog.innerHTML = `
         <div class="lightbox__top">
+            <span class="lightbox__name"></span>
             <button type="button" data-close aria-label="Close"><kbd>esc</kbd></button>
         </div>
         <figure class="lightbox__figure">
@@ -79,6 +80,7 @@ function paint() {
     const img = dialog.querySelector('.lightbox__img');
     img.src = cover(item, index);
     img.alt = label(item);
+    dialog.querySelector('.lightbox__name').textContent = item.client || item.category || '';
     // No visible caption any more, so the dialog itself carries the label
     // and the position for anyone on a screen reader.
     dialog.setAttribute('aria-label', `${label(item)} — ${index + 1} of ${items.length}`);
