@@ -45,30 +45,12 @@ function build() {
     dialog.className = 'lightbox';
     dialog.setAttribute('aria-label', 'Archive item');
     dialog.innerHTML = `
+        <div class="lightbox__top">
+            <button type="button" data-close aria-label="Close"><kbd>esc</kbd></button>
+        </div>
         <figure class="lightbox__figure">
             <img class="lightbox__img" alt="" />
-        </figure>
-        <div class="lightbox__bar">
-            <span class="lightbox__meta">
-                <span class="lightbox__title"></span>
-            </span>
-            <span class="lightbox__nav">
-                <button type="button" data-step="-1" aria-label="Previous item">
-                    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M10.75 4.75 6.5 9l4.25 4.25" />
-                    </svg>
-                </button>
-                <span class="lightbox__count" aria-live="polite"></span>
-                <button type="button" data-step="1" aria-label="Next item">
-                    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M7.25 4.75 11.5 9l-4.25 4.25" />
-                    </svg>
-                </button>
-                <button type="button" data-close aria-label="Close"><kbd>esc</kbd></button>
-            </span>
-        </div>`;
+        </figure>`;
     dialog.tabIndex = -1;
     document.body.appendChild(dialog);
 
@@ -80,10 +62,6 @@ function build() {
     dialog.addEventListener('close', release); // backstop
 
     dialog.querySelector('[data-close]').addEventListener('click', hide);
-
-    dialog.querySelectorAll('[data-step]').forEach((btn) => {
-        btn.addEventListener('click', () => step(Number(btn.dataset.step)));
-    });
 
     // Clicking the backdrop (anything outside the figure and bar) dismisses
     dialog.addEventListener('click', (e) => {
@@ -105,9 +83,9 @@ function paint() {
     const img = dialog.querySelector('.lightbox__img');
     img.src = cover(item, index);
     img.alt = label(item);
-
-    dialog.querySelector('.lightbox__title').textContent = label(item);
-    dialog.querySelector('.lightbox__count').textContent = `${index + 1} / ${items.length}`;
+    // No visible caption any more, so the dialog itself carries the label
+    // and the position for anyone on a screen reader.
+    dialog.setAttribute('aria-label', `${label(item)} — ${index + 1} of ${items.length}`);
 }
 
 function release() {
