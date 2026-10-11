@@ -61,7 +61,7 @@
                         <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" />
                     </svg>
                 </button>
-                <button type="button" class="menu-trigger" data-dock-open aria-haspopup="dialog" aria-controls="dock" aria-expanded="false" title="Explore pages and actions (/ or ⌘K)">Menu <kbd>/</kbd></button>
+                <button type="button" class="menu-trigger" data-dock-open aria-haspopup="dialog" aria-controls="dock" aria-expanded="false" title="Explore pages and actions (K)">Menu <kbd>K</kbd></button>
             </div>
         </header>
 
@@ -78,7 +78,7 @@
                 </svg>
                 © <span id="footer-year">2026</span> ismailahmad
             </span>
-            <span class="site-footer__hint">Press <kbd>/</kbd> to jump anywhere</span>
+            <span class="site-footer__hint">Press <kbd>K</kbd> for the menu</span>
         </footer>
     </main>
 
@@ -86,7 +86,7 @@
         import { renderArchive } from '/js/v2/archive.js';
         import { initDock } from '/js/v2/dock.js';
         renderArchive(document.getElementById('archive-grid'), { limit: Infinity });
-        initDock({ launcher: false });
+        initDock();
 
         const btn = document.getElementById('theme-toggle');
         btn.addEventListener('click', () => {

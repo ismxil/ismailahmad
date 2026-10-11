@@ -1,4 +1,5 @@
 import { initDock } from './dock.js';
+import { initPageSearch } from './page-search.js';
 import { getPosts, escapeHTML, formatDate } from './blog-data.js';
 import { renderBody } from '../generated/post-body.js';
 
@@ -29,6 +30,9 @@ try {
                 ${post.excerpt ? `<p>${escapeHTML(post.excerpt)}</p>` : ''}
                 <time datetime="${escapeHTML(post.publishedAt)}">${formatDate(post.publishedAt)}</time>
             </a></li>`).join('')}</ul>` : '<p>No articles published yet.</p>';
+        // Index only once the list exists. An article page gets no page
+        // search at all — a search field over prose is a distraction.
+        initPageSearch();
     }
 } catch (error) {
     if (isArticle) document.getElementById('page-title').textContent = error.status === 404 ? 'Article not found' : 'Could not load this article';

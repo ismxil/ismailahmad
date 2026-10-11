@@ -22,5 +22,5 @@ experienceItems.forEach(item => {
     experience.appendChild(entry);
 });
 
-initDock({ launcher: false });
+initDock();
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());

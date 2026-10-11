@@ -64,7 +64,7 @@
                         <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" />
                     </svg>
                 </button>
-                <button type="button" class="menu-trigger" data-dock-open aria-haspopup="dialog" aria-controls="dock" aria-expanded="false" title="Explore pages and actions (/ or ⌘K)">Menu <kbd>/</kbd></button>
+                <button type="button" class="menu-trigger" data-dock-open aria-haspopup="dialog" aria-controls="dock" aria-expanded="false" title="Explore pages and actions (K)">Menu <kbd>K</kbd></button>
             </div>
         </header>
 
@@ -86,8 +86,8 @@
     <script type="module">
         import { renderCase } from '/js/v2/case.js';
         import { initDock } from '/js/v2/dock.js';
-        import { initSectionJump } from '/js/v2/section-jump.js';
-        initDock({ launcher: false, shortcut: false });
+        import { initPageSearch } from '/js/v2/page-search.js';
+        initDock();
 
         const btn = document.getElementById('theme-toggle');
         btn.addEventListener('click', () => {
@@ -107,8 +107,8 @@
 
         renderCase();
         // renderCase() writes the body synchronously, so the headings the
-        // jumper reads already exist.
-        initSectionJump();
+        // page search reads already exist.
+        initPageSearch();
         document.getElementById('footer-year').textContent = String(new Date().getFullYear());
     </script>
 </body>

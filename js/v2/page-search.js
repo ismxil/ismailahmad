@@ -1,78 +1,113 @@
 /**
- * Section jump — the floating pill on a case page.
+ * Page search — the floating pill, opened with "/".
  *
- * The site-wide menu in the header searches across pages; this one stays
- * inside the project you are reading, listing its own sections (Intro,
- * Problem, Solution, Results, Reflection…) so a long case is navigable
- * without scrolling back and forth.
+ * Searches only what is on the page you are looking at: a case page offers
+ * its own sections, the home page its sections and the work, experience
+ * and writing entries inside them, an index page its list. The site-wide
+ * menu in the header is the other half of the pair, opened with ⌘K.
  *
- * Built from the headings the case actually rendered, so it matches each
- * project rather than assuming a fixed set.
+ * The index is read from the rendered DOM rather than declared per page,
+ * so a page that gains content gains search entries with it.
  */
 
 function slugify(text, index) {
     const base = String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    return `section-${base || 'part'}-${index}`;
+    return `search-${base || 'item'}-${index}`;
 }
 
-/** Reads the page for anything worth jumping to, in document order. */
-function collectTargets() {
-    const targets = [];
-
+/** Scroll targets: the landmarks of the page, in document order. */
+function collectSections(targets) {
     const intro = document.querySelector('.case-intro');
     if (intro) {
-        intro.id ||= 'section-overview';
-        targets.push({ label: 'Overview', id: intro.id });
+        intro.id ||= 'search-overview';
+        targets.push({ label: 'Overview', kind: 'section', id: intro.id });
     }
 
     const meta = document.querySelector('.case-meta');
     if (meta) {
-        meta.id ||= 'section-details';
-        targets.push({ label: 'Details', id: meta.id });
+        meta.id ||= 'search-details';
+        targets.push({ label: 'Details', kind: 'section', id: meta.id });
     }
 
-    document.querySelectorAll('.case-body .case-block__title').forEach((heading, i) => {
-        const label = heading.textContent.trim();
-        if (!label) return;
-        heading.id ||= slugify(label, i);
-        targets.push({ label, id: heading.id });
-    });
-
-    return targets;
+    document.querySelectorAll('.section__title, .case-body .case-block__title')
+        .forEach((heading, i) => {
+            const label = heading.textContent.trim();
+            if (!label) return;
+            // On the home page the heading sits inside the section, so jump
+            // to the section itself and the heading comes with it.
+            const anchor = heading.closest('.section') || heading;
+            anchor.id ||= slugify(label, i);
+            targets.push({ label, kind: 'section', id: anchor.id });
+        });
 }
 
-export function initSectionJump() {
+/** Link targets: the actual entries a page lists. */
+function collectEntries(targets) {
+    const sources = [
+        ['.case-card', '.case-card__title', 'case'],
+        ['#experience-list .row', '.row__title', 'project'],
+        ['#writing-list .lede', '.lede__title', 'writing'],
+        ['.blog-list a', 'h2', 'writing'],
+    ];
+
+    for (const [itemSelector, labelSelector, kind] of sources) {
+        document.querySelectorAll(itemSelector).forEach((el) => {
+            const link = el.matches('a') ? el : el.querySelector('a');
+            const label = (el.querySelector(labelSelector)?.textContent || '').trim();
+            const href = link?.getAttribute('href');
+            if (!label || !href) return;
+            targets.push({ label, kind, href });
+        });
+    }
+}
+
+function collectTargets() {
+    const targets = [];
+    collectSections(targets);
+    collectEntries(targets);
+
+    // Two sections rendering the same heading would otherwise both appear
+    const seen = new Set();
+    return targets.filter((t) => {
+        const key = `${t.kind}:${t.label}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+}
+
+export function initPageSearch() {
     const targets = collectTargets();
-    // A case with no headings has nothing to jump between
+    // Nothing worth searching on a page with one thing on it
     if (targets.length < 2) return;
 
     const icon = `<svg class="dock__mark" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-        <path d="M4 6h16M4 12h10M4 18h7" /></svg>`;
+        <circle cx="11" cy="11" r="7" /><path d="m16.5 16.5 4 4" /></svg>`;
 
     const dialog = document.createElement('dialog');
     dialog.className = 'command-menu';
-    dialog.id = 'section-jump';
-    dialog.setAttribute('aria-label', 'Jump to a section of this project');
+    dialog.id = 'page-search';
+    dialog.setAttribute('aria-label', 'Search this page');
     dialog.tabIndex = -1;
     dialog.innerHTML = `<div class="command-menu__bar">${icon}
-        <input id="section-jump-input" type="search" placeholder="Jump to a section…"
-            aria-label="Jump to a section" autocomplete="off" spellcheck="false" />
+        <input id="page-search-input" type="search" placeholder="Search this page…"
+            aria-label="Search this page" autocomplete="off" spellcheck="false" />
         <button type="button" data-menu-close aria-label="Close"><kbd>esc</kbd></button>
-        </div><div class="command-menu__results" id="section-jump-results"></div>`;
+        </div><div class="command-menu__results" id="page-search-results"></div>`;
     document.body.appendChild(dialog);
 
     const launcher = document.createElement('button');
     launcher.type = 'button';
     launcher.className = 'dock-launcher';
     launcher.setAttribute('aria-haspopup', 'dialog');
-    launcher.setAttribute('aria-controls', 'section-jump');
+    launcher.setAttribute('aria-controls', 'page-search');
     launcher.setAttribute('aria-expanded', 'false');
-    launcher.innerHTML = `${icon}<span>Jump to a section…</span><kbd>/</kbd>`;
+    launcher.innerHTML = `${icon}<span>Search this page…</span><kbd>/</kbd>`;
     document.body.appendChild(launcher);
 
     const input = dialog.querySelector('input');
-    const results = dialog.querySelector('#section-jump-results');
+    const results = dialog.querySelector('#page-search-results');
     let matches = [];
     let active = 0;
     let previousFocus;
@@ -91,17 +126,17 @@ export function initSectionJump() {
         results.replaceChildren();
         matches.forEach((target, index) => {
             const link = document.createElement('a');
-            link.href = `#${target.id}`;
+            link.href = target.href || `#${target.id}`;
             link.dataset.index = String(index);
             const label = document.createElement('span');
             label.textContent = target.label;
             const kind = document.createElement('span');
             kind.className = 'dock__kind';
-            kind.textContent = 'section';
+            kind.textContent = target.kind;
             link.append(label, kind);
             results.appendChild(link);
         });
-        if (!matches.length) results.innerHTML = '<p class="command-menu__empty">No section found.</p>';
+        if (!matches.length) results.innerHTML = '<p class="command-menu__empty">Nothing on this page matches.</p>';
         highlight();
         results.scrollTop = 0;
     }
@@ -137,6 +172,10 @@ export function initSectionJump() {
         const target = matches[index];
         if (!target) return;
         close();
+        if (target.href) {
+            window.location.href = target.href;
+            return;
+        }
         const el = document.getElementById(target.id);
         if (!el) return;
         el.scrollIntoView({
@@ -179,13 +218,11 @@ export function initSectionJump() {
             e.clientY < box.top || e.clientY > box.bottom) close();
     });
 
-    // "/" opens this one; the header Menu button still reaches the site-wide
-    // search, so both stay available without competing for the shortcut.
+    // "/" belongs to this page search; ⌘K opens the site-wide menu
     document.addEventListener('keydown', (e) => {
         const editing = e.target instanceof Element && (e.target.isContentEditable ||
             e.target.closest('input, textarea, select, [contenteditable], [role="textbox"]'));
-        const slash = e.key === '/' && !editing && !e.metaKey && !e.ctrlKey && !e.altKey;
-        if (!slash) return;
+        if (e.key !== '/' || editing || e.metaKey || e.ctrlKey || e.altKey) return;
         e.preventDefault();
         if (dialog.open) close(); else open();
     });

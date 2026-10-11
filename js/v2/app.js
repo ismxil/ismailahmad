@@ -8,6 +8,7 @@ import { renderWriting } from './writing.js';
 import { renderArchive } from './archive.js';
 import { initContactCard } from './contact-card.js';
 import { initDock } from './dock.js';
+import { initPageSearch } from './page-search.js';
 
 /* ── Theme ───────────────────────────────────────────────── */
 
@@ -73,15 +74,21 @@ function initSubscribe() {
 
 /* ── Boot ────────────────────────────────────────────────── */
 
-function boot() {
+async function boot() {
     initTheme();
     renderProjects(document.getElementById('experience-list'));
     renderWork(document.getElementById('work-list'), { shuffleCovers: true });
-    renderWriting(document.getElementById('writing-list'));
-    renderArchive(document.getElementById('archive-grid'));
     initContactCard();
     initDock();
     initSubscribe();
+
+    // Writing and archive arrive over the network; wait for them so the
+    // page search indexes the entries rather than empty lists.
+    await Promise.allSettled([
+        renderWriting(document.getElementById('writing-list')),
+        renderArchive(document.getElementById('archive-grid')),
+    ]);
+    initPageSearch();
 
     const year = document.getElementById('footer-year');
     if (year) year.textContent = String(new Date().getFullYear());
