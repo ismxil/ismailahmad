@@ -1,11 +1,10 @@
 /**
  * Work — the case studies, as cover cards that open the full case page.
  *
- * Content comes from data/cases.js (ported from the v1 project data), not
- * from the feed, so every tile here is a real write-up rather than a shot.
+ * Content comes from published Sanity case studies.
  */
 
-import { cases } from '../../data/cases.js';
+import { getCases, caseAsset } from './case-data.js';
 
 const ARROW = `<svg class="case-card__arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor"
     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -18,9 +17,9 @@ function escape(str) {
 }
 
 function galleryImages(project) {
-    return [...new Set([project.hero, ...project.blocks
+    return [...new Set([project.hero, ...(project.blocks || [])
         .flatMap(block => block.type === 'image' ? [block.src]
-            : block.type === 'pair' ? block.images.map(image => image.src) : [])]
+            : block.type === 'pair' ? (block.images || []).map(image => image.src) : [])]
         .filter(Boolean))].slice(0, 3);
 }
 
@@ -38,14 +37,21 @@ function projectCover(project) {
     return selected;
 }
 
-export function renderWork(mount, { shuffleCovers = false } = {}) {
+export async function renderWork(mount, { shuffleCovers = false } = {}) {
     if (!mount) return;
+    let cases;
+    try {
+        cases = await getCases();
+    } catch {
+        mount.innerHTML = '<li><p class="section__note">Case studies are temporarily unavailable. <a href="/work">Try again</a>.</p></li>';
+        return;
+    }
 
     mount.innerHTML = cases
         .map((c) => `<li>
             <a class="case-card" href="/work/${c.slug}">
                 <span class="case-card__art">
-                    <img src="/${escape(shuffleCovers ? projectCover(c) : c.cover)}" alt="" aria-hidden="true" loading="lazy"
+                    <img src="${escape(caseAsset(shuffleCovers ? projectCover(c) : c.cover))}" alt="" aria-hidden="true" loading="lazy"
                         decoding="async" />
                 </span>
                 <span class="case-card__text">
@@ -55,16 +61,16 @@ export function renderWork(mount, { shuffleCovers = false } = {}) {
                 </span>
             </a>
         </li>`)
-        .join('');
+        .join('') || '<li><p class="section__note">No case studies published yet.</p></li>';
 
     // Fall back to the project's original cover if a gallery asset fails.
     mount.querySelectorAll('img').forEach((image, index) => {
         image.addEventListener('error', () => {
-            image.src = `/${cases[index].cover}`;
+            image.src = caseAsset(cases[index].cover);
         }, { once: true });
     });
 
-    if (shuffleCovers) rotateCovers(mount);
+    if (shuffleCovers) rotateCovers(mount, cases);
 
     const count = document.querySelector('[data-count="work"]');
     if (count) count.textContent = String(cases.length);
@@ -72,7 +78,7 @@ export function renderWork(mount, { shuffleCovers = false } = {}) {
 
 // One visible cover changes at a time. Decode first so slow connections
 // keep the current artwork in place throughout the directional wipe.
-function rotateCovers(mount) {
+function rotateCovers(mount, cases) {
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     let paused = motion.matches;
     let cursor = 0;
@@ -93,15 +99,16 @@ function rotateCovers(mount) {
         const card = candidates[cursor++ % candidates.length];
         const image = card.querySelector('img');
         const project = cases[cards.indexOf(card)];
-        const choices = galleryImages(project).filter(src => `/${src}` !== image.getAttribute('src'));
+        const choices = galleryImages(project).filter(src => caseAsset(src) !== image.getAttribute('src'));
         if (!choices.length) return;
         busy = true;
         const next = new Image();
         next.alt = '';
         next.setAttribute('aria-hidden', 'true');
         next.className = 'case-card__next';
-        next.src = `/${choices[Math.floor(Math.random() * choices.length)]}`;
-        let outgoing;
+        const selected = choices[Math.floor(Math.random() * choices.length)];
+        next.src = caseAsset(selected);
+        let promoted = false;
         let incoming;
         try {
             await next.decode();
@@ -118,21 +125,19 @@ function rotateCovers(mount) {
                         transform: vertical ? 'translateY(18%) scale(1.3)' : 'translateX(18%) scale(1.3)' },
                     { clipPath: 'inset(0 0 0 0)', transform: 'translate(0, 0) scale(1)' },
                 ], timing);
-                outgoing = image.animate([
-                    { transform: 'translate(0, 0) scale(1)' },
-                    { transform: vertical ? 'translateY(-12%) scale(0.92)' : 'translateX(-12%) scale(0.92)' },
-                ], timing);
                 await incoming.finished;
             }
-            image.src = next.getAttribute('src');
-            await image.decode();
-            try { sessionStorage.setItem(`project-cover:${project.slug}`, next.getAttribute('src').slice(1)); } catch (_) {}
+            // Keep the decoded, already-visible incoming node. Swapping the
+            // old node's src here causes a second paint/decode at the handoff.
+            image.remove();
+            next.classList.remove('case-card__next');
+            promoted = true;
+            try { sessionStorage.setItem(`project-cover:${project.slug}`, selected); } catch (_) {}
         } catch (_) {
             // A failed gallery image leaves the current cover intact.
         } finally {
-            outgoing?.cancel();
             incoming?.cancel();
-            next.remove();
+            if (!promoted) next.remove();
             busy = false;
         }
     }

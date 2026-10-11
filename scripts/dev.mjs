@@ -3,6 +3,8 @@ import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 import posts from '../api/posts.js';
 import archive from '../api/archive.js';
+import cases from '../api/cases.js';
+const apiHandlers = { '/api/posts': posts, '/api/archive': archive, '/api/cases': cases };
 
 const root = resolve('.');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.m4a': 'audio/mp4', '.woff2': 'font/woff2', '.pdf': 'application/pdf' };
@@ -40,11 +42,11 @@ http.createServer(async (req, res) => {
     // Reload routing so newly added pages work without restarting the preview.
     const config = JSON.parse(await readFile('vercel.json', 'utf8'));
     const url = new URL(req.url, 'http://localhost');
-    if (url.pathname === '/api/posts' || url.pathname === '/api/archive') {
+    if (apiHandlers[url.pathname]) {
         req.query = Object.fromEntries(url.searchParams);
         res.status = code => { res.statusCode = code; return res; };
         res.json = value => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(value)); return res; };
-        return (url.pathname === '/api/posts' ? posts : archive)(req, res);
+        return apiHandlers[url.pathname](req, res);
     }
     let path;
     try { path = decodeURIComponent(url.pathname); } catch { res.writeHead(400); return res.end(); }

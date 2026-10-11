@@ -7,7 +7,7 @@
  */
 
 import { projectItems } from './projects.js';
-import { cases } from '../../data/cases.js';
+import { getCases } from './case-data.js';
 
 const PAGES = [
     // Real pages first — these are the navigation. The in-page section
@@ -46,12 +46,15 @@ export function initDock() {
     // common case, so what sits at the top is what most people act on.
     const targets = PAGES
         .map(t => ({ ...t, href: t.href.startsWith('#') ? (onHome ? t.href : '/' + t.href) : '/' + t.href.replace(/^\//, '') }))
-        .concat(cases.map(c => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` })))
         .concat(projectItems.filter(p => p.url).map(p => ({ label: p.name, href: p.url, kind: 'project' })));
     let active = 0;
     let matches = [];
     let previousFocus;
     let previousOverflow = '';
+    getCases().then(cases => {
+        targets.splice(PAGES.length, 0, ...cases.map(c => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` })));
+        if (dock.open) render();
+    }).catch(() => { /* Page navigation remains available if the CMS is offline. */ });
 
     function highlight() {
         const links = results.querySelectorAll('a');

@@ -1,5 +1,6 @@
 import feedItem from './feedItem';
 import feedStat from './feedStat';
 import post from './post';
+import caseStudy from './caseStudy';
 
-export const schemaTypes = [feedStat, feedItem, post];
+export const schemaTypes = [feedStat, feedItem, post, caseStudy];

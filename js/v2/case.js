@@ -1,12 +1,12 @@
 /**
- * Case page — renders one entry from data/cases.js.
+ * Case page — renders one published case study from Sanity.
  *
  * The slug arrives either as a clean path (/work/lemfi, via the vercel.json
  * rewrite) or as ?case=lemfi, which is what a plain static file server can
  * serve. Both resolve the same way.
  */
 
-import { cases, getCase } from '../../data/cases.js';
+import { getCases } from './case-data.js';
 
 /**
  * Case data stores repo-relative paths ("assets/..."). This page is served
@@ -127,12 +127,21 @@ function slugFromLocation() {
     return last && last !== 'case.html' ? last.replace(/\.html$/, '') : '';
 }
 
-export function renderCase() {
+export async function renderCase() {
     const mount = document.getElementById('case');
     if (!mount) return;
 
     const slug = slugFromLocation();
-    const item = getCase(slug);
+    mount.innerHTML = '<p class="case-prose" role="status">Loading case study…</p>';
+    let cases;
+    try {
+        cases = await getCases();
+    } catch {
+        document.title = 'Case studies unavailable — Ismail Ahmad';
+        mount.innerHTML = '<section class="case-block"><h1 class="case-headline">Could not load this case study.</h1><p class="case-prose">Please refresh to try again.</p><p class="case-actions"><a class="chip" href="/work">Back to work</a></p></section>';
+        return;
+    }
+    const item = cases.find(c => c.slug === slug);
 
     if (!item) {
         document.title = 'Case not found — Ismail Ahmad';
@@ -147,6 +156,7 @@ export function renderCase() {
     }
 
     document.title = `${item.name} — Ismail Ahmad`;
+    document.querySelector('meta[name="description"]').content = item.headline || item.name;
     const crumb = document.getElementById('crumb-case');
     if (crumb) crumb.textContent = item.name;
 
@@ -160,7 +170,7 @@ export function renderCase() {
         <header class="case-intro">
             <h1 class="case-headline">${escape(item.headline)}</h1>
             <div class="case-prose case-lede">${
-                item.lede.map((p) => `<p>${escape(p)}</p>`).join('')
+                (item.lede || []).map((p) => `<p>${escape(p)}</p>`).join('')
             }</div>
         </header>
 

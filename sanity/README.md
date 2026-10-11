@@ -20,6 +20,20 @@ The original 25 covers were imported into Sanity image storage using `scripts/im
 
 Open **Blog post**, edit the article, and click Publish. Articles are served under `/blog`; drafts are not shown publicly. Keep an existing Slug unchanged to preserve links. Blog responses may take a few minutes to refresh due to caching.
 
+## Manage case studies
+
+Open **Case study** to edit Lemfi, Etihad Credit Bureau, Cadana, or Gomoney, or create another case.
+
+- **Overview:** project name, headline, introduction paragraphs, card cover, hero image, and sort order.
+- **Details:** role, years, project type, scope, industry, and website.
+- **Content:** reorder, add, edit, or remove text sections, images, image pairs, quotes, results, callouts, and images with text.
+- Click **Publish**, then refresh the website. No code deployment is required.
+- Keep existing URL slugs unchanged to preserve `/work/<slug>` links.
+- Unpublishing removes a case from Home, Work, Menu, and next-project navigation. Its old URL shows the existing case-not-found view.
+- The original cases remain in `data/cases.js` as a migration backup, not a live fallback. Never rerun the one-time importer after deleting a case.
+
+The migration retains all original copy and section ordering and stores all case imagery in Sanity. Case pages and cards read `/api/cases` from the published dataset.
+
 ## Legacy feed
 
 The remaining field reference below describes the older feed layout. The current Archive uses Name, Type, Grid cover/first Preview screenshot, and Sort order.

@@ -77,7 +77,6 @@ function initSubscribe() {
 async function boot() {
     initTheme();
     renderProjects(document.getElementById('personal-list'));
-    renderWork(document.getElementById('work-list'), { shuffleCovers: true });
     initContactCard();
     initDock();
     initSubscribe();
@@ -85,6 +84,7 @@ async function boot() {
     // Blog and archive arrive over the network; wait for them so the
     // page search indexes the entries rather than empty lists.
     await Promise.allSettled([
+        renderWork(document.getElementById('work-list'), { shuffleCovers: true }),
         renderBlogPreview(document.getElementById('blog-list')),
         renderArchive(document.getElementById('archive-grid')),
     ]);

@@ -86,8 +86,7 @@
         import { renderWork } from '/js/v2/work.js';
         import { initDock } from '/js/v2/dock.js';
         import { initPageSearch } from '/js/v2/page-search.js';
-        renderWork(document.getElementById('work-list'));
-        initPageSearch();
+        renderWork(document.getElementById('work-list')).then(() => initPageSearch());
         initDock();
 
         const btn = document.getElementById('theme-toggle');
