@@ -1,5 +1,5 @@
 import { initDock } from './dock.js';
-import { getPosts, escapeHTML, formatDate, safeURL } from './blog-data.js';
+import { getPosts, escapeHTML, formatDate } from './blog-data.js';
 import { renderBody } from '../generated/post-body.js';
 
 initDock();
@@ -21,11 +21,6 @@ try {
         document.getElementById('page-title').textContent = post.title;
         document.getElementById('post-meta').textContent = `${formatDate(post.publishedAt)} · ${post.author || 'Ismail Ahmad'}`;
         mount.innerHTML = renderBody(post.body || []);
-        const original = document.getElementById('post-source');
-        if (safeURL(post.sourceUrl)) {
-            original.href = post.sourceUrl;
-            original.hidden = false;
-        }
     } else {
         const posts = await getPosts();
         mount.innerHTML = posts.length ? `<ul class="blog-list">${posts.map(post => `<li>

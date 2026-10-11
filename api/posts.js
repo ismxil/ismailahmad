@@ -1,7 +1,10 @@
 import { sanityConfig } from '../js/sanity-config.js';
 
+// Imported image blocks keep the Substack CDN path they came from as
+// provenance. The images themselves are rehosted on Sanity, and nothing
+// renders that field, so it is nulled out rather than shipped to the page.
 export const publishedFilter = '_type == "post" && !(_id in path("drafts.**")) && defined(slug.current) && defined(publishedAt) && publishedAt <= now()';
-const summary = '_id,title,"slug":slug.current,excerpt,publishedAt,author,"cover":coverImage.asset->url,"coverAlt":coverImage.alt,sourceUrl';
+const summary = 'title,"slug":slug.current,excerpt,publishedAt,author,"cover":coverImage.asset->url,"coverAlt":coverImage.alt';
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {
@@ -15,7 +18,7 @@ export default async function handler(req, res) {
     const url = new URL(`https://${sanityConfig.projectId}.apicdn.sanity.io/v${sanityConfig.apiVersion}/data/query/${sanityConfig.dataset}`);
     url.searchParams.set('perspective', 'published');
     url.searchParams.set('query', slug
-        ? `*[${publishedFilter} && slug.current == $slug][0]{${summary},body[]{...,asset->{url}}}`
+        ? `*[${publishedFilter} && slug.current == $slug][0]{${summary},body[]{...,"sourceUrl":null,asset->{url}}}`
         : `*[${publishedFilter}] | order(publishedAt desc)[0...200]{${summary}}`);
     if (slug) url.searchParams.set('$slug', JSON.stringify(slug));
     try {
