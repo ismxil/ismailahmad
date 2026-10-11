@@ -23,8 +23,9 @@ export function convertBody(html) {
     const document = dom.window.document;
     // Strip Substack's subscription controls, never the article's prose.
     document.querySelectorAll('script,style,form,.subscription-widget-wrap,.subscribe-widget,.button-wrapper').forEach(el => el.remove());
-    document.querySelectorAll('h1,h4,h5,h6').forEach(el => {
-        const heading = document.createElement(el.tagName === 'H1' ? 'h2' : 'h3');
+    // Source H1/H2 become the article's Heading 1, everything deeper its Heading 2.
+    document.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(el => {
+        const heading = document.createElement(/^H[12]$/.test(el.tagName) ? 'h1' : 'h2');
         heading.innerHTML = el.innerHTML;
         el.replaceWith(heading);
     });

@@ -9,7 +9,7 @@ import handler from '../api/posts.js';
 
 test('HTML migration preserves headings, lists, links, images and captions as editable blocks', () => {
     const blocks = convertBody('<h4>A heading</h4><p>Hello <strong>world</strong>. <a href="https://example.com">Read more</a></p><ul><li>One</li><li>Two</li></ul><figure><img src="https://example.com/image.jpg" alt="Portrait"><figcaption>A caption</figcaption></figure><hr>');
-    assert.equal(blocks[0].style, 'h3');
+    assert.equal(blocks[0].style, 'h2');
     assert(blocks[1].children.some(span => span.text === 'world' && span.marks.includes('strong')));
     assert.equal(blocks[1].markDefs[0].href, 'https://example.com');
     assert.equal(blocks.filter(block => block.listItem === 'bullet').length, 2);
@@ -26,6 +26,13 @@ test('Rendering escapes article text and rejects executable link/image URLs', ()
     assert(!html.includes('<script>'));
     assert(!html.includes('javascript:'));
     assert(html.includes('&lt;script&gt;'));
+});
+
+test('Article headings render one scale step apart, below the article title', () => {
+    const heading = (style, key) => ({ _type: 'block', _key: key, style, children: [{ _type: 'span', _key: `${key}s`, text: style }] });
+    const html = renderBody([heading('h1', 'a'), heading('h2', 'b'), heading('h3', 'c')]);
+    assert.equal(html, '<h2 class="post-h1">h1</h2><h3 class="post-h2">h2</h3><h4 class="post-h3">h3</h4>');
+    assert(!html.includes('<h1'));
 });
 
 function response() {

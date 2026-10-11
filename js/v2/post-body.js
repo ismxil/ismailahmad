@@ -4,6 +4,14 @@ import { escapeHTML, safeURL } from './blog-data.js';
 export function renderBody(body) {
     return toHTML(body, {
         components: {
+            // The article title owns the page's only <h1>, so an article's own
+            // headings start one element lower. The class carries the scale the
+            // writer picked in Studio.
+            block: {
+                h1: ({ children }) => `<h2 class="post-h1">${children}</h2>`,
+                h2: ({ children }) => `<h3 class="post-h2">${children}</h3>`,
+                h3: ({ children }) => `<h4 class="post-h3">${children}</h4>`,
+            },
             types: {
                 image: ({ value }) => {
                     const src = safeURL(value.asset?.url);

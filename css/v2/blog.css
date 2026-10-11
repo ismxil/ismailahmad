@@ -11,9 +11,12 @@
 .blog-list time, .post-meta { display: block; margin-top: 12px; color: var(--text-tertiary); font-size: 14px; }
 .post-body { color: var(--text-primary); font-size: 17px; line-height: 1.75; overflow-wrap: anywhere; }
 .post-body > * + * { margin-top: 24px; }
-.post-body h2, .post-body h3 { margin-top: 40px; line-height: 1.3; }
-.post-body h2 { font-size: 25px; }
-.post-body h3 { font-size: 21px; }
+/* One scale, each step ~1.19x the one below it: the article's headings run
+   Heading 1 → Heading 3 regardless of the element they render as. */
+.post-body :is(h2, h3, h4) { margin-top: 40px; line-height: 1.3; letter-spacing: -0.01em; }
+.post-body .post-h1 { font-size: 25px; }
+.post-body .post-h2 { font-size: 21px; }
+.post-body .post-h3 { font-size: 18px; }
 .post-body a { text-decoration: underline; text-underline-offset: 4px; }
 .post-body ul, .post-body ol { padding-left: 24px; }
 .post-body ul { list-style: disc; }
