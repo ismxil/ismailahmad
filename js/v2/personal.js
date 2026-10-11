@@ -27,10 +27,12 @@ export function renderPersonalProject() {
         <section class="personal-overview__description" aria-labelledby="overview-heading">
             <h2 class="case-block__title" id="overview-heading">Overview</h2>
             <div class="case-prose"><p>${escapeHTML(item.description)}</p></div>
-            <p class="case-actions"><a class="chip" href="${item.website}" target="_blank" rel="noopener noreferrer"
+            ${item.comingSoon
+                ? '<p class="case-actions"><span class="chip chip--soon">Coming soon</span></p>'
+                : `<p class="case-actions"><a class="chip" href="${item.website}" target="_blank" rel="noopener noreferrer"
                 aria-label="Visit ${escapeHTML(item.name)} website (opens in a new tab)">
                 ${new URL(item.website).hostname} <span aria-hidden="true">↗</span>
-            </a></p>
+            </a></p>`}
         </section>
         <nav class="case-next" aria-label="More personal projects">
             <a href="${next.url}"><span class="case-next__label">Next project</span>

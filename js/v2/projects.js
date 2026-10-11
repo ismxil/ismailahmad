@@ -10,6 +10,8 @@ export const projectItems = [
         slug: 'qaba', name: 'Qaba', role: 'Kickoff your business in Africa',
         description: 'Qaba is a project focused on helping people kick off their business in Africa.',
         icon: '/assets/clients/icons/qaba.svg', url: '/personal/qaba', website: 'https://qaba.africa',
+        // The site is not live yet, so the overview shows a notice, not a link.
+        comingSoon: true,
     },
     {
         slug: 'wandarer', name: 'Wandarer', role: 'A community of wanderers',

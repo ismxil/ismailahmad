@@ -16,3 +16,16 @@
 .personal-overview__description {
     margin-top: 40px;
 }
+
+/* The overview's prose and its link are separate beats, not one block. */
+.personal-overview__description .case-actions {
+    margin-top: 24px;
+}
+
+/* Not a link: the chip must not invite a click it cannot answer. */
+.case-actions .chip--soon,
+.case-actions .chip--soon:hover {
+    background: var(--control);
+    color: var(--text-secondary);
+    cursor: default;
+}
