@@ -86,7 +86,7 @@
         import { renderArchive } from '/js/v2/archive.js';
         import { initDock } from '/js/v2/dock.js';
         renderArchive(document.getElementById('archive-grid'), { limit: Infinity });
-        initDock();
+        initDock({ launcher: false });
 
         const btn = document.getElementById('theme-toggle');
         btn.addEventListener('click', () => {

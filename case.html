@@ -86,7 +86,8 @@
     <script type="module">
         import { renderCase } from '/js/v2/case.js';
         import { initDock } from '/js/v2/dock.js';
-        initDock();
+        import { initSectionJump } from '/js/v2/section-jump.js';
+        initDock({ launcher: false, shortcut: false });
 
         const btn = document.getElementById('theme-toggle');
         btn.addEventListener('click', () => {
@@ -105,6 +106,9 @@
         updateHeader();
 
         renderCase();
+        // renderCase() writes the body synchronously, so the headings the
+        // jumper reads already exist.
+        initSectionJump();
         document.getElementById('footer-year').textContent = String(new Date().getFullYear());
     </script>
 </body>

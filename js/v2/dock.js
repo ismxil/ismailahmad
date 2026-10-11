@@ -21,7 +21,14 @@ const PAGES = [
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
 ];
 
-export function initDock() {
+/**
+ * @param {{launcher?: boolean, shortcut?: boolean}} [options]
+ *   `launcher: false` suppresses the floating "Jump to…" pill.
+ *   `shortcut: false` gives up the "/" key. Case pages use both so their
+ *   own section jumper owns the pill and the shortcut; the header Menu
+ *   button still opens this site-wide search by click either way.
+ */
+export function initDock({ launcher: wantLauncher = true, shortcut = true } = {}) {
     if (document.getElementById('dock')) return;
     const dock = document.createElement('dialog');
     dock.id = 'dock';
@@ -33,15 +40,18 @@ export function initDock() {
         <button type="button" data-menu-close aria-label="Close menu"><kbd>esc</kbd></button>
         </div><div class="command-menu__results" id="dock-results"></div>`;
     document.body.appendChild(dock);
-    const launcher = document.createElement('button');
-    launcher.type = 'button';
-    launcher.className = 'dock-launcher';
-    launcher.setAttribute('data-dock-open', '');
-    launcher.setAttribute('aria-haspopup', 'dialog');
-    launcher.setAttribute('aria-controls', 'dock');
-    launcher.setAttribute('aria-expanded', 'false');
-    launcher.innerHTML = `${searchIcon}<span>Jump to…</span><kbd>/</kbd>`;
-    document.body.appendChild(launcher);
+    let launcher;
+    if (wantLauncher) {
+        launcher = document.createElement('button');
+        launcher.type = 'button';
+        launcher.className = 'dock-launcher';
+        launcher.setAttribute('data-dock-open', '');
+        launcher.setAttribute('aria-haspopup', 'dialog');
+        launcher.setAttribute('aria-controls', 'dock');
+        launcher.setAttribute('aria-expanded', 'false');
+        launcher.innerHTML = `${searchIcon}<span>Jump to…</span><kbd>/</kbd>`;
+        document.body.appendChild(launcher);
+    }
     const input = dock.querySelector('input');
     const results = dock.querySelector('#dock-results');
     const triggers = document.querySelectorAll('[data-dock-open]');
@@ -92,7 +102,7 @@ export function initDock() {
         input.value = '';
         render();
         dock.showModal();
-        launcher.hidden = true;
+        if (launcher) launcher.hidden = true;
         document.body.style.overflow = 'hidden';
         triggers.forEach(btn => btn.setAttribute('aria-expanded', 'true'));
         input.focus();
@@ -105,7 +115,7 @@ export function initDock() {
     // calling it from the explicit path and the events is safe.
     function release() {
         document.body.style.overflow = previousOverflow;
-        launcher.hidden = false;
+        if (launcher) launcher.hidden = false;
         triggers.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
         if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
     }
@@ -148,7 +158,7 @@ export function initDock() {
     triggers.forEach(btn => btn.addEventListener('click', open));
     document.addEventListener('keydown', e => {
         const editing = e.target instanceof Element && (e.target.isContentEditable || e.target.closest('input, textarea, select, [contenteditable], [role="textbox"]'));
-        const slash = e.key === '/' && !editing && !e.metaKey && !e.ctrlKey && !e.altKey;
+        const slash = shortcut && e.key === '/' && !editing && !e.metaKey && !e.ctrlKey && !e.altKey;
         const commandK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k';
         if (!slash && !commandK) return;
         e.preventDefault();
