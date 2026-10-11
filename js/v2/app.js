@@ -4,7 +4,7 @@
 
 import { renderProjects } from './projects.js';
 import { renderWork } from './work.js';
-import { renderWriting } from './writing.js';
+import { renderBlogPreview } from './blog-preview.js';
 import { renderArchive } from './archive.js';
 import { initContactCard } from './contact-card.js';
 import { initDock } from './dock.js';
@@ -76,16 +76,16 @@ function initSubscribe() {
 
 async function boot() {
     initTheme();
-    renderProjects(document.getElementById('experience-list'));
+    renderProjects(document.getElementById('personal-list'));
     renderWork(document.getElementById('work-list'), { shuffleCovers: true });
     initContactCard();
     initDock();
     initSubscribe();
 
-    // Writing and archive arrive over the network; wait for them so the
+    // Blog and archive arrive over the network; wait for them so the
     // page search indexes the entries rather than empty lists.
     await Promise.allSettled([
-        renderWriting(document.getElementById('writing-list')),
+        renderBlogPreview(document.getElementById('blog-list')),
         renderArchive(document.getElementById('archive-grid')),
     ]);
     initPageSearch();

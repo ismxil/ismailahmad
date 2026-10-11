@@ -1,6 +1,28 @@
-# Sanity CMS — Feed
+# Sanity CMS — Blog and Archive
 
-Studio for managing feed project cards and modal content.
+Studio: https://ismailahmad-blog.sanity.studio/
+
+## Manage the Archive
+
+Open **Archive item** in Studio. The homepage and `/archive` read only published items from this dataset.
+
+- **Add:** create an item, fill in Name and Type, generate its Slug under Publishing, upload a Grid cover under Preview, and click Publish.
+- **Edit:** change its name, category, or cover, then Publish.
+- **Reorder:** change Sort order under Publishing. Lower numbers come first; the first nine appear on the homepage.
+- **Remove:** Unpublish to hide it while keeping it in Studio, or Delete to remove it. Refresh the site to see the change.
+- An item must have a Grid cover or at least one Preview screenshot to appear.
+
+No site deployment is needed for content changes. The Archive reads `/api/archive`, which fetches the published Sanity dataset without a local JSON fallback or response cache. Empty means empty; removed items do not return.
+
+The original 25 covers were imported into Sanity image storage using `scripts/import-archive.mjs`. This is a one-time migration; do not rerun it after deleting imported items.
+
+## Manage articles
+
+Open **Blog post**, edit the article, and click Publish. Articles are served under `/blog`; drafts are not shown publicly. Keep an existing Slug unchanged to preserve links. Blog responses may take a few minutes to refresh due to caching.
+
+## Legacy feed
+
+The remaining field reference below describes the older feed layout. The current Archive uses Name, Type, Grid cover/first Preview screenshot, and Sort order.
 
 ## Setup
 

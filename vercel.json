@@ -9,15 +9,104 @@
       "destination": "/case"
     },
     {
-      "source": "/writing",
-      "destination": "/blog"
+      "source": "/blog/:slug",
+      "destination": "/post"
     },
     {
-      "source": "/writing/:slug",
-      "destination": "/post"
+      "source": "/personal/:slug",
+      "destination": "/personal"
     }
   ],
   "cleanUrls": true,
   "buildCommand": "npm run build",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "archives.ismailahmad.com"
+        }
+      ],
+      "destination": "https://www.ismailahmad.com/archive",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "https://www.ismailahmad.com/blog",
+      "permanent": true
+    },
+    {
+      "source": "/writing",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "https://www.ismailahmad.com/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "https://www.ismailahmad.com/blog",
+      "permanent": true
+    },
+    {
+      "source": "/writing/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "https://www.ismailahmad.com/blog/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "https://www.ismailahmad.com/blog/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "https://www.ismailahmad.com/blog/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/writing",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/writing/:slug",
+      "destination": "/blog/:slug",
+      "permanent": true
+    }
+  ]
 }

@@ -8,11 +8,14 @@ const PROJECT_TYPES = [
   'Product Design',
   'Concepts',
   'App Design',
+  'Web Design',
+  'Card',
+  'Research',
 ];
 
 export default defineType({
   name: 'feedItem',
-  title: 'Feed Item',
+  title: 'Archive item',
   type: 'document',
   groups: [
     { name: 'header', title: 'Header', default: true },
@@ -97,7 +100,7 @@ export default defineType({
       type: 'image',
       group: 'preview',
       options: { hotspot: true },
-      description: 'Thumbnail in the feed grid. Falls back to first preview image.',
+      description: 'Image shown in the homepage Archive, full Archive, and lightbox. Falls back to the first preview image.',
     }),
     defineField({
       name: 'previewMedia',
@@ -173,7 +176,7 @@ export default defineType({
       title: 'Sort order',
       type: 'number',
       group: 'meta',
-      description: 'Lower numbers appear first in the feed.',
+      description: 'Lower numbers appear first in the Archive. The first 9 appear on the homepage.',
     }),
   ],
   orderings: [

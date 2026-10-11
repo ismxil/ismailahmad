@@ -1,0 +1,18 @@
+.personal-overview {
+    margin-top: 48px;
+}
+
+.personal-overview__icon {
+    display: block;
+    margin-bottom: 24px;
+}
+
+.personal-overview__tagline {
+    margin-top: 12px;
+    font-size: 17px;
+    color: var(--text-secondary);
+}
+
+.personal-overview__description {
+    margin-top: 40px;
+}

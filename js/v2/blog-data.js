@@ -17,7 +17,7 @@ export async function getPosts(slug) {
     const response = await fetch(`/api/posts${slug ? `?slug=${encodeURIComponent(slug)}` : ''}`);
     const data = await response.json();
     if (!response.ok) {
-        const error = new Error(data.error || 'Writing is temporarily unavailable.');
+        const error = new Error(data.error || 'The blog is temporarily unavailable.');
         error.status = response.status;
         throw error;
     }

@@ -45,9 +45,9 @@ function collectSections(targets) {
 function collectEntries(targets) {
     const sources = [
         ['.case-card', '.case-card__title', 'case'],
-        ['#experience-list .row', '.row__title', 'project'],
-        ['#writing-list .lede', '.lede__title', 'writing'],
-        ['.blog-list a', 'h2', 'writing'],
+        ['#personal-list .row', '.row__title', 'project'],
+        ['#blog-list .lede', '.lede__title', 'blog'],
+        ['.blog-list a', 'h2', 'blog'],
     ];
 
     for (const [itemSelector, labelSelector, kind] of sources) {

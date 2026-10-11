@@ -17,6 +17,10 @@ const slug = isArticle ? decodeURIComponent(location.pathname.split('/').filter(
 try {
     if (isArticle) {
         const post = await getPosts(slug);
+        const canonical = document.createElement('link');
+        canonical.rel = 'canonical';
+        canonical.href = `https://www.ismailahmad.com/blog/${encodeURIComponent(post.slug)}`;
+        document.head.appendChild(canonical);
         document.title = `${post.title} — Ismail Ahmad`;
         document.querySelector('meta[name="description"]').content = post.excerpt || post.title;
         document.getElementById('page-title').textContent = post.title;
@@ -25,7 +29,7 @@ try {
     } else {
         const posts = await getPosts();
         mount.innerHTML = posts.length ? `<ul class="blog-list">${posts.map(post => `<li>
-            <a href="/writing/${encodeURIComponent(post.slug)}">
+            <a href="/blog/${encodeURIComponent(post.slug)}">
                 <h2>${escapeHTML(post.title)}</h2>
                 ${post.excerpt ? `<p>${escapeHTML(post.excerpt)}</p>` : ''}
                 <time datetime="${escapeHTML(post.publishedAt)}">${formatDate(post.publishedAt)}</time>

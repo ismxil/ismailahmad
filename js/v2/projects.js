@@ -1,63 +1,20 @@
-/**
- * Projects — the home page's "Experience" rows.
- *
- * These are the pieces of work worth being known for, not employers. The
- * career progression behind them lives in experience.js and renders on the
- * about page; several of these sat under Accenture Song or Sterling Bank.
- */
+/** Personal ventures shown on the homepage. Career history lives in experience.js. */
 
 export const projectItems = [
     {
-        name: 'Cadana',
-        role: 'Brand identity',
-        years: '2023 — 2024',
-        icon: 'assets/clients/icons/cadana.svg',
-        url: 'https://cadanapay.com',
-        external: true,
+        slug: 'cadara-studio', name: 'Cadara Studio', role: 'A boutique design studio',
+        description: 'Cadara Studio is my boutique design studio, bringing together my interests in design and entrepreneurship.',
+        icon: '/assets/clients/icons/cadara.svg', url: '/personal/cadara-studio', website: 'https://cadarastudio.com',
     },
     {
-        name: 'Deutsche Bank',
-        role: 'Design research',
-        years: '2023 — 2024',
-        icon: 'assets/clients/icons/deutsche-bank.svg',
-        url: 'https://www.db.com',
-        external: true,
+        slug: 'qaba', name: 'Qaba', role: 'Kickoff your business in Africa',
+        description: 'Qaba is a project focused on helping people kick off their business in Africa.',
+        icon: '/assets/clients/icons/qaba.svg', url: '/personal/qaba', website: 'https://qaba.africa',
     },
     {
-        name: 'Motel One',
-        role: 'Mobile check-in & room key',
-        years: '2022 — 2024',
-        icon: 'assets/clients/icons/motel-one.svg',
-        url: '/archive',
-        website: 'https://www.motel-one.com/',
-        external: false,
-    },
-    {
-        name: 'Lemfi',
-        role: 'Card & remittance product',
-        years: '2021 — 2024',
-        icon: 'assets/clients/icons/lemfi.svg',
-        url: '/work/lemfi',
-        website: 'https://lemfi.com/en-gb/credit',
-        external: false,
-    },
-    {
-        name: 'Etihad Credit Bureau',
-        role: 'Credit data platform',
-        years: '2021 — 2023',
-        icon: 'assets/clients/icons/etihad.svg',
-        url: '/work/etihad',
-        website: 'https://etihadbureau.ae',
-        external: false,
-    },
-    {
-        name: 'Gomoney',
-        role: 'Consumer banking app',
-        years: '2020 — 2022',
-        icon: 'assets/clients/icons/gomoney.svg',
-        url: '/work/gomoney',
-        website: 'https://gomoney.global/product/account',
-        external: false,
+        slug: 'wandarer', name: 'Wandarer', role: 'A community of wanderers',
+        description: 'Wandarer is a community for wanderers — a place to connect through a shared curiosity about the world.',
+        icon: '/assets/clients/icons/wndrground.svg', url: '/personal/wandarer', website: 'https://wandarer.com',
     },
 ];
 
@@ -77,9 +34,8 @@ export function renderProjects(mount) {
 
     mount.innerHTML = projectItems
         .map((item) => {
-            const target = ' target="_blank" rel="noopener noreferrer"';
             return `<li>
-                <a class="row" href="${item.website || item.url}"${target} aria-label="${item.name} website (opens in a new tab)">
+                <a class="row" href="${item.url}" aria-label="View ${item.name} project">
                     ${mark(item)}
                     <span class="row__text">
                         <span class="row__title">${item.name}</span>
@@ -87,7 +43,7 @@ export function renderProjects(mount) {
                     </span>
                     <span class="row__ext" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M7 17 17 7M7 7h10v10" />
+                            <path d="m9 6 6 6-6 6" />
                         </svg>
                     </span>
                 </a>
@@ -95,6 +51,6 @@ export function renderProjects(mount) {
         })
         .join('');
 
-    const count = document.querySelector('[data-count="experience"]');
+    const count = document.querySelector('[data-count="personal"]');
     if (count) count.textContent = String(projectItems.length);
 }

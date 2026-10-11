@@ -16,8 +16,8 @@ const PAGES = [
     { label: 'Archive', kind: 'page', href: 'archive' },
     { label: 'About', kind: 'page', href: 'profile' },
     { label: 'CV', kind: 'page', href: 'assets/cv.pdf' },
-    { label: 'Writing', kind: 'page', href: 'writing' },
-    { label: 'Experience', kind: 'section', href: '#experience' },
+    { label: 'Blog', kind: 'page', href: 'blog' },
+    { label: 'Personal', kind: 'section', href: '#personal' },
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
 ];
 
@@ -47,7 +47,7 @@ export function initDock() {
     const targets = PAGES
         .map(t => ({ ...t, href: t.href.startsWith('#') ? (onHome ? t.href : '/' + t.href) : '/' + t.href.replace(/^\//, '') }))
         .concat(cases.map(c => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` })))
-        .concat(projectItems.map(p => ({ label: p.name, href: p.url, kind: 'project' })));
+        .concat(projectItems.filter(p => p.url).map(p => ({ label: p.name, href: p.url, kind: 'project' })));
     let active = 0;
     let matches = [];
     let previousFocus;

@@ -1,5 +1,5 @@
 /**
- * Archive — a masonry grid of shots and covers from data/feed-items.json.
+ * Archive — a masonry grid of shots and covers published in Sanity.
  *
  * Selecting a tile opens it in a lightbox built the same way as the command
  * menu: a native <dialog> opened with showModal(), so the browser handles
@@ -17,13 +17,9 @@ let index = 0;
 let dialog;
 let previousOverflow = '';
 
-/** Mirrors resolveFeedCover() in js/feed-items.js. */
-function cover(item, i) {
-    if (item.cover) {
-        if (item.cover.startsWith('http')) return item.cover;
-        return item.cover.replace('assets/feeds/covers/', 'assets/feeds/');
-    }
-    return `assets/feeds/image_${i}.jpg`;
+/** Sanity serves uploaded artwork from its image CDN. */
+function cover(item) {
+    return item.cover;
 }
 
 function label(item) {
@@ -119,12 +115,12 @@ export async function renderArchive(mount, { limit = HOME_LIMIT } = {}) {
 
     let all = [];
     try {
-        const res = await fetch('/data/feed-items.json', { cache: 'no-cache' });
+        const res = await fetch('/api/archive', { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         all = Array.isArray(data.items) ? data.items : [];
     } catch (err) {
-        console.warn('[archive] could not load data/feed-items.json', err);
+        console.warn('[archive] could not load published items', err);
         mount.innerHTML =
             '<li><p class="section__note">The archive is taking a moment. ' +
             '<a href="/archive" style="color:var(--text-primary)">Open it directly</a>.</p></li>';
@@ -137,12 +133,12 @@ export async function renderArchive(mount, { limit = HOME_LIMIT } = {}) {
         .map((item, i) => `<li>
             <button type="button" class="archive-tile" data-index="${i}"
                 aria-haspopup="dialog" aria-label="${escape(label(item))}, open larger">
-                <img src="/${escape(cover(item, i))}" alt="" aria-hidden="true"
+                <img src="${escape(cover(item, i))}" alt="" aria-hidden="true"
                     loading="${i < EAGER ? 'eager' : 'lazy'}" decoding="async" />
                 <span class="archive-tile__label" aria-hidden="true">${escape(label(item))}</span>
             </button>
         </li>`)
-        .join('');
+        .join('') || '<li><p class="section__note">No archive items published yet.</p></li>';
 
     mount.addEventListener('click', (e) => {
         const tile = e.target.closest('.archive-tile');

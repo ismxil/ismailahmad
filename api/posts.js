@@ -29,6 +29,6 @@ export default async function handler(req, res) {
         res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
         return res.status(200).json(slug ? { post: result } : { posts: result || [] });
     } catch {
-        return res.status(502).json({ error: 'Writing is temporarily unavailable. Please try again.' });
+        return res.status(502).json({ error: 'The blog is temporarily unavailable. Please try again.' });
     }
 }
