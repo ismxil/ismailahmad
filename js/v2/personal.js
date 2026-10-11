@@ -29,7 +29,7 @@ export function renderPersonalProject() {
             <div class="case-prose"><p>${escapeHTML(item.description)}</p></div>
             <p class="case-actions"><a class="chip" href="${item.website}" target="_blank" rel="noopener noreferrer"
                 aria-label="Visit ${escapeHTML(item.name)} website (opens in a new tab)">
-                Visit ${new URL(item.website).hostname} <span aria-hidden="true">↗</span>
+                ${new URL(item.website).hostname} <span aria-hidden="true">↗</span>
             </a></p>
         </section>
         <nav class="case-next" aria-label="More personal projects">

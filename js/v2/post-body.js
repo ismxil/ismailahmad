@@ -24,6 +24,9 @@ export function renderBody(body) {
                 divider: () => '<hr>',
             },
             marks: {
+                // The default is an inline style attribute, which cannot be
+                // tuned to match the link underline.
+                underline: ({ children }) => `<u class="post-underline">${children}</u>`,
                 link: ({ value, children }) => {
                     const href = safeURL(value?.href);
                     return href ? `<a href="${escapeHTML(href)}" rel="noopener noreferrer">${children}</a>` : children;

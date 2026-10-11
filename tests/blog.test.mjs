@@ -35,6 +35,12 @@ test('Article headings render one scale step apart, below the article title', ()
     assert(!html.includes('<h1'));
 });
 
+test('The underline mark renders as a styleable element, not an inline style', () => {
+    const html = renderBody([{ _type: 'block', _key: 'b', style: 'normal',
+        children: [{ _type: 'span', _key: 's', text: 'noted', marks: ['underline'] }] }]);
+    assert.equal(html, '<p><u class="post-underline">noted</u></p>');
+});
+
 function response() {
     return { headers: {}, statusCode: 200, setHeader(k, v) { this.headers[k] = v; }, status(code) { this.statusCode = code; return this; }, json(data) { this.data = data; return this; } };
 }

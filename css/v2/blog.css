@@ -1,30 +1,52 @@
+/* ─────────────────────────────────────────────────────────────
+   Blog typography
+   One scale for the index and the article: 32/24 title, then
+   24 / 20 / 18 headings over 16px body, with 14px for the small
+   print (meta, captions, code).
+   ───────────────────────────────────────────────────────────── */
+
+/* The reading column is narrower than the site shell — 600px keeps a
+   16px line near 70 characters. */
+.blog-header, .post-body { max-width: 600px; }
+
 .blog-header { margin: 40px 0 32px; }
-.blog-header h1 { font-size: clamp(26px, 5vw, 36px); line-height: 1.18; letter-spacing: -0.025em; }
+.blog-header h1 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.2; letter-spacing: -0.025em; text-wrap: balance; }
 .blog-header p { margin-top: 16px; }
+
 /* 20px matches .archive-grid's gap below the nav — the heading that used
    to space this list has gone. */
 .blog-list { display: grid; gap: 32px; margin: 20px 0 96px; }
 .blog-list a { display: block; }
-.blog-list h2 { font-size: 20px; line-height: 1.3; }
+.blog-list h2 { font-size: 20px; line-height: 1.3; letter-spacing: -0.012em; text-wrap: balance; }
 .blog-list a:hover h2 { text-decoration: underline; text-underline-offset: 4px; }
-.blog-list p { margin-top: 8px; }
-.blog-list time, .post-meta { display: block; margin-top: 12px; color: var(--text-tertiary); font-size: 14px; }
-.post-body { color: var(--text-primary); font-size: 17px; line-height: 1.75; overflow-wrap: anywhere; }
+.blog-list p { margin-top: 8px; font-size: 16px; line-height: 1.6; }
+.blog-list time, .post-meta { display: block; margin-top: 12px; color: var(--text-tertiary); font-size: 14px; line-height: 1.5; }
+
+.post-body { color: var(--text-primary); font-size: 16px; line-height: 1.7; overflow-wrap: anywhere; text-wrap: pretty; }
 .post-body > * + * { margin-top: 24px; }
-/* One scale, each step ~1.19x the one below it: the article's headings run
-   Heading 1 → Heading 3 regardless of the element they render as. */
-.post-body :is(h2, h3, h4) { margin-top: 40px; line-height: 1.3; letter-spacing: -0.01em; }
-.post-body .post-h1 { font-size: 25px; }
-.post-body .post-h2 { font-size: 21px; }
-.post-body .post-h3 { font-size: 18px; }
-.post-body a { text-decoration: underline; text-underline-offset: 4px; }
+/* One scale, each step a little tighter than the one below it: the
+   article's headings run Heading 1 → Heading 3 regardless of the element
+   they render as. */
+.post-body :is(h2, h3, h4) { margin-top: 40px; text-wrap: balance; }
+.post-body .post-h1 { font-size: 24px; line-height: 1.25; letter-spacing: -0.015em; }
+.post-body .post-h2 { font-size: 20px; line-height: 1.3; letter-spacing: -0.012em; }
+.post-body .post-h3 { font-size: 18px; line-height: 1.4; letter-spacing: -0.01em; }
+/* A heading belongs to the text under it, not between the two blocks. */
+.post-body :is(h2, h3, h4) + * { margin-top: 12px; }
+/* Suisse ships Regular and Medium here, so bold is Medium — asking for 700
+   only gets a browser-smeared fake. */
+.post-body strong { font-weight: 500; }
+.post-body a { text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+.post-body a:hover { text-decoration-color: currentColor; }
+.post-body .post-underline { text-decoration: underline; text-underline-offset: 3px; }
+.post-body code { padding: 2px 6px; border-radius: var(--r-sm); background: var(--control); font-family: var(--font-mono); font-size: 14px; }
 .post-body ul, .post-body ol { padding-left: 24px; }
 .post-body ul { list-style: disc; }
 .post-body ol { list-style: decimal; }
 .post-body li + li { margin-top: 8px; }
 .post-body figure { margin-inline: 0; }
 .post-body img { width: 100%; height: auto; border-radius: var(--r-sm); }
-.post-body figcaption { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
-.post-body blockquote { margin-inline: 0; padding-left: 24px; border-left: 2px solid var(--border-strong); }
+.post-body figcaption { margin-top: 8px; color: var(--text-secondary); font-size: 14px; line-height: 1.5; }
+.post-body blockquote { margin-inline: 0; padding-left: 24px; border-left: 2px solid var(--border-strong); color: var(--text-secondary); font-size: 18px; line-height: 1.6; }
 .post-body hr { border: 0; border-top: 1px solid var(--border-strong); margin-block: 32px; }
 .blog-retry { margin-top: 12px; padding: 8px 12px; background: var(--control); color: var(--text-primary); border: 0; border-radius: var(--r-sm); font: inherit; cursor: pointer; }
