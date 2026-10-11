@@ -17,10 +17,8 @@ function escape(str) {
 }
 
 function galleryImages(project) {
-    return [...new Set([project.hero, ...(project.blocks || [])
-        .flatMap(block => block.type === 'image' ? [block.src]
-            : block.type === 'pair' ? (block.images || []).map(image => image.src) : [])]
-        .filter(Boolean))].slice(0, 3);
+    const selected = [...new Set((project.rotatingCovers || []).filter(Boolean))];
+    return selected.length ? selected : [project.cover].filter(Boolean);
 }
 
 // Avoid repeating the previous visit's image.
@@ -99,14 +97,15 @@ function rotateCovers(mount, cases) {
         const card = candidates[cursor++ % candidates.length];
         const image = card.querySelector('img');
         const project = cases[cards.indexOf(card)];
-        const choices = galleryImages(project).filter(src => caseAsset(src) !== image.getAttribute('src'));
-        if (!choices.length) return;
+        const gallery = galleryImages(project);
+        if (gallery.length < 2) return;
+        const current = gallery.findIndex(src => caseAsset(src) === image.getAttribute('src'));
+        const selected = gallery[(current + 1) % gallery.length];
         busy = true;
         const next = new Image();
         next.alt = '';
         next.setAttribute('aria-hidden', 'true');
         next.className = 'case-card__next';
-        const selected = choices[Math.floor(Math.random() * choices.length)];
         next.src = caseAsset(selected);
         let promoted = false;
         let incoming;

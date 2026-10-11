@@ -25,6 +25,7 @@ Open **Blog post**, edit the article, and click Publish. Articles are served und
 Open **Case study** to edit Lemfi, Etihad Credit Bureau, Cadana, or Gomoney, or create another case.
 
 - **Overview:** project name, headline, introduction paragraphs, card cover, hero image, and sort order.
+- **Rotating cover images** (Overview): choose/upload images for homepage cards. Drag to change their cycle order. Empty uses the static Project card cover; a single selected image stays still. The Work index keeps using Project card cover.
 - **Details:** role, years, project type, scope, industry, and website.
 - **Content:** reorder, add, edit, or remove text sections, images, image pairs, quotes, results, callouts, and images with text.
 - Click **Publish**, then refresh the website. No code deployment is required.
