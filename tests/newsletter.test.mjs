@@ -25,8 +25,10 @@ const withKit = (t, handler) => {
 
 test('Subscribing sends the address to Kit with the key kept server-side', async t => {
     let request;
+    const calls = [];
     withKit(t, async (url, init) => {
         request = { url: String(url), init };
+        calls.push(request);
         return { ok: true, status: 200, json: async () => ({ subscriber: { state: 'inactive' } }) };
     });
     const res = response();
@@ -34,6 +36,11 @@ test('Subscribing sends the address to Kit with the key kept server-side', async
 
     assert.equal(res.statusCode, 200);
     assert.deepEqual(res.data, { ok: true, state: 'pending', source: 'article:fawning' });
+    assert.equal(calls.length, 2);
+    assert.equal(calls[0].url, 'https://api.kit.com/v4/subscribers');
+    assert.deepEqual(JSON.parse(calls[0].init.body), {
+        email_address: 'reader@example.com', state: 'inactive',
+    });
     assert.equal(request.url, 'https://api.kit.com/v4/forms/12345/subscribers');
     assert.equal(request.init.headers['X-Kit-Api-Key'], 'test-key');
     const sent = JSON.parse(request.init.body);

@@ -57,6 +57,24 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Kit's form endpoint only accepts existing subscribers. Create new
+        // readers as inactive so the form's confirmation flow stays in control.
+        // This upsert preserves the state of existing subscribers.
+        const created = await fetch(`${KIT_API}/subscribers`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Kit-Api-Key': key },
+            body: JSON.stringify({ email_address: email, state: 'inactive' }),
+            signal: AbortSignal.timeout(8000),
+        });
+        if (!created.ok) {
+            return res.status(created.status === 422 ? 400 : 502).json({
+                ok: false,
+                error: created.status === 422
+                    ? 'That email address was not accepted. Please check it and try again.'
+                    : 'Could not reach the newsletter just now. Please try again.',
+            });
+        }
+
         const response = await fetch(`${KIT_API}/forms/${encodeURIComponent(form)}/subscribers`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-Kit-Api-Key': key },
