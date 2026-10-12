@@ -1,4 +1,5 @@
 import { withContentTransition } from './page-transition.js';
+import { caseSkeleton } from './skeleton.js';
 
 /**
  * Case page — renders one published case study from Sanity.
@@ -134,7 +135,7 @@ async function renderContent() {
     if (!mount) return;
 
     const slug = slugFromLocation();
-    mount.innerHTML = '<p class="case-prose" role="status">Loading case study…</p>';
+    mount.innerHTML = caseSkeleton();
     let cases;
     try {
         cases = await getCases();

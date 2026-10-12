@@ -1,4 +1,5 @@
 import { withContentTransition } from './page-transition.js';
+import { caseCardsSkeleton } from './skeleton.js';
 
 /**
  * Work — the case studies, as cover cards that open the full case page.
@@ -39,6 +40,9 @@ function projectCover(project) {
 
 async function renderContent(mount, { shuffleCovers = false } = {}) {
     if (!mount) return;
+    // Stand the grid up before the request, so the section has its height
+    // from the first paint and the cards do not drop in under the fold.
+    mount.innerHTML = caseCardsSkeleton();
     let cases;
     try {
         cases = await getCases();

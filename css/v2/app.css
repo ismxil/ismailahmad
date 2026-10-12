@@ -1662,6 +1662,85 @@ kbd {
 
 .case-card__art .case-card__next { position: absolute; inset: 0; }
 
+/* ── Skeletons ───────────────────────────────────────────────
+   Held in the place the content will take, so nothing moves when the
+   two swap. The base is --surface, the same grey the covers and the
+   case hero already sit on while their image decodes, so a skeleton
+   and a still-loading picture are the same shade.
+   ─────────────────────────────────────────────────────────── */
+
+.skeleton {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: var(--surface);
+    border-radius: var(--r-sm);
+}
+
+/* The sweep is a highlight passing over the shape, not the shape
+   blinking: a pulse at this size reads as something being wrong. */
+.skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    translate: -100% 0;
+    background: linear-gradient(90deg, transparent, var(--surface-hover), transparent);
+    animation: skeleton-sweep 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+    to { translate: 100% 0; }
+}
+
+.skeleton__line { height: 1em; border-radius: 4px; }
+.skeleton__block { width: 100%; border-radius: var(--r-lg); }
+
+/* The cards keep their own art ratio and radius; only the sheen is new. */
+.skeleton-card { pointer-events: none; }
+.skeleton-card .case-card__art { box-shadow: none; }
+
+.skeleton-post,
+.skeleton-para,
+.skeleton-prose,
+.skeleton-case,
+.skeleton-case__intro,
+.skeleton-case__body {
+    display: flex;
+    flex-direction: column;
+}
+
+.skeleton-para { gap: 8px; }
+.skeleton-prose { gap: 24px; }
+.skeleton-case { gap: 28px; }
+.skeleton-case__intro { gap: 10px; margin-top: 28px; }
+.skeleton-case__lede { margin-top: 10px; }
+.skeleton-case__body { gap: 28px; }
+
+/* Matches .case-hero's full-bleed run to the viewport edges. */
+.skeleton__hero {
+    aspect-ratio: 16 / 9;
+    max-height: 72vh;
+    border-radius: 0;
+}
+
+.skeleton-case__meta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.skeleton-case__cell { display: flex; flex-direction: column; }
+.skeleton-head { display: flex; flex-direction: column; gap: 8px; }
+
+@media (max-width: 719px) {
+    .skeleton-case__meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Stillness, not a frozen animation: the shapes stay, the sweep stops. */
+@media (prefers-reduced-motion: reduce) {
+    .skeleton::after { animation: none; opacity: 0; }
+}
+
 /* A quiet signal while published content is arriving. */
 .page-progress {
     position: fixed;

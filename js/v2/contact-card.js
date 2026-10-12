@@ -180,6 +180,8 @@ function build() {
 
     audio = new Audio(track.src);
     audio.preload = 'none';
+    // A third off: it plays under a page being read, not over it.
+    audio.volume = 0.65;
     audio.addEventListener('ended', () => nextTrack(true));
     audio.addEventListener('pause', () => setPlaying(false));
     audio.addEventListener('play', () => setPlaying(true));

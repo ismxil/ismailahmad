@@ -5,6 +5,7 @@ import { initPageSearch } from './page-search.js';
 import { getPosts, escapeHTML, formatDate } from './blog-data.js';
 import { renderBody } from '../generated/post-body.js';
 import { renderSubscribe } from './subscribe.js';
+import { blogListSkeleton, articleSkeleton, articleHeadSkeleton } from './skeleton.js';
 
 initDock();
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());
@@ -40,6 +41,20 @@ async function renderReadNext(post) {
     </a>`;
 }
 
+// Replaces the "Loading…" line the HTML ships with, so the column has
+// the shape of the piece rather than one sentence of text.
+mount.innerHTML = isArticle ? articleSkeleton() : blogListSkeleton();
+if (isArticle) {
+    const head = articleHeadSkeleton();
+    const title = document.getElementById('page-title');
+    const meta = document.getElementById('post-meta');
+    // The heading still carries the word for anyone being read to; only
+    // its visible text is swapped for the bars.
+    title.setAttribute('aria-label', 'Loading article');
+    title.innerHTML = head.title;
+    meta.innerHTML = head.meta;
+}
+
 const finishLoading = beginContentLoad(isArticle ? mount.closest('article') : mount);
 
 try {
@@ -51,7 +66,9 @@ try {
         document.head.appendChild(canonical);
         document.title = `${post.title} — Ismail Ahmad`;
         document.querySelector('meta[name="description"]').content = post.excerpt || post.title;
-        document.getElementById('page-title').textContent = post.title;
+        const titleEl = document.getElementById('page-title');
+        titleEl.removeAttribute('aria-label');
+        titleEl.textContent = post.title;
         document.getElementById('post-meta').textContent = `${formatDate(post.publishedAt)} · ${post.author || 'Ismail Ahmad'}`;
         mount.innerHTML = renderBody(post.body || []);
         const signatureTemplate = document.createElement('template');
@@ -90,7 +107,11 @@ try {
         initPageSearch();
     }
 } catch (error) {
-    if (isArticle) document.getElementById('page-title').textContent = error.status === 404 ? 'Article not found' : 'Could not load this article';
+    if (isArticle) {
+        const titleEl = document.getElementById('page-title');
+        titleEl.removeAttribute('aria-label');
+        titleEl.textContent = error.status === 404 ? 'Article not found' : 'Could not load this article';
+    }
     mount.textContent = error.message;
     const retry = document.createElement('button');
     retry.className = 'blog-retry'; retry.textContent = 'Try again';
