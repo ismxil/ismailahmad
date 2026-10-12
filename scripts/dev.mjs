@@ -5,7 +5,10 @@ import posts from '../api/posts.js';
 import archive from '../api/archive.js';
 import cases from '../api/cases.js';
 import subscribe from '../api/subscribe.js';
+import sanityPublish from '../api/sanity-publish.js';
 const apiHandlers = { '/api/posts': posts, '/api/archive': archive, '/api/cases': cases, '/api/subscribe': subscribe };
+// Reads the request stream itself, so it must not be drained first.
+const rawBodyHandlers = { '/api/sanity-publish': sanityPublish };
 
 const root = resolve('.');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.m4a': 'audio/mp4', '.woff2': 'font/woff2', '.pdf': 'application/pdf' };
@@ -43,6 +46,11 @@ http.createServer(async (req, res) => {
     // Reload routing so newly added pages work without restarting the preview.
     const config = JSON.parse(await readFile('vercel.json', 'utf8'));
     const url = new URL(req.url, 'http://localhost');
+    if (rawBodyHandlers[url.pathname]) {
+        res.status = code => { res.statusCode = code; return res; };
+        res.json = value => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(value)); return res; };
+        return rawBodyHandlers[url.pathname](req, res);
+    }
     if (apiHandlers[url.pathname]) {
         req.query = Object.fromEntries(url.searchParams);
         // Vercel hands the function a parsed body; here the stream is still

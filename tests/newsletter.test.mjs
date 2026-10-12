@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { Readable } from 'node:stream';
+import { encodeSignatureHeader, SIGNATURE_HEADER_NAME } from '@sanity/webhook';
 import subscribe from '../api/subscribe.js';
-import { renderEmail, broadcastFor, articleURL } from '../scripts/newsletter.mjs';
+import publish from '../api/sanity-publish.js';
+import { renderEmail, broadcastFor, articleURL, draftBroadcast } from '../lib/newsletter.mjs';
 
 function response() {
     return {
@@ -130,4 +133,134 @@ test('A link in an article cannot smuggle a script into the email', () => {
         markDefs: [{ _key: 'link', _type: 'link', href: 'javascript:alert(1)' }] }], 'test');
     assert(!html.includes('javascript:'));
     assert(html.includes('click'));
+});
+
+
+/* ── The webhook Sanity calls on publish ─────────────────── */
+
+const SECRET = 'a-test-secret';
+
+async function signedRequest(payload, { secret = SECRET } = {}) {
+    const raw = JSON.stringify(payload);
+    const req = Readable.from([Buffer.from(raw, 'utf8')]);
+    req.method = 'POST';
+    req.headers = { [SIGNATURE_HEADER_NAME]: await encodeSignatureHeader(raw, Date.now(), secret) };
+    return req;
+}
+
+/** Kit with no broadcasts, then whatever the handler creates. */
+function kitDouble({ broadcasts = [] } = {}) {
+    const created = [];
+    const fetchImpl = async (url, init = {}) => {
+        if (String(url).includes('/broadcasts?')) {
+            return { ok: true, status: 200, json: async () => ({ broadcasts }) };
+        }
+        if (String(url).endsWith('/broadcasts')) {
+            const body = JSON.parse(init.body);
+            created.push(body);
+            return { ok: true, status: 201, json: async () => ({ broadcast: { id: 7, status: 'draft', ...body } }) };
+        }
+        // The article read-back.
+        return { ok: true, status: 200, json: async () => ({ result: { title: 'Fawning.', slug: 'fawning', excerpt: 'On charisma.', publishedAt: '2025-12-06T09:00:00Z', body: [] } }) };
+    };
+    return { fetchImpl, created };
+}
+
+const withEnv = t => {
+    process.env.SANITY_WEBHOOK_SECRET = SECRET;
+    process.env.KIT_API_KEY = 'test-key';
+    t.after(() => { delete process.env.SANITY_WEBHOOK_SECRET; delete process.env.KIT_API_KEY; });
+};
+
+test('A signed publish drafts the article in Kit', async t => {
+    withEnv(t);
+    const kit = kitDouble();
+    t.mock.method(globalThis, 'fetch', kit.fetchImpl);
+    const res = response();
+    await publish(await signedRequest({ slug: 'fawning' }), res);
+
+    assert.equal(res.statusCode, 200);
+    assert.equal(res.data.created, true);
+    assert.equal(kit.created.length, 1);
+    assert.equal(kit.created[0].subject, 'Fawning.');
+    assert.equal(kit.created[0].send_at, null, 'a draft, never a send');
+    assert(kit.created[0].description.endsWith('/blog/fawning'));
+});
+
+test('Republishing the same article does not draft it twice', async t => {
+    withEnv(t);
+    const kit = kitDouble({ broadcasts: [{ id: 3, status: 'draft', description: 'Fawning. · /blog/fawning' }] });
+    t.mock.method(globalThis, 'fetch', kit.fetchImpl);
+    const res = response();
+    await publish(await signedRequest({ slug: 'fawning' }), res);
+
+    assert.equal(res.statusCode, 200);
+    assert.equal(res.data.created, false);
+    assert.equal(kit.created.length, 0);
+});
+
+test('An unsigned, wrongly signed or unparseable call never reaches Kit', async t => {
+    withEnv(t);
+    const kit = kitDouble();
+    const fetchMock = t.mock.method(globalThis, 'fetch', kit.fetchImpl);
+
+    const unsigned = Readable.from([Buffer.from('{"slug":"fawning"}')]);
+    unsigned.method = 'POST';
+    unsigned.headers = {};
+    const noSignature = response();
+    await publish(unsigned, noSignature);
+    assert.equal(noSignature.statusCode, 401);
+
+    const wrong = response();
+    await publish(await signedRequest({ slug: 'fawning' }, { secret: 'someone-elses-secret' }), wrong);
+    assert.equal(wrong.statusCode, 401);
+
+    const noSlug = response();
+    await publish(await signedRequest({ title: 'No slug here' }), noSlug);
+    assert.equal(noSlug.statusCode, 400);
+
+    const badSlug = response();
+    await publish(await signedRequest({ slug: '../../etc/passwd' }), badSlug);
+    assert.equal(badSlug.statusCode, 400);
+
+    assert.equal(fetchMock.mock.callCount(), 0);
+});
+
+test('The webhook stays quiet when it is not configured', async t => {
+    delete process.env.SANITY_WEBHOOK_SECRET;
+    const fetchMock = t.mock.method(globalThis, 'fetch', async () => { throw new Error('must not be called'); });
+    const res = response();
+    await publish(await signedRequest({ slug: 'fawning' }), res);
+    assert.equal(res.statusCode, 503);
+    assert.equal(fetchMock.mock.callCount(), 0);
+});
+
+test('A nested slug object from a different projection still works', async t => {
+    withEnv(t);
+    const kit = kitDouble();
+    t.mock.method(globalThis, 'fetch', kit.fetchImpl);
+    const res = response();
+    await publish(await signedRequest({ slug: { current: 'fawning' } }), res);
+    assert.equal(res.data.created, true);
+});
+
+test('Kit falling over is reported without asking Sanity to retry forever', async t => {
+    withEnv(t);
+    t.mock.method(globalThis, 'fetch', async url => String(url).includes('/broadcasts')
+        ? { ok: false, status: 500, text: async () => 'kit is down' }
+        : { ok: true, json: async () => ({ result: { title: 'Fawning.', slug: 'fawning', body: [] } }) });
+    const res = response();
+    await publish(await signedRequest({ slug: 'fawning' }), res);
+    assert.equal(res.statusCode, 200);
+    assert.equal(res.data.ok, false);
+});
+
+test('Drafting is skipped when Kit already holds the article, by path not title', async () => {
+    const broadcasts = [{ id: 9, description: 'A title the editor rewrote · /blog/fawning' }];
+    const fetchImpl = async url => String(url).includes('/broadcasts?')
+        ? { ok: true, json: async () => ({ broadcasts }) }
+        : (() => { throw new Error('must not create'); })();
+    const result = await draftBroadcast({ title: 'Fawning.', slug: 'fawning', body: [] }, { key: 'k', fetchImpl });
+    assert.equal(result.created, false);
+    assert.equal(result.broadcast.id, 9);
 });

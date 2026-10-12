@@ -24,8 +24,8 @@ date, excerpt and article body, then publish. Drafts and future-dated posts are
 excluded from the site. Published changes appear after the API/CDN cache refreshes
 (normally about a minute; stale responses may persist up to five minutes).
 
-The writing index is `/writing`; articles use `/writing/<slug>`. The home page
-shows the latest four. `/insights` and `/insights.html` also show the new index.
+The blog index is `/blog`; articles use `/blog/<slug>`. The home page shows the
+latest few. `blog.ismailahmad.com` and the old `/writing` paths redirect there.
 
 Studio development:
 
@@ -34,6 +34,36 @@ cd sanity
 npm ci
 npm run dev
 ```
+
+## Newsletter
+
+The list lives in [Kit](https://app.kit.com). Publishing an article in Studio
+calls `/api/sanity-publish`, which drafts the matching broadcast in Kit — a
+draft, never a send. Read it in Kit and press send yourself.
+
+Republishing never drafts the same article twice: each broadcast carries the
+article's path in its description, and that is checked first.
+
+```sh
+npm run newsletter -- <slug> --preview   # build the email HTML only, no Kit call
+npm run newsletter -- <slug>             # draft it by hand (safe to re-run)
+npm run webhook:register                 # create or update the Sanity webhook
+npm run webhook:register -- --list       # show the hooks that exist
+```
+
+Environment (Vercel project settings, Production):
+
+| Variable | What it is |
+| --- | --- |
+| `KIT_API_KEY` | v4 key from kit.com → Settings → Developer |
+| `KIT_FORM_ID` | the form the subscribe box adds people to |
+| `SANITY_WEBHOOK_SECRET` | shared with the Sanity hook; signs every call |
+
+`npm run webhook:register` generates the secret on first run and writes it to
+`.context/sanity-webhook-secret.txt` (gitignored). Paste the same value into
+Vercel. `KIT_API_KEY` must also be exported locally to draft from the terminal.
+
+Delivery attempts: `cd sanity && npx sanity hook logs newsletter-on-publish`.
 
 ## Substack migration
 
