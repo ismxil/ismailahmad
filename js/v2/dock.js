@@ -14,7 +14,7 @@ const PAGES = [
     // jumps come after, since they only work from home.
     { label: 'Work', kind: 'page', href: 'work' },
     { label: 'Archive', kind: 'page', href: 'archive' },
-    { label: 'About', kind: 'page', href: 'profile' },
+    { label: 'About', kind: 'page', href: 'about' },
     { label: 'CV', kind: 'page', href: 'assets/cv.pdf' },
     { label: 'Blog', kind: 'page', href: 'blog' },
     { label: 'Personal', kind: 'section', href: '#personal' },

@@ -197,3 +197,65 @@
     font-size: 14px;
     line-height: 1.5;
 }
+
+/* ── Read next ───────────────────────────────────────────── */
+
+/* The same closing move the case studies make, in the article's column. */
+#read-next:empty {
+    display: none;
+}
+
+#read-next {
+    max-width: 600px;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+#read-next a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 0;
+}
+
+.read-next__label {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-tertiary);
+}
+
+.read-next__name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-primary);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+}
+
+.read-next__name svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    transition: translate 0.15s ease-out;
+}
+
+#read-next a:hover .read-next__name {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--border-strong);
+}
+
+#read-next a:hover svg {
+    translate: 2px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .read-next__name svg {
+        transition: none;
+    }
+}

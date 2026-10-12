@@ -270,7 +270,9 @@ ul {
 /* ── Hero ────────────────────────────────────────────────── */
 
 .intro {
-    margin-top: 40px;
+    /* The header needs room to breathe before the hero starts: 72px on a
+       desktop, a little less where the screen is short. */
+    margin-top: 72px;
     max-width: 600px;
     display: flex;
     flex-direction: column;
@@ -345,16 +347,19 @@ ul {
     transition: opacity 0.18s ease-out, translate 0.18s ease-out;
 }
 
-/* The tail, pointing back down at the portrait. */
+/* The tail: a square turned on its corner and tucked halfway under the
+   bubble. A clipped triangle sitting below the edge left a hairline of
+   background showing through the seam. */
 .identity__presence::after {
     content: "";
     position: absolute;
-    top: 100%;
+    top: calc(100% - 6px);
     left: 18px;
-    width: 10px;
-    height: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 0 0 2px;
     background: inherit;
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    rotate: 45deg;
 }
 
 .identity__presence svg {
@@ -1449,6 +1454,12 @@ kbd {
 .dock__kind { color: var(--text-tertiary); font-size: 12px; }
 .command-menu__results a.is-selected, .command-menu__results a:hover { background: var(--control); }
 .command-menu__empty { padding: 16px 8px; color: var(--text-secondary); }
+
+@media (max-width: 639px) {
+    .intro {
+        margin-top: 60px;
+    }
+}
 
 @media (max-width: 400px) {
     .case-page .site-header { gap: 8px; }

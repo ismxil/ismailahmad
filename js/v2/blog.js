@@ -16,6 +16,29 @@ const mount = document.getElementById('blog-content');
 const isArticle = document.body.dataset.page === 'article';
 const slug = isArticle ? decodeURIComponent(location.pathname.split('/').filter(Boolean).pop()) : null;
 
+/**
+ * "Read next": the following article in the published order, wrapping to
+ * the newest at the end of the run, the way the case studies do.
+ */
+async function renderReadNext(post) {
+    const mount = document.getElementById('read-next');
+    if (!mount) return;
+    const posts = await getPosts();
+    if (posts.length < 2) return;
+    const index = posts.findIndex(item => item.slug === post.slug);
+    const next = posts[(index + 1) % posts.length];
+    if (!next || next.slug === post.slug) return;
+    mount.innerHTML = `<a href="/blog/${encodeURIComponent(next.slug)}">
+        <span class="read-next__label">Read next</span>
+        <span class="read-next__name">${escapeHTML(next.title)}
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7.25 4.75 11.5 9l-4.25 4.25" />
+            </svg>
+        </span>
+    </a>`;
+}
+
 try {
     if (isArticle) {
         const post = await getPosts(slug);
@@ -47,6 +70,10 @@ try {
             signature.classList.add('sig--draw');
         }
         renderSubscribe(document.getElementById('subscribe'), `article:${post.slug}`);
+        // The list is a second request, so the article is already on screen
+        // before this arrives; a failure here must not cost the reader the
+        // piece they came for.
+        renderReadNext(post).catch(() => {});
     } else {
         const posts = await getPosts();
         mount.innerHTML = posts.length ? `<ul class="blog-list">${posts.map(post => `<li>

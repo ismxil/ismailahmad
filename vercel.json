@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/profile",
-      "destination": "/about"
-    },
-    {
       "source": "/work/:slug",
       "destination": "/case"
     },
@@ -21,6 +17,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "redirects": [
+    {
+      "source": "/profile",
+      "destination": "/about",
+      "permanent": true
+    },
     {
       "source": "/(.*)",
       "has": [
