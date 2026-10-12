@@ -859,26 +859,16 @@ dialog[tabindex="-1"]:focus-visible {
     height: 14.49cqw;
 }
 
-.card-player__title {
-    position: absolute;
-    left: 50%;
-    /* On the line the time and the city keep on the tiles beside it. */
-    bottom: 6px;
-    translate: -50% 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 86%;
-    padding: 2.9cqw;
-    border-radius: 2.9cqw;
-    background: #eee;
-    color: #000;
-    /* 32/828 of the width, with a floor: at this square that lands on
-       8px, and the tags on the clock and the map beside it sit at 11. */
-    font: 500 max(10px, 3.86cqw)/1.375 var(--font-sans);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Keep the shared labels clear of the transport in narrow three-tile rows. */
+@media (max-width: 480px) {
+    .card-tile__tag {
+        min-height: 24px;
+        padding: 2px 5px;
+    }
+    .card-player__controls {
+        top: auto;
+        bottom: 35px;
+    }
 }
 
 @keyframes spin {

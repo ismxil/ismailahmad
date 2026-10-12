@@ -17,7 +17,6 @@ const CITY = 'Berlin';
 const TZ = 'Europe/Berlin';
 
 const TRACKS = [
-    { title: 'Essence', artist: 'TWO LANES', cover: '/assets/audio/01-cover.jpg', src: '/assets/audio/01-essence.m4a' },
     { title: 'Immersion', artist: 'TWO LANES', cover: '/assets/audio/02-cover.jpg', src: '/assets/audio/02-immersion.m4a' },
     { title: 'Inner Motion', artist: 'TWO LANES', cover: '/assets/audio/03-cover.jpg', src: '/assets/audio/03-inner_motion.m4a' },
 ];
@@ -154,7 +153,7 @@ function build() {
                         ${mediaNextIcon}
                     </button>
                 </span>
-                <span class="card-player__title" data-title>${track.title}</span>
+                <span class="card-player__title card-tile__tag" data-title>${track.title}</span>
             </span>
 
             <span class="card-tile card-clock">
@@ -180,8 +179,7 @@ function build() {
 
     audio = new Audio(track.src);
     audio.preload = 'none';
-    // A third off: it plays under a page being read, not over it.
-    audio.volume = 0.65;
+    audio.volume = 0.5;
     audio.addEventListener('ended', () => nextTrack(true));
     audio.addEventListener('pause', () => setPlaying(false));
     audio.addEventListener('play', () => setPlaying(true));
@@ -206,8 +204,8 @@ function build() {
         dialog.querySelector('[data-prev]').setAttribute('aria-label',
             `Previous track: ${TRACKS[(trackIndex - 1 + TRACKS.length) % TRACKS.length].title}`);
         setPlaying(false);
-        status.hidden = false;
-        status.textContent = `${track.title} by ${track.artist}`;
+        status.hidden = true;
+        status.textContent = '';
         if (keepPlaying) audio.play().catch(playbackError);
     }
     function nextTrack(keepPlaying = !audio.paused) { changeTrack(1, keepPlaying); }
