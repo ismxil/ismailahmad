@@ -62,6 +62,12 @@
     border-top: 1px solid var(--border-strong);
 }
 
+.subscribe__mail {
+    display: block;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
 .subscribe__lead {
     color: var(--text-primary);
     font-size: 18px;

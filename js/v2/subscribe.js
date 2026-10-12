@@ -7,6 +7,13 @@
  */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const MAIL_ICON = `<svg class="subscribe__mail" width="28" height="28" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+    aria-hidden="true" focusable="false">
+    <rect x="3" y="5" width="18" height="14" rx="3" />
+    <path d="m4 7 8 6 8-6" />
+</svg>`;
+
 const MARKUP = `
     <p class="subscribe__lead" role="status" aria-live="polite">Enjoyed reading this?</p>
     <p class="subscribe__note">I share occasional thoughts on design, business, life. Delivered to your inbox.</p>
@@ -89,6 +96,7 @@ export function renderSubscribe(mount, source = 'website') {
 
             if (response.ok && data.ok !== false) {
                 form.remove();
+                if (data.state !== 'active') lead.insertAdjacentHTML('beforebegin', MAIL_ICON);
                 lead.textContent = data.state === 'active' ? 'You are on the list.' : 'Almost there';
                 note.textContent = data.state === 'active' ? 'Thank you for subscribing.' : 'Check your inbox to confirm your subscription.';
                 mount.querySelector('.subscribe__fine').remove();
