@@ -27,6 +27,23 @@ try {
         document.getElementById('page-title').textContent = post.title;
         document.getElementById('post-meta').textContent = `${formatDate(post.publishedAt)} · ${post.author || 'Ismail Ahmad'}`;
         mount.innerHTML = renderBody(post.body || []);
+        const signature = document.querySelector('.site-header .sig').cloneNode(true);
+        signature.setAttribute('class', 'sig post-signature');
+        mount.after(signature);
+        // Draw once as the reader reaches the end, using the same pen stroke
+        // and reduced-motion treatment as the signature elsewhere on the site.
+        if ('IntersectionObserver' in window) {
+            signature.classList.add('post-signature--waiting');
+            const observer = new IntersectionObserver(entries => {
+                if (!entries.some(entry => entry.isIntersecting)) return;
+                signature.classList.remove('post-signature--waiting');
+                signature.classList.add('sig--draw');
+                observer.disconnect();
+            }, { threshold: 0.5 });
+            observer.observe(signature);
+        } else {
+            signature.classList.add('sig--draw');
+        }
         renderSubscribe(document.getElementById('subscribe'), `article:${post.slug}`);
     } else {
         const posts = await getPosts();

@@ -53,13 +53,21 @@
 
 /* ── The invitation at the end of an article ─────────────── */
 
-/* Quiet by construction: no panel, no accent, no overlay — a rule, the
-   same reading column, and one field the width of the text. */
+/* A quiet signature signs off the article before the subscription form. */
+.post-signature {
+    height: 44px;
+    margin-top: 48px;
+    color: var(--text-tertiary);
+    opacity: 0.75;
+}
+
+.post-signature--waiting {
+    visibility: hidden;
+}
+
 .subscribe {
     max-width: 600px;
-    margin: 64px 0 0;
-    padding-top: 32px;
-    border-top: 1px solid var(--border-strong);
+    margin: 32px 0 0;
 }
 
 .subscribe__mail {
