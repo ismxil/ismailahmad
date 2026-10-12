@@ -1,4 +1,4 @@
-import { mediaPlayIcon, mediaPauseIcon, mediaNextIcon } from './icons.js';
+import { mediaPlayIcon, mediaPauseIcon, mediaNextIcon, mediaPreviousIcon } from './icons.js';
 
 /**
  * Contact card — a floating panel opened from the profile picture.
@@ -84,20 +84,24 @@ function setTime() {
 }
 
 function setPlaying(on) {
-    const card = dialog?.querySelector('.card-disc');
+    const card = dialog?.querySelector('.card-player');
     const btn = dialog?.querySelector('[data-play]');
     if (!card || !btn) return;
     card.classList.toggle('is-playing', on);
     btn.setAttribute('aria-pressed', String(on));
-    btn.querySelector('.card-play__icon').innerHTML = on ? mediaPauseIcon : mediaPlayIcon;
+    btn.querySelector('.card-player__icon').innerHTML = on ? mediaPauseIcon : mediaPlayIcon;
     btn.setAttribute('aria-label', `${on ? 'Pause' : 'Play'} ${track.title} by ${track.artist}`);
 }
 
+/**
+ * Closing the card puts the panel away, nothing more. The record is not
+ * the dialog's to stop — once it is playing, only the pause control or a
+ * reload should end it, so dismissing the player leaves it running.
+ */
 function release() {
     document.body.style.overflow = previousOverflow;
     clearInterval(tick);
     tick = undefined;
-    audio?.pause();
 }
 
 function hide() {
@@ -128,18 +132,29 @@ function build() {
         </a>
 
         <div class="card-tiles">
-            <span class="card-tile card-disc">
-                <img src="${track.cover}" alt="" aria-hidden="true" />
-                <span class="card-disc__hole" aria-hidden="true"></span>
-                <button type="button" class="card-tile__tag card-play" data-play
-                    aria-pressed="false" aria-label="Play ${track.title} by ${track.artist}">
-                    <span class="card-play__title">${track.title}</span>
-                    <span class="card-play__icon" aria-hidden="true">${mediaPlayIcon}</span>
-                </button>
-                <button type="button" class="card-tile__tag card-next" data-next
-                    aria-label="Next track: ${TRACKS[1].title}" title="Next track">
-                    ${mediaNextIcon}
-                </button>
+            <span class="card-tile card-player">
+                <span class="card-player__disc" aria-hidden="true">
+                    <img src="${track.cover}" alt="" />
+                    <span class="card-player__ring card-player__ring--1"></span>
+                    <span class="card-player__ring card-player__ring--2"></span>
+                    <span class="card-player__ring card-player__ring--3"></span>
+                    <span class="card-player__ring card-player__ring--4"></span>
+                </span>
+                <span class="card-player__controls">
+                    <button type="button" class="card-player__btn" data-prev
+                        aria-label="Previous track" title="Previous track">
+                        ${mediaPreviousIcon}
+                    </button>
+                    <button type="button" class="card-player__btn card-player__btn--main" data-play
+                        aria-pressed="false" aria-label="Play ${track.title} by ${track.artist}">
+                        <span class="card-player__icon" aria-hidden="true">${mediaPlayIcon}</span>
+                    </button>
+                    <button type="button" class="card-player__btn" data-next
+                        aria-label="Next track: ${TRACKS[1].title}" title="Next track">
+                        ${mediaNextIcon}
+                    </button>
+                </span>
+                <span class="card-player__title" data-title>${track.title}</span>
             </span>
 
             <span class="card-tile card-clock">
@@ -176,21 +191,26 @@ function build() {
         status.hidden = false;
         status.textContent = 'Could not play this track. Please try again.';
     }
-    function nextTrack(keepPlaying = !audio.paused) {
+    /** Step the record on by `step` sleeves, wrapping at either end. */
+    function changeTrack(step, keepPlaying = !audio.paused) {
         audio.pause();
-        trackIndex = (trackIndex + 1) % TRACKS.length;
+        trackIndex = (trackIndex + step + TRACKS.length) % TRACKS.length;
         track = TRACKS[trackIndex];
         audio.src = track.src;
-        dialog.querySelector('.card-disc > img').src = track.cover;
-        dialog.querySelector('.card-play__title').textContent = track.title;
+        dialog.querySelector('.card-player__disc > img').src = track.cover;
+        dialog.querySelector('[data-title]').textContent = track.title;
         dialog.querySelector('[data-next]').setAttribute('aria-label',
             `Next track: ${TRACKS[(trackIndex + 1) % TRACKS.length].title}`);
+        dialog.querySelector('[data-prev]').setAttribute('aria-label',
+            `Previous track: ${TRACKS[(trackIndex - 1 + TRACKS.length) % TRACKS.length].title}`);
         setPlaying(false);
         status.hidden = false;
         status.textContent = `${track.title} by ${track.artist}`;
         if (keepPlaying) audio.play().catch(playbackError);
     }
-    dialog.querySelector('[data-next]').addEventListener('click', () => nextTrack());
+    function nextTrack(keepPlaying = !audio.paused) { changeTrack(1, keepPlaying); }
+    dialog.querySelector('[data-next]').addEventListener('click', () => changeTrack(1));
+    dialog.querySelector('[data-prev]').addEventListener('click', () => changeTrack(-1));
     audio.addEventListener('error', playbackError);
     dialog.querySelector('[data-play]').addEventListener('click', () => {
         status.hidden = true;
@@ -218,6 +238,8 @@ function open() {
     tick = setInterval(setTime, 10000);
     previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    // The record may have been left running while the card was away.
+    setPlaying(!!audio && !audio.paused);
     dialog.showModal();
     dialog.focus();
 }

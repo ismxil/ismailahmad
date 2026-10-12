@@ -699,8 +699,11 @@ dialog[tabindex="-1"]:focus-visible {
 .card-tiles {
     display: grid;
     /* minmax(0,…) not 1fr: the tags are nowrap, and their min-content width
-       would otherwise push the three tiles onto two rows */
+       would otherwise push the three tiles onto two rows.
+       Two rows so the player can take a 2x2 square and the clock and map
+       stack beside it, the three ending flush. */
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, auto);
     gap: 10px;
 }
 
@@ -738,68 +741,147 @@ dialog[tabindex="-1"]:focus-visible {
     text-overflow: ellipsis;
 }
 
-/* ── Play control on the record tile ─────────────────────── */
+/* ── The player ──────────────────────────────────────────────
+   After the Figma player: the record rises out of the top of the
+   card and is cut off by it, the transport sits underneath, and the
+   sleeve name closes it off. It takes two columns so the controls
+   keep the proportions they were drawn at — inside one tile the play
+   button would land at 30px and the name at 8px.
 
-.card-play {
-    min-height: 32px;
-    min-width: 72px;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: background-color 0.15s ease-out;
-}
+   Everything inside is sized in cqw against the player's own width,
+   so the whole thing scales as one piece on narrow screens.
+   ─────────────────────────────────────────────────────────── */
 
-.card-play:hover {
-    background: #000000cc;
-}
-
-.card-play__title {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.card-play__icon,
-.card-play__icon svg,
-.card-next svg {
+.card-player {
+    grid-column: span 2;
+    grid-row: span 2;
+    container-type: inline-size;
     display: block;
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
+    background: #fff;
+    color: #212121;
 }
 
-.card-next {
-    inset: 6px 6px auto auto;
-    width: 32px;
-    justify-content: center;
-    cursor: pointer;
+/* 825.667 / 828 wide, pulled up by 379 / 828 so only the lower arc shows */
+.card-player__disc {
+    position: absolute;
+    top: -45.77cqw;
+    left: 50%;
+    width: 99.72cqw;
+    aspect-ratio: 1;
+    translate: -50% 0;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #d9d9d9;
+    /* The design's 5px rim, eased off black: these sleeves are far lighter
+       than the one it was drawn against, where a hard edge disappeared
+       into the artwork rather than ringing it. */
+    border: 0.6cqw solid #0000008c;
+    box-shadow: 0 7.7cqw 7.2cqw #00000026;
 }
 
-.card-next:hover { background: #000000cc; }
-
-/* The disc: album art as a record, with a spindle hole */
-.card-disc img {
-    width: 78%;
-    height: 78%;
+.card-player__disc > img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     border-radius: 999px;
     animation: spin 14s linear infinite;
     animation-play-state: paused;
 }
 
-.card-disc.is-playing img {
+.card-player.is-playing .card-player__disc > img {
     animation-play-state: running;
 }
 
-.card-disc__hole {
+/* The label: four rings, largest first, sitting still while the art turns */
+.card-player__ring {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 16%;
     aspect-ratio: 1;
     translate: -50% -50%;
     border-radius: 999px;
-    background: #2a2a2a;
-    box-shadow: 0 0 0 2px #ffffff1a inset;
+}
+
+.card-player__ring--1 { width: 33.19%; background: #b0b0b066; }
+.card-player__ring--2 { width: 28.57%; background: #d0d0d0; }
+.card-player__ring--3 { width: 17.44%; background: #8a8a8a40; }
+.card-player__ring--4 {
+    width: 12.60%;
+    background: #fff;
+    border: 0.73cqw solid #aaa;
+}
+
+.card-player__controls {
+    position: absolute;
+    top: 60.63cqw;
+    left: 50%;
+    translate: -50% 0;
+    display: flex;
+    align-items: center;
+    gap: 5.24cqw;
+}
+
+.card-player__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    /* Flat, like the design. The supplied icons carry a stroke and a fill,
+       so a translucent colour doubles up along every edge and the glyph
+       reads as an outline instead of a solid. */
+    color: #bebebe;
+    cursor: pointer;
+    transition: color 0.15s ease-out, scale 0.15s ease-out;
+}
+
+.card-player__btn:hover { color: #949494; }
+.card-player__btn:active { scale: 0.94; }
+
+.card-player__btn svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.card-player__btn:not(.card-player__btn--main) {
+    width: 5.8cqw;
+    height: 5.8cqw;
+}
+
+.card-player__btn--main,
+.card-player__icon,
+.card-player__icon svg {
+    width: 14.49cqw;
+    height: 14.49cqw;
+}
+
+/* Narrow: two columns instead of three, so the player takes the full
+   width rather than two thirds of a small one. Below roughly this point
+   a 2-of-3 span puts the sleeve name under 11px. */
+@media (max-width: 520px) {
+    .card-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card-player { grid-column: span 2; grid-row: auto; }
+}
+
+.card-player__title {
+    position: absolute;
+    left: 50%;
+    top: 79.71cqw;
+    translate: -50% 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 86%;
+    padding: 2.9cqw;
+    border-radius: 2.9cqw;
+    background: #eee;
+    color: #000;
+    font: 500 3.86cqw/1.375 var(--font-sans);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @keyframes spin {
@@ -809,7 +891,7 @@ dialog[tabindex="-1"]:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .card-disc img {
+    .card-player__disc > img {
         animation: none;
     }
 }
