@@ -699,9 +699,10 @@ dialog[tabindex="-1"]:focus-visible {
 .card-tiles {
     display: grid;
     /* minmax(0,…) not 1fr: the tags are nowrap, and their min-content width
-       would otherwise push the three tiles onto two rows */
+       would otherwise push the three tiles onto two rows.
+       16px to match the gap the card stacks its rows on. */
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+    gap: 16px;
 }
 
 .card-tile {
@@ -754,8 +755,6 @@ dialog[tabindex="-1"]:focus-visible {
 .card-player {
     container-type: inline-size;
     display: block;
-    background: #fff;
-    color: #212121;
 }
 
 /* 825.667 / 828 wide, pulled up by 379 / 828 so only the lower arc shows */
@@ -769,16 +768,22 @@ dialog[tabindex="-1"]:focus-visible {
     border-radius: 999px;
     overflow: hidden;
     background: #d9d9d9;
-    /* The design's 5px rim, eased off black: these sleeves are far lighter
-       than the one it was drawn against, where a hard edge disappeared
-       into the artwork rather than ringing it. */
-    border: 0.6cqw solid #0000008c;
+    border: 0.6cqw solid #000;
     box-shadow: 0 7.7cqw 7.2cqw #00000026;
 }
 
+/* 889.828 of the disc's 825.667 in the drawing, nudged 13.97 off centre:
+   the sleeve is larger than the record and cropped by it. */
 .card-player__disc > img {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 1.69cqw);
+    width: 107.77%;
+    height: 107.77%;
+    /* Past the global img cap, which would otherwise fit the sleeve to
+       the record instead of letting the record crop it. */
+    max-width: none;
+    translate: -50% -50%;
     object-fit: cover;
     border-radius: 999px;
     animation: spin 14s linear infinite;
@@ -857,9 +862,8 @@ dialog[tabindex="-1"]:focus-visible {
 .card-player__title {
     position: absolute;
     left: 50%;
-    /* Held off the floor rather than hung from the ceiling, so the one
-       floored measurement below cannot grow up into the transport. */
-    bottom: 9.18cqw;
+    /* On the line the time and the city keep on the tiles beside it. */
+    bottom: 6px;
     translate: -50% 0;
     display: inline-flex;
     align-items: center;
