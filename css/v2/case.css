@@ -301,7 +301,6 @@
 .case-next {
     margin-top: 96px;
     padding-top: 24px;
-    border-top: 1px solid var(--border);
 }
 
 .case-next a {
