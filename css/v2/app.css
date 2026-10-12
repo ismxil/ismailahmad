@@ -509,7 +509,8 @@ dialog[tabindex="-1"]:focus-visible {
 /* esc is one of the card's chips — same padding, radius and type as the
    social links at the foot, so the two ends of the card match. */
 .contact-card kbd,
-.lightbox kbd {
+.lightbox kbd,
+.lightbox__name {
     padding: 6px 12px;
     border-radius: var(--r-sm);
     background: #ffffff1f;
@@ -1170,12 +1171,12 @@ dialog[tabindex="-1"]:focus-visible {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 17px;
     font-weight: 500;
     color: #fff;
 }
 
 .lightbox__top button {
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     padding: 0;
