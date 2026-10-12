@@ -12,7 +12,12 @@
 .about-label { font: inherit; font-size: 14px; letter-spacing: 0; color: var(--text-tertiary); }
 .about-bio p + p { margin-top: 16px; }
 .about-details { display: flex; flex-direction: column; gap: 28px; margin-top: 56px; }
-.about-details__columns { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 400px); gap: 72px; align-items: start; }
+/* The left column is sized to the longest award and skill it carries,
+   and the right one takes whatever is left rather than stopping short
+   of the margin. */
+.about-details__columns { display: grid; grid-template-columns: minmax(0, 288px) minmax(0, 1fr); gap: 48px; align-items: start; }
+/* Closing the pair, so it runs under both columns. */
+.about-contact { grid-column: 1 / -1; margin-top: 8px; }
 .about-details__sidebar { display: flex; flex-direction: column; gap: 28px; }
 .about-details__columns > section { min-width: 0; }
 .about-experience { display: flex; flex-direction: column; gap: 24px; margin-top: 6px; }
