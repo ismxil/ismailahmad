@@ -1,3 +1,4 @@
+import { beginContentLoad } from './page-transition.js';
 import { articleSignature } from './icons.js';
 import { initDock } from './dock.js';
 import { initPageSearch } from './page-search.js';
@@ -38,6 +39,8 @@ async function renderReadNext(post) {
         </span>
     </a>`;
 }
+
+const finishLoading = beginContentLoad(isArticle ? mount.closest('article') : mount);
 
 try {
     if (isArticle) {
@@ -93,4 +96,6 @@ try {
     retry.className = 'blog-retry'; retry.textContent = 'Try again';
     retry.addEventListener('click', () => location.reload());
     if (error.status !== 404) mount.append(document.createElement('br'), retry);
+} finally {
+    finishLoading();
 }

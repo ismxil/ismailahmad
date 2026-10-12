@@ -1,3 +1,5 @@
+import { withContentTransition } from './page-transition.js';
+
 /**
  * Case page — renders one published case study from Sanity.
  *
@@ -127,7 +129,7 @@ function slugFromLocation() {
     return last && last !== 'case.html' ? last.replace(/\.html$/, '') : '';
 }
 
-export async function renderCase() {
+async function renderContent() {
     const mount = document.getElementById('case');
     if (!mount) return;
 
@@ -200,4 +202,8 @@ export async function renderCase() {
         const link = mount.querySelector('.case-next a');
         if (link) link.setAttribute('href', `/work/${next.slug}`);
     }
+}
+
+export function renderCase() {
+    return withContentTransition(document.getElementById('case'), renderContent);
 }

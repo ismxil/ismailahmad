@@ -1,3 +1,5 @@
+import { withContentTransition } from './page-transition.js';
+
 /**
  * Work — the case studies, as cover cards that open the full case page.
  *
@@ -35,7 +37,7 @@ function projectCover(project) {
     return selected;
 }
 
-export async function renderWork(mount, { shuffleCovers = false } = {}) {
+async function renderContent(mount, { shuffleCovers = false } = {}) {
     if (!mount) return;
     let cases;
     try {
@@ -144,4 +146,8 @@ function rotateCovers(mount, cases) {
     start();
     window.addEventListener('pagehide', () => clearInterval(timer));
     window.addEventListener('pageshow', start);
+}
+
+export function renderWork(mount, options) {
+    return withContentTransition(mount, () => renderContent(mount, options));
 }

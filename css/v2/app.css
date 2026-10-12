@@ -1569,3 +1569,29 @@ kbd {
 }
 
 .case-card__art .case-card__next { position: absolute; inset: 0; }
+
+/* A quiet signal while published content is arriving. */
+.page-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    height: 2px;
+    z-index: 100;
+    overflow: hidden;
+    pointer-events: none;
+}
+.page-progress::before {
+    content: '';
+    display: block;
+    width: 35%;
+    height: 100%;
+    background: var(--text-tertiary);
+    opacity: 0.5;
+    animation: page-progress 1.4s ease-in-out infinite;
+}
+@keyframes page-progress {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(286%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .page-progress::before { width: 100%; animation: none; }
+}

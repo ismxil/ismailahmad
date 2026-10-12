@@ -1,6 +1,8 @@
+import { withContentTransition } from './page-transition.js';
+
 import { getPosts, escapeHTML } from './blog-data.js';
 
-export async function renderBlogPreview(mount) {
+async function renderContent(mount) {
     if (!mount) return;
     mount.innerHTML = '<li role="status">Loading posts…</li>';
     try {
@@ -16,4 +18,8 @@ export async function renderBlogPreview(mount) {
     } catch {
         mount.innerHTML = '<li>The blog is temporarily unavailable. <a href="/blog">Try the blog</a>.</li>';
     }
+}
+
+export function renderBlogPreview(mount, options) {
+    return withContentTransition(mount, () => renderContent(mount, options));
 }

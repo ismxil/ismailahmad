@@ -1,3 +1,5 @@
+import { withContentTransition } from './page-transition.js';
+
 /**
  * Archive — a masonry grid of shots and covers published in Sanity.
  *
@@ -112,7 +114,7 @@ function open(i) {
 
 /* ── Grid ────────────────────────────────────────────────── */
 
-export async function renderArchive(mount, { limit = HOME_LIMIT } = {}) {
+async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
     if (!mount) return;
 
     let all = [];
@@ -149,4 +151,8 @@ export async function renderArchive(mount, { limit = HOME_LIMIT } = {}) {
 
     const count = document.querySelector('[data-count="archive"]');
     if (count) count.textContent = String(all.length);
+}
+
+export function renderArchive(mount, options) {
+    return withContentTransition(mount, () => renderContent(mount, options));
 }
