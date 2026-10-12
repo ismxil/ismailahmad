@@ -699,11 +699,8 @@ dialog[tabindex="-1"]:focus-visible {
 .card-tiles {
     display: grid;
     /* minmax(0,…) not 1fr: the tags are nowrap, and their min-content width
-       would otherwise push the three tiles onto two rows.
-       Two rows so the player can take a 2x2 square and the clock and map
-       stack beside it, the three ending flush. */
+       would otherwise push the three tiles onto two rows */
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: repeat(2, auto);
     gap: 10px;
 }
 
@@ -744,17 +741,17 @@ dialog[tabindex="-1"]:focus-visible {
 /* ── The player ──────────────────────────────────────────────
    After the Figma player: the record rises out of the top of the
    card and is cut off by it, the transport sits underneath, and the
-   sleeve name closes it off. It takes two columns so the controls
-   keep the proportions they were drawn at — inside one tile the play
-   button would land at 30px and the name at 8px.
+   sleeve name closes it off. It keeps the square the clock and the
+   map keep, so the three read as one row.
 
-   Everything inside is sized in cqw against the player's own width,
-   so the whole thing scales as one piece on narrow screens.
+   Every measurement is the drawing's own, carried across as a share
+   of the player's width — 120/828 of it for the play button, 48/828
+   for the two beside it. Sized in cqw against the player itself, so
+   the whole composition holds together at whatever width the row
+   hands it.
    ─────────────────────────────────────────────────────────── */
 
 .card-player {
-    grid-column: span 2;
-    grid-row: span 2;
     container-type: inline-size;
     display: block;
     background: #fff;
@@ -857,18 +854,12 @@ dialog[tabindex="-1"]:focus-visible {
     height: 14.49cqw;
 }
 
-/* Narrow: two columns instead of three, so the player takes the full
-   width rather than two thirds of a small one. Below roughly this point
-   a 2-of-3 span puts the sleeve name under 11px. */
-@media (max-width: 520px) {
-    .card-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .card-player { grid-column: span 2; grid-row: auto; }
-}
-
 .card-player__title {
     position: absolute;
     left: 50%;
-    top: 79.71cqw;
+    /* Held off the floor rather than hung from the ceiling, so the one
+       floored measurement below cannot grow up into the transport. */
+    bottom: 9.18cqw;
     translate: -50% 0;
     display: inline-flex;
     align-items: center;
@@ -878,7 +869,9 @@ dialog[tabindex="-1"]:focus-visible {
     border-radius: 2.9cqw;
     background: #eee;
     color: #000;
-    font: 500 3.86cqw/1.375 var(--font-sans);
+    /* 32/828 of the width, with a floor: at this square that lands on
+       8px, and the tags on the clock and the map beside it sit at 11. */
+    font: 500 max(10px, 3.86cqw)/1.375 var(--font-sans);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
