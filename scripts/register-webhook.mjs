@@ -68,29 +68,34 @@ async function main() {
     }
 
     const body = {
+        type: 'document',
         name: NAME,
         description: 'Drafts the article newsletter in Kit when a post is published.',
         url: ENDPOINT,
         dataset,
-        // Published posts only: a draft save must not reach the list.
-        filter: '_type == "post" && !(_id in path("drafts.**"))',
-        // The endpoint reads the article back from the API, so the hook only
-        // has to say which one changed.
-        projection: '{"slug": slug.current}',
+        rule: {
+            on: ['create', 'update'],
+            // Published posts only; deletes must not draft newsletters.
+            filter: '_type == "post" && !(_id in path("drafts.**"))',
+            // The endpoint fetches the article; only its slug is needed.
+            projection: '{"slug": slug.current}',
+        },
         httpMethod: 'POST',
         apiVersion: 'v2021-03-25',
         includeDrafts: false,
-        isDisabled: false,
+        isDisabledByUser: false,
         secret: await secret(),
     };
 
     const existing = hooks.find(hook => hook.name === NAME);
+    // The webhook type is chosen at creation and cannot be patched.
+    const { type, ...update } = body;
     const hook = existing
-        ? await api(`/hooks/projects/${projectId}/${existing.id}`, token, { method: 'PUT', body: JSON.stringify(body) })
+        ? await api(`/hooks/projects/${projectId}/${existing.id}`, token, { method: 'PATCH', body: JSON.stringify(update) })
         : await api(`/hooks/projects/${projectId}`, token, { method: 'POST', body: JSON.stringify(body) });
 
     console.log(`${existing ? 'Updated' : 'Created'} hook "${hook.name || NAME}" → ${ENDPOINT}`);
-    console.log(`Filter: ${body.filter}`);
+    console.log(`Filter: ${body.rule.filter}`);
     console.log('Publish an article in Studio, then check: npx sanity hook logs newsletter-on-publish');
 }
 
