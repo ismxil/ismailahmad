@@ -18,6 +18,7 @@
     "test": "node --test tests/*.test.mjs",
     "blog:prepare": "node scripts/import-substack.mjs",
     "blog:import": "cd sanity && npx sanity exec scripts/import-blog.mjs --with-user-token",
-    "blog:shift-headings": "cd sanity && npx sanity exec scripts/shift-headings.mjs --with-user-token"
+    "blog:shift-headings": "cd sanity && npx sanity exec scripts/shift-headings.mjs --with-user-token",
+    "newsletter": "node scripts/newsletter.mjs"
   }
 }

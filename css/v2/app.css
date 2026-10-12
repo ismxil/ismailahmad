@@ -1240,63 +1240,6 @@ dialog[tabindex="-1"]:focus-visible {
     text-wrap: pretty;
 }
 
-.subscribe {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
-}
-
-.subscribe input {
-    flex: 1;
-    min-width: 0;
-    height: 40px;
-    padding: 0 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--raised);
-    color: var(--text-primary);
-    font-family: inherit;
-    font-size: 15px;
-}
-
-.subscribe input::placeholder {
-    color: var(--text-tertiary);
-}
-
-.subscribe input:focus {
-    outline: 2px solid var(--ring);
-    outline-offset: 0;
-    border-color: transparent;
-}
-
-.subscribe button {
-    height: 40px;
-    padding: 0 16px;
-    border: 0;
-    border-radius: 10px;
-    background: var(--btn-bg);
-    color: var(--btn-fg);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.15s ease-out, scale 0.15s ease-out;
-}
-
-.subscribe button:hover {
-    opacity: 0.88;
-}
-
-.subscribe button:active {
-    scale: 0.98;
-}
-
-.subscribe__status {
-    margin-top: 10px;
-    min-height: 18px;
-    font-size: 13px;
-    color: var(--text-tertiary);
-}
 
 .socials {
     display: flex;

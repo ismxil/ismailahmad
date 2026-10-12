@@ -26,52 +26,6 @@ function initTheme() {
     });
 }
 
-/* ── Subscribe ───────────────────────────────────────────── */
-
-function initSubscribe() {
-    const form = document.getElementById('subscribe-form');
-    const status = document.getElementById('subscribe-status');
-    if (!form || !status) return;
-
-    const input = form.querySelector('input[name="email"]');
-    const button = form.querySelector('button');
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const email = input.value.trim();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            status.textContent = 'That email does not look right.';
-            input.focus();
-            return;
-        }
-
-        button.disabled = true;
-        status.textContent = 'Signing you up…';
-
-        try {
-            const res = await fetch('/api/subscribe', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, source: 'home-v2' }),
-            });
-            const data = await res.json().catch(() => ({}));
-
-            if (res.ok && data.ok !== false) {
-                form.reset();
-                status.textContent = 'Done — check your inbox to confirm.';
-            } else {
-                status.textContent = data.error || 'That did not go through. Try again?';
-            }
-        } catch (err) {
-            // The API is a Vercel function; it is absent on a plain static server
-            status.textContent = 'Could not reach the server. Email me instead.';
-        } finally {
-            button.disabled = false;
-        }
-    });
-}
-
 /* ── Boot ────────────────────────────────────────────────── */
 
 async function boot() {
@@ -79,7 +33,6 @@ async function boot() {
     renderProjects(document.getElementById('personal-list'));
     initContactCard();
     initDock();
-    initSubscribe();
 
     // Blog and archive arrive over the network; wait for them so the
     // page search indexes the entries rather than empty lists.

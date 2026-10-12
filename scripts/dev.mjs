@@ -4,7 +4,8 @@ import { resolve, extname, sep } from 'node:path';
 import posts from '../api/posts.js';
 import archive from '../api/archive.js';
 import cases from '../api/cases.js';
-const apiHandlers = { '/api/posts': posts, '/api/archive': archive, '/api/cases': cases };
+import subscribe from '../api/subscribe.js';
+const apiHandlers = { '/api/posts': posts, '/api/archive': archive, '/api/cases': cases, '/api/subscribe': subscribe };
 
 const root = resolve('.');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.m4a': 'audio/mp4', '.woff2': 'font/woff2', '.pdf': 'application/pdf' };
@@ -44,6 +45,13 @@ http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (apiHandlers[url.pathname]) {
         req.query = Object.fromEntries(url.searchParams);
+        // Vercel hands the function a parsed body; here the stream is still
+        // ours to drain, and the handlers accept the raw string.
+        if (req.method === 'POST') {
+            const chunks = [];
+            for await (const chunk of req) chunks.push(chunk);
+            req.body = Buffer.concat(chunks).toString('utf8');
+        }
         res.status = code => { res.statusCode = code; return res; };
         res.json = value => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(value)); return res; };
         return apiHandlers[url.pathname](req, res);

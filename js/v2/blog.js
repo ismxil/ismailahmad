@@ -2,6 +2,7 @@ import { initDock } from './dock.js';
 import { initPageSearch } from './page-search.js';
 import { getPosts, escapeHTML, formatDate } from './blog-data.js';
 import { renderBody } from '../generated/post-body.js';
+import { renderSubscribe } from './subscribe.js';
 
 initDock();
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());
@@ -26,6 +27,7 @@ try {
         document.getElementById('page-title').textContent = post.title;
         document.getElementById('post-meta').textContent = `${formatDate(post.publishedAt)} · ${post.author || 'Ismail Ahmad'}`;
         mount.innerHTML = renderBody(post.body || []);
+        renderSubscribe(document.getElementById('subscribe'), `article:${post.slug}`);
     } else {
         const posts = await getPosts();
         mount.innerHTML = posts.length ? `<ul class="blog-list">${posts.map(post => `<li>
