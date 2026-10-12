@@ -1766,3 +1766,18 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
     .page-progress::before { width: 100%; animation: none; }
 }
+
+/* Reserve image space while lazy loading; captions remain outside the shimmer. */
+.image-skeleton {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+.image-skeleton > .image-skeleton__pending {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+}
+.case-card__art > .image-skeleton { height: 100%; aspect-ratio: auto; }
+.case-hero > .image-skeleton { max-height: 72vh; }
+.case-quote__who > .image-skeleton { width: 36px; height: 36px; border-radius: 50%; }

@@ -115,3 +115,34 @@ export function articleHeadSkeleton() {
             line('38%', 'height:15px')}</span>`,
     };
 }
+
+/** Keep individual image placeholders alive after the content request finishes. */
+export function watchImageSkeletons(mount) {
+    mount.querySelectorAll('img').forEach(image => {
+        if (image.complete && image.naturalWidth > 0) return;
+        const frame = image.ownerDocument.createElement('span');
+        frame.className = 'image-skeleton skeleton';
+        frame.setAttribute('aria-hidden', 'true');
+        image.before(frame);
+        frame.append(image);
+        image.classList.add('image-skeleton__pending');
+
+        const finish = () => {
+            image.removeEventListener('load', loaded);
+            image.removeEventListener('error', finish);
+            image.classList.remove('image-skeleton__pending');
+            if (frame.parentNode) frame.replaceWith(image);
+        };
+        const loaded = async () => {
+            try { await image.decode?.(); } catch (_) {}
+            finish();
+        };
+        image.addEventListener('load', loaded, { once: true });
+        image.addEventListener('error', finish, { once: true });
+        // Handle cached successes and failures that settled before listeners.
+        if (image.complete) {
+            if (image.naturalWidth > 0) loaded();
+            else finish();
+        }
+    });
+}

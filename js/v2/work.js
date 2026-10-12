@@ -1,5 +1,5 @@
 import { withContentTransition } from './page-transition.js';
-import { caseCardsSkeleton } from './skeleton.js';
+import { caseCardsSkeleton, watchImageSkeletons } from './skeleton.js';
 
 /**
  * Work — the case studies, as cover cards that open the full case page.
@@ -74,6 +74,8 @@ async function renderContent(mount, { shuffleCovers = false } = {}) {
         }, { once: true });
     });
 
+    watchImageSkeletons(mount);
+
     if (shuffleCovers) rotateCovers(mount, cases);
 
     const count = document.querySelector('[data-count="work"]');
@@ -95,6 +97,7 @@ function rotateCovers(mount, cases) {
         if (paused || busy || document.hidden || document.querySelector('dialog[open]')) return;
         const cards = [...mount.querySelectorAll('.case-card')];
         const candidates = cards.filter(card => {
+            if (card.querySelector('.image-skeleton')) return false;
             const rect = card.querySelector('.case-card__art').getBoundingClientRect();
             return rect.top < innerHeight && rect.bottom > 0 &&
                 !card.matches(':hover, :focus-within');

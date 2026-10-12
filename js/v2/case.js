@@ -1,5 +1,5 @@
 import { withContentTransition } from './page-transition.js';
-import { caseSkeleton } from './skeleton.js';
+import { caseSkeleton, watchImageSkeletons } from './skeleton.js';
 
 /**
  * Case page — renders one published case study from Sanity.
@@ -197,6 +197,8 @@ async function renderContent() {
                 </span>
             </a>
         </nav>`;
+
+    watchImageSkeletons(mount);
 
     // Keep clean URLs when they are available, fall back to the query form
     if (window.location.pathname.startsWith('/work/')) {

@@ -5,7 +5,7 @@ import { initPageSearch } from './page-search.js';
 import { getPosts, escapeHTML, formatDate } from './blog-data.js';
 import { renderBody } from '../generated/post-body.js';
 import { renderSubscribe } from './subscribe.js';
-import { blogListSkeleton, articleSkeleton, articleHeadSkeleton } from './skeleton.js';
+import { blogListSkeleton, articleSkeleton, articleHeadSkeleton, watchImageSkeletons } from './skeleton.js';
 
 initDock();
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());
@@ -71,6 +71,8 @@ try {
         titleEl.textContent = post.title;
         document.getElementById('post-meta').textContent = `${formatDate(post.publishedAt)} · ${post.author || 'Ismail Ahmad'}`;
         mount.innerHTML = renderBody(post.body || []);
+        watchImageSkeletons(mount);
+
         const signatureTemplate = document.createElement('template');
         signatureTemplate.innerHTML = articleSignature;
         const signature = signatureTemplate.content.firstElementChild;
@@ -110,6 +112,7 @@ try {
     if (isArticle) {
         const titleEl = document.getElementById('page-title');
         titleEl.removeAttribute('aria-label');
+        document.getElementById('post-meta').textContent = '';
         titleEl.textContent = error.status === 404 ? 'Article not found' : 'Could not load this article';
     }
     mount.textContent = error.message;
