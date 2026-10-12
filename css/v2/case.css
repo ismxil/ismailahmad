@@ -82,9 +82,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 32px 24px;
-    margin: 40px 0 0;
-    padding-top: 32px;
-    border-top: 1px solid var(--border);
+    /* The gap alone sets this apart; it had a rule across the top. */
+    margin: 72px 0 0;
 }
 
 .case-meta dt {

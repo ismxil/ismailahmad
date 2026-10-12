@@ -207,9 +207,7 @@
 
 #read-next {
     max-width: 600px;
-    margin-top: 64px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
+    margin-top: 40px;
 }
 
 #read-next a {
