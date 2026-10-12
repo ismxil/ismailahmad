@@ -7,6 +7,7 @@ import { renderWork } from './work.js';
 import { renderBlogPreview } from './blog-preview.js';
 import { renderArchive } from './archive.js';
 import { initContactCard } from './contact-card.js';
+import { initPresence } from './presence.js';
 import { initDock } from './dock.js';
 import { initPageSearch } from './page-search.js';
 
@@ -32,6 +33,7 @@ async function boot() {
     initTheme();
     renderProjects(document.getElementById('personal-list'));
     initContactCard();
+    initPresence();
     initDock();
 
     // Blog and archive arrive over the network; wait for them so the

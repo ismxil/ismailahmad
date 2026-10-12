@@ -289,6 +289,9 @@ ul {
 
 .identity__avatar {
     position: relative;
+    /* A span, and now inside .identity__portrait rather than a flex item of
+       its own, so it has to be told to take a box. */
+    display: block;
     width: 64px;
     height: 64px;
     flex-shrink: 0;
@@ -302,6 +305,105 @@ ul {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* ── Portrait: the second photo and the bubble above it ──── */
+
+.identity__portrait {
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* The two photos are stacked and crossfaded, so the swap on hover has
+   nothing to load and nothing to flash. */
+.identity__avatar-alt {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+
+.identity__presence {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: var(--r-md);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: nowrap;
+    /* Never in the way of the click that opens the contact card. */
+    pointer-events: none;
+    opacity: 0;
+    translate: 0 4px;
+    transition: opacity 0.18s ease-out, translate 0.18s ease-out;
+}
+
+/* The tail, pointing back down at the portrait. */
+.identity__presence::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 18px;
+    width: 10px;
+    height: 6px;
+    background: inherit;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.identity__presence svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+/* Hover only where there is a pointer: on a phone the tap belongs to the
+   contact card, and a bubble would simply stick. */
+@media (hover: hover) {
+    .identity__avatar:hover .identity__avatar-alt,
+    .identity__avatar:focus-visible .identity__avatar-alt {
+        opacity: 1;
+    }
+
+    .identity__avatar:hover ~ .identity__presence,
+    .identity__avatar:focus-visible ~ .identity__presence {
+        opacity: 1;
+        translate: 0 0;
+    }
+
+    /* Steam off the cup, the two wisps lifting out of frame in turn. */
+    .identity__avatar:hover ~ .identity__presence .presence__steam path,
+    .identity__avatar:focus-visible ~ .identity__presence .presence__steam path {
+        animation: steam 2.4s ease-in-out infinite;
+    }
+
+    .identity__avatar:hover ~ .identity__presence .presence__steam path:last-child,
+    .identity__avatar:focus-visible ~ .identity__presence .presence__steam path:last-child {
+        animation-delay: 0.6s;
+    }
+}
+
+@keyframes steam {
+    0% { opacity: 0.35; translate: 0 1px; }
+    45% { opacity: 1; translate: 0 -1px; }
+    100% { opacity: 0.35; translate: 0 1px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .identity__presence {
+        translate: none;
+        transition: opacity 0.18s ease-out;
+    }
+
+    .identity__presence .presence__steam path {
+        animation: none !important;
+    }
 }
 
 .identity__text {
