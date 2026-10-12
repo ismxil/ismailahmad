@@ -128,11 +128,17 @@ ul {
 }
 
 /* One quick pass of the pen on load — not a loading screen. The dash length
-   is the path's measured total (1999 units) rounded up. */
+   is the path's measured total (1999 units) rounded up.
+
+   The delay waits out the shell's own fade, so the stroke is not spent
+   on a header that is still arriving, and the curve is a pen rather
+   than an object in transit: it touches down, keeps a steady hand, and
+   settles. A symmetric ease-in-out left it crawling, sprinting, then
+   crawling again. */
 .sig--draw path {
     stroke-dasharray: 2000;
     stroke-dashoffset: 2000;
-    animation: sign 0.75s cubic-bezier(0.65, 0, 0.35, 1) 0.05s forwards;
+    animation: sign 0.7s cubic-bezier(0.4, 0.15, 0.3, 1) 0.22s forwards;
 }
 
 @keyframes sign {
