@@ -1,3 +1,4 @@
+import { articleSignature } from './icons.js';
 import { initDock } from './dock.js';
 import { initPageSearch } from './page-search.js';
 import { getPosts, escapeHTML, formatDate } from './blog-data.js';
@@ -27,8 +28,9 @@ try {
         document.getElementById('page-title').textContent = post.title;
         document.getElementById('post-meta').textContent = `${formatDate(post.publishedAt)} · ${post.author || 'Ismail Ahmad'}`;
         mount.innerHTML = renderBody(post.body || []);
-        const signature = document.querySelector('.site-header .sig').cloneNode(true);
-        signature.setAttribute('class', 'sig post-signature');
+        const signatureTemplate = document.createElement('template');
+        signatureTemplate.innerHTML = articleSignature;
+        const signature = signatureTemplate.content.firstElementChild;
         mount.after(signature);
         // Draw once as the reader reaches the end, using the same pen stroke
         // and reduced-motion treatment as the signature elsewhere on the site.

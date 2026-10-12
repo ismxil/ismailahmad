@@ -1,3 +1,5 @@
+import { arrowRightIcon, mailIcon } from './icons.js';
+
 /**
  * The quiet invitation at the end of an article.
  *
@@ -6,13 +8,6 @@
  * holds the Kit key server-side.
  */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const MAIL_ICON = `<svg class="subscribe__mail" width="28" height="28" viewBox="0 0 24 24"
-    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-    aria-hidden="true" focusable="false">
-    <rect x="3" y="5" width="18" height="14" rx="3" />
-    <path d="m4 7 8 6 8-6" />
-</svg>`;
 
 const MARKUP = `
     <p class="subscribe__lead" role="status" aria-live="polite">Enjoyed reading this?</p>
@@ -24,7 +19,7 @@ const MARKUP = `
                 placeholder="Your email address" maxlength="254" required />
         </label>
         <button type="submit" aria-label="Subscribe" disabled>
-            <span aria-hidden="true">→</span>
+            ${arrowRightIcon}
         </button>
         <label class="subscribe__trap" aria-hidden="true">
             Leave this field empty
@@ -96,7 +91,7 @@ export function renderSubscribe(mount, source = 'website') {
 
             if (response.ok && data.ok !== false) {
                 form.remove();
-                if (data.state !== 'active') lead.insertAdjacentHTML('beforebegin', MAIL_ICON);
+                if (data.state !== 'active') lead.insertAdjacentHTML('beforebegin', mailIcon);
                 lead.textContent = data.state === 'active' ? 'You are on the list.' : 'Almost there';
                 note.textContent = data.state === 'active' ? 'Thank you for subscribing.' : 'Check your inbox to confirm your subscription.';
                 mount.querySelector('.subscribe__fine').remove();
