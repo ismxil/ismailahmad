@@ -1,3 +1,5 @@
+import { mediaPlayIcon, mediaPauseIcon, mediaNextIcon } from './icons.js';
+
 /**
  * Contact card — a floating panel opened from the profile picture.
  *
@@ -14,12 +16,13 @@ const PLACE = 'Studio, Berlin';
 const CITY = 'Berlin';
 const TZ = 'Europe/Berlin';
 
-const TRACK = {
-    title: 'Essence',
-    artist: 'TWO LANES',
-    cover: '/assets/audio/01-cover.jpg',
-    src: '/assets/audio/01-essence.m4a',
-};
+const TRACKS = [
+    { title: 'Essence', artist: 'TWO LANES', cover: '/assets/audio/01-cover.jpg', src: '/assets/audio/01-essence.m4a' },
+    { title: 'Immersion', artist: 'TWO LANES', cover: '/assets/audio/02-cover.jpg', src: '/assets/audio/02-immersion.m4a' },
+    { title: 'Inner Motion', artist: 'TWO LANES', cover: '/assets/audio/03-cover.jpg', src: '/assets/audio/03-inner_motion.m4a' },
+];
+let trackIndex = 0;
+let track = TRACKS[trackIndex];
 
 const LINKS = [
     { label: 'Instagram', href: 'https://instagram.com/ismxilahmad' },
@@ -86,7 +89,8 @@ function setPlaying(on) {
     if (!card || !btn) return;
     card.classList.toggle('is-playing', on);
     btn.setAttribute('aria-pressed', String(on));
-    btn.setAttribute('aria-label', `${on ? 'Pause' : 'Play'} ${TRACK.title} by ${TRACK.artist}`);
+    btn.querySelector('.card-play__icon').innerHTML = on ? mediaPauseIcon : mediaPlayIcon;
+    btn.setAttribute('aria-label', `${on ? 'Pause' : 'Play'} ${track.title} by ${track.artist}`);
 }
 
 function release() {
@@ -125,18 +129,16 @@ function build() {
 
         <div class="card-tiles">
             <span class="card-tile card-disc">
-                <img src="${TRACK.cover}" alt="" aria-hidden="true" />
+                <img src="${track.cover}" alt="" aria-hidden="true" />
                 <span class="card-disc__hole" aria-hidden="true"></span>
                 <button type="button" class="card-tile__tag card-play" data-play
-                    aria-pressed="false" aria-label="Play ${TRACK.title} by ${TRACK.artist}">
-                    <span>${TRACK.title}</span>
-                    <svg class="card-play__icon" viewBox="0 0 16 16" aria-hidden="true">
-                        <path class="card-play__tri" d="M5 3.5v9l8-4.5-8-4.5Z" />
-                        <g class="card-play__bars">
-                            <rect x="4.5" y="3.5" width="2.5" height="9" rx="1" />
-                            <rect x="9" y="3.5" width="2.5" height="9" rx="1" />
-                        </g>
-                    </svg>
+                    aria-pressed="false" aria-label="Play ${track.title} by ${track.artist}">
+                    <span class="card-play__title">${track.title}</span>
+                    <span class="card-play__icon" aria-hidden="true">${mediaPlayIcon}</span>
+                </button>
+                <button type="button" class="card-tile__tag card-next" data-next
+                    aria-label="Next track: ${TRACKS[1].title}" title="Next track">
+                    ${mediaNextIcon}
                 </button>
             </span>
 
@@ -161,18 +163,34 @@ function build() {
         </div>`;
     document.body.appendChild(dialog);
 
-    audio = new Audio(TRACK.src);
+    audio = new Audio(track.src);
     audio.preload = 'none';
-    audio.addEventListener('ended', () => setPlaying(false));
+    audio.addEventListener('ended', () => nextTrack(true));
     audio.addEventListener('pause', () => setPlaying(false));
     audio.addEventListener('play', () => setPlaying(true));
 
     const status = dialog.querySelector('.card-audio-status');
-    function playbackError() {
+    function playbackError(error) {
+        if (error?.name === 'AbortError') return;
         setPlaying(false);
         status.hidden = false;
         status.textContent = 'Could not play this track. Please try again.';
     }
+    function nextTrack(keepPlaying = !audio.paused) {
+        audio.pause();
+        trackIndex = (trackIndex + 1) % TRACKS.length;
+        track = TRACKS[trackIndex];
+        audio.src = track.src;
+        dialog.querySelector('.card-disc > img').src = track.cover;
+        dialog.querySelector('.card-play__title').textContent = track.title;
+        dialog.querySelector('[data-next]').setAttribute('aria-label',
+            `Next track: ${TRACKS[(trackIndex + 1) % TRACKS.length].title}`);
+        setPlaying(false);
+        status.hidden = false;
+        status.textContent = `${track.title} by ${track.artist}`;
+        if (keepPlaying) audio.play().catch(playbackError);
+    }
+    dialog.querySelector('[data-next]').addEventListener('click', () => nextTrack());
     audio.addEventListener('error', playbackError);
     dialog.querySelector('[data-play]').addEventListener('click', () => {
         status.hidden = true;

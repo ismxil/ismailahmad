@@ -717,14 +717,15 @@ dialog[tabindex="-1"]:focus-visible {
     align-items: center;
     gap: 5px;
     max-width: calc(100% - 12px);
-    padding: 3px 7px;
+    min-height: 32px;
+    padding: 6px 7px;
     border: 0;
     border-radius: 7px;
     background: #000000a3;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     color: #fff;
-    font: 11px/1.4 var(--font-sans);
+    font: 11px/20px var(--font-sans);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -744,24 +745,29 @@ dialog[tabindex="-1"]:focus-visible {
     background: #000000cc;
 }
 
-.card-play__icon {
-    width: 10px;
-    height: 10px;
-    flex-shrink: 0;
-    fill: currentColor;
+.card-play__title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.card-play__bars {
-    display: none;
-}
-
-.card-disc.is-playing .card-play__tri {
-    display: none;
-}
-
-.card-disc.is-playing .card-play__bars {
+.card-play__icon,
+.card-play__icon svg,
+.card-next svg {
     display: block;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
+
+.card-next {
+    inset: 6px 6px auto auto;
+    width: 32px;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.card-next:hover { background: #000000cc; }
 
 /* The disc: album art as a record, with a spindle hole */
 .card-disc img {
