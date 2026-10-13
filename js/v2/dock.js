@@ -46,7 +46,7 @@ export function initDock() {
     // common case, so what sits at the top is what most people act on.
     const targets = PAGES
         .map(t => ({ ...t, href: t.href.startsWith('#') ? (onHome ? t.href : '/' + t.href) : '/' + t.href.replace(/^\//, '') }))
-        .concat(projectItems.filter(p => p.url).map(p => ({ label: p.name, href: p.url, kind: 'project' })));
+        .concat(projectItems.filter(p => p.website).map(p => ({ label: p.name, href: p.website, kind: 'project', external: true })));
     let active = 0;
     let matches = [];
     let previousFocus;
@@ -70,6 +70,10 @@ export function initDock() {
         matches.forEach((target, index) => {
             const link = document.createElement('a');
             link.href = target.href;
+            if (target.external) {
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+            }
             link.dataset.index = String(index);
             const label = document.createElement('span');
             label.textContent = target.label;

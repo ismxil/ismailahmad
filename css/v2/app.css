@@ -918,7 +918,7 @@ dialog[tabindex="-1"]:focus-visible {
 .card-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 16px;
 }
 
 .card-links .chip {

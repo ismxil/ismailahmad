@@ -37,7 +37,8 @@ export function renderProjects(mount) {
     mount.innerHTML = projectItems
         .map((item) => {
             return `<li>
-                <a class="row" href="${item.url}" aria-label="View ${item.name} project">
+                <a class="row" href="${item.website}" target="_blank" rel="noopener noreferrer"
+                    aria-label="Visit ${item.name} website (opens in a new tab)">
                     ${mark(item)}
                     <span class="row__text">
                         <span class="row__title">${item.name}</span>
@@ -45,7 +46,7 @@ export function renderProjects(mount) {
                     </span>
                     <span class="row__ext" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m9 6 6 6-6 6" />
+                            <path d="M7 17 17 7M7 7h10v10" />
                         </svg>
                     </span>
                 </a>
