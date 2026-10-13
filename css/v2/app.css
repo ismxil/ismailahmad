@@ -1288,6 +1288,30 @@ dialog[tabindex="-1"]:focus-visible {
     translate: 0 0;
 }
 
+/* The archive is the one page that leads with artwork rather than text, so
+   on a desktop screen it leaves the reading column behind: the whole width,
+   two up and large, instead of three narrow plates adrift in the middle.
+   The header and footer travel with it so every edge lines up. */
+@media (min-width: 1024px) {
+    .shell--wide {
+        max-width: 1800px;
+    }
+
+    .shell--wide .archive-grid {
+        columns: 2;
+        column-gap: var(--gutter);
+    }
+
+    .shell--wide .archive-grid li {
+        margin-bottom: var(--gutter);
+    }
+
+    /* A plate this much bigger needs a corner to match. */
+    .shell--wide .archive-tile {
+        border-radius: var(--r-xl);
+    }
+}
+
 /* ── Lightbox ────────────────────────────────────────────── */
 
 /* Same construction as .command-menu: a native <dialog> opened with
