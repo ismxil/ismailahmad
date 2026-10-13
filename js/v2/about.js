@@ -1,5 +1,13 @@
 import { initDock } from './dock.js';
 import { experienceItems } from './experience.js';
+import { articleSignature } from './icons.js';
+
+const bio = document.querySelector('.about-bio');
+const signatureTemplate = document.createElement('template');
+signatureTemplate.innerHTML = articleSignature;
+const signature = signatureTemplate.content.firstElementChild;
+signature.classList.replace('post-signature', 'about-signature');
+bio.append(signature);
 
 const themeButton = document.getElementById('theme-toggle');
 themeButton.addEventListener('click', () => {

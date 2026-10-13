@@ -11,6 +11,12 @@
 .about-content { font-size: 15px; line-height: 1.5; letter-spacing: 0; color: var(--text-primary); }
 .about-label { font: inherit; font-size: 14px; letter-spacing: 0; color: var(--text-tertiary); }
 .about-bio p + p { margin-top: 16px; }
+.about-signature {
+    width: 86px;
+    height: 54px;
+    margin-top: 48px;
+    color: var(--text-tertiary);
+}
 .about-details { display: flex; flex-direction: column; gap: 28px; margin-top: 56px; }
 /* The left column is sized to the longest award and skill it carries,
    and the right one takes whatever is left rather than stopping short
