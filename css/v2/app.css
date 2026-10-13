@@ -1741,6 +1741,15 @@ kbd {
 .skeleton-card { pointer-events: none; }
 .skeleton-card .case-card__art { box-shadow: none; }
 
+/* An archive plate waiting for its picture. The sheen sits inside the tile
+   rather than on it, so the tile keeps its own corner and shadow. */
+.skeleton-tile { pointer-events: none; }
+.skeleton-tile > .skeleton { border-radius: inherit; }
+
+/* Each plate already holds the proportion its picture will arrive at, so
+   the shimmer fills that box instead of imposing a ratio of its own. */
+.archive-tile > .image-skeleton { width: 100%; height: 100%; aspect-ratio: auto; }
+
 .skeleton-post,
 .skeleton-para,
 .skeleton-prose,

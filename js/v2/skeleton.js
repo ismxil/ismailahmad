@@ -36,6 +36,21 @@ export function caseCardsSkeleton(count = 4) {
     </li>`);
 }
 
+/**
+ * The archive wall. The published set is a mix of landscape, square and
+ * portrait, so the placeholders are too — a column of identical boxes
+ * reads as a table, and the masonry would reflow the moment the real
+ * proportions landed. The cycle is long enough not to read as a pattern.
+ */
+export function archiveGridSkeleton(count = 12) {
+    const ratios = ['4 / 3', '1 / 1', '16 / 10', '3 / 4', '3 / 2', '5 / 4', '2 / 3', '1 / 1'];
+    return repeat(count, (i) => `<li aria-hidden="true">
+        <span class="archive-tile skeleton-tile">
+            <span class="skeleton" style="aspect-ratio:${ratios[i % ratios.length]}"></span>
+        </span>
+    </li>`);
+}
+
 /** The blog index: a run of entries, each a heading, a line or two, a date. */
 export function blogListSkeleton(count = 5) {
     return `<ul class="blog-list" aria-hidden="true">${repeat(count, (i) => `<li>

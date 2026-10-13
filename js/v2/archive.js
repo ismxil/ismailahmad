@@ -1,4 +1,5 @@
 import { withContentTransition } from './page-transition.js';
+import { archiveGridSkeleton, watchImageSkeletons } from './skeleton.js';
 
 /**
  * Archive — a masonry grid of shots and covers published in Sanity.
@@ -22,6 +23,16 @@ let previousOverflow = '';
 /** Sanity serves uploaded artwork from its image CDN. */
 function cover(item) {
     return item.cover;
+}
+
+/**
+ * Sanity writes the pixel size into the asset filename — …-2656x1605.jpg —
+ * so each plate can be given its true proportion before the picture
+ * arrives. The masonry then settles once instead of twice.
+ */
+function ratio(url) {
+    const found = /-(\d+)x(\d+)\.\w+(?:[?#]|$)/.exec(url || '');
+    return found ? `${found[1]} / ${found[2]}` : '';
 }
 
 function label(item) {
@@ -148,6 +159,11 @@ function syncTiles(mount) {
 async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
     if (!mount) return;
 
+    // Stand the wall up before the request, so the page has its height from
+    // the first paint. /archive asks for everything, which is more than a
+    // screenful — a dozen plates is enough to fill one.
+    mount.innerHTML = archiveGridSkeleton(Number.isFinite(limit) ? limit : 12);
+
     let all = [];
     try {
         const res = await fetch('/api/archive', { cache: 'no-store' });
@@ -167,7 +183,7 @@ async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
     mount.innerHTML = items
         .map((item, i) => `<li>
             <button type="button" class="archive-tile" data-index="${i}"
-                data-label="${escape(label(item))}"
+                data-label="${escape(label(item))}" style="aspect-ratio:${ratio(cover(item, i)) || 'auto'}"
                 aria-haspopup="dialog" aria-label="${escape(label(item))}, open larger">
                 <img src="${escape(cover(item, i))}" alt="" aria-hidden="true"
                     loading="${i < EAGER ? 'eager' : 'lazy'}" decoding="async" />
@@ -177,6 +193,7 @@ async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
         .join('') || '<li><p class="section__note">No archive items published yet.</p></li>';
 
     syncTiles(mount);
+    watchImageSkeletons(mount);
     compact.addEventListener('change', () => syncTiles(mount));
 
     mount.addEventListener('click', (e) => {

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
-import { watchImageSkeletons } from '../js/v2/skeleton.js';
+import { archiveGridSkeleton, watchImageSkeletons } from '../js/v2/skeleton.js';
 
 function fixture(complete = false, width = 0) {
     const dom = new JSDOM('<figure><img alt="Project"><figcaption>Caption</figcaption></figure>');
@@ -43,4 +43,17 @@ test('cached images need no skeleton', () => {
     watchImageSkeletons(mount);
     assert.equal(mount.firstElementChild, image);
     assert.equal(mount.querySelector('.skeleton'), null);
+});
+
+test('the archive wall stands up in mixed proportions, inert to a reader', () => {
+    const dom = new JSDOM(`<ul>${archiveGridSkeleton(4)}</ul>`);
+    const items = [...dom.window.document.querySelectorAll('li')];
+    assert.equal(items.length, 4);
+    assert(items.every(li => li.getAttribute('aria-hidden') === 'true'));
+    assert(items.every(li => li.querySelector('.archive-tile.skeleton-tile > .skeleton')));
+    // The plates must not all share a ratio, or the masonry reflows the
+    // moment the real pictures land.
+    const ratios = new Set(items.map(li => li.querySelector('.skeleton').style.aspectRatio));
+    assert(ratios.size > 1, 'placeholders should vary in proportion');
+    assert(![...ratios].includes(''), 'every placeholder needs a reserved shape');
 });

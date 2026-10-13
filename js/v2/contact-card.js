@@ -30,10 +30,60 @@ const LINKS = [
     { label: 'CV', href: '/assets/cv.pdf' },
 ];
 
+const VOLUME = 0.5;
+// Long enough to read as the record being set down, short enough that a
+// page on its way out still gets most of it.
+const FADE_MS = 260;
+
 let dialog;
 let audio;
 let tick;
+let fade;
 let previousOverflow = '';
+
+/**
+ * Ride the volume down to silence, then pause.
+ *
+ * A reload or a link tears the document down and the track stops dead
+ * mid-bar, which lands as a fault rather than an ending. Browsers keep the
+ * old page alive for a moment while the next one is fetched, so the ramp
+ * starts at the first word that we are leaving and takes whatever time it
+ * is given — on a fast reload that is a short dip rather than the whole
+ * fade, which is still softer than the cut.
+ *
+ * setInterval rather than requestAnimationFrame: frames stop being
+ * scheduled once the page is being unloaded, where this is needed most.
+ */
+function fadeOut(ms = FADE_MS) {
+    if (!audio || audio.paused) return;
+    clearInterval(fade);
+    const step = 16;
+    const from = audio.volume;
+    let elapsed = 0;
+    fade = setInterval(() => {
+        elapsed += step;
+        audio.volume = Math.max(0, from * (1 - elapsed / ms));
+        if (elapsed >= ms) {
+            clearInterval(fade);
+            fade = undefined;
+            audio.pause();
+            // Whatever happens next starts at the volume it was set to.
+            audio.volume = VOLUME;
+        }
+    }, step);
+}
+
+/** Any deliberate play cancels a fade in flight and restores the level. */
+function startPlaying(onError) {
+    clearInterval(fade);
+    fade = undefined;
+    audio.volume = VOLUME;
+    // Catching a fade means the element never actually paused, and play()
+    // on something already playing fires no 'play' event — so the control
+    // is set here rather than left waiting for one that will not come.
+    setPlaying(true);
+    audio.play().catch(onError);
+}
 
 function clockFace() {
     const ticks = Array.from({ length: 12 }, (_, i) => {
@@ -179,7 +229,7 @@ function build() {
 
     audio = new Audio(track.src);
     audio.preload = 'none';
-    audio.volume = 0.5;
+    audio.volume = VOLUME;
     audio.addEventListener('ended', () => nextTrack(true));
     audio.addEventListener('pause', () => setPlaying(false));
     audio.addEventListener('play', () => setPlaying(true));
@@ -193,6 +243,10 @@ function build() {
     }
     /** Step the record on by `step` sleeves, wrapping at either end. */
     function changeTrack(step, keepPlaying = !audio.paused) {
+        // Drop any fade in flight, or it would later silence the new sleeve.
+        clearInterval(fade);
+        fade = undefined;
+        audio.volume = VOLUME;
         audio.pause();
         trackIndex = (trackIndex + step + TRACKS.length) % TRACKS.length;
         track = TRACKS[trackIndex];
@@ -206,7 +260,7 @@ function build() {
         setPlaying(false);
         status.hidden = true;
         status.textContent = '';
-        if (keepPlaying) audio.play().catch(playbackError);
+        if (keepPlaying) startPlaying(playbackError);
     }
     function nextTrack(keepPlaying = !audio.paused) { changeTrack(1, keepPlaying); }
     dialog.querySelector('[data-next]').addEventListener('click', () => changeTrack(1));
@@ -214,12 +268,24 @@ function build() {
     audio.addEventListener('error', playbackError);
     dialog.querySelector('[data-play]').addEventListener('click', () => {
         status.hidden = true;
-        if (audio.paused) {
-            audio.play().catch(playbackError);
+        // A fade has not paused the element yet, so `paused` is still
+        // false while it runs — catching it here is what lets a change of
+        // mind mid-fade bring the record back up.
+        if (audio.paused || fade) {
+            startPlaying(playbackError);
         } else {
-            audio.pause();
+            // The control answers at once even though the sound takes a
+            // moment to go, so the button never looks stuck.
+            setPlaying(false);
+            fadeOut();
         }
     });
+
+    // Both, because which one fires depends on the browser and on whether
+    // the page is heading for the back/forward cache.
+    const leaving = () => fadeOut();
+    window.addEventListener('beforeunload', leaving);
+    window.addEventListener('pagehide', leaving);
 
     dialog.querySelector('[data-close]').addEventListener('click', hide);
     dialog.addEventListener('cancel', hide);
