@@ -1306,9 +1306,19 @@ dialog[tabindex="-1"]:focus-visible {
         margin-bottom: var(--gutter);
     }
 
-    /* A plate this much bigger needs a corner to match. */
+    /* A plate this much bigger needs a corner to match. The lightbox only
+       runs below this width, where the plates are small enough to be worth
+       opening — here they are already the artwork, so they drop the zoom
+       cursor and the lift rather than promise a click that does nothing.
+       The label still arrives on hover. */
     .shell--wide .archive-tile {
         border-radius: var(--r-xl);
+        cursor: default;
+    }
+
+    .shell--wide .archive-tile:hover {
+        box-shadow: var(--tray-shadow);
+        scale: 1;
     }
 }
 

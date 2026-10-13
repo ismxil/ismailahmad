@@ -114,6 +114,37 @@ function open(i) {
 
 /* ── Grid ────────────────────────────────────────────────── */
 
+/**
+ * The lightbox earns its place while the plates are small. On /archive at
+ * desktop width they already fill half the screen, so opening one would
+ * only shrink it — there the tiles hold artwork rather than act as
+ * controls. The homepage grid stays small at every width, so it keeps the
+ * lightbox throughout; the test is the layout a tile sits in, not the
+ * viewport alone.
+ */
+const compact = window.matchMedia('(max-width: 1023px)');
+
+function zoomable(tile) {
+    return compact.matches || !tile.closest('.shell--wide');
+}
+
+function syncTiles(mount) {
+    mount.querySelectorAll('.archive-tile').forEach((tile) => {
+        const name = tile.dataset.label || '';
+        if (zoomable(tile)) {
+            tile.tabIndex = 0;
+            tile.setAttribute('aria-haspopup', 'dialog');
+            tile.setAttribute('aria-label', `${name}, open larger`);
+        } else {
+            // Left out of the tab order rather than disabled, so the label
+            // still appears on hover and the plate keeps its styling.
+            tile.tabIndex = -1;
+            tile.removeAttribute('aria-haspopup');
+            tile.setAttribute('aria-label', name);
+        }
+    });
+}
+
 async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
     if (!mount) return;
 
@@ -136,6 +167,7 @@ async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
     mount.innerHTML = items
         .map((item, i) => `<li>
             <button type="button" class="archive-tile" data-index="${i}"
+                data-label="${escape(label(item))}"
                 aria-haspopup="dialog" aria-label="${escape(label(item))}, open larger">
                 <img src="${escape(cover(item, i))}" alt="" aria-hidden="true"
                     loading="${i < EAGER ? 'eager' : 'lazy'}" decoding="async" />
@@ -144,9 +176,12 @@ async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
         </li>`)
         .join('') || '<li><p class="section__note">No archive items published yet.</p></li>';
 
+    syncTiles(mount);
+    compact.addEventListener('change', () => syncTiles(mount));
+
     mount.addEventListener('click', (e) => {
         const tile = e.target.closest('.archive-tile');
-        if (tile) open(Number(tile.dataset.index));
+        if (tile && zoomable(tile)) open(Number(tile.dataset.index));
     });
 
     const count = document.querySelector('[data-count="archive"]');
