@@ -1291,19 +1291,37 @@ dialog[tabindex="-1"]:focus-visible {
 /* The archive is the one page that leads with artwork rather than text, so
    on a desktop screen it leaves the reading column behind: the whole width,
    two up and large, instead of three narrow plates adrift in the middle.
-   The header and footer travel with it so every edge lines up. */
+   Only the grid widens — the header and footer keep the reading column they
+   hold on every other page, so the fixture at the top stays one shape
+   wherever you are. */
 @media (min-width: 1024px) {
     .shell--wide {
-        max-width: 1800px;
+        /* One measure for every gap on the page: the two outer edges, the
+           channel between the columns and the space between stacked plates. */
+        --archive-gap: 16px;
+        max-width: none;
+        padding-inline: var(--archive-gap);
+    }
+
+    .shell--wide .site-header--sticky,
+    .shell--wide .site-footer {
+        width: 100%;
+        max-width: calc(var(--content-width) - 2 * var(--gutter));
+        margin-inline: auto;
+    }
+
+    /* Contracting into the pill still wins over the reading column. */
+    .shell--wide .site-header--sticky.is-scrolled {
+        max-width: 440px;
     }
 
     .shell--wide .archive-grid {
         columns: 2;
-        column-gap: var(--gutter);
+        column-gap: var(--archive-gap);
     }
 
     .shell--wide .archive-grid li {
-        margin-bottom: var(--gutter);
+        margin-bottom: var(--archive-gap);
     }
 
     /* A plate this much bigger needs a corner to match. The lightbox only

@@ -78,8 +78,10 @@
     <script type="module">
         import { renderArchive } from '/js/v2/archive.js';
         import { initDock } from '/js/v2/dock.js';
+        import { initStickyHeader } from '/js/v2/sticky-header.js';
         renderArchive(document.getElementById('archive-grid'), { limit: Infinity });
         initDock();
+        initStickyHeader();
 
         const btn = document.getElementById('theme-toggle');
         btn.addEventListener('click', () => {
