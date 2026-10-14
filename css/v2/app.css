@@ -1429,9 +1429,7 @@ dialog[tabindex="-1"]:focus-visible {
 
 /* ── Wandering ───────────────────────────────────────────── */
 
-/* Small plates, all one proportion, run edge to edge. Each place closes
-   with its name in the cell after its last photo, set at the foot so it
-   reads along the bottom of the row. */
+/* Small plates, all one proportion, run edge to edge, uncaptioned. */
 .wander-wall {
     --wander-gap: 8px;
     display: grid;
@@ -1447,8 +1445,7 @@ dialog[tabindex="-1"]:focus-visible {
     .wander-wall { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 }
 
-.wander-cell,
-.wander-note {
+.wander-cell {
     position: relative;
     aspect-ratio: 3 / 4;
     transition: opacity 0.26s ease-out;
@@ -1478,31 +1475,9 @@ dialog[tabindex="-1"]:focus-visible {
     object-fit: cover;
 }
 
-.wander-note {
-    display: flex;
-    align-items: flex-end;
-    cursor: pointer;
-}
-
-.wander-note__line {
-    margin-left: -3px;
-    padding: 0 3px;
-    border-radius: 3px;
-    font-size: 14px;
-    line-height: 1.35;
-    color: var(--text-primary);
-    white-space: nowrap;
-    transition: background-color 0.2s ease-out, color 0.2s ease-out;
-}
-
-/* Pointing at a place fades every other one back, and its name inverts. */
+/* Pointing at a place fades every other one back. */
 .wander-wall.is-focusing > :not(.is-active) {
     opacity: 0.12;
-}
-
-.wander-note.is-active .wander-note__line {
-    background: var(--text-primary);
-    color: var(--background);
 }
 
 /* The rail. A full-screen <dialog>: the head keeps to the reading column,
@@ -1667,8 +1642,6 @@ dialog[tabindex="-1"]:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
     .wander-cell,
-    .wander-note,
-    .wander-note__line,
     .wander-modal__head {
         transition: none;
     }

@@ -2,8 +2,8 @@ import { withContentTransition } from './page-transition.js';
 import { wanderWallSkeleton, watchImageSkeletons } from './skeleton.js';
 
 /**
- * Wandering — a wall of small photographs, one run per place, each run
- * closed by the place's name. It sits on the About page, under the signature.
+ * Wandering — a wall of small photographs, one run per place, with no
+ * captions. It sits on the About page, under the signature.
  *
  * Pointing at a plate fades every other place back, so the run you are on
  * reads as one. Selecting it opens the place as a rail of large slides:
@@ -75,9 +75,7 @@ function wallHTML() {
                 aria-haspopup="dialog" aria-label="${escape(place)}, photo ${i + 1} of ${photos.length}">
                 <img src="${escape(sized(photo, 400))}"${focus(photo)} alt="" loading="lazy" decoding="async" />
             </button>
-        </li>`).join('') + `<li class="wander-note" data-group="${g}" aria-hidden="true">
-            <span class="wander-note__line">${escape(place)}</span>
-        </li>`).join('');
+        </li>`).join('')).join('');
 }
 
 async function renderContent(mount) {
@@ -126,9 +124,7 @@ async function renderContent(mount) {
 
     mount.addEventListener('click', (e) => {
         const frame = e.target.closest('.wander-frame');
-        const note = e.target.closest('.wander-note');
         if (frame) open(Number(frame.dataset.group), Number(frame.dataset.photo));
-        else if (note) open(Number(note.dataset.group), 0);
     });
 
     const count = document.querySelector('[data-count="wandering"]');
@@ -378,7 +374,8 @@ function open(g, start) {
     spotlight(null);
     closing = false;
 
-    title.textContent = place;
+    // The rail carries the section's name; the place is still announced.
+    title.textContent = 'Wandering';
     dialog.setAttribute('aria-label', `${place}, ${photos.length} photos`);
     rail.innerHTML = slidesHTML(photos, start);
     delete rail.dataset.gaps;

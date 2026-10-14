@@ -9,7 +9,7 @@ export default defineType({
       name: 'place',
       title: 'Place',
       type: 'string',
-      description: 'Shown on the wall after the last photo, and as the title when opened, e.g. Malta',
+      description: 'Not shown on the site; groups the photos and is read out to screen readers, e.g. Malta',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
