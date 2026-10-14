@@ -6,6 +6,7 @@ import { renderProjects } from './projects.js';
 import { renderWork } from './work.js';
 import { renderBlogPreview } from './blog-preview.js';
 import { renderArchive } from './archive.js';
+import { renderWandering } from './wandering.js';
 import { initContactCard } from './contact-card.js';
 import { initPresence } from './presence.js';
 import { initDock } from './dock.js';
@@ -42,6 +43,7 @@ async function boot() {
         renderWork(document.getElementById('work-list'), { shuffleCovers: true }),
         renderBlogPreview(document.getElementById('blog-list')),
         renderArchive(document.getElementById('archive-grid')),
+        renderWandering(document.getElementById('wander-wall')),
     ]);
     initPageSearch();
 

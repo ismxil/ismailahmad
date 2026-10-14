@@ -51,6 +51,13 @@ export function archiveGridSkeleton(count = 12) {
     </li>`);
 }
 
+/** The Wandering wall: one row of plates, all the 3:4 they will arrive at. */
+export function wanderWallSkeleton(count = 8) {
+    return repeat(count, () => `<li class="wander-cell" aria-hidden="true">
+        <span class="wander-frame skeleton"></span>
+    </li>`);
+}
+
 /** The blog index: a run of entries, each a heading, a line or two, a date. */
 export function blogListSkeleton(count = 5) {
     return `<ul class="blog-list" aria-hidden="true">${repeat(count, (i) => `<li>

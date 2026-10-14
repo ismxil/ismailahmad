@@ -1427,6 +1427,255 @@ dialog[tabindex="-1"]:focus-visible {
     cursor: pointer;
 }
 
+/* ── Wandering ───────────────────────────────────────────── */
+
+/* Small plates, all one proportion, run edge to edge. Each place closes
+   with its name in the cell after its last photo, set at the foot so it
+   reads along the bottom of the row. */
+.wander-wall {
+    --wander-gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--wander-gap);
+}
+
+@media (min-width: 480px) {
+    .wander-wall { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+@media (min-width: 640px) {
+    .wander-wall { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+
+.wander-cell,
+.wander-note {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    transition: opacity 0.26s ease-out;
+}
+
+.wander-frame {
+    position: absolute;
+    inset: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--surface);
+    cursor: pointer;
+}
+
+.wander-frame:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+}
+
+.wander-frame img,
+.wander-frame > .image-skeleton {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.wander-note {
+    display: flex;
+    align-items: flex-end;
+    cursor: pointer;
+}
+
+.wander-note__line {
+    margin-left: -3px;
+    padding: 0 3px;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--text-primary);
+    white-space: nowrap;
+    transition: background-color 0.2s ease-out, color 0.2s ease-out;
+}
+
+/* Pointing at a place fades every other one back, and its name inverts. */
+.wander-wall.is-focusing > :not(.is-active) {
+    opacity: 0.12;
+}
+
+.wander-note.is-active .wander-note__line {
+    background: var(--text-primary);
+    color: var(--background);
+}
+
+/* The rail. A full-screen <dialog>: the head keeps to the reading column,
+   the rail runs the whole width, and every slide is half that column wide
+   so two sit under the title — capped by height on a short screen. */
+.wander-modal {
+    --wander-column: min(calc(var(--content-width) - 2 * var(--gutter)), calc(100vw - 2 * var(--gutter)));
+    --wander-start: calc((100vw - var(--wander-column)) / 2);
+    --wander-gap: 12px;
+    --wander-slide: min(calc((var(--wander-column) - var(--wander-gap)) / 2), calc((100dvh - 160px) * 0.75));
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    overflow: hidden;
+    font: 15px/1.5 var(--font-sans);
+}
+
+.wander-modal[open] {
+    display: flex;
+}
+
+.wander-modal:focus { outline: none; }
+
+.wander-modal::backdrop {
+    background: #0009;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    animation: fade-in var(--wander-duration, 0.24s) cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+/* The head floats over the rail so the slides centre on the screen, and
+   the rail fills it top to bottom so a plate travelling in from anywhere
+   on the wall is never clipped on the way. */
+.wander-modal__head {
+    position: absolute;
+    z-index: 50;
+    top: 0;
+    inset-inline: 0;
+    width: var(--wander-column);
+    margin-inline: auto;
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    opacity: 0;
+    transition: opacity var(--wander-duration, 0.24s) cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.wander-modal:is([data-state="opening"], [data-state="open"]) .wander-modal__head {
+    opacity: 1;
+}
+
+.wander-modal__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.wander-modal__close {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-right: -4px;
+    padding: 4px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+.wander-modal__close:hover,
+.wander-modal__close:focus-visible {
+    background: #fff;
+    color: #000;
+}
+
+.wander-modal__close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.wander-modal__close svg {
+    width: 20px;
+    height: 20px;
+}
+
+.wander-modal__rail {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--wander-gap);
+    overflow: auto hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+}
+
+.wander-modal__rail::-webkit-scrollbar { display: none; }
+.wander-modal__rail[data-dragging="true"] { cursor: grabbing; }
+
+.wander-modal__cycle {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: var(--wander-gap);
+}
+
+.wander-modal__lead {
+    flex: 0 0 calc(var(--wander-start) - var(--wander-gap));
+}
+
+.wander-modal__rail[data-gaps="collapsed"] .wander-modal__lead {
+    display: none;
+}
+
+.wander-slide {
+    position: relative;
+    flex: 0 0 var(--wander-slide);
+    width: var(--wander-slide);
+    aspect-ratio: 3 / 4;
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--r-md);
+    background: #ffffff14;
+}
+
+.wander-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+/* Leaving is quieter than arriving: everything fades together. */
+.wander-modal[data-state="closing"],
+.wander-modal[data-state="closing"]::backdrop {
+    animation: wander-out 0.22s ease-out both;
+}
+
+@keyframes wander-out {
+    to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wander-cell,
+    .wander-note,
+    .wander-note__line,
+    .wander-modal__head {
+        transition: none;
+    }
+
+    .wander-modal::backdrop { animation: none; }
+}
+
 /* ── Writing list ────────────────────────────────────────── */
 
 .lede {
@@ -1749,6 +1998,10 @@ kbd {
 /* Each plate already holds the proportion its picture will arrive at, so
    the shimmer fills that box instead of imposing a ratio of its own. */
 .archive-tile > .image-skeleton { width: 100%; height: 100%; aspect-ratio: auto; }
+
+/* A Wandering plate keeps filling its cell while it waits, rather than
+   taking the skeleton's own flow position. */
+.wander-frame.skeleton { position: absolute; border-radius: 4px; pointer-events: none; }
 
 .skeleton-post,
 .skeleton-para,

@@ -16,6 +16,17 @@ No site deployment is needed for content changes. The Archive reads `/api/archiv
 
 The original 25 covers were imported into Sanity image storage using `scripts/import-archive.mjs`. This is a one-time migration; do not rerun it after deleting imported items.
 
+## Manage Wandering
+
+Open **Wandering place** in Studio. The home page's Wandering wall reads only published places from this dataset.
+
+- **Add:** create a place, type its name (e.g. Malta), drop its photos into Photos, and click Publish. Write a short Description on each photo for screen readers.
+- **Crop:** every photo shows at 3:4. Set the hotspot on a photo to choose what stays in frame.
+- **Reorder:** drag photos within a place; change Sort order to move a place along the wall. Lower numbers come first.
+- **Remove:** Unpublish or Delete the place. With nothing published, the section hides itself.
+
+No site deployment is needed. The wall reads `/api/wandering`, which fetches the published dataset uncached. Berlin was created once by `scripts/import-wandering.mjs`; do not rerun it after deleting Berlin.
+
 ## Manage articles
 
 Open **Blog post**, edit the article, and click Publish. Articles are served under `/blog`; drafts are not shown publicly. Keep an existing Slug unchanged to preserve links. Blog responses may take a few minutes to refresh due to caching.

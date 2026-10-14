@@ -1,0 +1,32 @@
+import { sanityConfig } from '../js/sanity-config.js';
+
+export const wanderingQuery = `*[_type == "wanderingPlace" && !(_id in path("drafts.**")) && !(_id in path("versions.**")) && count(photos[defined(asset)]) > 0] | order(coalesce(order, 999999) asc, _createdAt asc) {
+    "id": _id,
+    place,
+    "photos": photos[defined(asset)] {
+        "src": asset->url,
+        alt,
+        "focus": hotspot { x, y }
+    }
+}`;
+
+export default async function handler(req, res) {
+    if (req.method !== 'GET') {
+        res.setHeader('Allow', 'GET');
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+    // Read the live published dataset: additions and removals appear on refresh.
+    res.setHeader('Cache-Control', 'no-store');
+    const url = new URL(`https://${sanityConfig.projectId}.api.sanity.io/v${sanityConfig.apiVersion}/data/query/${sanityConfig.dataset}`);
+    url.searchParams.set('perspective', 'published');
+    url.searchParams.set('query', wanderingQuery);
+    try {
+        const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+        if (!response.ok) throw new Error('CMS unavailable');
+        const { result } = await response.json();
+        if (!Array.isArray(result)) throw new Error('Invalid CMS response');
+        return res.status(200).json({ places: result });
+    } catch {
+        return res.status(502).json({ error: 'Wandering is temporarily unavailable. Please try again.' });
+    }
+}
