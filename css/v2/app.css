@@ -1257,7 +1257,8 @@ dialog[tabindex="-1"]:focus-visible {
     scale: 1.01;
 }
 
-.archive-tile img {
+.archive-tile img,
+.archive-tile video {
     width: 100%;
     height: auto;
 }
@@ -1387,6 +1388,8 @@ dialog[tabindex="-1"]:focus-visible {
        did not happen to match the panel's proportions. */
     background: transparent;
 }
+
+.lightbox__img[hidden] { display: none; }
 
 .lightbox__img {
     display: block;

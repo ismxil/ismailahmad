@@ -20,6 +20,8 @@ let index = 0;
 let dialog;
 let previousOverflow = '';
 
+const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 /** Sanity serves uploaded artwork from its image CDN. */
 function cover(item) {
     return item.cover;
@@ -33,6 +35,32 @@ function cover(item) {
 function ratio(url) {
     const found = /-(\d+)x(\d+)\.\w+(?:[?#]|$)/.exec(url || '');
     return found ? `${found[1]} / ${found[2]}` : '';
+}
+
+/**
+ * Video plates loop muted, and only while on screen — a wall of them all
+ * decoding at once would stall the page. Reduced motion leaves them on
+ * their first frame.
+ */
+const playback = 'IntersectionObserver' in window
+    ? new IntersectionObserver((entries) => {
+        entries.forEach(({ target, isIntersecting }) => {
+            if (isIntersecting && !still.matches) target.play().catch(() => {});
+            else target.pause();
+        });
+    }, { rootMargin: '200px 0px' })
+    : null;
+
+function media(item, i) {
+    if (item.video) {
+        // No size in a file URL, so a plate without a poster takes its
+        // proportion from the video once the metadata arrives.
+        return `<video src="${escape(item.video)}"${item.cover ? ` poster="${escape(item.cover)}"` : ''}
+                    muted loop playsinline disablepictureinpicture
+                    preload="${i < EAGER ? 'auto' : 'metadata'}" aria-hidden="true"></video>`;
+    }
+    return `<img src="${escape(cover(item, i))}" alt="" aria-hidden="true"
+                    loading="${i < EAGER ? 'eager' : 'lazy'}" decoding="async" />`;
 }
 
 function label(item) {
@@ -60,6 +88,7 @@ function build() {
         </div>
         <figure class="lightbox__figure">
             <img class="lightbox__img" alt="" />
+            <video class="lightbox__img" muted loop playsinline disablepictureinpicture hidden></video>
         </figure>`;
     dialog.tabIndex = -1;
     document.body.appendChild(dialog);
@@ -90,9 +119,22 @@ function paint() {
     const item = items[index];
     if (!item) return;
 
-    const img = dialog.querySelector('.lightbox__img');
-    img.src = cover(item, index);
-    img.alt = label(item);
+    const img = dialog.querySelector('img.lightbox__img');
+    const video = dialog.querySelector('video.lightbox__img');
+    img.hidden = Boolean(item.video);
+    video.hidden = !item.video;
+    if (item.video) {
+        img.removeAttribute('src');
+        video.poster = item.cover || '';
+        video.src = item.video;
+        if (!still.matches) video.play().catch(() => {});
+    } else {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+        img.src = cover(item, index);
+        img.alt = label(item);
+    }
     dialog.querySelector('.lightbox__name').textContent = item.client || item.category || '';
     // No visible caption any more, so the dialog itself carries the label
     // and the position for anyone on a screen reader.
@@ -105,6 +147,7 @@ function release() {
 
 function hide() {
     release();
+    dialog?.querySelector('video.lightbox__img')?.pause();
     if (dialog?.open) dialog.close();
 }
 
@@ -183,10 +226,9 @@ async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
     mount.innerHTML = items
         .map((item, i) => `<li>
             <button type="button" class="archive-tile" data-index="${i}"
-                data-label="${escape(label(item))}" style="aspect-ratio:${ratio(cover(item, i)) || 'auto'}"
+                data-label="${escape(label(item))}" style="aspect-ratio:${ratio(item.cover) || 'auto'}"
                 aria-haspopup="dialog" aria-label="${escape(label(item))}, open larger">
-                <img src="${escape(cover(item, i))}" alt="" aria-hidden="true"
-                    loading="${i < EAGER ? 'eager' : 'lazy'}" decoding="async" />
+                ${media(item, i)}
                 <span class="archive-tile__label" aria-hidden="true">${escape(label(item))}</span>
             </button>
         </li>`)
@@ -194,6 +236,16 @@ async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
 
     syncTiles(mount);
     watchImageSkeletons(mount);
+    mount.querySelectorAll('.archive-tile video').forEach((video) => {
+        const tile = video.closest('.archive-tile');
+        if (tile.style.aspectRatio === 'auto') {
+            video.addEventListener('loadedmetadata', () => {
+                tile.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+            }, { once: true });
+        }
+        if (playback) playback.observe(video);
+        else if (!still.matches) video.play().catch(() => {});
+    });
     compact.addEventListener('change', () => syncTiles(mount));
 
     mount.addEventListener('click', (e) => {

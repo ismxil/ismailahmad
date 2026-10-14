@@ -35,9 +35,22 @@ export default defineType({
       title: 'Image',
       type: 'image',
       options: { hotspot: true },
-      description: 'Items without an image are hidden from the Archive.',
+      description: 'Shown in the Archive. With a video, this is the still shown while it loads.',
     }),
+    defineField({
+      name: 'video',
+      title: 'Video',
+      type: 'file',
+      options: { accept: 'video/mp4,video/webm,video/quicktime' },
+      description: 'Optional. Plays muted on a loop in place of the image. Keep it short and under ~10 MB.',
+    }),
+    // Kept from the original import, hidden: order holds those items in
+    // their curated sequence, and the legacy feed matches on slug.
+    defineField({ name: 'order', type: 'number', hidden: true }),
+    defineField({ name: 'slug', type: 'slug', hidden: true }),
   ],
+  validation: (Rule) =>
+    Rule.custom((doc) => (doc?.cover?.asset || doc?.video?.asset ? true : 'Add an image or a video.')),
   orderings: [
     {
       title: 'Newest first',
