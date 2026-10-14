@@ -6,7 +6,8 @@ Studio: https://ismailahmad-blog.sanity.studio/
 
 Open **Archive item** in Studio. The homepage and `/archive` read only published items from this dataset.
 
-- **Add:** create an item, type its Name, optionally pick a Category, upload an Image and/or a Video, and click Publish.
+- **Add:** create an item, type its Name, add Media (an Image, a Video, or both), pick a Type, optionally pick a Category, and click Publish.
+- **Type** (required) is the intent or maturity of the work: Concept, Exploration, Redesign, Prototype, Shipped. **Category** (optional) is what was designed: Mobile App, Web App, Website, Dashboard, Identity, Digital Product, Interaction, Other.
 - **Video:** plays muted on a loop on Home and `/archive` while on screen, and in the lightbox. Add an Image too: it shows while the video loads and sets the plate's shape up front. MP4 (H.264) plays everywhere; keep clips short and under ~10 MB.
 - **Edit:** change its name, category, image, or video, then Publish.
 - **Order:** newest first. New items appear at the top; the first nine appear on the homepage. The original 25 imported items keep their curated order beneath anything added since.
@@ -49,7 +50,7 @@ The migration retains all original copy and section ordering and stores all case
 
 ## Legacy feed
 
-The remaining field reference below describes the older feed layout. The current Archive uses only Name, Category, Image, and Video.
+The remaining field reference below describes the older feed layout. The current Archive uses only Name, Media (Image and Video), Type, and Category.
 
 ## Setup
 
