@@ -1475,6 +1475,26 @@ dialog[tabindex="-1"]:focus-visible {
     object-fit: cover;
 }
 
+/* The plate after the sixth stands in for the rest: its photo darkened
+   under a count of what is still to see. */
+.wander-more {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0000008c;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    transition: background-color 0.2s ease-out;
+}
+
+.wander-frame--more:hover .wander-more {
+    background: #000000a6;
+}
+
 /* Pointing at a place fades every other one back. */
 .wander-wall.is-focusing > :not(.is-active) {
     opacity: 0.12;

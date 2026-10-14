@@ -2,13 +2,14 @@ import { withContentTransition } from './page-transition.js';
 import { wanderWallSkeleton, watchImageSkeletons } from './skeleton.js';
 
 /**
- * Wandering — a wall of small photographs, one run per place, with no
- * captions. It sits on the About page, under the signature.
+ * Wandering — a short wall of small photographs, place by place, with no
+ * captions. It sits on the About page, under the signature. Only the first
+ * six are shown; a seventh plate says how many more there are.
  *
  * Pointing at a plate fades every other place back, so the run you are on
- * reads as one. Selecting it opens the place as a rail of large slides:
- * the plates on that row lift off the wall and travel into the rail, the
- * rest fade in after them. The rail loops, and is dragged, wheeled or
+ * reads as one. Selecting it opens every photo as a rail of large slides,
+ * starting from the one chosen: the plates on that row lift off the wall
+ * and travel into the rail, the rest fade in after them. The rail loops, and is dragged, wheeled or
  * stepped with the arrow keys, settling each time on the slide nearest the
  * title.
  *
@@ -31,7 +32,12 @@ const MIN_CYCLE = 6;
 const wide = window.matchMedia('(min-width: 1024px)');
 const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+// Plates on the wall before the rest are folded into a "+N" plate.
+const SHOWN = 6;
+
 let places = [];
+// Every published photo in wall order, each tagged with its place.
+let photos = [];
 
 /**
  * Sanity's image CDN resizes on request: the wall asks for a plate-sized
@@ -69,13 +75,30 @@ function spotlight(group) {
     });
 }
 
-function wallHTML() {
-    return places.map(({ place, photos }, g) => photos.map((photo, i) => `<li class="wander-cell" data-group="${g}">
-            <button type="button" class="wander-frame" data-group="${g}" data-photo="${i}"
-                aria-haspopup="dialog" aria-label="${escape(place)}, photo ${i + 1} of ${photos.length}">
-                <img src="${escape(sized(photo, 400))}"${focus(photo)} alt="" loading="lazy" decoding="async" />
+function plateHTML(photo, i, label, extra = '') {
+    return `<li class="wander-cell" data-group="${photo.group}">
+            <button type="button" class="wander-frame${extra ? ' wander-frame--more' : ''}" data-group="${photo.group}"
+                data-photo="${i}" aria-haspopup="dialog" aria-label="${escape(label)}">
+                <img src="${escape(sized(photo, 400))}"${focus(photo)} alt="" loading="lazy" decoding="async" />${extra}
             </button>
-        </li>`).join('')).join('');
+        </li>`;
+}
+
+/**
+ * The first six plates, then — if there are more — the next photo standing
+ * in for the rest, darkened under a count. It opens the rail at that photo,
+ * so the first thing you see is the first one you had not.
+ */
+function wallHTML() {
+    const total = photos.length;
+    const plates = photos.slice(0, SHOWN).map((photo, i) =>
+        plateHTML(photo, i, `${photo.place}, photo ${i + 1} of ${total}`));
+    const rest = total - SHOWN;
+    if (rest > 0) {
+        plates.push(plateHTML(photos[SHOWN], SHOWN, `See ${rest} more photos`,
+            `<span class="wander-more" aria-hidden="true">+${rest}</span>`));
+    }
+    return plates.join('');
 }
 
 async function renderContent(mount) {
@@ -88,9 +111,12 @@ async function renderContent(mount) {
         const data = await res.json();
         places = (Array.isArray(data.places) ? data.places : [])
             .filter((p) => Array.isArray(p.photos) && p.photos.length);
+        photos = places.flatMap(({ place, photos: own }, g) =>
+            own.map((photo) => ({ ...photo, place, group: String(g) })));
     } catch (err) {
         console.warn('[wandering] could not load published places', err);
         places = [];
+        photos = [];
     }
 
     // Nothing published (or nothing reachable) — the section steps aside
@@ -124,7 +150,7 @@ async function renderContent(mount) {
 
     mount.addEventListener('click', (e) => {
         const frame = e.target.closest('.wander-frame');
-        if (frame) open(Number(frame.dataset.group), Number(frame.dataset.photo));
+        if (frame) open(Number(frame.dataset.photo));
     });
 
     const count = document.querySelector('[data-count="wandering"]');
@@ -344,7 +370,7 @@ function step(direction) {
 
 /* ── Opening and closing ─────────────────────────────────── */
 
-function slidesHTML(photos, start) {
+function slidesHTML(start) {
     const n = photos.length;
     const repeat = Math.max(1, Math.ceil(MIN_CYCLE / n));
     // Every copy starts at the photo that was chosen, so the loop still
@@ -366,18 +392,16 @@ function forget() {
     timers = [];
 }
 
-function open(g, start) {
-    const { place, photos } = places[g];
-    if (!photos?.length) return;
+function open(start) {
+    if (!photos[start]) return;
     build();
     forget();
     spotlight(null);
     closing = false;
 
-    // The rail carries the section's name; the place is still announced.
     title.textContent = 'Wandering';
-    dialog.setAttribute('aria-label', `${place}, ${photos.length} photos`);
-    rail.innerHTML = slidesHTML(photos, start);
+    dialog.setAttribute('aria-label', `Wandering, ${photos.length} photos`);
+    rail.innerHTML = slidesHTML(start);
     delete rail.dataset.gaps;
     cycles = [...rail.querySelectorAll('.wander-modal__cycle')];
 
@@ -392,7 +416,7 @@ function open(g, start) {
     velocity = 0;
     settled = true;
 
-    travel(g, start);
+    travel(start);
 }
 
 /**
@@ -401,11 +425,13 @@ function open(g, start) {
  * rows would have to cross the wall to get there, so their slides fade in
  * once the travellers have landed, nearest first.
  */
-function travel(g, start) {
+function travel(start) {
     const timing = wide.matches ? TIMING.wide : TIMING.compact;
     dialog.style.setProperty('--wander-duration', `${timing.travel}ms`);
 
-    const frameFor = (i) => wall?.querySelector(`.wander-frame[data-group="${g}"][data-photo="${i}"]`);
+    // Only the plates on the wall have somewhere to travel from; the "+N"
+    // plate carries the photo it shows.
+    const frameFor = (i) => wall?.querySelector(`.wander-frame[data-photo="${i}"]`);
     const lead = frameFor(start);
     const leadTop = lead?.getBoundingClientRect().top;
 

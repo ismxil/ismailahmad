@@ -51,8 +51,8 @@ export function archiveGridSkeleton(count = 12) {
     </li>`);
 }
 
-/** The Wandering wall: one row of plates, all the 3:4 they will arrive at. */
-export function wanderWallSkeleton(count = 8) {
+/** The Wandering wall: six plates and the "+N", at the 3:4 they arrive at. */
+export function wanderWallSkeleton(count = 7) {
     return repeat(count, () => `<li class="wander-cell" aria-hidden="true">
         <span class="wander-frame skeleton"></span>
     </li>`);
