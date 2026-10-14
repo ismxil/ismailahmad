@@ -185,9 +185,6 @@ let drag = null;
 let wheelTimer;
 let press = { onSlide: false, moved: 0 };
 
-const closeIcon = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"
-    stroke-linecap="round" aria-hidden="true"><path d="m4.5 4.5 11 11M15.5 4.5l-11 11" /></svg>`;
-
 function build() {
     if (dialog) return;
 
@@ -196,7 +193,7 @@ function build() {
     dialog.innerHTML = `
         <header class="wander-modal__head">
             <h2 class="wander-modal__title"></h2>
-            <button type="button" class="wander-modal__close" aria-label="Close photos">${closeIcon}</button>
+            <button type="button" class="wander-modal__close" aria-label="Close photos"><kbd>esc</kbd></button>
         </header>
         <div class="wander-modal__rail"></div>`;
     document.body.appendChild(dialog);

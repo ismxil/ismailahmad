@@ -1566,37 +1566,39 @@ dialog[tabindex="-1"]:focus-visible {
     color: #fff;
 }
 
+/* esc rather than a cross — the same chip the lightbox and the contact
+   card close with, so every overlay on the site is dismissed the same way. */
 .wander-modal__close {
     flex: none;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    margin-right: -4px;
-    padding: 4px;
+    padding: 0;
     border: 0;
-    border-radius: 6px;
     background: transparent;
     color: #fff;
     cursor: pointer;
-    transition: background-color 0.15s ease-out, color 0.15s ease-out;
 }
 
-.wander-modal__close:hover,
-.wander-modal__close:focus-visible {
-    background: #fff;
-    color: #000;
+.wander-modal__close kbd {
+    padding: 6px 12px;
+    border-radius: var(--r-sm);
+    background: #ffffff1f;
+    color: inherit;
+    font: 14px/1.4 var(--font-sans);
+    transition: background-color 0.15s ease-out;
+}
+
+.wander-modal__close:hover kbd {
+    background: #ffffff33;
 }
 
 .wander-modal__close:focus-visible {
+    outline: none;
+}
+
+.wander-modal__close:focus-visible kbd {
     outline: 2px solid #fff;
     outline-offset: 2px;
-}
-
-.wander-modal__close svg {
-    width: 20px;
-    height: 20px;
 }
 
 .wander-modal__rail {
