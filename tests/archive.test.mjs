@@ -6,7 +6,7 @@ function response() {
     return { headers: {}, statusCode: 200, setHeader(k,v) { this.headers[k]=v; }, status(code) { this.statusCode=code; return this; }, json(data) { this.data=data; return this; } };
 }
 
-test('Archive reads published Sanity items in editorial order without caching deleted content', async t => {
+test('Archive reads published Sanity items newest first without caching deleted content', async t => {
     let queryURL;
     const item={id:'archive-test',client:'Example',category:'Branding',cover:'https://cdn.sanity.io/images/project/dataset/image.png'};
     t.mock.method(globalThis,'fetch',async url=>{queryURL=url;return {ok:true,json:async()=>({result:[item]})};});
@@ -15,7 +15,7 @@ test('Archive reads published Sanity items in editorial order without caching de
     assert.equal(queryURL.searchParams.get('perspective'),'published');
     assert(queryURL.searchParams.get('query').includes('drafts.**'));
     assert(queryURL.searchParams.get('query').includes('versions.**'));
-    assert(queryURL.searchParams.get('query').includes('order(coalesce(order'));
+    assert(queryURL.searchParams.get('query').includes('order(coalesce(order, -1) asc, _createdAt desc)'));
     assert.equal(res.headers['Cache-Control'],'no-store');
 });
 

@@ -1,10 +1,12 @@
 import { sanityConfig } from '../js/sanity-config.js';
 
-export const archiveQuery = `*[_type == "feedItem" && !(_id in path("drafts.**")) && !(_id in path("versions.**")) && defined(coalesce(cover.asset->url, previewMedia[0].asset->url))] | order(coalesce(order, 999999) asc, _createdAt desc) {
+// Newest first. The original import kept its hand-set order values, so those
+// items hold their curated sequence below everything added since.
+export const archiveQuery = `*[_type == "feedItem" && !(_id in path("drafts.**")) && !(_id in path("versions.**")) && defined(cover.asset->url)] | order(coalesce(order, -1) asc, _createdAt desc) {
     "id": _id,
     "client": name,
     "category": projectType,
-    "cover": coalesce(cover.asset->url, previewMedia[0].asset->url)
+    "cover": cover.asset->url
 }`;
 
 export default async function handler(req, res) {
