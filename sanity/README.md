@@ -18,7 +18,7 @@ The original 25 covers were imported into Sanity image storage using `scripts/im
 
 ## Manage Wandering
 
-Open **Wandering place** in Studio. The home page's Wandering wall reads only published places from this dataset.
+Open **Wandering place** in Studio. The Wandering wall on the About page, under the signature, reads only published places from this dataset.
 
 - **Add:** create a place, type its name (e.g. Malta), drop its photos into Photos, and click Publish. Write a short Description on each photo for screen readers.
 - **Crop:** every photo shows at 3:4. Set the hotspot on a photo to choose what stays in frame.

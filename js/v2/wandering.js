@@ -3,7 +3,7 @@ import { wanderWallSkeleton, watchImageSkeletons } from './skeleton.js';
 
 /**
  * Wandering — a wall of small photographs, one run per place, each run
- * closed by the place's name.
+ * closed by the place's name. It sits on the About page, under the signature.
  *
  * Pointing at a plate fades every other place back, so the run you are on
  * reads as one. Selecting it opens the place as a rail of large slides:
@@ -99,7 +99,7 @@ async function renderContent(mount) {
     // rather than show an empty heading.
     if (!places.length) {
         mount.innerHTML = '';
-        mount.closest('.section')?.setAttribute('hidden', '');
+        mount.closest('section')?.setAttribute('hidden', '');
         return;
     }
 

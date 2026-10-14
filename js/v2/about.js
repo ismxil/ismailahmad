@@ -1,6 +1,7 @@
 import { initDock } from './dock.js';
 import { experienceItems } from './experience.js';
 import { articleSignature } from './icons.js';
+import { renderWandering } from './wandering.js';
 
 const bio = document.querySelector('.about-bio');
 const signatureTemplate = document.createElement('template');
@@ -31,4 +32,5 @@ experienceItems.forEach(item => {
 });
 
 initDock();
+renderWandering(document.getElementById('wander-wall'));
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());
