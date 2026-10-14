@@ -52,6 +52,7 @@ export default defineType({
       title: 'Type',
       type: 'string',
       options: { list: TYPES, layout: 'radio', direction: 'horizontal' },
+      description: 'Shown on the site next to the name.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -59,7 +60,7 @@ export default defineType({
       title: 'Category',
       type: 'string',
       options: { list: CATEGORIES },
-      description: 'Optional. What was designed.',
+      description: 'Optional, for your own sorting. Not shown on the site.',
     }),
     // Kept from the original import, hidden: order holds those items in
     // their curated sequence, and the legacy feed matches on slug.

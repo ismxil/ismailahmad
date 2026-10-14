@@ -8,7 +8,7 @@ function response() {
 
 test('Archive reads published Sanity items newest first without caching deleted content', async t => {
     let queryURL;
-    const item={id:'archive-test',client:'Example',category:'Branding',cover:'https://cdn.sanity.io/images/project/dataset/image.png'};
+    const item={id:'archive-test',client:'Example',type:'Concept',cover:'https://cdn.sanity.io/images/project/dataset/image.png'};
     t.mock.method(globalThis,'fetch',async url=>{queryURL=url;return {ok:true,json:async()=>({result:[item]})};});
     const res=response();await handler({method:'GET'},res);
     assert.deepEqual(res.data.items,[item]);

@@ -64,7 +64,7 @@ function media(item, i) {
 }
 
 function label(item) {
-    return [item.client, item.category].filter(Boolean).join(' · ');
+    return [item.client, item.type].filter(Boolean).join(' · ');
 }
 
 function escape(str) {
@@ -135,7 +135,7 @@ function paint() {
         img.src = cover(item, index);
         img.alt = label(item);
     }
-    dialog.querySelector('.lightbox__name').textContent = item.client || item.category || '';
+    dialog.querySelector('.lightbox__name').textContent = item.client || item.type || '';
     // No visible caption any more, so the dialog itself carries the label
     // and the position for anyone on a screen reader.
     dialog.setAttribute('aria-label', `${label(item)} — ${index + 1} of ${items.length}`);
