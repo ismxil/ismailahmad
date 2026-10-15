@@ -89,7 +89,7 @@ const BLOCKS = {
     video: (b) => (b.video ? videoFigure(b) : ''),
 
     pair: (b) => `<div class="case-pair">${
-        (b.images || []).map((im) => figure(im.src, im.alt)).join('')
+        (b.images || []).map((im) => (im.video ? videoFigure(im) : figure(im.src, im.alt))).join('')
     }</div>`,
 
     section: (b) => `<section class="case-block">

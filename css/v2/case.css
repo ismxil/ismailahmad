@@ -159,6 +159,13 @@
     }
 }
 
+/* A video beside an image fills its half rather than leaving a gap when
+   the two are cut to different proportions. */
+.case-pair video {
+    height: 100%;
+    object-fit: cover;
+}
+
 .case-actions {
     display: flex;
     flex-wrap: wrap;

@@ -37,7 +37,14 @@ export default {
                     { ...artwork('image', 'Image'), hidden: only('image', 'overlay', 'video'), description: 'For a video section: optional still shown while the video loads.' },
                     { ...string('alt', 'Image description'), hidden: only('image', 'overlay', 'video') },
                     { ...text('note', 'Note'), hidden: only('overlay') },
-                    { name: 'images', title: 'Images', type: 'array', hidden: only('pair'), of: [{ type: 'image', options: { hotspot: true }, fields: [string('alt', 'Image description')] }], validation: Rule => Rule.max(2) },
+                    { name: 'images', title: 'Images', type: 'array', hidden: only('pair'), description: 'Two items, side by side. Each can be an image or a video.', of: [
+                        { type: 'image', title: 'Image', options: { hotspot: true }, fields: [string('alt', 'Image description')] },
+                        { name: 'casePairVideo', type: 'object', title: 'Video', fields: [
+                            { name: 'video', title: 'Video', type: 'file', options: { accept: 'video/mp4,video/webm,video/quicktime' }, description: 'Plays muted on a loop while on screen.', validation: Rule => Rule.required() },
+                            { ...artwork('poster', 'Image'), description: 'Optional still shown while the video loads.' },
+                            string('alt', 'Video description'),
+                        ], preview: { select: { title: 'alt', media: 'poster' }, prepare: ({ title, media }) => ({ title: title || 'Video', subtitle: 'Video', media }) } },
+                    ], validation: Rule => Rule.max(2) },
                     { name: 'items', title: 'Quotes', type: 'array', hidden: only('quotes'), of: [{ name: 'caseQuote', type: 'object', fields: [text('quote', 'Quote'), string('name', 'Name'), string('role', 'Role'), artwork('avatar', 'Portrait')], preview: { select: { title: 'name', subtitle: 'quote', media: 'avatar' } } }] },
                     { ...text('summary', 'Results summary'), hidden: only('results') },
                     { name: 'metrics', title: 'Metrics', type: 'array', hidden: only('results'), of: [{ name: 'caseMetric', type: 'object', fields: [string('value', 'Value'), string('title', 'Title'), text('text', 'Description'), artwork('icon', 'Icon'), string('accent', 'Accent colour')], preview: { select: { title: 'value', subtitle: 'text' } } }] },
