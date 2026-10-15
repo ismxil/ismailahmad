@@ -43,6 +43,36 @@ function figure(src, alt, extraClass = '') {
     </figure>`;
 }
 
+/**
+ * Video sections loop muted, like a moving image rather than a player, and
+ * only while on screen. Reduced motion leaves them on their first frame.
+ */
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+
+function videoFigure(b) {
+    return `<figure class="case-figure">
+        <video src="${escape(asset(b.video))}"${b.src ? ` poster="${escape(asset(b.src))}"` : ''}
+            muted loop playsinline disablepictureinpicture preload="metadata"
+            ${b.alt ? `aria-label="${escape(b.alt)}"` : 'aria-hidden="true"'}></video>
+    </figure>`;
+}
+
+function playWhenVisible(mount) {
+    const videos = mount.querySelectorAll('.case-figure video');
+    if (!videos.length) return;
+    if (!('IntersectionObserver' in window)) {
+        if (!still.matches) videos.forEach((v) => v.play().catch(() => {}));
+        return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(({ target, isIntersecting }) => {
+            if (isIntersecting && !still.matches) target.play().catch(() => {});
+            else target.pause();
+        });
+    }, { rootMargin: '200px 0px' });
+    videos.forEach((v) => observer.observe(v));
+}
+
 function actions(list) {
     if (!list || !list.length) return '';
     return `<p class="case-actions">${list
@@ -55,6 +85,8 @@ function actions(list) {
 
 const BLOCKS = {
     image: (b) => figure(b.src, b.alt),
+
+    video: (b) => (b.video ? videoFigure(b) : ''),
 
     pair: (b) => `<div class="case-pair">${
         (b.images || []).map((im) => figure(im.src, im.alt)).join('')
@@ -199,6 +231,7 @@ async function renderContent() {
         </nav>`;
 
     watchImageSkeletons(mount);
+    playWhenVisible(mount);
 
     // Keep clean URLs when they are available, fall back to the query form
     if (window.location.pathname.startsWith('/work/')) {

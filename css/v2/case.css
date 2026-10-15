@@ -140,7 +140,9 @@
     box-shadow: var(--tray-shadow);
 }
 
-.case-figure img {
+.case-figure img,
+.case-figure video {
+    display: block;
     width: 100%;
     height: auto;
 }

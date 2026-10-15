@@ -27,14 +27,15 @@ export default {
                 fields: [
                     { name: 'type', title: 'Section type', type: 'string', initialValue: 'section', validation: Rule => Rule.required(), options: { list: [
                         { title: 'Text section', value: 'section' }, { title: 'Image', value: 'image' },
-                        { title: 'Two images', value: 'pair' }, { title: 'Customer quotes', value: 'quotes' },
+                        { title: 'Two images', value: 'pair' }, { title: 'Video', value: 'video' }, { title: 'Customer quotes', value: 'quotes' },
                         { title: 'Results / metrics', value: 'results' }, { title: 'Callout', value: 'callout' },
                         { title: 'Image with text', value: 'overlay' },
                     ] } },
                     { ...string('label', 'Section heading'), hidden: only('section', 'results', 'callout', 'overlay') },
                     { ...text('body', 'Body'), hidden: only('section', 'callout', 'overlay') },
-                    { ...artwork('image', 'Image'), hidden: only('image', 'overlay') },
-                    { ...string('alt', 'Image description'), hidden: only('image', 'overlay') },
+                    { name: 'video', title: 'Video', type: 'file', hidden: only('video'), options: { accept: 'video/mp4,video/webm,video/quicktime' }, description: 'Plays muted on a loop while on screen. Keep it short and under ~20 MB.' },
+                    { ...artwork('image', 'Image'), hidden: only('image', 'overlay', 'video'), description: 'For a video section: optional still shown while the video loads.' },
+                    { ...string('alt', 'Image description'), hidden: only('image', 'overlay', 'video') },
                     { ...text('note', 'Note'), hidden: only('overlay') },
                     { name: 'images', title: 'Images', type: 'array', hidden: only('pair'), of: [{ type: 'image', options: { hotspot: true }, fields: [string('alt', 'Image description')] }], validation: Rule => Rule.max(2) },
                     { name: 'items', title: 'Quotes', type: 'array', hidden: only('quotes'), of: [{ name: 'caseQuote', type: 'object', fields: [text('quote', 'Quote'), string('name', 'Name'), string('role', 'Role'), artwork('avatar', 'Portrait')], preview: { select: { title: 'name', subtitle: 'quote', media: 'avatar' } } }] },
