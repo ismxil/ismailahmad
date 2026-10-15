@@ -38,6 +38,28 @@ function projectCover(project) {
     return selected;
 }
 
+// A cover video stands in for the rotating images. It loops muted and only
+// while on screen; reduced motion leaves it on its first frame.
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+const playback = 'IntersectionObserver' in window
+    ? new IntersectionObserver((entries) => {
+        entries.forEach(({ target, isIntersecting }) => {
+            if (isIntersecting && !still.matches) target.play().catch(() => {});
+            else target.pause();
+        });
+    }, { rootMargin: '200px 0px' })
+    : null;
+
+function art(c, shuffleCovers) {
+    if (c.coverVideo) {
+        return `<video src="${escape(caseAsset(c.coverVideo))}" poster="${escape(caseAsset(c.cover))}"
+                        muted loop playsinline disablepictureinpicture preload="metadata"
+                        aria-hidden="true"></video>`;
+    }
+    return `<img src="${escape(caseAsset(shuffleCovers ? projectCover(c) : c.cover))}" alt="" aria-hidden="true" loading="lazy"
+                        decoding="async" />`;
+}
+
 async function renderContent(mount, { shuffleCovers = false } = {}) {
     if (!mount) return;
     // Stand the grid up before the request, so the section has its height
@@ -55,8 +77,7 @@ async function renderContent(mount, { shuffleCovers = false } = {}) {
         .map((c) => `<li>
             <a class="case-card" href="/work/${c.slug}">
                 <span class="case-card__art">
-                    <img src="${escape(caseAsset(shuffleCovers ? projectCover(c) : c.cover))}" alt="" aria-hidden="true" loading="lazy"
-                        decoding="async" />
+                    ${art(c, shuffleCovers)}
                 </span>
                 <span class="case-card__text">
                     <span class="case-card__title">${escape(c.name)}${ARROW}</span>
@@ -68,10 +89,14 @@ async function renderContent(mount, { shuffleCovers = false } = {}) {
         .join('') || '<li><p class="section__note">No case studies published yet.</p></li>';
 
     // Fall back to the project's original cover if a gallery asset fails.
-    mount.querySelectorAll('img').forEach((image, index) => {
-        image.addEventListener('error', () => {
-            image.src = caseAsset(cases[index].cover);
+    mount.querySelectorAll('.case-card').forEach((card, index) => {
+        card.querySelector('img')?.addEventListener('error', (e) => {
+            e.target.src = caseAsset(cases[index].cover);
         }, { once: true });
+        const video = card.querySelector('video');
+        if (!video) return;
+        if (playback) playback.observe(video);
+        else if (!still.matches) video.play().catch(() => {});
     });
 
     watchImageSkeletons(mount);
@@ -97,7 +122,7 @@ function rotateCovers(mount, cases) {
         if (paused || busy || document.hidden || document.querySelector('dialog[open]')) return;
         const cards = [...mount.querySelectorAll('.case-card')];
         const candidates = cards.filter(card => {
-            if (card.querySelector('.image-skeleton')) return false;
+            if (card.querySelector('.image-skeleton, video')) return false;
             const rect = card.querySelector('.case-card__art').getBoundingClientRect();
             return rect.top < innerHeight && rect.bottom > 0 &&
                 !card.matches(':hover, :focus-within');

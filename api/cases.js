@@ -4,6 +4,7 @@ export const caseQuery = `*[_type == "caseStudy" && !(_id in path("drafts.**")) 
     "slug": slug.current, name, headline, lede, url, role, years, type, scope, industry,
     "cover": cover.asset->url, "hero": hero.asset->url,
     "rotatingCovers": rotatingCovers[].asset->url,
+    "coverVideo": coverVideo.asset->url,
     blocks[]{type,label,body,alt,note,summary,"src":image.asset->url,
         images[]{"src":asset->url,alt},
         items[]{quote,name,role,"avatar":avatar.asset->url},

@@ -1165,7 +1165,8 @@ dialog[tabindex="-1"]:focus-visible {
     box-shadow: var(--tray-shadow-hover);
 }
 
-.case-card__art img {
+.case-card__art img,
+.case-card__art video {
     position: absolute;
     inset: 0;
     display: block;
@@ -1175,7 +1176,8 @@ dialog[tabindex="-1"]:focus-visible {
     transition: scale 0.35s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.case-card:hover .case-card__art img {
+.case-card:hover .case-card__art img,
+.case-card:hover .case-card__art video {
     scale: 1.03;
 }
 
