@@ -16,7 +16,7 @@ export const projectItems = [
     {
         slug: 'wandarer', name: 'Wandarer', role: 'A community of wanderers',
         description: 'Wandarer is a community for wanderers — a place to connect through a shared curiosity about the world.',
-        icon: '/assets/clients/icons/wndrground.svg', url: '/personal/wandarer', website: 'https://wandarer.com',
+        icon: '/assets/clients/icons/wandarer.svg', url: '/personal/wandarer', website: 'https://wandarer.com',
     },
 ];
 
