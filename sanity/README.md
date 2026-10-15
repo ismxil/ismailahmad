@@ -39,6 +39,7 @@ Open **Case study** to edit Lemfi, Etihad Credit Bureau, Cadana, or Gomoney, or 
 
 - **Overview:** project name, headline, introduction paragraphs, card cover, hero image, and sort order.
 - **Rotating cover images** (Overview): choose/upload images for homepage cards. Drag to change their cycle order. Empty uses the static Project card cover; a single selected image stays still. The Work index keeps using Project card cover.
+- **Hero video** (Overview): optional. Plays muted on a loop at the top of the case page in place of the Hero image, which becomes the still shown while it loads.
 - **Cover video** (Overview): optional. Plays muted on a loop on the project card on Home and Work, in place of the rotating images. Project card cover still shows while it loads.
 - **Details:** role, years, project type, scope, industry, and website.
 - **Content:** reorder, add, edit, or remove text sections, images, videos, image pairs, quotes, results, callouts, and images with text. A **Video** section plays muted on a loop while on screen; its optional Image is the still shown while it loads. **Two images** can hold an image or a video in each slot (Add item → Video).

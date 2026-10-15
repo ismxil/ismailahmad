@@ -58,7 +58,7 @@ function videoFigure(b) {
 }
 
 function playWhenVisible(mount) {
-    const videos = mount.querySelectorAll('.case-figure video');
+    const videos = mount.querySelectorAll('.case-hero video, .case-figure video');
     if (!videos.length) return;
     if (!('IntersectionObserver' in window)) {
         if (!still.matches) videos.forEach((v) => v.play().catch(() => {}));
@@ -198,8 +198,11 @@ async function renderContent() {
     const next = cases[(cases.indexOf(item) + 1) % cases.length];
 
     mount.innerHTML = `
-        <div class="case-hero">
-            <img src="${escape(asset(item.hero))}" alt="${escape(item.name)}" />
+        <div class="case-hero">${item.heroVideo
+            ? `<video src="${escape(asset(item.heroVideo))}"${item.hero ? ` poster="${escape(asset(item.hero))}"` : ''}
+                muted loop playsinline disablepictureinpicture preload="auto"
+                aria-label="${escape(item.name)}"></video>`
+            : `<img src="${escape(asset(item.hero))}" alt="${escape(item.name)}" />`}
         </div>
 
         <header class="case-intro">

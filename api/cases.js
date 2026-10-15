@@ -2,7 +2,7 @@ import { sanityConfig } from '../js/sanity-config.js';
 
 export const caseQuery = `*[_type == "caseStudy" && !(_id in path("drafts.**")) && !(_id in path("versions.**")) && defined(slug.current)] | order(coalesce(order, 999999) asc, _createdAt asc) {
     "slug": slug.current, name, headline, lede, url, role, years, type, scope, industry,
-    "cover": cover.asset->url, "hero": hero.asset->url,
+    "cover": cover.asset->url, "hero": hero.asset->url, "heroVideo": heroVideo.asset->url,
     "rotatingCovers": rotatingCovers[].asset->url,
     "coverVideo": coverVideo.asset->url,
     blocks[]{type,label,body,alt,note,summary,"src":image.asset->url,"video":video.asset->url,

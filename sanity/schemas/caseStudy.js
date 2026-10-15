@@ -16,7 +16,8 @@ export default {
         { ...artwork('cover', 'Project card cover'), group: 'overview', validation: Rule => Rule.required() },
         { name: 'rotatingCovers', title: 'Rotating cover images', type: 'array', group: 'overview', of: [{ type: 'image' }], description: 'Choose images for the homepage card. Drag to change the rotation order. Leave empty to use Project card cover; a single image stays still.' },
         { name: 'coverVideo', title: 'Cover video', type: 'file', group: 'overview', options: { accept: 'video/mp4,video/webm,video/quicktime' }, description: 'Optional. Plays muted on a loop on the project card and replaces the rotating images. Project card cover stays as the still shown while it loads. Keep it short and under ~10 MB.' },
-        { ...artwork('hero', 'Hero image'), group: 'overview', validation: Rule => Rule.required() },
+        { ...artwork('hero', 'Hero image'), group: 'overview', description: 'The large image at the top of the case page. With a hero video, the still shown while it loads.', validation: Rule => Rule.custom((value, { document }) => (value?.asset || document?.heroVideo?.asset ? true : 'Add a hero image or a hero video.')) },
+        { name: 'heroVideo', title: 'Hero video', type: 'file', group: 'overview', options: { accept: 'video/mp4,video/webm,video/quicktime' }, description: 'Optional. Plays muted on a loop at the top of the case page in place of the hero image. Keep it short and under ~20 MB.' },
         { name: 'order', title: 'Sort order', type: 'number', group: 'overview', description: 'Lower numbers appear first on Home, Work, and next-project links.' },
         ...[string('role', 'Role'), string('years', 'Years'), string('type', 'Project type'), list('scope', 'Scope'), list('industry', 'Industry'), { name: 'url', title: 'Project website', type: 'url' }].map(field => ({ ...field, group: 'details' })),
         {
