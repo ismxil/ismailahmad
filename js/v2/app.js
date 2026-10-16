@@ -10,6 +10,7 @@ import { initContactCard } from './contact-card.js';
 import { initPresence } from './presence.js';
 import { initDock } from './dock.js';
 import { initPageSearch } from './page-search.js';
+import { initChipStacks } from './chip-stack.js';
 
 /* ── Theme ───────────────────────────────────────────────── */
 
@@ -31,6 +32,7 @@ function initTheme() {
 
 async function boot() {
     initTheme();
+    initChipStacks();
     renderProjects(document.getElementById('personal-list'));
     initContactCard();
     initPresence();

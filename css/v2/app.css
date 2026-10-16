@@ -530,6 +530,131 @@ ul {
     color: var(--text-tertiary);
 }
 
+/* A run of client chips folded into one pill of overlapping logos. Hover,
+   focus or a tap unfolds it: the logos slide apart and each name grows back
+   in. Collapsed, the wrapper's font-size is zero so the spaces between the
+   chips take no room and their backgrounds butt into a single pill. */
+.chip-stack {
+    font-size: 0;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.chip-stack .chip,
+.chip-stack__count {
+    margin-inline: 0;
+    padding-inline: 0;
+    border-radius: 0;
+    gap: 0;
+    transition:
+        margin 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        padding 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        gap 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.35s ease-out,
+        background-color 0.15s ease-out;
+}
+
+.chip-stack .chip + .chip,
+.chip-stack .chip + .chip-stack__and + .chip {
+    margin-inline-start: -4px;
+}
+
+.chip-stack .chip:first-child {
+    padding-inline-start: 6px;
+    border-start-start-radius: var(--r-sm);
+    border-end-start-radius: var(--r-sm);
+}
+
+/* A ring in the pill's own colour separates the overlapping marks */
+.chip-stack .chip img {
+    position: relative;
+    box-shadow: 0 0 0 1.5px var(--control);
+}
+
+.chip-stack .chip__label {
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+        max-width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.2s ease-out;
+}
+
+.chip-stack__and {
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+
+.chip-stack__count {
+    display: inline-flex;
+    align-items: center;
+    max-width: 120px;
+    padding: 2px 6px 2px 6px;
+    border-start-end-radius: var(--r-sm);
+    border-end-end-radius: var(--r-sm);
+    background: var(--control);
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.4;
+    translate: 0 -1px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition:
+        max-width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        padding 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.15s ease-out;
+}
+
+/* A chip's baseline is its icon's bottom edge. This empty icon-height box
+   gives the count the same one, so the two halves of the pill line up. */
+.chip-stack__count::before {
+    content: '';
+    height: 14px;
+}
+
+.chip-stack.is-open {
+    font-size: inherit;
+    white-space: normal;
+    cursor: auto;
+}
+
+.chip-stack.is-open .chip {
+    margin-inline: 2px;
+    padding-inline: 6px;
+    border-radius: var(--r-sm);
+    gap: 6px;
+}
+
+.chip-stack.is-open .chip img {
+    box-shadow: 0 0 0 0 var(--control);
+}
+
+.chip-stack.is-open .chip__label {
+    max-width: 160px;
+    opacity: 1;
+    transition-delay: 0s, 0.08s;
+}
+
+.chip-stack.is-open .chip-stack__and {
+    opacity: 1;
+}
+
+.chip-stack.is-open .chip-stack__count {
+    max-width: 0;
+    padding-inline: 0;
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chip-stack .chip,
+    .chip-stack .chip__label,
+    .chip-stack__and,
+    .chip-stack__count {
+        transition: none;
+    }
+}
+
 /* A dialog takes focus on open so the close button does not show a ring.
    The dialog is only a focus holder, so it should not show one either —
    real keyboard navigation inside still does. */
