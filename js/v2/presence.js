@@ -34,3 +34,58 @@ export function initPresence() {
     portrait.addEventListener('pointerenter', paint);
     portrait.addEventListener('focusin', paint);
 }
+
+/**
+ * Ismail's own time beside "Open to work", so a reader can tell whether a
+ * message lands in his morning or his night. Berlin, like the contact card.
+ */
+const TZ = 'Europe/Berlin';
+
+export function initLocalTime() {
+    const el = document.querySelector('[data-local-time]');
+    if (!el) return;
+
+    const fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true,
+        timeZoneName: 'short',
+    });
+
+    const paint = () => {
+        const now = new Date();
+        const parts = fmt.formatToParts(now);
+        const part = (type) => parts.find((p) => p.type === type)?.value || '';
+        const period = part('dayPeriod').replace(/\W/g, '').toLowerCase();
+        el.textContent = `${part('hour')}:${part('minute')}${period} ${part('timeZoneName')}`;
+        el.dateTime = now.toISOString();
+        el.hidden = false;
+        // Tick on the minute rather than every 60s from load, so it never lags.
+        setTimeout(paint, 60_000 - (now.getSeconds() * 1000 + now.getMilliseconds()));
+    };
+
+    paint();
+}
+
+/**
+ * Availability. Change STATUS to switch the dot, the pill and the line
+ * that opens out of the dot on hover; the colours live in app.css.
+ */
+export const STATUS = 'available';
+
+export const STATUSES = {
+    available: { label: 'Available', detail: 'Open to work' },
+    partial: { label: 'Partly available', detail: 'Open to select projects' },
+    booked: { label: 'Booked', detail: 'Fully booked for now' },
+    away: { label: 'Not looking', detail: 'Not taking on new work' },
+};
+
+export function initStatus(key = STATUS) {
+    const identity = document.querySelector('.identity');
+    const status = STATUSES[key];
+    if (!identity || !status) return;
+
+    identity.dataset.status = key;
+    const label = identity.querySelector('[data-status-label]');
+    const detail = identity.querySelector('[data-status-detail]');
+    if (label) label.textContent = status.label;
+    if (detail) detail.textContent = status.detail;
+}

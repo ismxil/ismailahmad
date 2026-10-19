@@ -46,6 +46,10 @@
     --accent-soft: #393bfe1f;
     --live: #15803d;
     --live-soft: #16a34a1a;
+    --partial: #b45309;
+    --partial-soft: #d977061a;
+    --booked: #dc2626;
+    --booked-soft: #dc26261a;
 
     /* Radii */
     --r-sm: 8px;
@@ -79,4 +83,8 @@
     --accent-soft: #7f80ff29;
     --live: #3ccf6e;
     --live-soft: #3ccf6e1f;
+    --partial: #f5b544;
+    --partial-soft: #f5b5441f;
+    --booked: #f87171;
+    --booked-soft: #f871711f;
 }

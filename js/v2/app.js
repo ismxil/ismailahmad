@@ -8,7 +8,7 @@ import { renderBlogPreview } from './blog-preview.js';
 import { renderArchive } from './archive.js';
 import { initBookingModal } from './booking-modal.js';
 import { initContactCard } from './contact-card.js';
-import { initPresence } from './presence.js';
+import { initPresence, initLocalTime, initStatus } from './presence.js';
 import { initDock } from './dock.js';
 import { initPageSearch } from './page-search.js';
 import { initChipStacks } from './chip-stack.js';
@@ -38,6 +38,8 @@ async function boot() {
     initContactCard();
     initBookingModal();
     initPresence();
+    initStatus();
+    initLocalTime();
     initDock();
 
     // Blog and archive arrive over the network; wait for them so the
