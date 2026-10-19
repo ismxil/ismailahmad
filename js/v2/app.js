@@ -6,6 +6,7 @@ import { renderProjects } from './projects.js';
 import { renderWork } from './work.js';
 import { renderBlogPreview } from './blog-preview.js';
 import { renderArchive } from './archive.js';
+import { initBookingModal } from './booking-modal.js';
 import { initContactCard } from './contact-card.js';
 import { initPresence } from './presence.js';
 import { initDock } from './dock.js';
@@ -35,6 +36,7 @@ async function boot() {
     initChipStacks();
     renderProjects(document.getElementById('personal-list'));
     initContactCard();
+    initBookingModal();
     initPresence();
     initDock();
 

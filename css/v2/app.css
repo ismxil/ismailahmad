@@ -96,11 +96,7 @@ ul {
     padding: 4px 8px;
     border-radius: 12px;
     color: var(--text-primary);
-    transition: background-color 0.15s ease-out, scale 0.15s ease-out;
-}
-
-.crumb:hover {
-    background: var(--control);
+    transition: scale 0.15s ease-out;
 }
 
 .crumb:active {
@@ -144,6 +140,19 @@ ul {
 @keyframes sign {
     to {
         stroke-dashoffset: 0;
+    }
+}
+
+/* Replay the pen twice on hover or keyboard focus, then leave it signed. */
+@keyframes signature-hover {
+    from { stroke-dashoffset: 2000; }
+    80%, to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .crumb:is(:hover, :focus-visible) .sig path {
+        stroke-dasharray: 2000;
+        animation: signature-hover 1s cubic-bezier(0.4, 0.15, 0.3, 1) 0s 2 forwards;
     }
 }
 
@@ -2005,9 +2014,7 @@ kbd {
 
 .dock__mark { width: 17px; height: 17px; flex-shrink: 0; color: var(--text-tertiary); }
 .dock-launcher {
-    position: fixed;
-    inset: auto 0 16px;
-    z-index: 30;
+    position: static;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -2027,7 +2034,7 @@ kbd {
 .dock-launcher span { flex: 1; text-align: left; }
 .dock-launcher kbd { font: 12px var(--font-sans); padding: 2px 5px; border-radius: 4px; background: var(--control); }
 @media (min-width: 640px) {
-    .command-menu, .dock-launcher { bottom: 24px; }
+    .command-menu { bottom: 24px; }
 }
 
 /* On a phone the software keyboard — and on iOS its accessory bar of
@@ -2210,3 +2217,91 @@ kbd {
 .case-card__art > .image-skeleton { height: 100%; aspect-ratio: auto; }
 .case-hero > .image-skeleton { max-height: 72vh; }
 .case-quote__who > .image-skeleton { width: 36px; height: 36px; border-radius: 50%; }
+
+/* A slow wash of colour belongs to the end of the page. */
+body {
+    position: relative;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    inset: auto 0 0;
+    height: 420px;
+    opacity: 0.18;
+    background-image:
+        radial-gradient(ellipse at 50% 100%, #00b74a 0%, transparent 65%),
+        radial-gradient(ellipse at 50% 100%, #393bfe 0%, transparent 65%),
+        radial-gradient(ellipse at 50% 100%, #5270ff 0%, transparent 68%);
+    background-size: 70% 100%, 65% 85%, 60% 75%;
+    background-position: -45% 100%, 110% 100%, 45% 100%;
+    background-repeat: no-repeat;
+    animation: footer-glow 18s ease-in-out infinite alternate;
+}
+
+.shell { position: relative; z-index: 1; }
+
+.dark body::after { opacity: 0.35; }
+
+@keyframes footer-glow {
+    50% { background-position: 30% 100%, 65% 100%, 120% 100%; }
+    100% { background-position: 110% 100%, -40% 100%, 35% 100%; }
+}
+
+.team-card {
+    flex-shrink: 0;
+    margin-top: 48px;
+    padding: 20px;
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+.team-card h2 { font-size: 16px; line-height: 1.4; }
+.team-card p { margin-top: 4px; color: var(--text-secondary); font-size: 15px; line-height: 1.5; }
+.team-card__talk {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 8px 24px;
+    min-height: 40px;
+    border-radius: 8px;
+    background: #00b344;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background 160ms ease;
+}
+.team-card__talk:hover { background: #008f36; }
+.page-search-slot + .site-footer {
+    flex-shrink: 0;
+    margin-top: 0;
+    padding: 28px 0 24px;
+    font-size: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.page-search-slot {
+    flex-shrink: 0;
+    margin-top: auto;
+    min-height: 96px;
+    padding: 48px 0 0;
+}
+
+.team-card + .page-search-slot { margin-top: 0; padding-top: 32px; min-height: 80px; }
+
+.page-search-slot .dock-launcher {
+    position: static;
+    inset: auto;
+    width: min(300px, 100%);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    body::after { animation: none; }
+    .team-card__talk { transition: none; }
+}

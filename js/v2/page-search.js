@@ -104,7 +104,17 @@ export function initPageSearch() {
     launcher.setAttribute('aria-controls', 'page-search');
     launcher.setAttribute('aria-expanded', 'false');
     launcher.innerHTML = `${icon}<span>Search this page…</span><kbd>/</kbd>`;
-    document.body.appendChild(launcher);
+    // Always keep search in the page column, before the copyright footer.
+    const footer = document.querySelector('.site-footer');
+    let slot = document.querySelector('[data-page-search-slot]');
+    if (!slot) {
+        slot = document.createElement('div');
+        slot.className = 'page-search-slot';
+        slot.setAttribute('data-page-search-slot', '');
+    }
+    if (footer) footer.before(slot);
+    else if (!slot.isConnected) (document.querySelector('.shell') || document.body).append(slot);
+    slot.appendChild(launcher);
 
     const input = dialog.querySelector('input');
     const results = dialog.querySelector('#page-search-results');
