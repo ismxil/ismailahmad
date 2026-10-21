@@ -2,7 +2,8 @@
   "dependencies": {
     "@portabletext/to-html": "^6.0.0",
     "@sanity/webhook": "^4.0.4",
-    "@vercel/analytics": "^2.0.1"
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/functions": "^3.10.2"
   },
   "devDependencies": {
     "@portabletext/block-tools": "^6.0.4",
