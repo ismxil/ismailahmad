@@ -7,6 +7,7 @@ import cases from '../api/cases.js';
 import wandering from '../api/wandering.js';
 import subscribe from '../api/subscribe.js';
 import sanityPublish from '../api/sanity-publish.js';
+import middleware, { config as middlewareConfig } from '../middleware.js';
 const apiHandlers = { '/api/posts': posts, '/api/archive': archive, '/api/cases': cases, '/api/wandering': wandering, '/api/subscribe': subscribe };
 // Reads the request stream itself, so it must not be drained first.
 const rawBodyHandlers = { '/api/sanity-publish': sanityPublish };
@@ -77,6 +78,12 @@ http.createServer(async (req, res) => {
         return res.end();
     }
 
+    // Routing Middleware runs on Vercel before the filesystem; mirror its rewrites.
+    if (path === middlewareConfig.matcher) {
+        const rewritten = (await middleware(new Request(`http://${req.headers.host}${req.url}`, { headers: req.headers })))?.headers.get('x-middleware-rewrite');
+        if (rewritten) path = new URL(rewritten).pathname;
+    }
+
     if (path === '/') path = '/index.html';
 
     // Vercel checks the filesystem before rewrites, so a real file always
@@ -112,4 +119,5 @@ http.createServer(async (req, res) => {
     console.log(`Site:    http://localhost:${port}`);
     console.log(`Blog:    http://blog.localhost:${port}`);
     console.log(`Archive: http://archives.localhost:${port}`);
+    console.log(`Lagos:   http://tiny-lagos.localhost:${port}`);
 });

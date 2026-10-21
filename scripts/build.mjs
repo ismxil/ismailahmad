@@ -14,7 +14,7 @@ for (const directory of ['assets', 'css', 'js', 'data']) {
     await cp(directory, `public/${directory}`, { recursive: true, filter: path => !path.endsWith('.DS_Store') });
 }
 for (const file of await readdir('.')) {
-    if (/\.(html|css|js|pdf)$/.test(file) && file !== 'tailwind.config.js') {
+    if (/\.(html|css|js|pdf)$/.test(file) && !['tailwind.config.js', 'middleware.js'].includes(file)) {
         await cp(file, `public/${file}`);
     }
 }
