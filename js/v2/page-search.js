@@ -104,7 +104,7 @@ export function initPageSearch() {
     launcher.setAttribute('aria-controls', 'page-search');
     launcher.setAttribute('aria-expanded', 'false');
     launcher.innerHTML = `${icon}<span>Search this page…</span><kbd>/</kbd>`;
-    // Always keep search in the page column, before the copyright footer.
+    // Reserve its landing space above the footer; float over the viewport elsewhere.
     const footer = document.querySelector('.site-footer');
     let slot = document.querySelector('[data-page-search-slot]');
     if (!slot) {
@@ -114,7 +114,28 @@ export function initPageSearch() {
     }
     if (footer) footer.before(slot);
     else if (!slot.isConnected) (document.querySelector('.shell') || document.body).append(slot);
-    slot.appendChild(launcher);
+    document.body.appendChild(launcher);
+
+    // As the copyright enters the viewport, lift search above it.
+    // Keep the launcher outside the shell so page animations cannot trap fixed positioning.
+    let positionFrame = 0;
+    function positionLauncher() {
+        positionFrame = 0;
+        const base = window.innerWidth >= 640 ? 24 : 16;
+        const footerTop = footer?.getBoundingClientRect().top ?? window.innerHeight;
+        launcher.style.setProperty('--search-bottom', `${Math.max(base, window.innerHeight - footerTop + 16)}px`);
+    }
+    function schedulePosition() {
+        if (!positionFrame) positionFrame = window.requestAnimationFrame(positionLauncher);
+    }
+    window.addEventListener('scroll', schedulePosition, { passive: true });
+    window.addEventListener('resize', schedulePosition);
+    if ('ResizeObserver' in window) {
+        const observer = new window.ResizeObserver(schedulePosition);
+        observer.observe(document.body);
+        if (footer) observer.observe(footer);
+    }
+    positionLauncher();
 
     const input = dialog.querySelector('input');
     const results = dialog.querySelector('#page-search-results');
