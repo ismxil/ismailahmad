@@ -1936,7 +1936,7 @@ kbd {
     cursor: pointer;
 }
 .menu-trigger__icon { display: none; }
-@media (min-width: 640px) {
+@media (max-width: 639px) {
     .menu-trigger .menu-trigger__icon { display: block; }
     .menu-trigger__label { display: none; }
     .header-actions .menu-trigger { width: 34px; height: 34px; padding: 0; justify-content: center; }
