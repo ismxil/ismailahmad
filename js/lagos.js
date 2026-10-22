@@ -171,8 +171,14 @@ function renderArt(){draw()}
 // Once the map fits inside the viewport on an axis, it locks to the centre of
 // that axis. Zoomed in, the camera can pan across the map plus a little forest,
 // and that margin shrinks to nothing as the map approaches the viewport size.
+// Zoomed right out, the map locks to the middle of the screen. As you zoom in, the camera
+// is freed quickly (fully once the map is an eighth bigger than the screen), so zooming in
+// toward a corner goes to that corner instead of being pulled back to the middle.
 function constrainCamera(){
- const clamp=(center,start,span,view)=>{const spare=Math.max(0,span-view)/2,range=spare+Math.min(300,spare),middle=start+span/2;return Math.max(middle-range,Math.min(middle+range,center))};
+ const clamp=(center,start,span,view)=>{
+  const free=Math.max(0,Math.min(1,(span-view)/(span*.12))),range=span/2*free+Math.min(300,Math.max(0,span-view)/2),middle=start+span/2;
+  return Math.max(middle-range,Math.min(middle+range,center));
+ };
  const cx=clamp(WORLD.width/2-pan.x/scale,COVERAGE.x,COVERAGE.width,width/scale);
  const cy=clamp(WORLD.height/2-pan.y/scale,COVERAGE.y,COVERAGE.height,height/scale);
  pan.x=-(cx-WORLD.width/2)*scale;pan.y=-(cy-WORLD.height/2)*scale;
@@ -462,7 +468,14 @@ function endDrag(e){
  if(track.length>1&&now-last.t<60){const dt=Math.max(16,last.t-first.t),vx=(last.x-first.x)/dt,vy=(last.y-first.y)/dt;if(Math.hypot(vx,vy)>.08){velocity={x:vx,y:vy,time:now};draw()}}
 }
 for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,endDrag);
-canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(Math.exp(-e.deltaY*.0015),e.clientX,e.clientY)},{passive:false});canvas.addEventListener('dblclick',e=>zoom(1.5,e.clientX,e.clientY));
+// Wheel and trackpad zoom anywhere on the map, including over pins and labels. Pinches
+// arrive as ctrl+wheel with small deltas, so they get a higher rate than wheel notches.
+$('explorer').addEventListener('wheel',e=>{
+ if(e.target.closest('#place-card,#place-index,#results,#settings,#forecast,dialog'))return;
+ e.preventDefault();
+ const unit=e.deltaMode===1?40:e.deltaMode===2?800:1;
+ zoom(Math.exp(-e.deltaY*unit*(e.ctrlKey?.012:.0025)),e.clientX,e.clientY);
+},{passive:false});$('explorer').addEventListener('dblclick',e=>{if(e.target===canvas||e.target.closest('#pins'))zoom(1.5,e.clientX,e.clientY)});
 document.addEventListener('keydown',e=>{if(about.open)return;if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();$('search').focus()}if(document.activeElement!==canvas)return;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','+','=','-','0'].includes(e.key))e.preventDefault();if(e.key==='ArrowUp')pan.y+=45;if(e.key==='ArrowDown')pan.y-=45;if(e.key==='ArrowLeft')pan.x+=45;if(e.key==='ArrowRight')pan.x-=45;if(e.key==='+'||e.key==='=')zoom(1.2);if(e.key==='-')zoom(1/1.2);if(e.key==='0')reset();draw()});
 window.addEventListener('resize',resize);
 window.addEventListener('hashchange',()=>{if(location.hash)selectPlace(location.hash.slice(1))});
