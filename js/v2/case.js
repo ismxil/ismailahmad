@@ -126,18 +126,24 @@ const BLOCKS = {
         }</ul>
     </section>`,
 
-    overlay: (b) => `<section class="case-block">
+    overlay: (b, slug) => `<section class="case-overlay">
         ${figure(b.src, b.alt)}
-        ${b.label ? `<h2 class="case-block__title">${escape(b.label)}</h2>` : ''}
-        <div class="case-prose">${paragraphs(b.body)}</div>
-        ${b.note ? `<p class="case-note">${escape(b.note)}</p>` : ''}
-        ${actions(b.actions)}
+        <div class="case-overlay__content">
+            ${b.label ? `<h2 class="case-overlay__label">${escape(b.label)}</h2>` : ''}
+            <div class="case-overlay__body">${paragraphs(b.body)}</div>
+            ${b.note ? `<p class="case-overlay__note">${escape(b.note)}</p>` : ''}
+            ${actions(b.actions)}
+            ${slug === 'etihad' && !b.actions?.length ? `<a class="case-overlay__contact" href="mailto:work@ismailahmad.com?subject=Etihad%20Credit%20Bureau%20case%20study">
+                Contact for casestudy
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            </a>` : ''}
+        </div>
     </section>`,
 };
 
-function renderBlocks(blocks) {
+function renderBlocks(blocks, slug) {
     return (blocks || [])
-        .map((b) => (BLOCKS[b.type] ? BLOCKS[b.type](b) : ''))
+        .map((b) => (BLOCKS[b.type] ? BLOCKS[b.type](b, slug) : ''))
         .join('');
 }
 
@@ -190,6 +196,8 @@ async function renderContent() {
         return;
     }
 
+    mount.dataset.case = item.slug;
+
     document.title = `${item.name} — Ismail Ahmad`;
     document.querySelector('meta[name="description"]').content = item.headline || item.name;
     const crumb = document.getElementById('crumb-case');
@@ -219,7 +227,7 @@ async function renderContent() {
             ${metaCell('Industry', item.industry)}
         </dl>
 
-        <div class="case-body">${renderBlocks(item.blocks)}</div>
+        <div class="case-body">${renderBlocks(item.blocks, item.slug)}</div>
 
         <nav class="case-next">
             <a href="?case=${next.slug}" data-slug="${next.slug}">

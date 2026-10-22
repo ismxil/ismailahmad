@@ -357,3 +357,137 @@
     padding: 6px 12px;
     font-size: 15px;
 }
+
+/* ECB's presentation cards retain their artwork colours in either theme. */
+[data-case="etihad"] .case-body {
+    container-type: inline-size;
+}
+
+[data-case="etihad"] .case-callout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.7cqw;
+    padding: 10% 6.7% 14.1%;
+    background: #ffcf23;
+    text-align: center;
+}
+
+[data-case="etihad"] .case-callout__label {
+    margin: 0;
+    font-size: clamp(14px, 2cqw, 24px);
+    line-height: 1.33;
+    font-weight: 500;
+    color: #0a0a0a;
+}
+
+[data-case="etihad"] .case-callout__body {
+    max-width: min(920px, 77cqw);
+    font-size: clamp(22px, 3.36cqw, 40px);
+    line-height: 1.15;
+    font-weight: 500;
+    color: #0a0a0a;
+    text-wrap: initial;
+}
+
+/* Keep these three cards on the same grid rhythm as the image pair. */
+[data-case="etihad"] .case-body > .case-callout + .case-pair {
+    margin-top: 0;
+}
+
+.case-overlay {
+    position: relative;
+    display: grid;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    background: #ffcf23;
+    color: #0a0a0a;
+    container-type: inline-size;
+}
+
+.case-overlay > .case-figure,
+.case-overlay__content {
+    grid-area: 1 / 1;
+}
+
+.case-overlay > .case-figure {
+    position: absolute;
+    inset: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.case-overlay .case-figure img {
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.case-overlay__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2cqw;
+    padding: 23% 4% 8.7%;
+    text-align: center;
+    background: linear-gradient(to bottom, #ffffff00 0%, #ffffffb8 50%, #fff 78%);
+}
+
+.case-overlay__label {
+    font-size: clamp(14px, 2cqw, 24px);
+    line-height: 1.33;
+    color: inherit;
+}
+
+.case-overlay__body {
+    max-width: 65cqw;
+    font-size: clamp(16px, 2.35cqw, 28px);
+    line-height: 1.43;
+    font-weight: 500;
+}
+
+.case-overlay__note {
+    font-size: clamp(12px, 1.35cqw, 16px);
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.case-overlay__contact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: #0a0a0a;
+    color: #fff;
+    font-size: clamp(12px, 1.35cqw, 16px);
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.case-overlay__contact:hover {
+    background: #303030;
+}
+
+.case-overlay__content .case-actions {
+    justify-content: center;
+}
+
+@media (max-width: 559px) {
+    .case-overlay__content {
+        gap: 16px;
+        padding: 32% 6% 10%;
+    }
+
+    .case-overlay__body {
+        max-width: 100%;
+        font-size: 18px;
+    }
+
+    [data-case="etihad"] .case-callout__body {
+        max-width: 100%;
+    }
+}
