@@ -4,13 +4,18 @@ import {readFile} from 'node:fs/promises';
 import {JSDOM} from 'jsdom';
 const html=await readFile(new URL('../lagos.html',import.meta.url),'utf8');
 const script=await readFile(new URL('../js/lagos.js',import.meta.url),'utf8');
+let weatherReply={current:{temperature_2m:28.4,weather_code:63,is_day:0},hourly:{time:Array.from({length:8},(_,i)=>`2026-10-23T0${i}:00`),temperature_2m:Array(8).fill(27),weather_code:Array(8).fill(3),is_day:Array(8).fill(0),precipitation_probability:Array(8).fill(40)}};
+const tick=()=>new Promise(r=>setTimeout(r,0));
 function setup(hash=''){
  const dom=new JSDOM(html,{url:'http://localhost/lagos'+hash,runScripts:'outside-only'});
  const {window:w}=dom;
  const context=new Proxy({createLinearGradient:()=>({addColorStop(){}})},{get:(target,key)=>target[key]??(()=>{})});
  w.HTMLCanvasElement.prototype.getContext=()=>context;
  Object.defineProperty(w.document.getElementById('explorer'),'clientHeight',{value:900});
- w.eval(script);return {w,d:w.document,close:()=>w.close()};
+ // Weather comes from Open-Meteo; tests feed a fixed reply instead of the network.
+ w.fetch=async()=>({json:async()=>weatherReply});
+ w.matchMedia=()=>({matches:true});
+ w.eval(script);return {w,d:w.document,close:()=>{w.close()}};
 }
 test('search selects a landmark, updates its shareable URL, and closes cleanly',()=>{
  const {w,d,close}=setup();const input=d.getElementById('search');input.value='lekki';input.dispatchEvent(new w.Event('input'));
@@ -31,10 +36,9 @@ test('atlas controls expose places, toggle labels, and collapse the overview',()
  d.getElementById('places-toggle').click();assert.equal(d.getElementById('place-index').hidden,false);
  assert.equal(d.querySelectorAll('#destinations button').length,29);
  d.querySelector('#destinations button').click();assert.equal(d.getElementById('place-index').hidden,true);
- d.getElementById('labels-toggle').click();assert.equal(d.getElementById('labels-toggle').getAttribute('aria-pressed'),'false');
+ d.querySelector('[data-setting=labels][data-value=off]').click();assert.equal(d.querySelector('[data-setting=labels][data-value=off]').getAttribute('aria-pressed'),'true');
  assert.ok([...d.querySelectorAll('.pin')].every(p=>p.hidden));
- d.getElementById('mini-toggle').click();assert.equal(d.getElementById('minimap').hidden,true);
- assert.equal(d.getElementById('mini-toggle').getAttribute('aria-expanded'),'false');close();
+ d.querySelector('[data-setting=minimap][data-value=off]').click();assert.equal(d.getElementById('overview').hidden,true);close();
 });
 test('shared camera URLs restore zoom and lighting',()=>{
  const {d,close}=setup('?x=1000&y=700&z=2.5&night=1');
@@ -84,4 +88,21 @@ test('places carry real coordinates and open in Apple Maps',()=>{
  // Real geography reads correctly on the mainland: Ikeja is east of Agege, Oshodi is north of Mushin.
  const left=id=>parseFloat(d.getElementById('pin-'+id).style.left),top=id=>parseFloat(d.getElementById('pin-'+id).style.top);
  assert.ok(left('ikeja')>left('agege'));assert.ok(top('oshodi')<top('mushin'));close();
+});
+test('the settings panel opens, toggles with keys, and remembers choices',()=>{
+ const {w,d,close}=setup();
+ d.getElementById('settings-button').click();
+ assert.equal(d.getElementById('settings').hidden,false);assert.equal(d.getElementById('settings-button').getAttribute('aria-expanded'),'true');
+ d.dispatchEvent(new w.KeyboardEvent('keydown',{key:'m'}));assert.equal(d.getElementById('overview').hidden,true);
+ assert.deepEqual(JSON.parse(w.localStorage.getItem('tiny-lagos-settings')),{minimap:false,labels:true,weather:true});
+ d.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape'}));assert.equal(d.getElementById('settings').hidden,true);close();
+});
+test('live weather shows Lagos conditions, sets night, and can be switched off',async()=>{
+ const {d,close}=setup();await tick();await tick();
+ assert.equal(d.getElementById('weather').hidden,false);
+ assert.match(d.getElementById('weather-text').textContent,/^Rain · 28°C · Night$/);
+ assert.equal(d.getElementById('night').getAttribute('aria-pressed'),'true');
+ d.getElementById('weather').click();assert.equal(d.querySelectorAll('#forecast > div').length,6);
+ d.querySelector('[data-setting=weather][data-value=off]').click();
+ assert.equal(d.getElementById('weather').hidden,true);assert.equal(d.getElementById('forecast').hidden,true);close();
 });
