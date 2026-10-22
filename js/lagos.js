@@ -45,6 +45,9 @@ for(const [id,name,icon,lat,lng,category,description] of [
  ['festac','Festac Town','▦',6.466,3.284,'Western mainland · District','The planned town built for FESTAC ’77, the 1977 festival of Black and African arts and culture, in Amuwo-Odofin.'],
  ['ojo','Ojo / Satellite Town','▦',6.466,3.182,'Western mainland · District','The western end of the atlas, toward Ojo and the Lagos Trade Fair Complex.']
 ])places.push({id,name,icon,lat,lng,...project(lat,lng),category,description});
+// The painted stadium sits at (800,-183) on the mainland art, where the projection above
+// would put Surulere's streets, so it gets its own pin on the painting.
+places.push({id:'national-stadium',name:'National Stadium',icon:'◎',x:800,y:-183,lat:6.4983,lng:3.3646,category:'Surulere · Sport',description:'Opened in 1972 and host of the 1973 All-Africa Games, the great bowl on Western Avenue in Surulere.'});
 // The illustration occupies a fixed world rectangle; pins and camera use the same coordinates.
 const WORLD = { width: 2000, height: 1333 };
 let width=0,height=0,ratio=1,scale=1,base=1,pan={x:0,y:0},night=false,selected=null,labelsVisible=true;
@@ -78,26 +81,79 @@ function traceBoundary(target){
   }
  });target.closePath();
 }
+// The city is composed once per lighting into one canvas (both paintings, clipped to
+// their cut-outs), so each frame only copies pixels instead of re-clipping and
+// re-scaling the source art. 0.77 px per unit matches the waterfront painting.
+const CITY_DENSITY=.77, cityCache={};
+function makeCanvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
+function composedCity(mode){
+ if(cityCache[mode]!==undefined)return cityCache[mode];
+ if(!mainlandReady||!artworkReady)return null;
+ const k=CITY_DENSITY,c=makeCanvas(Math.round(COVERAGE.width*k),Math.round(COVERAGE.height*k)),g=c.getContext('2d');
+ if(!g)return (cityCache[mode]=null);
+ g.setTransform(k,0,0,k,-COVERAGE.x*k,-COVERAGE.y*k);
+ g.save();traceMainland(g);g.clip();g.drawImage(mainland,-1200,-1700,3200,2133);g.restore();
+ g.save();traceBoundary(g);g.clip();g.drawImage(illustration,0,0,WORLD.width,WORLD.height);g.restore();
+ if(mode==='night')nightGrade(c);
+ return (cityCache[mode]=c);
+}
+// Night is a grade, not a dimmer: the painting sinks into blue, and its own lights
+// (amber street lamps, cyan edges, yellow danfos) plus scattered windows glow.
+function nightGrade(c){
+ const g=c.getContext('2d'),w=c.width,h=c.height;
+ g.setTransform(1,0,0,1,0,0);
+ let data;
+ try{data=g.getImageData(0,0,w,h)}catch{return}
+ const src=data.data,lights=new ImageData(w,h),out=lights.data;
+ for(let i=0,n=0;i<src.length;i+=4,n++){
+  const r=src[i],gr=src[i+1],b=src[i+2],a=src[i+3];
+  if(!a)continue;
+  const max=Math.max(r,gr,b),min=Math.min(r,gr,b),sat=max?(max-min)/max:0;
+  const warm=r>200&&gr>140&&b<120&&sat>.4, cyan=b>190&&gr>170&&r<150;
+  const green=gr>r&&gr>b, water=b>gr*.85&&b>r*1.2;
+  // Windows: a sparse, stable scatter over built-up (not green, not water) pixels.
+  const hash=((n*2654435761)>>>0)/4294967296;
+  const window=!green&&!water&&max>120&&hash<.012;
+  if(warm||cyan||window){
+   const glow=window?[255,206,120]:cyan?[120,235,255]:[255,190,95];
+   out[i]=glow[0];out[i+1]=glow[1];out[i+2]=glow[2];out[i+3]=window?230:255;
+  }
+  // Moonlit blue: keep the painting's shapes, drop most of its daylight.
+  src[i]=r*.2+6;src[i+1]=gr*.25+10;src[i+2]=b*.42+28;
+ }
+ g.putImageData(data,0,0);
+ const glowLayer=makeCanvas(w,h),lg=glowLayer.getContext('2d');lg.putImageData(lights,0,0);
+ g.save();g.globalCompositeOperation='lighter';
+ g.filter='blur(6px)';g.globalAlpha=.55;g.drawImage(glowLayer,0,0);
+ g.filter='blur(1.5px)';g.globalAlpha=.8;g.drawImage(glowLayer,0,0);
+ g.filter='none';g.globalAlpha=.9;g.drawImage(glowLayer,0,0);
+ g.restore();
+}
+const forestPatterns={};
+function forestPattern(target,mode){
+ const key=mode;
+ if(forestPatterns[key]!==undefined)return forestPatterns[key];
+ if(!forestReady)return null;
+ let source=forest;
+ if(mode==='night'){
+  const c=makeCanvas(forest.naturalWidth||forest.width,forest.naturalHeight||forest.height),g=c.getContext('2d');
+  if(g){g.drawImage(forest,0,0);g.globalCompositeOperation='multiply';g.fillStyle='#1a2448';g.fillRect(0,0,c.width,c.height);source=c}
+ }
+ return (forestPatterns[key]=target.createPattern(source,'repeat'));
+}
 function paintScene(target,originX,originY,unit,viewWidth,viewHeight){
+ const mode=night?'night':'day',tile=420;
  target.save();target.translate(originX,originY);target.scale(unit,unit);
  const left=-originX/unit,top=-originY/unit,viewW=viewWidth/unit,viewH=viewHeight/unit;
- target.fillStyle='#42674e';target.fillRect(left,top,viewW,viewH);
- if(forestReady){
-  const tile=420;
-  for(let y=Math.floor(top/tile)*tile;y<top+viewH;y+=tile)
-   for(let x=Math.floor(left/tile)*tile;x<left+viewW;x+=tile)
-    target.drawImage(forest,x,y,tile+.5,tile+.5);
+ target.fillStyle=night?'#101a33':'#42674e';target.fillRect(left,top,viewW,viewH);
+ const pattern=forestPattern(target,mode);
+ if(pattern&&pattern.setTransform&&typeof DOMMatrix!=='undefined'){
+  const w=forest.naturalWidth||forest.width;
+  pattern.setTransform(new DOMMatrix().scale(tile/w));
+  target.fillStyle=pattern;target.fillRect(left,top,viewW,viewH);
  }
- if(mainlandReady){
-  target.save();traceMainland(target);target.clip();
-  target.drawImage(mainland,-1200,-1700,3200,2133);target.restore();
- }
- if(artworkReady){
-  target.save();traceBoundary(target);
-  target.lineJoin='round';
-  target.clip();target.drawImage(illustration,0,0,WORLD.width,WORLD.height);target.restore();
-  // Overlapping sections keep the existing waterfront at its original resolution.
- }
+ const city=composedCity(mode);
+ if(city)target.drawImage(city,COVERAGE.x,COVERAGE.y,COVERAGE.width,COVERAGE.height);
  target.restore();
 }
 // Zooming out stops at a third of the detailed view.
@@ -122,12 +178,28 @@ function constrainCamera(){
  pan.x=-(cx-WORLD.width/2)*scale;pan.y=-(cy-WORLD.height/2)*scale;
 }
 function screen(x,y){return {x:(x-WORLD.width/2)*scale+width/2+pan.x,y:(y-WORLD.height/2)*scale+height/2+pan.y}}
+let frameRequested=0,velocity=null;
+// Every caller asks for a frame; the work happens at most once per display refresh.
 function draw(){
+ if(typeof requestAnimationFrame!=='function')return drawNow();
+ if(!frameRequested)frameRequested=requestAnimationFrame(frame);
+}
+function frame(now){
+ frameRequested=0;
+ if(velocity){
+  const dt=Math.min(48,now-velocity.time);velocity.time=now;
+  pan.x+=velocity.x*dt;pan.y+=velocity.y*dt;
+  const decay=Math.pow(.92,dt/16);velocity.x*=decay;velocity.y*=decay;
+  if(Math.hypot(velocity.x,velocity.y)<.02)velocity=null;
+ }
+ drawNow();
+ if(velocity)draw();
+}
+function drawNow(){
  constrainCamera();
  ctx.setTransform(ratio,0,0,ratio,0,0);
  const origin=screen(0,0);
  ctx.save();
- ctx.filter=night?'brightness(0.65) saturate(1.25) contrast(1.12)':'none';
  paintScene(ctx,origin.x,origin.y,scale,width,height);
  ctx.restore();
  const zoomedOut=scale/base<.75;
@@ -178,10 +250,16 @@ $('labels-toggle').onclick=()=>{
  $('labels-toggle').textContent=labelsVisible?'Labels on':'Labels off';draw();
 };
 const minimap=$('minimap'), miniCtx=minimap.getContext('2d');
+const miniCache={};
 function drawMinimap(){
  if(!miniCtx)return;
- const mx=minimap.width/OVERVIEW.width,my=minimap.height/OVERVIEW.height;
- paintScene(miniCtx,-OVERVIEW.x*mx,-OVERVIEW.y*my,mx,minimap.width,minimap.height);
+ const mx=minimap.width/OVERVIEW.width,my=minimap.height/OVERVIEW.height,mode=night?'night':'day';
+ if(!miniCache[mode]){
+  const c=makeCanvas(minimap.width,minimap.height),g=c.getContext('2d');
+  if(g)paintScene(g,-OVERVIEW.x*mx,-OVERVIEW.y*my,mx,minimap.width,minimap.height);
+  if(g&&composedCity(mode))miniCache[mode]=c;
+  miniCtx.drawImage(c,0,0);
+ }else miniCtx.drawImage(miniCache[mode],0,0);
  const left=(WORLD.width/2-(width/2+pan.x)/scale-OVERVIEW.x)*mx;
  const top=(WORLD.height/2-(height/2+pan.y)/scale-OVERVIEW.y)*my;
  const right=left+width/scale*mx,bottom=top+height/scale*my;
@@ -212,7 +290,26 @@ minimap.addEventListener('keydown',e=>{
  if(!moves[e.key])return;e.preventDefault();pan.x+=moves[e.key][0];pan.y+=moves[e.key][1];draw();
 });
 $('mini-toggle').onclick=()=>{minimap.hidden=!minimap.hidden;$('mini-toggle').setAttribute('aria-expanded',String(!minimap.hidden));$('mini-toggle').querySelector('span').textContent=minimap.hidden?'+':'−'};
-const pointers=new Map();let lastPinch=0;canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});lastPinch=0});canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const old=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const [a,b]=[...pointers.values()],distance=Math.hypot(a.x-b.x,a.y-b.y);if(lastPinch)zoom(distance/lastPinch,(a.x+b.x)/2,(a.y+b.y)/2);lastPinch=distance}else{pan.x+=e.clientX-old.x;pan.y+=e.clientY-old.y;draw()}});for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,e=>{pointers.delete(e.pointerId);lastPinch=0});canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(Math.exp(-e.deltaY*.0015),e.clientX,e.clientY)},{passive:false});canvas.addEventListener('dblclick',e=>zoom(1.5,e.clientX,e.clientY));
+const pointers=new Map();let lastPinch=0,track=[];
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});lastPinch=0;velocity=null;track=[{x:e.clientX,y:e.clientY,t:performance.now()}];canvas.classList.add('dragging')});
+canvas.addEventListener('pointermove',e=>{
+ if(!pointers.has(e.pointerId))return;
+ const old=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointers.size===2){const [a,b]=[...pointers.values()],distance=Math.hypot(a.x-b.x,a.y-b.y);if(lastPinch)zoom(distance/lastPinch,(a.x+b.x)/2,(a.y+b.y)/2);lastPinch=distance;track=[];return}
+ pan.x+=e.clientX-old.x;pan.y+=e.clientY-old.y;
+ const now=performance.now();track.push({x:e.clientX,y:e.clientY,t:now});while(track.length>2&&now-track[0].t>90)track.shift();
+ draw();
+});
+// Let go mid-drag and the map keeps gliding, slowing to a stop.
+function endDrag(e){
+ if(!pointers.delete(e.pointerId))return;lastPinch=0;
+ if(pointers.size)return;
+ canvas.classList.remove('dragging');
+ const now=performance.now(),first=track[0],last=track[track.length-1];
+ if(track.length>1&&now-last.t<60){const dt=Math.max(16,last.t-first.t),vx=(last.x-first.x)/dt,vy=(last.y-first.y)/dt;if(Math.hypot(vx,vy)>.08){velocity={x:vx,y:vy,time:now};draw()}}
+}
+for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,endDrag);
+canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(Math.exp(-e.deltaY*.0015),e.clientX,e.clientY)},{passive:false});canvas.addEventListener('dblclick',e=>zoom(1.5,e.clientX,e.clientY));
 document.addEventListener('keydown',e=>{if(about.open)return;if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();$('search').focus()}if(document.activeElement!==canvas)return;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','+','=','-','0'].includes(e.key))e.preventDefault();if(e.key==='ArrowUp')pan.y+=45;if(e.key==='ArrowDown')pan.y-=45;if(e.key==='ArrowLeft')pan.x+=45;if(e.key==='ArrowRight')pan.x-=45;if(e.key==='+'||e.key==='=')zoom(1.2);if(e.key==='-')zoom(1/1.2);if(e.key==='0')reset();draw()});
 window.addEventListener('resize',resize);
 window.addEventListener('hashchange',()=>{if(location.hash)selectPlace(location.hash.slice(1))});
