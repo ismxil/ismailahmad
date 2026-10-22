@@ -29,7 +29,7 @@ test('deep links, zoom limits, reset, lighting, and empty search work',()=>{
 test('atlas controls expose places, toggle labels, and collapse the overview',()=>{
  const {d,close}=setup();
  d.getElementById('places-toggle').click();assert.equal(d.getElementById('place-index').hidden,false);
- assert.equal(d.querySelectorAll('#destinations button').length,28);
+ assert.equal(d.querySelectorAll('#destinations button').length,29);
  d.querySelector('#destinations button').click();assert.equal(d.getElementById('place-index').hidden,true);
  d.getElementById('labels-toggle').click();assert.equal(d.getElementById('labels-toggle').getAttribute('aria-pressed'),'false');
  assert.ok([...d.querySelectorAll('.pin')].every(p=>p.hidden));
