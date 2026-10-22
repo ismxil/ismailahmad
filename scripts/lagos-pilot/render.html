@@ -1,0 +1,173 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Tiny Lagos pilot render</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"/three.module.js","three/addons/":"/addons/"}}</script>
+<script type="module">
+// Renders OpenStreetMap geometry with one orthographic camera (tilt 45°, turn 15°, as in
+// isometric-nyc and tiny.london). Each shot is the same camera with a shifted view offset,
+// so shots line up to the pixel. Driven by render.mjs, which calls window.shoot().
+import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+
+const data = await (await fetch('/data.geojson')).json();
+const C = { lat: 6.4978, lng: 3.3641 };                    // scene origin: the National Stadium
+const KX = 111320 * Math.cos(C.lat * Math.PI / 180), KY = 110574;
+const P = ([lng, lat]) => [(lng - C.lng) * KX, -(lat - C.lat) * KY]; // x east, z south (metres)
+
+// ---------- ground: land use, water and roads painted into one texture ----------
+// The pilot box. The OSM extract keeps whole areas that cross its edge, so clamp to the box.
+const BOX = { west: 3.352, east: 3.378, south: 6.488, north: 6.510 };
+const [x0, z0] = P([BOX.west, BOX.north]), [x1, z1] = P([BOX.east, BOX.south]);
+function rings(g) {
+    if (!g) return [];
+    if (g.type === 'Polygon') return g.coordinates;
+    if (g.type === 'MultiPolygon') return g.coordinates.flat();
+    if (g.type === 'LineString') return [g.coordinates];
+    if (g.type === 'MultiLineString') return g.coordinates;
+    return [];
+}
+const RES = 0.5, GW = Math.ceil((x1 - x0) / RES), GH = Math.ceil((z1 - z0) / RES);
+const ground = document.createElement('canvas'); ground.width = GW; ground.height = GH;
+const g = ground.getContext('2d');
+g.setTransform(1 / RES, 0, 0, 1 / RES, -x0 / RES, -z0 / RES);
+g.fillStyle = '#cfc6b2'; g.fillRect(x0, z0, x1 - x0, z1 - z0);
+const AREA = [
+    [p => p.landuse === 'residential', '#d2c8b3'], [p => ['commercial', 'retail'].includes(p.landuse), '#d6c6b6'],
+    [p => p.landuse === 'industrial', '#c9c3bb'], [p => ['school', 'university', 'college', 'hospital'].includes(p.amenity), '#d9cfb8'],
+    [p => ['stadium', 'sports_centre'].includes(p.leisure), '#c8cdb0'],
+    [p => ['grass', 'meadow', 'recreation_ground', 'village_green'].includes(p.landuse) || p.natural === 'grassland', '#9cbf72'],
+    [p => ['park', 'garden', 'nature_reserve'].includes(p.leisure), '#8fbb67'], [p => p.landuse === 'forest' || p.natural === 'wood' || p.natural === 'scrub', '#6e9c55'],
+    [p => p.natural === 'wetland', '#87ab88'], [p => p.amenity === 'parking', '#bdb8ae'],
+    [p => p.natural === 'water' || p.water || p.waterway === 'riverbank' || p.landuse === 'basin', '#4f9fb8'],
+    [p => p.leisure === 'pitch', '#6fae4c'], [p => p.leisure === 'track', '#c0634a'],
+];
+for (const [test, color] of AREA) for (const f of data.features) {
+    const t = f.geometry?.type;
+    if ((t !== 'Polygon' && t !== 'MultiPolygon') || f.properties.building || !test(f.properties)) continue;
+    g.beginPath();
+    for (const ring of rings(f.geometry)) ring.forEach((p, i) => { const [x, z] = P(p); i ? g.lineTo(x, z) : g.moveTo(x, z); });
+    g.fillStyle = color; g.fill('evenodd');
+    if (f.properties.leisure === 'pitch') { g.strokeStyle = 'rgba(255,255,255,.8)'; g.lineWidth = .4; g.stroke(); }
+}
+const ROADS = { motorway: [22, '#8a8d93'], trunk: [18, '#8f9297'], primary: [14, '#9a9ca0'], secondary: [11, '#a3a4a6'], tertiary: [9, '#aaaaa9'],
+    residential: [6.5, '#b4b2ad'], unclassified: [6.5, '#b4b2ad'], living_street: [5, '#b4b2ad'], service: [4, '#bab7b0'], pedestrian: [4, '#c2bdb2'],
+    footway: [1.6, '#c9bfa8'], path: [1.6, '#c9bfa8'] };
+g.lineCap = g.lineJoin = 'round';
+for (const pass of ['edge', 'fill']) for (const kind of Object.keys(ROADS).reverse()) for (const f of data.features) {
+    const h = f.properties.highway?.replace('_link', '');
+    if (h !== kind || !f.geometry?.type.includes('LineString')) continue;
+    g.beginPath();
+    for (const ring of rings(f.geometry)) ring.forEach((p, i) => { const [x, z] = P(p); i ? g.lineTo(x, z) : g.moveTo(x, z); });
+    const [w, color] = ROADS[kind];
+    g.strokeStyle = pass === 'edge' ? '#8f8a80' : color; g.lineWidth = pass === 'edge' ? w + 1.2 : w; g.stroke();
+    if (pass === 'fill' && w >= 11) { g.setLineDash([3, 5]); g.strokeStyle = '#e8e4da'; g.lineWidth = .3; g.stroke(); g.setLineDash([]); }
+}
+
+// ---------- scene ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.append(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#87b6d6');
+const groundTex = new THREE.CanvasTexture(ground); groundTex.colorSpace = THREE.SRGBColorSpace; groundTex.anisotropy = 8;
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshLambertMaterial({ map: groundTex }));
+plane.rotation.x = -Math.PI / 2; plane.position.set((x0 + x1) / 2, 0, (z0 + z1) / 2); plane.receiveShadow = true;
+scene.add(plane);
+
+// Buildings: OSM footprints extruded to their tagged height, or a plausible Lagos height.
+const hash = n => { let x = n | 0; x = Math.imul(x ^ (x >>> 16), 0x45d9f3b); x = Math.imul(x ^ (x >>> 16), 0x45d9f3b); return ((x ^ (x >>> 16)) >>> 0) / 4294967296; };
+const WALLS = ['#d9cfbd', '#e3d8c2', '#cfc2ab', '#d6d0c4'];
+const ROOFS = ['#9c5a43', '#b1694b', '#6f8396', '#8b9399', '#c9c2b4', '#a8483c'];
+const buildingGeos = [];
+let n = 0;
+for (const f of data.features) {
+    const p = f.properties, t = f.geometry?.type;
+    if (!p.building || (t !== 'Polygon' && t !== 'MultiPolygon')) continue;
+    const s = hash(++n * 7919);
+    let h = parseFloat(p.height) || (parseFloat(p['building:levels']) * 3.2 + .8);
+    if (!Number.isFinite(h)) h = ['apartments', 'office', 'hotel'].includes(p.building) ? 10 + s * 12 : p.building === 'stadium' ? 18 : 3.4 + Math.floor(s * 2.2) * 3.2;
+    const polys = t === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+    for (const poly of polys) {
+        const shape = new THREE.Shape(poly[0].map(c => { const [x, z] = P(c); return new THREE.Vector2(x, -z); }));
+        if (p.building === 'stadium' || p.leisure === 'stadium') {
+            // A stadium is a ring of stands around an open bowl, not a solid block.
+            const pts = poly[0].map(P), cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, cz = pts.reduce((a, q) => a + q[1], 0) / pts.length;
+            shape.holes.push(new THREE.Path(pts.map(([x, z]) => new THREE.Vector2(cx + (x - cx) * .72, -(cz + (z - cz) * .72))).reverse()));
+        }
+        for (const hole of poly.slice(1)) shape.holes.push(new THREE.Path(hole.map(c => { const [x, z] = P(c); return new THREE.Vector2(x, -z); })));
+        const geo = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false });
+        geo.rotateX(-Math.PI / 2);
+        // Colour per vertex: faces pointing up are roof, the rest are wall.
+        const flat = geo.toNonIndexed(), normals = flat.attributes.position.count;
+        flat.computeVertexNormals();
+        const wall = new THREE.Color(WALLS[Math.floor(s * 4)]), roof = new THREE.Color(ROOFS[Math.floor(hash(n * 31) * ROOFS.length)]);
+        const colors = new Float32Array(normals * 3), nrm = flat.attributes.normal;
+        for (let i = 0; i < normals; i++) (nrm.getY(i) > .5 ? roof : wall).toArray(colors, i * 3);
+        flat.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        flat.deleteAttribute('uv');
+        buildingGeos.push(flat);
+    }
+}
+const buildings = new THREE.Mesh(mergeGeometries(buildingGeos), new THREE.MeshLambertMaterial({ vertexColors: true }));
+buildings.castShadow = buildings.receiveShadow = true;
+scene.add(buildings);
+
+// Trees only where OpenStreetMap says there is green: parks, woods, grass, and mapped trees.
+const greens = data.features.filter(f => ['Polygon', 'MultiPolygon'].includes(f.geometry?.type) && !f.properties.building &&
+    (['park', 'garden', 'nature_reserve'].includes(f.properties.leisure) || ['forest', 'grass', 'recreation_ground'].includes(f.properties.landuse) || ['wood', 'scrub'].includes(f.properties.natural)));
+const treePts = [];
+const inside = (ring, x, z) => { let c = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, zi] = ring[i], [xj, zj] = ring[j]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; };
+for (const f of greens) {
+    const ring = rings(f.geometry)[0].map(P), dense = f.properties.landuse === 'forest' || f.properties.natural === 'wood';
+    let a = Infinity, b = Infinity, c = -Infinity, d = -Infinity;
+    for (const [x, z] of ring) { a = Math.min(a, x); c = Math.max(c, x); b = Math.min(b, z); d = Math.max(d, z); }
+    for (let z = b; z < d; z += 9) for (let x = a; x < c; x += 9) {
+        const s = hash(Math.round(x * 13 + z * 7919));
+        if (s > (dense ? .8 : .3)) continue;
+        const tx = x + (hash(s * 1e9) - .5) * 8, tz = z + (hash(s * 3e8) - .5) * 8;
+        if (inside(ring, tx, tz)) treePts.push([tx, tz, 3 + hash(s * 7e7) * 3]);
+    }
+}
+for (const f of data.features) if (f.properties.natural === 'tree' && f.geometry?.type === 'Point') { const [x, z] = P(f.geometry.coordinates); treePts.push([x, z, 4]); }
+const crown = new THREE.IcosahedronGeometry(1, 1);
+const trees = new THREE.InstancedMesh(crown, new THREE.MeshLambertMaterial({ color: '#5d9447' }), treePts.length);
+const m = new THREE.Matrix4();
+treePts.forEach(([x, z, r], i) => { m.compose(new THREE.Vector3(x, r * 1.1, z), new THREE.Quaternion(), new THREE.Vector3(r, r * .9, r)); trees.setMatrixAt(i, m); });
+trees.castShadow = true; scene.add(trees);
+
+scene.add(new THREE.HemisphereLight('#dfeefa', '#8a7a62', 1.4));
+const sun = new THREE.DirectionalLight('#fff4e0', 2.2);
+sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -.0004;
+scene.add(sun, sun.target);
+
+// ---------- camera ----------
+const TILT = 45 * Math.PI / 180, TURN = 15 * Math.PI / 180;
+const camera = new THREE.OrthographicCamera();
+const dir = new THREE.Vector3(Math.sin(TURN) * Math.cos(TILT), Math.sin(TILT), Math.cos(TURN) * Math.cos(TILT));
+camera.position.copy(dir.clone().multiplyScalar(4000)); camera.up.set(0, 1, 0); camera.lookAt(0, 0, 0);
+camera.near = 1; camera.far = 12000;
+
+// shoot(): render the SIZE×SIZE px shot whose top-left is (col·SIZE, row·SIZE) on the full
+// canvas, at MPP metres per pixel. Shots line up exactly because only the view offset moves.
+window.shoot = (col, row, size, mpp, span) => {
+    renderer.setSize(size, size);
+    const full = span * size, half = full * mpp / 2;
+    camera.left = -half; camera.right = half; camera.top = half; camera.bottom = -half;
+    camera.setViewOffset(full, full, col * size, row * size, size, size);
+    camera.updateProjectionMatrix();
+    // Fit the sun's shadow box to this shot.
+    const centre = new THREE.Vector3((col + .5 - span / 2) * size * mpp, -(row + .5 - span / 2) * size * mpp, 0).applyMatrix4(camera.matrixWorld);
+    const ground = centre.clone().sub(dir.clone().multiplyScalar(centre.y / dir.y));
+    sun.position.copy(ground).add(new THREE.Vector3(-300, 500, -200)); sun.target.position.copy(ground);
+    const r = size * mpp;
+    Object.assign(sun.shadow.camera, { left: -r, right: r, top: r, bottom: -r, near: 1, far: 2000 }); sun.shadow.camera.updateProjectionMatrix();
+    renderer.render(scene, camera);
+    return renderer.domElement.toDataURL('image/png');
+};
+let meshes = 0, verts = 0, nulls = 0;
+scene.traverse(o => { if (o.isMesh && !o.isInstancedMesh && o !== plane) { meshes++; if (o.geometry) verts += o.geometry.attributes.position?.count || 0; } });
+window.ready = { buildings: n, trees: treePts.length, meshes, verts };
+</script>
