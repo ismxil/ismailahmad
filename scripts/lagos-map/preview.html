@@ -1,0 +1,14 @@
+<!doctype html><body style="margin:0;background:#222"><canvas id="c"></canvas><script type="module">
+import {parseTile, renderRegion} from '/js/lagos-render.js';
+import {project, TILE} from '/js/lagos-map-schema.js';
+const q=new URLSearchParams(location.search);
+const lat=+q.get('lat')||6.5005, lng=+q.get('lng')||3.3680, p=+q.get('p')||1.6, mode=q.get('mode')||'day';
+const W=innerWidth,H=innerHeight,c=document.getElementById('c');c.width=W;c.height=H;
+const ctr=project(lng,lat),reg={x0:ctr.x-W/2/p,y0:ctr.y-H/2/p,x1:ctr.x+W/2/p,y1:ctr.y+H/2/p};
+const tiles=[];
+for(let r=Math.floor(reg.y0/TILE);r<=Math.floor((reg.y1+300)/TILE);r++)for(let cc=Math.floor((reg.x0-150)/TILE);cc<=Math.floor((reg.x1+150)/TILE);cc++){
+ const res=await fetch(`/assets/lagos/map/t/${cc}_${r}.bin`);if(res.ok)tiles.push(parseTile(await res.arrayBuffer(),cc,r));}
+const ctx=c.getContext('2d');const t0=performance.now();
+ctx.setTransform(p,0,0,p,-reg.x0*p,-reg.y0*p);renderRegion(ctx,reg,tiles,p,mode);
+document.title='done '+Math.round(performance.now()-t0)+'ms';
+</script></body>

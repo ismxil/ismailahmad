@@ -1,0 +1,63 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Tiny Lagos pre-render</title>
+<body>
+<p id="status">Starting…</p>
+<script type="module">
+// Renders the zoomed-out picture pyramid with the same renderer the site uses live.
+// Driven by scripts/lagos-map/prerender.mjs, which saves each posted image.
+import { parseTile, renderRegion } from '/js/lagos-render.js';
+import { TILE, RASTER_LEVELS, RASTER_SIZE } from '/js/lagos-map-schema.js';
+
+const status = document.getElementById('status');
+const meta = await (await fetch('/assets/lagos/map/meta.json')).json();
+const present = new Set(meta.tiles.map(([c, r]) => c + '_' + r));
+const cache = new Map();
+async function data(c, r) {
+    const key = c + '_' + r;
+    if (!present.has(key)) return null;
+    if (!cache.has(key)) cache.set(key, fetch(`/assets/lagos/map/t/${key}.bin`).then(res => res.arrayBuffer()).then(b => parseTile(b, c, r)));
+    return cache.get(key);
+}
+async function save(name, canvas) {
+    const blob = await canvas.convertToBlob({ type: 'image/webp', quality: .84 });
+    await fetch('/save?name=' + encodeURIComponent(name), { method: 'POST', body: blob });
+}
+
+const finest = RASTER_LEVELS[RASTER_LEVELS.length - 1];
+for (const mode of ['day', 'night']) {
+    // Render the finest level from vector data, then halve it for each coarser level.
+    let level = finest, span = RASTER_SIZE / level;
+    let cols = Math.ceil(meta.width / span), rows = Math.ceil(meta.height / span);
+    let images = new Map();
+    for (let ty = 0; ty < rows; ty++) for (let tx = 0; tx < cols; tx++) {
+        status.textContent = `${mode} ${level} ${tx},${ty}`;
+        const region = { x0: tx * span, y0: ty * span, x1: (tx + 1) * span, y1: (ty + 1) * span };
+        const tiles = [];
+        for (let r = Math.floor((region.y0 - 300) / TILE); r <= Math.floor((region.y1 + 300) / TILE); r++)
+            for (let c = Math.floor((region.x0 - 300) / TILE); c <= Math.floor((region.x1 + 300) / TILE); c++) { const t = await data(c, r); if (t) tiles.push(t); }
+        const canvas = new OffscreenCanvas(RASTER_SIZE, RASTER_SIZE), ctx = canvas.getContext('2d');
+        ctx.setTransform(level, 0, 0, level, -region.x0 * level, -region.y0 * level);
+        renderRegion(ctx, region, tiles, level, mode);
+        images.set(tx + '_' + ty, canvas);
+        await save(`${mode}/${level}/${tx}_${ty}.webp`, canvas);
+    }
+    for (let i = RASTER_LEVELS.length - 2; i >= 0; i--) {
+        const next = RASTER_LEVELS[i], ncols = Math.ceil(cols / 2), nrows = Math.ceil(rows / 2), out = new Map();
+        for (let ty = 0; ty < nrows; ty++) for (let tx = 0; tx < ncols; tx++) {
+            const canvas = new OffscreenCanvas(RASTER_SIZE, RASTER_SIZE), ctx = canvas.getContext('2d');
+            ctx.imageSmoothingQuality = 'high';
+            for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) {
+                const child = images.get((tx * 2 + dx) + '_' + (ty * 2 + dy));
+                if (child) ctx.drawImage(child, dx * RASTER_SIZE / 2, dy * RASTER_SIZE / 2, RASTER_SIZE / 2, RASTER_SIZE / 2);
+            }
+            out.set(tx + '_' + ty, canvas);
+            await save(`${mode}/${next}/${tx}_${ty}.webp`, canvas);
+        }
+        images = out; cols = ncols; rows = nrows; level = next;
+    }
+}
+status.textContent = 'done';
+await fetch('/done', { method: 'POST' });
+</script>
+</body>
