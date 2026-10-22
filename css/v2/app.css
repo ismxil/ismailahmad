@@ -1935,6 +1935,12 @@ kbd {
     font: 500 14px/1.4 var(--font-sans);
     cursor: pointer;
 }
+.menu-trigger__icon { display: none; }
+@media (min-width: 640px) {
+    .menu-trigger .menu-trigger__icon { display: block; }
+    .menu-trigger__label { display: none; }
+    .header-actions .menu-trigger { width: 34px; height: 34px; padding: 0; justify-content: center; }
+}
 .menu-trigger:hover { background: var(--control-hover); color: var(--text-primary); }
 .menu-trigger kbd {
     padding: 1px 6px;
@@ -2014,7 +2020,9 @@ kbd {
 
 .dock__mark { width: 17px; height: 17px; flex-shrink: 0; color: var(--text-tertiary); }
 .dock-launcher {
-    position: static;
+    position: fixed;
+    inset: auto 0 max(var(--search-bottom, 16px), env(safe-area-inset-bottom));
+    z-index: 30;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -2295,7 +2303,9 @@ body::after {
 .team-card + .page-search-slot { margin-top: 0; padding-top: 32px; min-height: 80px; }
 
 .page-search-slot .dock-launcher {
-    position: static;
+    position: fixed;
+    inset: auto 0 max(var(--search-bottom, 16px), env(safe-area-inset-bottom));
+    z-index: 30;
     inset: auto;
     width: min(300px, 100%);
 }
