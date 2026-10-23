@@ -435,7 +435,8 @@ ul {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 18px;
+    font-size: 25px;
+    line-height: 1.2;
 }
 
 .identity__role {
@@ -445,7 +446,7 @@ ul {
 
 /* ── Status ──────────────────────────────────────────────
    One of four, set by data-status on .identity (see presence.js).
-   Each state hands the dot and the pill its own colour. */
+   Each state gives the dot its own colour. */
 
 .identity[data-status="available"] {
     --status: var(--live);
@@ -467,35 +468,13 @@ ul {
     --status-soft: rgb(from var(--ink) r g b / 0.06);
 }
 
-.badge-live {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 6px;
-    padding: 1px 6px;
-    border-radius: 7px;
-    background: var(--status-soft);
-    color: var(--status);
-    font-size: 12px;
-    white-space: nowrap;
-}
-
-.badge-live__time {
-    color: rgb(from var(--status) r g b / 0.7);
-    font-variant-numeric: tabular-nums;
-}
-
-.badge-live__time::before {
-    content: '·';
-    margin-right: 6px;
-}
-
 /* The dot pinned to the portrait's corner, which opens into a pill with
    the longer line on hover. A sibling of the avatar rather than a child,
    so the avatar's clipping and its scale on hover leave it alone. The
    ring is the page colour, cutting the dot out of the photo.
 
-   Pinned by its top-left so it grows rightward, away from the face. */
+   Pinned by its top-left so it grows rightward, away from the face, and
+   drops a little as it opens so it clears the role line beside it. */
 .identity__status {
     position: absolute;
     top: 49px;
@@ -551,7 +530,7 @@ ul {
 .identity__status:hover,
 .identity__status:focus-visible {
     height: 26px;
-    translate: 0 -4.5px;
+    translate: 0 4px;
 }
 
 /* Matches the specificity of the state rules above, or the ping keeps
@@ -574,7 +553,7 @@ ul {
 @media (hover: none) {
     .identity__status:focus {
         height: 26px;
-        translate: 0 -4.5px;
+        translate: 0 4px;
     }
 
     .identity__status:focus .identity__status-label {
