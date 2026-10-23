@@ -554,8 +554,11 @@ ul {
     translate: 0 -4.5px;
 }
 
-.identity__status:hover::before,
-.identity__status:focus-visible::before {
+/* Matches the specificity of the state rules above, or the ping keeps
+   running round the open pill. */
+.identity[data-status] .identity__status:hover::before,
+.identity[data-status] .identity__status:focus-visible::before,
+.identity[data-status] .identity__status:focus::before {
     animation: none;
 }
 
