@@ -36,38 +36,8 @@ export function initPresence() {
 }
 
 /**
- * Ismail's own time beside "Open to work", so a reader can tell whether a
- * message lands in his morning or his night. Berlin, like the contact card.
- */
-const TZ = 'Europe/Berlin';
-
-export function initLocalTime() {
-    const el = document.querySelector('[data-local-time]');
-    if (!el) return;
-
-    const fmt = new Intl.DateTimeFormat('en-GB', {
-        timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true,
-        timeZoneName: 'short',
-    });
-
-    const paint = () => {
-        const now = new Date();
-        const parts = fmt.formatToParts(now);
-        const part = (type) => parts.find((p) => p.type === type)?.value || '';
-        const period = part('dayPeriod').replace(/\W/g, '').toLowerCase();
-        el.textContent = `${part('hour')}:${part('minute')}${period} ${part('timeZoneName')}`;
-        el.dateTime = now.toISOString();
-        el.hidden = false;
-        // Tick on the minute rather than every 60s from load, so it never lags.
-        setTimeout(paint, 60_000 - (now.getSeconds() * 1000 + now.getMilliseconds()));
-    };
-
-    paint();
-}
-
-/**
- * Availability. Change STATUS to switch the dot, the pill and the line
- * that opens out of the dot on hover; the colours live in app.css.
+ * Availability. Change STATUS to switch the dot's colour and the line
+ * that opens out of it on hover; the colours live in app.css.
  */
 export const STATUS = 'available';
 
@@ -84,8 +54,8 @@ export function initStatus(key = STATUS) {
     if (!identity || !status) return;
 
     identity.dataset.status = key;
-    const label = identity.querySelector('[data-status-label]');
+    const dot = identity.querySelector('.identity__status');
     const detail = identity.querySelector('[data-status-detail]');
-    if (label) label.textContent = status.label;
+    if (dot) dot.setAttribute('aria-label', `${status.label}: ${status.detail}`);
     if (detail) detail.textContent = status.detail;
 }
