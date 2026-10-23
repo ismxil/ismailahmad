@@ -37,6 +37,57 @@
     object-fit: cover;
 }
 
+/* Cadana: animated logo construction in place of the static hero */
+.cadana-hero {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-height: 72vh;
+}
+
+.cadana-hero__guides path {
+    stroke-dasharray: 1;
+    animation: cadana-draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) calc(0.15s + var(--i) * 0.06s) backwards;
+}
+
+.cadana-hero__trace path {
+    stroke-dasharray: 1;
+    opacity: 0;
+    animation:
+        cadana-draw 1.3s cubic-bezier(0.65, 0, 0.35, 1) 0.7s backwards,
+        cadana-trace 2.6s linear 0.7s;
+}
+
+.cadana-hero__sweep {
+    stroke-dasharray: 1;
+    animation: cadana-draw 0.9s cubic-bezier(0.7, 0, 0.3, 1) 1.8s backwards;
+}
+
+.cadana-hero__mark {
+    transform-origin: 801px 450px;
+    animation: cadana-settle 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 1.8s backwards;
+}
+
+@keyframes cadana-draw {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+}
+
+/* Outline shows while drawing, then hands off to the fill */
+@keyframes cadana-trace {
+    0%, 75% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes cadana-settle {
+    from { transform: scale(0.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cadana-hero * { animation: none !important; }
+}
+
 @media (min-width: 840px) {
     .case-hero {
         margin-inline: -24px;

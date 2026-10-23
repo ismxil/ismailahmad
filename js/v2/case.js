@@ -10,6 +10,7 @@ import { caseSkeleton, watchImageSkeletons } from './skeleton.js';
  */
 
 import { getCases } from './case-data.js';
+import { cadanaHero } from './cadana-hero.js';
 
 /**
  * Case data stores repo-relative paths ("assets/..."). This page is served
@@ -206,7 +207,9 @@ async function renderContent() {
     const next = cases[(cases.indexOf(item) + 1) % cases.length];
 
     mount.innerHTML = `
-        <div class="case-hero">${item.heroVideo
+        <div class="case-hero">${item.slug === 'cadana'
+            ? cadanaHero(escape(item.name))
+            : item.heroVideo
             ? `<video src="${escape(asset(item.heroVideo))}"${item.hero ? ` poster="${escape(asset(item.hero))}"` : ''}
                 muted loop playsinline disablepictureinpicture preload="auto"
                 aria-label="${escape(item.name)}"></video>`
