@@ -435,12 +435,36 @@ ul {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .identity__role {
     font-size: 14px;
     color: var(--text-secondary);
+}
+
+/* ── Status ──────────────────────────────────────────────
+   One of four, set by data-status on .identity (see presence.js).
+   Each state hands the dot and the pill its own colour. */
+
+.identity[data-status="available"] {
+    --status: var(--live);
+    --status-soft: var(--live-soft);
+}
+
+.identity[data-status="partial"] {
+    --status: var(--partial);
+    --status-soft: var(--partial-soft);
+}
+
+.identity[data-status="booked"] {
+    --status: var(--booked);
+    --status-soft: var(--booked-soft);
+}
+
+.identity[data-status="away"] {
+    --status: var(--text-tertiary);
+    --status-soft: rgb(from var(--ink) r g b / 0.06);
 }
 
 .badge-live {
@@ -450,39 +474,121 @@ ul {
     margin-top: 6px;
     padding: 1px 6px;
     border-radius: 7px;
-    background: var(--live-soft);
-    color: var(--live);
+    background: var(--status-soft);
+    color: var(--status);
     font-size: 12px;
     white-space: nowrap;
 }
 
-.badge-live__dot {
-    position: relative;
-    display: flex;
-    width: 6px;
-    height: 6px;
+.badge-live__time {
+    color: rgb(from var(--status) r g b / 0.7);
+    font-variant-numeric: tabular-nums;
 }
 
-.badge-live__dot::before {
+.badge-live__time::before {
+    content: '·';
+    margin-right: 6px;
+}
+
+/* The dot pinned to the portrait's corner, which opens into a pill with
+   the longer line on hover. A sibling of the avatar rather than a child,
+   so the avatar's clipping and its scale on hover leave it alone. The
+   ring is the page colour, cutting the dot out of the photo.
+
+   Pinned by its top-left so it grows rightward, away from the face. */
+.identity__status {
+    position: absolute;
+    top: 49px;
+    left: 49px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    min-width: 17px;
+    height: 17px;
+    border: 3px solid var(--background);
+    border-radius: 999px;
+    background: var(--status);
+    color: var(--background);
+    box-sizing: border-box;
+    outline: none;
+    cursor: default;
+    transition: height 0.2s ease-out, translate 0.2s ease-out;
+}
+
+/* A larger, invisible target than an 11px dot. */
+.identity__status::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+}
+
+/* The ping, only while the dot is a dot and the state is a live one. */
+.identity__status::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 999px;
-    background: currentColor;
-    opacity: 0.6;
+    background: var(--status);
+    opacity: 0;
+}
+
+.identity[data-status="available"] .identity__status::before,
+.identity[data-status="partial"] .identity__status::before {
     animation: ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-.badge-live__dot::after {
-    content: '';
-    position: relative;
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: currentColor;
+.identity__status-label {
+    display: block;
+    max-width: 0;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0;
+    transition: max-width 0.25s ease-out, padding 0.25s ease-out, opacity 0.15s ease-out;
+}
+
+.identity__status:hover,
+.identity__status:focus-visible {
+    height: 26px;
+    translate: 0 -4.5px;
+}
+
+/* Matches the specificity of the state rules above, or the ping keeps
+   running round the open pill. */
+.identity[data-status] .identity__status:hover::before,
+.identity[data-status] .identity__status:focus-visible::before,
+.identity[data-status] .identity__status:focus::before {
+    animation: none;
+}
+
+.identity__status:hover .identity__status-label,
+.identity__status:focus-visible .identity__status-label {
+    max-width: 180px;
+    padding: 0 8px;
+    opacity: 1;
+    transition: max-width 0.25s ease-out, padding 0.25s ease-out, opacity 0.2s ease-out 0.05s;
+}
+
+/* No hover on a phone: a tap focuses it instead. */
+@media (hover: none) {
+    .identity__status:focus {
+        height: 26px;
+        translate: 0 -4.5px;
+    }
+
+    .identity__status:focus .identity__status-label {
+        max-width: 180px;
+        padding: 0 8px;
+        opacity: 1;
+    }
 }
 
 @keyframes ping {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
 
     75%,
     100% {
@@ -492,8 +598,13 @@ ul {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .badge-live__dot::before {
-        animation: none;
+    .identity__status,
+    .identity__status-label {
+        transition: none;
+    }
+
+    .identity__status::before {
+        animation: none !important;
     }
 }
 

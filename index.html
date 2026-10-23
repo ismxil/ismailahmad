@@ -63,21 +63,24 @@
 
         <!-- ── Hero ───────────────────────────────────────── -->
         <section class="intro">
-            <div class="identity">
+            <div class="identity" data-status="available">
                 <div class="identity__portrait">
                     <span class="identity__avatar">
                         <img src="assets/contact/profile.jpg" alt="Ismail Ahmad" width="280" height="347" />
                         <img class="identity__avatar-alt" src="assets/contact/profile-hover.jpg" alt=""
                             aria-hidden="true" width="320" height="320" loading="lazy" />
                     </span>
+                    <span class="identity__status" tabindex="0">
+                        <span class="identity__status-label" data-status-detail>Open to work</span>
+                    </span>
                     <span class="identity__presence" aria-hidden="true"></span>
                 </div>
                 <div class="identity__text">
-                    <h1 class="identity__name">Ismail Ahmad</h1>
+                    <h1 class="identity__name">Hi, Ahmad here.</h1>
                     <p class="identity__role">Designer. Product &amp; Business.</p>
                     <span class="badge-live">
-                        <span class="badge-live__dot"></span>
-                        Open to work
+                        <span data-status-label>Available</span>
+                        <time class="badge-live__time" data-local-time hidden></time>
                     </span>
                 </div>
             </div>
