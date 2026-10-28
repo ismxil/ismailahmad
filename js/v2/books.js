@@ -182,9 +182,11 @@ export async function initBooksPage() {
     filter.setAttribute('aria-label', 'Filter books');
     filter.innerHTML = filterHTML(topics);
     document.body.append(filter);
+    const placement = liftAboveFooter(filter, grid, summary);
 
     let first = true;
     function render() {
+        const anchor = first ? null : placement.capture();
         const inTopic = state.topic ? books.filter(b => b.tags.includes(state.topic)) : books;
         const shown = inTopic.filter(b => state.shelf === 'all' || b.shelf === state.shelf).sort(compare[state.sort]);
 
@@ -209,6 +211,7 @@ export async function initBooksPage() {
         watchImageSkeletons(grid);
         const shelf = state.shelf === 'all' ? 'books' : `${shelfLabel[state.shelf].toLowerCase()}`;
         summary.textContent = `${shown.length} ${state.shelf === 'all' ? (shown.length === 1 ? 'book' : 'books') : shelf}${state.topic ? ` on ${topicLabel(state.topic).toLowerCase()}` : ''}.`;
+        placement.restore(anchor);
         if (!first) {
             writeState(state);
             if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -262,28 +265,53 @@ export async function initBooksPage() {
     document.addEventListener('click', (e) => { if (!filter.contains(e.target)) closeMenus(); });
 
     render();
-    liftAboveFooter(filter);
 }
 
 /** Float over the books, then settle above the footer rather than below it. */
-function liftAboveFooter(filter) {
+function liftAboveFooter(filter, grid, summary) {
     const footer = document.querySelector('.site-footer');
     let frame = 0;
+    const base = () => window.innerWidth >= 640 ? 24 : 12;
+    const footerTop = () => footer?.getBoundingClientRect().top ?? window.innerHeight;
+    function reserveViewport() {
+        // offsetTop ignores the brief result-change transform animation.
+        let top = 0;
+        for (let element = grid; element; element = element.offsetParent) top += element.offsetTop;
+        grid.style.setProperty('--books-grid-top', `${top}px`);
+    }
     function place() {
         frame = 0;
-        const base = window.innerWidth >= 640 ? 24 : 12;
-        const top = footer?.getBoundingClientRect().top ?? window.innerHeight;
-        filter.style.setProperty('--filter-bottom', `${Math.max(base, window.innerHeight - top + 16)}px`);
+        filter.style.setProperty('--filter-bottom', `${Math.max(base(), window.innerHeight - footerTop() + 16)}px`);
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
     addEventListener('scroll', schedule, { passive: true });
-    addEventListener('resize', schedule);
+    const resize = () => { reserveViewport(); schedule(); };
+    addEventListener('resize', resize);
     if ('ResizeObserver' in window) {
         const observer = new ResizeObserver(schedule);
         observer.observe(document.body);
         if (footer) observer.observe(footer);
-        const grid = document.getElementById('books-grid');
-        if (grid) observer.observe(grid);
+        observer.observe(grid);
+        new ResizeObserver(resize).observe(summary);
     }
+    reserveViewport();
     place();
+    return {
+        capture() {
+            const top = footerTop();
+            return { footerTop: top, raised: top < window.innerHeight - base() + 16 };
+        },
+        restore(anchor) {
+            reserveViewport();
+            if (anchor?.raised) {
+                // Keep the footer and controls at their current viewport position.
+                window.scrollTo({ top: window.scrollY + footerTop() - anchor.footerTop, behavior: 'instant' });
+            } else if (anchor && footerTop() < window.innerHeight - base() + 16) {
+                // A much shorter list can clamp a deep scroll to the page end.
+                // Start those new results at the top before the next paint.
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            }
+            place();
+        },
+    };
 }
