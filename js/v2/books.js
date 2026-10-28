@@ -4,7 +4,7 @@ import { booksSkeleton, watchImageSkeletons } from './skeleton.js';
 /**
  * Books — the Goodreads shelves, read through /api/books.
  *
- * The About page shows the first few, the ones being read now. /books shows
+ * The home page shows the first few, the ones being read now. /books shows
  * every shelf as a grid of covers with a floating filter at the foot of the
  * screen: a shelf, a sort and a topic. The choice is kept in the address, so
  * a filtered view can be shared.
@@ -77,7 +77,7 @@ function bookHTML(book, { status = true, eager = false } = {}) {
     </li>`;
 }
 
-/* ── About ───────────────────────────────────────────────── */
+/* ── Home ────────────────────────────────────────────────── */
 
 const PREVIEW = 4;
 

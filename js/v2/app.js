@@ -6,6 +6,7 @@ import { renderProjects } from './projects.js';
 import { renderWork } from './work.js';
 import { renderBlogPreview } from './blog-preview.js';
 import { renderArchive } from './archive.js';
+import { renderBooksPreview } from './books.js';
 import { initBookingModal } from './booking-modal.js';
 import { initContactCard } from './contact-card.js';
 import { initPresence, initStatus } from './presence.js';
@@ -41,12 +42,13 @@ async function boot() {
     initStatus();
     initDock();
 
-    // Blog and archive arrive over the network; wait for them so the
+    // Blog, archive and books arrive over the network; wait for them so the
     // page search indexes the entries rather than empty lists.
     await Promise.allSettled([
         renderWork(document.getElementById('work-list'), { shuffleCovers: true }),
         renderBlogPreview(document.getElementById('blog-list')),
         renderArchive(document.getElementById('archive-grid')),
+        renderBooksPreview(document.getElementById('books-list')),
     ]);
     initPageSearch();
 

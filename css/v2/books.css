@@ -112,12 +112,6 @@
 }
 .book__status svg { width: 13px; height: 13px; flex-shrink: 0; }
 
-/* ── About ───────────────────────────────────────────────── */
-
-.about-books { margin-top: 56px; }
-.about-books .books-grid { margin-top: 20px; }
-.about-books .about-links { margin-top: 32px; }
-
 /* ── /books ──────────────────────────────────────────────── */
 
 .books-head { margin-top: 32px; }
@@ -225,3 +219,6 @@
     .book__cover, .book-filter button { transition: none; }
     .book-filter, .book-filter__options { animation: none; }
 }
+
+/* The home page's last section: more air before the search pill lands. */
+#books + .page-search-slot { padding-top: 96px; min-height: 144px; }

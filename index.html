@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="css/fonts.css" />
     <link rel="stylesheet" href="css/v2/tokens.css" />
     <link rel="stylesheet" href="css/v2/app.css" />
+    <link rel="stylesheet" href="css/v2/books.css" />
     <script type="module" src="/js/generated/analytics.js"></script>
 </head>
 
@@ -193,12 +194,22 @@
             </div>
         </section>
 
-        <section class="team-card" aria-labelledby="team-heading">
-            <div class="team-card__copy">
-                <h2 id="team-heading">Your team</h2>
-                <p>Looking for a designer who can ship? Let's connect.</p>
-                <a class="team-card__talk" href="https://cal.com/ismxil/intro30min" data-book-call
-                    aria-haspopup="dialog">Talk</a>
+        <!-- ── Books ──────────────────────────────────────── -->
+        <section class="section" id="books">
+            <div class="section__head">
+                <h2 class="section__title">Books</h2>
+                <span class="section__count" data-count="books"></span>
+                <span class="section__more-wrap">
+                    <a class="section__more" href="/books">View all
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M7.25 4.75 11.5 9l-4.25 4.25" />
+                        </svg>
+                    </a>
+                </span>
+            </div>
+            <div class="section__body">
+                <ul class="books-grid" id="books-list"></ul>
             </div>
         </section>
 
