@@ -2025,7 +2025,11 @@ kbd {
     font: 500 14px/1.4 var(--font-sans);
     cursor: pointer;
 }
-.menu-trigger__icon { display: none; }
+.menu-trigger__icon { display: none; transition: transform 180ms ease; }
+.menu-trigger[aria-expanded='true'] .menu-trigger__icon { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) {
+    .menu-trigger__icon { transition: none; }
+}
 @media (max-width: 639px) {
     .menu-trigger .menu-trigger__icon { display: block; }
     .menu-trigger__label { display: none; }

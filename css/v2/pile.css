@@ -1,5 +1,5 @@
 /* A pile of my things at the foot of About — photos, books, a CD, a note,
-   the tools I use and a few clients — that falls into place when it comes
+   the tools I use — that falls into place when it comes
    into view and can be pushed around.
 
    The pile is laid out on a fixed canvas (1040 × 600, or 600 × 1000 on a
@@ -129,22 +129,19 @@
     background: #fbe89c;
     color: #4a3f1a;
     cursor: grab;
-}
-.pile-note textarea {
-    width: 100%;
-    height: 140px;
-    border: 0;
-    padding: 0;
-    resize: none;
-    background: none;
-    color: inherit;
+    text-align: left;
     font: 16px/1.4 var(--font-sans);
-    cursor: text;
-    touch-action: auto;
 }
-.pile-note textarea::placeholder { color: #8a7a3d; }
-.pile-note textarea:focus { outline: none; }
-.pile-note button {
+.pile-note__preview {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    height: 140px;
+}
+.pile-note__open {
     position: absolute;
     right: 14px;
     bottom: 14px;
@@ -152,17 +149,84 @@
     place-items: center;
     width: 38px;
     height: 38px;
-    border: 0;
     border-radius: 50%;
     background: #fffdf3;
     color: #4a3f1a;
+}
+.pile-note__open svg { width: 18px; height: 18px; }
+.pile-note.is-editing { visibility: hidden; }
+.pile-note:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+
+.note-editor {
+    width: min(560px, calc(100vw - 32px));
+    height: min(560px, calc(100dvh - 32px));
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 28px;
+    border: 0;
+    border-radius: 6px 6px 32px 6px;
+    background: #fbe89c;
+    color: #4a3f1a;
+    box-shadow: 0 24px 100px #0003;
+    overflow: hidden;
+}
+.note-editor::backdrop { background: #16130f70; backdrop-filter: blur(6px); }
+.note-editor__form { height: 100%; display: flex; flex-direction: column; gap: 24px; margin: 0; }
+.note-editor__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.note-editor__header h2 { margin: 0; font: 500 18px/1.4 var(--font-sans); }
+.note-editor__close {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #fffdf380;
+    color: inherit;
     cursor: pointer;
 }
-.pile-note button svg { width: 18px; height: 18px; }
-
-.pile-app { width: 64px; height: 64px; }
-.pile-app img { display: block; width: 100%; height: 100%; border-radius: 15px; pointer-events: none; }
-
+.note-editor__close svg { width: 20px; height: 20px; }
+.note-editor textarea {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    resize: none;
+    background: transparent;
+    color: inherit;
+    font: 18px/1.6 var(--font-sans);
+    outline: none;
+}
+.note-editor textarea::placeholder { color: #8a7a3d; }
+.note-editor__footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.note-editor__footer p { margin: 0; font: 12px/1.4 var(--font-sans); color: #75652f; }
+.note-editor__send {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: #fffdf3;
+    color: #4a3f1a;
+    font: 500 14px/1.4 var(--font-sans);
+    cursor: pointer;
+}
+.note-editor button:focus-visible { outline: 2px solid #4a3f1a; outline-offset: 3px; }
+@media (max-width: 639px) {
+    .note-editor { padding: 20px; }
+    .note-editor__form { gap: 18px; }
+    .note-editor__footer { flex-wrap: wrap; }
+}
+@media print {
+    .note-editor { display: none !important; }
+}
 
 /* On a touch screen the pile covers most of the view, so an upward swipe
    still scrolls the page; items move with a sideways push. */
