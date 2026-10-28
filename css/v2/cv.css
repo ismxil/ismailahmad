@@ -4,7 +4,7 @@
 .cv a { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--border-strong); }
 .cv a:hover { text-decoration-color: currentColor; }
 .cv-muted { color: var(--text-tertiary); }
-.cv-label { font: inherit; font-size: 14px; color: var(--text-tertiary); padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.cv-label { font: inherit; font-size: 14px; color: var(--text-tertiary); margin-bottom: 16px; }
 
 .cv-intro { display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center; }
 .cv-intro__photo { width: 88px; height: 88px; border-radius: 50%; overflow: hidden; background: var(--surface); }
