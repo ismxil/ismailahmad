@@ -17,12 +17,14 @@
 .cv-row__meta { font-size: 14px; color: var(--text-tertiary); padding-top: 1px; }
 .cv-row__body h3 { font: inherit; font-weight: 500; }
 .cv-row__body p { color: var(--text-secondary); }
-.cv .cv-row__body h3 a { text-decoration: none; }
-.cv .cv-row__body h3 a:hover { text-decoration: underline; }
-.cv-row__body h3 a span { color: var(--text-tertiary); font-size: 13px; }
-.cv-row__body ul { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; padding-left: 16px; list-style: disc; color: var(--text-secondary); }
-.cv-row__body li::marker { color: var(--text-tertiary); }
-#cv-experience ~ .cv-row + .cv-row, .cv-more .cv-row + .cv-row { margin-top: 32px; }
+/* Roles read as prose, in the voice of the person: grey text with the
+   results that matter picked out in full ink, and links inline. */
+.cv-job .cv-row__meta h3 { font: inherit; font-size: 15px; font-weight: 500; color: var(--text-primary); }
+.cv-job .cv-row__body p + p { margin-top: 12px; }
+.cv-job .cv-row__body b { font-weight: inherit; color: var(--text-primary); }
+.cv-job .cv-row__body p a { color: var(--text-primary); }
+.cv .cv-visit { display: inline-block; margin-top: 12px; color: var(--text-primary); }
+.cv-job + .cv-job { margin-top: 48px; }
 
 .cv-details { margin-top: 32px; }
 .cv-details dd { margin: 0; }
