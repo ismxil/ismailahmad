@@ -96,7 +96,8 @@ API keys stay on the server. Duplicate retries use the same idempotency key.
 For local delivery checks, pull development variables into a gitignored env file
 and start the local server with `node --env-file=<file> scripts/dev.mjs`.
 Drafts stay in memory for the current page visit; no persistent browser storage
-is used. The UI confirms Sent only after the email provider accepts the note.
+is used. The UI confirms Sent only after the email provider accepts the note, then clears
+the message and flips to a clean confirmation face.
 
 ## Analytics
 
