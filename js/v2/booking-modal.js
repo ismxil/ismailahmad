@@ -25,27 +25,30 @@ function loadEmbed() {
     return embedReady;
 }
 
-export function initBookingModal() {
-    document.querySelectorAll('[data-book-call]').forEach(trigger => {
-        let opening = false;
-        trigger.addEventListener('click', async event => {
-            event.preventDefault();
-            if (opening) return;
-            opening = true;
-            trigger.setAttribute('aria-busy', 'true');
-            try {
-                const cal = await loadEmbed();
-                cal('modal', {
-                    calLink: CAL_LINK,
-                    config: { theme: 'light', layout: 'month_view' },
-                });
-            } catch {
-                // The ordinary booking link remains usable if the embed is blocked.
-                window.location.assign(trigger.href);
-            } finally {
-                opening = false;
-                trigger.removeAttribute('aria-busy');
-            }
-        });
+/** Makes a link open the booking popup; its href is the fallback. */
+export function bindBookingTrigger(trigger) {
+    let opening = false;
+    trigger.addEventListener('click', async event => {
+        event.preventDefault();
+        if (opening) return;
+        opening = true;
+        trigger.setAttribute('aria-busy', 'true');
+        try {
+            const cal = await loadEmbed();
+            cal('modal', {
+                calLink: CAL_LINK,
+                config: { theme: 'light', layout: 'month_view' },
+            });
+        } catch {
+            // The ordinary booking link remains usable if the embed is blocked.
+            window.location.assign(trigger.href);
+        } finally {
+            opening = false;
+            trigger.removeAttribute('aria-busy');
+        }
     });
+}
+
+export function initBookingModal() {
+    document.querySelectorAll('[data-book-call]').forEach(bindBookingTrigger);
 }

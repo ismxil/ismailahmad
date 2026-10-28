@@ -76,6 +76,8 @@ function collectTargets() {
     });
 }
 
+import { bindBookingTrigger } from './booking-modal.js';
+
 export function initPageSearch() {
     const targets = collectTargets();
     // Nothing worth searching on a page with one thing on it
@@ -104,6 +106,16 @@ export function initPageSearch() {
     launcher.setAttribute('aria-controls', 'page-search');
     launcher.setAttribute('aria-expanded', 'false');
     launcher.innerHTML = `${icon}<span>Search this page…</span><kbd>/</kbd>`;
+
+    // Search and the one action worth a standing invitation, side by side.
+    const talk = document.createElement('a');
+    talk.className = 'talk-pill';
+    talk.href = 'https://cal.com/ismxil/intro30min';
+    talk.innerHTML = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c.6 4.2 3.8 7.4 8 8-4.2.6-7.4 3.8-8 8-.6-4.2-3.8-7.4-8-8 4.2-.6 7.4-3.8 8-8Z" fill="currentColor"/></svg><span>Talk to me</span>`;
+    bindBookingTrigger(talk);
+    const float = document.createElement('div');
+    float.className = 'dock-float';
+    float.append(launcher, talk);
     // Reserve its landing space above the footer; float over the viewport elsewhere.
     const footer = document.querySelector('.site-footer');
     let slot = document.querySelector('[data-page-search-slot]');
@@ -114,7 +126,7 @@ export function initPageSearch() {
     }
     if (footer) footer.before(slot);
     else if (!slot.isConnected) (document.querySelector('.shell') || document.body).append(slot);
-    document.body.appendChild(launcher);
+    document.body.appendChild(float);
 
     // As the copyright enters the viewport, lift search above it.
     // Keep the launcher outside the shell so page animations cannot trap fixed positioning.
@@ -123,7 +135,7 @@ export function initPageSearch() {
         positionFrame = 0;
         const base = window.innerWidth >= 640 ? 24 : 16;
         const footerTop = footer?.getBoundingClientRect().top ?? window.innerHeight;
-        launcher.style.setProperty('--search-bottom', `${Math.max(base, window.innerHeight - footerTop + 16)}px`);
+        float.style.setProperty('--search-bottom', `${Math.max(base, window.innerHeight - footerTop + 16)}px`);
     }
     function schedulePosition() {
         if (!positionFrame) positionFrame = window.requestAnimationFrame(positionLauncher);
@@ -176,7 +188,7 @@ export function initPageSearch() {
     // 'close' event alone does not fire reliably here.
     function release() {
         document.body.style.overflow = previousOverflow;
-        launcher.hidden = false;
+        float.hidden = false;
         launcher.setAttribute('aria-expanded', 'false');
         if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
     }
@@ -193,7 +205,7 @@ export function initPageSearch() {
         input.value = '';
         render();
         dialog.showModal();
-        launcher.hidden = true;
+        float.hidden = true;
         launcher.setAttribute('aria-expanded', 'true');
         document.body.style.overflow = 'hidden';
         input.focus();

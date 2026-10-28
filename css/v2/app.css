@@ -2111,19 +2111,28 @@ kbd {
 }
 
 .dock__mark { width: 17px; height: 17px; flex-shrink: 0; color: var(--text-tertiary); }
-.dock-launcher {
+.dock-float {
     position: fixed;
     inset: auto 0 max(var(--search-bottom, 16px), env(safe-area-inset-bottom));
     z-index: 30;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: min(440px, calc(100vw - 24px));
+    margin: 0 auto;
+}
+.dock-float[hidden] { display: none; }
+.dock-launcher {
+    display: flex;
     align-items: center;
     gap: 12px;
-    width: min(300px, calc(100vw - 24px));
+    flex: 1;
+    min-width: 0;
     height: 48px;
-    margin: 0 auto;
-    padding: 0 10px 0 16px;
+    padding: 0 12px 0 18px;
     border: 0;
-    border-radius: var(--r-xl);
+    border-radius: 999px;
     background: var(--raised);
     color: var(--text-tertiary);
     box-shadow: var(--popover-shadow);
@@ -2131,7 +2140,83 @@ kbd {
     cursor: pointer;
 }
 .dock-launcher[hidden] { display: none; }
-.dock-launcher span { flex: 1; text-align: left; }
+.dock-launcher span { flex: 1; min-width: 0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dock-launcher kbd { border-radius: 999px; padding-inline: 7px; }
+
+/* Talk to me: a pill of polished chrome. A brushed silver body, a bevelled
+   rim from stacked inset shadows, and a holographic streak — white core
+   with rainbow fringes — that sweeps across now and then. */
+.talk-pill {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    flex-shrink: 0;
+    height: 48px;
+    padding: 0 22px 0 18px;
+    border-radius: 999px;
+    color: #17171c;
+    font: 500 15px/1 var(--font-sans);
+    letter-spacing: -0.005em;
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.65);
+    background:
+        linear-gradient(118deg, transparent 58%, rgb(255 90 90 / 0.28) 61%, rgb(255 220 60 / 0.35) 62.5%,
+            rgb(255 255 255 / 0.9) 64.5%, rgb(90 225 255 / 0.4) 66.5%, rgb(120 110 255 / 0.3) 68%, transparent 71%),
+        linear-gradient(100deg, #8e8f97 0%, #c6c7ce 20%, #eeeef2 42%, #b4b5bd 60%, #e6e6eb 82%, #9fa0a8 100%);
+    box-shadow:
+        inset 0 0 0 1px rgb(255 255 255 / 0.55),
+        inset 0 0 0 3px #a6a7af,
+        inset 0 0 0 4px rgb(255 255 255 / 0.5),
+        inset 0 3px 6px rgb(255 255 255 / 0.7),
+        inset 0 -4px 8px rgb(0 0 0 / 0.16),
+        0 1px 2px rgb(0 0 0 / 0.2),
+        0 8px 22px -8px rgb(0 0 0 / 0.45);
+    transition: scale 0.15s ease-out, box-shadow 0.2s ease-out;
+}
+.talk-pill svg { width: 14px; height: 14px; flex-shrink: 0; filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.6)); }
+.talk-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    z-index: -1;
+    width: 300%;
+    background: linear-gradient(115deg,
+        transparent 34%,
+        rgb(255 70 70 / 0.35) 38%, rgb(255 214 0 / 0.45) 39.5%,
+        rgb(255 255 255 / 0.95) 41.5%,
+        rgb(80 230 255 / 0.5) 43.5%, rgb(110 100 255 / 0.4) 45%,
+        transparent 49%,
+        transparent 53%,
+        rgb(255 255 255 / 0.7) 55%, rgb(90 220 255 / 0.35) 56.5%,
+        transparent 59%);
+    translate: -62% 0;
+    animation: talk-sheen 5.5s cubic-bezier(0.45, 0, 0.2, 1) 1.2s infinite;
+}
+.talk-pill:hover {
+    box-shadow:
+        inset 0 0 0 1px rgb(255 255 255 / 0.6),
+        inset 0 0 0 3px #a6a7af,
+        inset 0 0 0 4px rgb(255 255 255 / 0.55),
+        inset 0 3px 6px rgb(255 255 255 / 0.75),
+        inset 0 -4px 8px rgb(0 0 0 / 0.16),
+        0 1px 2px rgb(0 0 0 / 0.2),
+        0 12px 28px -8px rgb(0 0 0 / 0.5);
+}
+.talk-pill:hover::before { animation-duration: 1.6s; }
+.talk-pill:active { scale: 0.97; }
+.talk-pill[aria-busy='true'] { cursor: progress; }
+@keyframes talk-sheen {
+    0% { translate: -62% 0; }
+    45%, 100% { translate: 4% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .talk-pill::before { animation: none; translate: -22% 0; }
+}
+@media (max-width: 400px) {
+    .talk-pill { padding-inline: 14px 16px; }
+}
 .dock-launcher kbd { font: 12px var(--font-sans); padding: 2px 5px; border-radius: 4px; background: var(--control); }
 @media (min-width: 640px) {
     .command-menu { bottom: 24px; }
@@ -2366,13 +2451,6 @@ body::after {
     padding: 48px 0 0;
 }
 
-.page-search-slot .dock-launcher {
-    position: fixed;
-    inset: auto 0 max(var(--search-bottom, 16px), env(safe-area-inset-bottom));
-    z-index: 30;
-    inset: auto;
-    width: min(300px, 100%);
-}
 
 
 @media (prefers-reduced-motion: reduce) {
