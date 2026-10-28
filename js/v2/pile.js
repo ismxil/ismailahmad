@@ -113,15 +113,32 @@ export function initPile(stage) {
         item.addEventListener('dragstart', event => event.preventDefault());
     });
 
-    // The CD plays the first TWO LANES track, and spins while it does.
+    // The CD plays the two TWO LANES tracks in turn, spinning while it does,
+    // with each track's cover on the disc.
     const cd = stage.querySelector('.pile-cd');
+    const tracks = [
+        { title: 'Immersion', src: '/assets/audio/02-immersion.m4a', cover: '/assets/audio/02-cover.jpg' },
+        { title: 'Inner Motion', src: '/assets/audio/03-inner_motion.m4a', cover: '/assets/audio/03-cover.jpg' },
+    ];
+    let track = 0;
     let audio;
+    const label = () => cd.setAttribute('aria-label', `${audio && !audio.paused ? 'Pause' : 'Play'} ${tracks[track].title} by TWO LANES`);
     cd?.addEventListener('click', () => {
-        audio ||= Object.assign(new Audio('/assets/audio/01-essence.m4a'), { loop: true });
+        if (!audio) {
+            audio = new Audio(tracks[track].src);
+            audio.addEventListener('ended', () => {
+                track = (track + 1) % tracks.length;
+                audio.src = tracks[track].src;
+                cd.querySelector('img').src = tracks[track].cover;
+                audio.play().catch(() => {});
+                label();
+            });
+        }
         const playing = audio.paused;
         if (playing) audio.play().catch(() => {}); else audio.pause();
         cd.classList.toggle('is-playing', playing);
         cd.setAttribute('aria-pressed', String(playing));
+        label();
     });
 
     // Two five-star books from the Goodreads shelves.

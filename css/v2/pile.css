@@ -63,25 +63,39 @@
 }
 
 .pile-cd { width: 172px; height: 172px; border-radius: 50%; background: none; }
+/* The cover is printed across the whole disc, with a white rim, a light
+   sheen across the surface and the hole in the middle. */
 .pile-cd__disc {
     position: absolute;
     inset: 0;
+    overflow: hidden;
     border-radius: 50%;
-    background:
-        radial-gradient(circle, #0000 0 15%, #ffffffb3 15.5% 17%, #0000 17.5%),
-        conic-gradient(from 30deg, #e8e8ea, #c8f0ff, #f4d6ff, #fff6c8, #d0ffe6, #e8e8ea, #ffd6e8, #c8e0ff, #e8e8ea);
-    box-shadow: inset 0 0 0 1px #00000014;
+    box-shadow: 0 0 0 2px #fff, inset 0 0 0 1px #00000014;
 }
 .pile-cd__disc img {
-    position: absolute;
-    inset: 22%;
-    width: 56%;
-    height: 56%;
-    border-radius: 50%;
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     pointer-events: none;
-    /* The hole in the middle. */
-    mask: radial-gradient(circle, #0000 0 17%, #000 18%);
+    mask: radial-gradient(circle, #0000 0 7.5%, #000 8%);
+}
+.pile-cd__disc::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(from 20deg, #fff0, #ffffff40 8%, #fff0 18%, #fff0 50%, #ffffff33 58%, #fff0 68%);
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+}
+.pile-cd__disc::after {
+    content: '';
+    position: absolute;
+    inset: 38%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #0000 0 20%, #ffffffd9 21% 30%, #ffffff38 31% 100%);
+    box-shadow: 0 0 0 1px #ffffff40;
+    pointer-events: none;
 }
 .pile-cd.is-playing .pile-cd__disc { animation: pile-spin 3.2s linear infinite; }
 @keyframes pile-spin { to { transform: rotate(1turn); } }
