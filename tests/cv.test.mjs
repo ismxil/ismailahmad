@@ -19,5 +19,6 @@ test('the CV page offers the PDF for download', async () => {
     const downloads = [...document.querySelectorAll('a[download]')];
     assert.ok(downloads.length >= 1);
     for (const link of downloads) assert.equal(link.getAttribute('href'), '/assets/cv.pdf');
-    assert.equal(document.querySelectorAll('.cv-role').length, 6);
+    assert.equal(document.querySelectorAll('.cv-row__body ul').length, 6);
+    for (const link of document.querySelectorAll('.cv-clients a')) assert.match(link.href, /^https:\/\//);
 });
