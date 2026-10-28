@@ -9,7 +9,7 @@ export function setTalkPillHidden(hidden) {
     updateVisibility();
 }
 
-/** Called only by Home, CV and Archive, independently of page search. */
+/** Called only by Home and Archive, independently of page search. */
 export function initTalkPill() {
     if (document.querySelector('.dock-float')) return;
     const footer = document.querySelector('.site-footer');

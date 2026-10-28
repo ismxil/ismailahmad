@@ -1,6 +1,5 @@
 import { initBookingModal } from './booking-modal.js';
 import { initDock } from './dock.js';
-import { initTalkPill } from './talk-pill.js';
 
 document.getElementById('theme-toggle').addEventListener('click', () => {
     const dark = document.documentElement.classList.toggle('dark');
@@ -23,5 +22,4 @@ addEventListener('afterprint', () => { earlier.open = earlier.dataset.wasOpen ==
 
 initDock();
 initBookingModal();
-initTalkPill();
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());

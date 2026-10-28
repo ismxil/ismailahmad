@@ -6,10 +6,11 @@ import archive from '../api/archive.js';
 import cases from '../api/cases.js';
 import wandering from '../api/wandering.js';
 import books from '../api/books.js';
+import notes from '../api/notes.js';
 import subscribe from '../api/subscribe.js';
 import sanityPublish from '../api/sanity-publish.js';
 import middleware, { config as middlewareConfig } from '../middleware.js';
-const apiHandlers = { '/api/posts': posts, '/api/archive': archive, '/api/cases': cases, '/api/wandering': wandering, '/api/books': books, '/api/subscribe': subscribe };
+const apiHandlers = { '/api/posts': posts, '/api/archive': archive, '/api/cases': cases, '/api/wandering': wandering, '/api/books': books, '/api/notes': notes, '/api/subscribe': subscribe };
 // Reads the request stream itself, so it must not be drained first.
 const rawBodyHandlers = { '/api/sanity-publish': sanityPublish };
 
