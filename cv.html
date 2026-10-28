@@ -64,9 +64,9 @@
             </div>
         </header>
         <article class="cv" aria-labelledby="cv-name">
-            <header class="cv-intro">
-                <span class="cv-intro__photo"><img src="/assets/about/portrait.jpg" alt="Portrait of Ismail Ahmad" width="568" height="671" /></span>
-                <div>
+            <header class="cv-intro cv-row">
+                <div class="cv-row__meta"><img class="cv-intro__photo" src="/assets/about/portrait-workspace.webp" alt="Portrait of Ismail Ahmad" width="1153" height="1364" fetchpriority="high" /></div>
+                <div class="cv-row__body">
                     <h1 id="cv-name">Ismail Ahmad</h1>
                     <p class="cv-intro__title">Senior Product Designer</p>
                 </div>
@@ -99,8 +99,8 @@
                 </div>
             </section>
 
-            <section class="cv-section" aria-labelledby="cv-nigeria">
-                <h2 class="cv-label" id="cv-nigeria">Earlier experience in Nigeria</h2>
+            <details class="cv-section cv-more">
+                <summary class="cv-label">Earlier experience in Nigeria<svg class="cv-more__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
                 <div class="cv-row">
                     <div class="cv-row__meta">Sept 2021 — Feb 2023<br />Lagos</div>
                     <div class="cv-row__body"><h3>Product Design Lead, <a href="https://sterling.ng" target="_blank" rel="noopener">Sterling Bank <span aria-hidden="true">↗</span></a></h3><ul><li>Led design for Gomoney Digital Bank, managing the design team and cutting the load on customer support.</li><li>Worked directly with the C-suite on roadmap, go-to-market and growth.</li><li>Shaped the design culture and cadence behind rapid iteration across product streams.</li></ul></div>
@@ -113,7 +113,7 @@
                     <div class="cv-row__meta">Jan 2017 — Feb 2020<br />Lagos</div>
                     <div class="cv-row__body"><h3>Designer, <a href="https://protechadvance.com" target="_blank" rel="noopener">NCK Tech <span aria-hidden="true">↗</span></a></h3><ul><li>Designed banking and enterprise software for Fidelity Bank, Access Bank and UBA, beating the annual turnover target by 280%.</li><li>Led design of EasyDispatch, a last-mile logistics platform that turned over millions of naira in its first six months.</li><li>Built and led a small design team across concurrent client engagements.</li></ul></div>
                 </div>
-            </section>
+            </details>
 
             <section class="cv-section" aria-labelledby="cv-education">
                 <h2 class="cv-label" id="cv-education">Education</h2>
@@ -221,15 +221,14 @@
             </section>
 
             <footer class="cv-sign">
-                <p class="cv-muted"><span id="cv-place-date">Berlin</span></p>
                 <svg class="sig cv-sign__mark" viewBox="0 0 396 343" fill="none" aria-hidden="true"><path d="M81.835,2477.796C81.835,2477.796 454.435,2205.149 415.719,2153C391.288,2120.092 319.22,2165.049 264.098,2227.977C185.773,2317.394 137.217,2440.199 152,2466C195.388,2541.727 425.12,2278.143 398.36,2246.234C380.475,2224.908 259.394,2377.005 303.697,2394.225C317.936,2394.225 342.875,2367.296 362.519,2336.515C362.519,2336.515 340.584,2392.821 348,2383.894C357.934,2371.936 371.523,2347.692 378,2354.454C384.298,2361.03 367.523,2385 375,2382C382.477,2379 389.012,2356.526 394.083,2357.822C401.202,2359.641 384.576,2384.823 391.288,2381.407C398,2377.991 415.719,2353.418 415.719,2357.822C415.719,2362.225 399.711,2392.818 415.413,2381.407C431.115,2369.995 440.179,2361.437 440.179,2361.437C440.179,2361.437 422.227,2378.92 425.613,2381.407C429,2383.894 454.025,2362.844 456,2357.822C457.975,2352.799 439.964,2381.131 448.039,2383.894C454.796,2386.207 459.93,2371.936 466,2371.936C466,2371.936 463,2384.407 472,2378.407" transform="matrix(1,0,0,1,-79.334514,-2139.421278)" /></svg>
                 <p>Ismail Ahmad</p>
             </footer>
 
             <div class="cv-actions">
-                <a class="cv-button" href="/assets/cv.pdf" download="Ismail-Ahmad-CV.pdf">Download CV as PDF</a>
-                <a class="cv-button cv-button--quiet" href="https://www.ismailahmad.com/portfolio.pdf" target="_blank" rel="noopener">Case studies (PDF) ↗</a>
-                <a class="cv-button cv-button--quiet" href="mailto:work@ismailahmad.com">Get in touch ↗</a>
+                <a href="mailto:work@ismailahmad.com">Get in touch ↗</a>
+                <a href="/assets/cv.pdf" download="Ismail-Ahmad-CV.pdf">Download CV ↗</a>
+                <a href="https://www.ismailahmad.com/portfolio.pdf" target="_blank" rel="noopener">Case studies ↗</a>
             </div>
         </article>
         <footer class="site-footer">

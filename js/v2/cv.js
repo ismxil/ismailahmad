@@ -14,9 +14,10 @@ more.addEventListener('click', () => {
     clients.querySelector('.cv-clients__extra a').focus({ preventScroll: true });
 });
 
-// Signed and dated like a paper Lebenslauf, as of the day it is read.
-const month = new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-document.getElementById('cv-place-date').textContent = `Berlin, ${month}`;
+// Printing shows the folded roles too.
+const earlier = document.querySelector('.cv-more');
+addEventListener('beforeprint', () => { earlier.dataset.wasOpen = earlier.open; earlier.open = true; });
+addEventListener('afterprint', () => { earlier.open = earlier.dataset.wasOpen === 'true'; });
 
 initDock();
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());

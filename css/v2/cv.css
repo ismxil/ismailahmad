@@ -7,10 +7,8 @@
 .cv-muted { color: var(--text-tertiary); }
 .cv-label { font: inherit; font-size: 14px; color: var(--text-tertiary); margin-bottom: 16px; }
 
-.cv-intro { display: flex; gap: 20px; align-items: center; }
-.cv-intro__photo { width: 88px; height: 88px; flex-shrink: 0; border-radius: 50%; overflow: hidden; background: var(--surface); }
-/* The portrait is half-length; zoomed so the face fills the circle. */
-.cv-intro__photo img { width: 190%; height: auto; max-width: none; margin: -14% 0 0 -48%; display: block; }
+.cv-intro { align-items: center; }
+.cv-intro__photo { display: block; width: 96px; height: auto; border-radius: 6px; }
 .cv-intro h1 { font-size: 25px; font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; }
 .cv-intro__title { color: var(--text-secondary); }
 
@@ -24,13 +22,22 @@
 .cv-row__body h3 a span { color: var(--text-tertiary); font-size: 13px; }
 .cv-row__body ul { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; padding-left: 16px; list-style: disc; color: var(--text-secondary); }
 .cv-row__body li::marker { color: var(--text-tertiary); }
-#cv-experience ~ .cv-row + .cv-row, #cv-nigeria ~ .cv-row + .cv-row { margin-top: 32px; }
+#cv-experience ~ .cv-row + .cv-row, .cv-more .cv-row + .cv-row { margin-top: 32px; }
 
 .cv-details { margin-top: 32px; }
+.cv-details dd { margin: 0; }
 .cv-details .cv-row + .cv-row { margin-top: 4px; }
 
 .cv-section { margin-top: 56px; }
 .cv-about { font-size: 17px; line-height: 1.55; }
+
+/* Earlier roles fold away behind their heading. */
+.cv-more summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; }
+.cv-more summary::-webkit-details-marker { display: none; }
+.cv-more summary:hover { color: var(--text-primary); }
+.cv-more__chevron { transition: transform 0.2s ease; }
+.cv-more[open] .cv-more__chevron { transform: rotate(180deg); }
+.cv-more:not([open]) summary { margin-bottom: 0; }
 
 /* App icons for clients: five on show, the rest behind a "+N" tile. */
 .cv-clients { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -69,15 +76,7 @@
 .cv-sign__mark { width: 96px; height: 60px; margin: 12px 0 4px; color: var(--text-primary); }
 .cv-sign p:last-child { font-weight: 500; }
 
-.cv-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 48px; }
-.cv .cv-button {
-    display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 8px 16px;
-    border-radius: 10px; background: var(--btn-bg); color: var(--btn-fg);
-    font-weight: 500; font-size: 14px; text-decoration: none;
-}
-.cv .cv-button:hover { opacity: 0.88; }
-.cv .cv-button--quiet { background: var(--control); color: var(--text-primary); }
-.cv .cv-button--quiet:hover { opacity: 1; background: var(--control-hover); }
+.cv-actions { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 48px; }
 
 .cv-download { text-decoration: none; color: var(--text-primary); }
 .cv-download svg { flex-shrink: 0; }
@@ -86,7 +85,6 @@
 @media (max-width: 639px) {
     .cv-row { grid-template-columns: 1fr; gap: 2px; }
     .cv-details .cv-row, #cv-languages ~ .cv-row { grid-template-columns: 88px minmax(0, 1fr); gap: 12px; }
-    .cv-actions { flex-direction: column; align-items: stretch; }
 }
 @media (max-width: 479px) {
     .cv-download span { display: none; }
@@ -100,7 +98,7 @@
 
 /* Printing the page gives a clean sheet, close to the PDF. */
 @media print {
-    .site-header, .site-footer, .dock-spacer, .cv-actions, #dock, .cv-clients__more { display: none !important; }
+    .site-header, .site-footer, .dock-spacer, .cv-actions, #dock, .cv-clients__more, .cv-more__chevron { display: none !important; }
     .cv-clients__extra { display: block; }
     .shell { max-width: none; padding: 0; animation: none; }
     .cv { margin-top: 0; font-size: 10.5pt; }
