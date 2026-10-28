@@ -2348,32 +2348,6 @@ body::after {
     100% { background-position: 110% 100%, -40% 100%, 35% 100%; }
 }
 
-.team-card {
-    flex-shrink: 0;
-    margin-top: 48px;
-    padding: 20px;
-    border-radius: 14px;
-    background: var(--surface);
-    color: var(--text-primary);
-}
-
-.team-card h2 { font-size: 16px; line-height: 1.4; }
-.team-card p { margin-top: 4px; color: var(--text-secondary); font-size: 15px; line-height: 1.5; }
-.team-card__talk {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-    padding: 8px 24px;
-    min-height: 40px;
-    border-radius: 8px;
-    background: #00b344;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 500;
-    transition: background 160ms ease;
-}
-.team-card__talk:hover { background: #008f36; }
 .page-search-slot + .site-footer {
     flex-shrink: 0;
     margin-top: 0;
@@ -2390,8 +2364,6 @@ body::after {
     padding: 48px 0 0;
 }
 
-.team-card + .page-search-slot { margin-top: 0; padding-top: 32px; min-height: 80px; }
-
 .page-search-slot .dock-launcher {
     position: fixed;
     inset: auto 0 max(var(--search-bottom, 16px), env(safe-area-inset-bottom));
@@ -2403,5 +2375,4 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
     body::after { animation: none; }
-    .team-card__talk { transition: none; }
 }
