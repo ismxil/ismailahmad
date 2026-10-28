@@ -4,9 +4,10 @@ import { rewrite } from '@vercel/functions';
 // this because index.html already answers "/".
 //   tiny-lagos.ismailahmad.com → the Little Lagos atlas
 //   cv.ismailahmad.com         → the CV
+//   pdf.ismailahmad.com        → the portfolio deck
 export const config = { matcher: '/', runtime: 'nodejs' };
 
-const roots = { 'tiny-lagos.': '/lagos', 'cv.': '/cv' };
+const roots = { 'tiny-lagos.': '/lagos', 'cv.': '/cv', 'pdf.': '/pdf' };
 
 export default function middleware(request) {
     const host = (request.headers.get('host') || '').split(':')[0];

@@ -121,4 +121,5 @@ http.createServer(async (req, res) => {
     console.log(`Archive: http://archives.localhost:${port}`);
     console.log(`Lagos:   http://tiny-lagos.localhost:${port}`);
     console.log(`CV:      http://cv.localhost:${port}`);
+    console.log(`PDF:     http://pdf.localhost:${port}`);
 });
