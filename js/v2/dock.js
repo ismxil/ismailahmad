@@ -10,17 +10,20 @@ import { projectItems } from './projects.js';
 import { getCases } from './case-data.js';
 
 const PAGES = [
-    // Real pages first — these are the navigation. The in-page section
-    // jumps come after, since they only work from home.
-    { label: 'Work', kind: 'page', href: 'work' },
+    // Navigation: where most people are headed. The sitemap follows with
+    // everything else, and the cases and companies are appended to it.
+    { label: 'Work', kind: 'page', href: 'work', group: 'nav' },
+    { label: 'Case studies', kind: 'pdf', href: 'https://pdf.ismailahmad.com/', group: 'nav', external: true },
+    { label: 'About', kind: 'page', href: 'about', group: 'nav' },
+    { label: 'CV', kind: 'page', href: 'cv', group: 'nav' },
+    { label: 'Blog', kind: 'page', href: 'blog', group: 'nav' },
+    { label: 'Books', kind: 'page', href: 'books', group: 'nav' },
     { label: 'Archive', kind: 'page', href: 'archive' },
-    { label: 'About', kind: 'page', href: 'about' },
-    { label: 'CV', kind: 'page', href: 'cv' },
-    { label: 'Blog', kind: 'page', href: 'blog' },
-    { label: 'Books', kind: 'page', href: 'books' },
     { label: 'Personal', kind: 'section', href: '#personal' },
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
 ];
+
+const GROUPS = { nav: 'Navigation', sitemap: 'Sitemap' };
 
 /**
  * The site-wide menu, opened by the header Menu button or "K" (⌘K works
@@ -43,10 +46,12 @@ export function initDock() {
     const results = dock.querySelector('#dock-results');
     const triggers = document.querySelectorAll('[data-dock-open]');
     const onHome = location.pathname === '/' || location.pathname === '/index.html';
-    // Navigation leads; cases and companies follow. An empty query is the
-    // common case, so what sits at the top is what most people act on.
+    // Navigation leads; the sitemap follows. An empty query is the common
+    // case, so what sits at the top is what most people act on.
+    const resolve = href => href.startsWith('#') ? (onHome ? href : '/' + href)
+        : /^https?:/.test(href) ? href : '/' + href.replace(/^\//, '');
     const targets = PAGES
-        .map(t => ({ ...t, href: t.href.startsWith('#') ? (onHome ? t.href : '/' + t.href) : '/' + t.href.replace(/^\//, '') }))
+        .map(t => ({ group: 'sitemap', ...t, href: resolve(t.href) }))
         .concat(projectItems.filter(p => p.website).map(p => ({ label: p.name, href: p.website, kind: 'project', external: true })));
     let active = 0;
     let matches = [];
@@ -65,10 +70,18 @@ export function initDock() {
 
     function render() {
         const query = input.value.trim().toLowerCase();
-        matches = targets.filter(t => t.label.toLowerCase().includes(query));
+        matches = Object.keys(GROUPS).flatMap(group =>
+            targets.filter(t => (t.group || 'sitemap') === group && t.label.toLowerCase().includes(query)));
         active = 0;
         results.replaceChildren();
         matches.forEach((target, index) => {
+            const group = target.group || 'sitemap';
+            if (index === 0 || (matches[index - 1].group || 'sitemap') !== group) {
+                const heading = document.createElement('p');
+                heading.className = 'command-menu__group';
+                heading.textContent = GROUPS[group];
+                results.appendChild(heading);
+            }
             const link = document.createElement('a');
             link.href = target.href;
             if (target.external) {
