@@ -173,6 +173,16 @@
 }
 .note-editor::backdrop { background: #16130f70; backdrop-filter: blur(6px); }
 .note-editor__form { height: 100%; display: flex; flex-direction: column; gap: 24px; margin: 0; }
+.note-editor__form[hidden], .note-editor__receipt[hidden] { display: none; }
+.note-editor__receipt { position: relative; height: 100%; outline: none; }
+.note-editor__receipt > .note-editor__close { position: absolute; top: 0; right: 0; }
+.note-editor__receipt-body { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; }
+.note-editor__receipt-mark { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; background: #fffdf380; }
+.note-editor__receipt-mark svg { width: 48px; height: 48px; }
+.note-editor__receipt h2 { color: #4a3f1a; font: 500 30px/1.2 var(--font-sans); }
+.note-editor__receipt p { margin: 0; color: #75652f; font: 14px/1.4 var(--font-sans); }
+.note-editor__flight { position: absolute; width: 64px; height: 48px; z-index: 2; color: #4a3f1a; pointer-events: none; }
+.note-editor__flight svg { width: 100%; height: 100%; }
 .note-editor__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .note-editor__header h2 { color: #4a3f1a; margin: 0; font: 500 18px/1.4 var(--font-sans); }
 .note-editor__close {

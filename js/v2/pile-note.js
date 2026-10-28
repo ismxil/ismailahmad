@@ -33,8 +33,20 @@ export function initPileNote(note) {
                 </div>
                 <button type="submit" class="note-editor__send">Send <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 17 3l-4 14-3-6z"/><path d="m10 11 7-8"/></svg></button>
             </footer>
-        </form>`;
+        </form>
+        <section class="note-editor__receipt" aria-labelledby="note-receipt-title" tabindex="-1" hidden>
+            <button type="button" class="note-editor__close" aria-label="Close confirmation">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>
+            </button>
+            <div class="note-editor__receipt-body">
+                <span class="note-editor__receipt-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m13 24 8 8 15-17"/></svg></span>
+                <h2 id="note-receipt-title">Sent</h2>
+                <p>Thanks for the note!</p>
+            </div>
+        </section>`;
     document.body.append(dialog);
+    const form = dialog.querySelector('form');
+    const receipt = dialog.querySelector('.note-editor__receipt');
     const input = dialog.querySelector('textarea');
     const preview = note.querySelector('.pile-note__preview');
     const nameInput = dialog.querySelector('[name="name"]');
@@ -44,6 +56,8 @@ export function initPileNote(note) {
     const status = dialog.querySelector('.note-editor__status');
     const title = dialog.querySelector('#note-editor-title');
     const originalSendLabel = sendButton.innerHTML;
+    const pileIcon = note.querySelector('.pile-note__open');
+    const originalPileIcon = pileIcon.innerHTML;
     let avatarId = NOTE_AVATARS[0].id;
     let requestId;
     let sending = false;
@@ -92,6 +106,83 @@ export function initPileNote(note) {
     let previousFocus;
     let motion;
     let closing = false;
+    let confirmationRun = 0;
+    let confirmationMotions = [];
+    let flight;
+
+    function stopConfirmation() {
+        confirmationRun++;
+        confirmationMotions.forEach(animation => animation.cancel());
+        confirmationMotions = [];
+        flight?.remove();
+        flight = undefined;
+    }
+
+    function renderReceipt() {
+        input.value = '';
+        preview.textContent = 'Sent';
+        note.classList.add('is-sent');
+        dialog.classList.add('is-sent');
+        note.setAttribute('aria-label', 'Note sent. Write another note');
+        pileIcon.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 10 3 3 7-7"/></svg>';
+        form.hidden = true;
+        form.inert = true;
+        receipt.hidden = false;
+        dialog.setAttribute('aria-labelledby', 'note-receipt-title');
+        if (dialog.open && !closing) receipt.focus({ preventScroll: true });
+    }
+
+    async function confirmSent() {
+        stopConfirmation();
+        const run = confirmationRun;
+        if (reduceMotion.matches || !dialog.open || closing) {
+            renderReceipt();
+            return;
+        }
+        motion?.cancel();
+        const button = sendButton.getBoundingClientRect();
+        const paper = dialog.getBoundingClientRect();
+        flight = document.createElement('span');
+        flight.className = 'note-editor__flight';
+        flight.setAttribute('aria-hidden', 'true');
+        flight.style.left = `${button.x - paper.x + button.width / 2 - 24}px`;
+        flight.style.top = `${button.y - paper.y + button.height / 2 - 24}px`;
+        flight.innerHTML = '<svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m24 26 31-18-12 32-6-13Z" fill="#fffdf3"/><path d="M37 27 55 8"/><path d="M6 26h10M2 33h14M8 40h8" opacity=".4"/></svg>';
+        dialog.append(flight);
+        const swoosh = flight.animate([
+            { transform: 'translate(-4px, 0) rotate(-8deg) scale(0.65)', opacity: 0 },
+            { offset: 0.14, transform: 'translate(0, 0) rotate(-8deg) scale(1)', opacity: 1 },
+            { offset: 0.35, transform: 'translate(-14px, 8px) rotate(-14deg) scale(1)', opacity: 1 },
+            { transform: `translate(${paper.width * 0.65}px, ${-paper.height * 0.6}px) rotate(-26deg) scale(0.7)`, opacity: 0 },
+        ], { duration: 520, easing: 'cubic-bezier(0.3, 0, 0.25, 1)', fill: 'forwards' });
+        const fade = form.animate([
+            { opacity: 1, transform: 'none' },
+            { opacity: 0, transform: 'translateY(-12px) skewY(-1deg)' },
+        ], { duration: 260, easing: 'ease-in', fill: 'forwards' });
+        confirmationMotions.push(swoosh, fade);
+        await swoosh.finished.catch(() => {});
+        if (run !== confirmationRun) return;
+        flight.remove();
+        flight = undefined;
+        const fold = dialog.animate([
+            { transform: 'perspective(1000px) rotateY(0deg)' },
+            { transform: 'perspective(1000px) rotateY(88deg) scale(0.98)' },
+        ], { duration: 170, easing: 'ease-in', fill: 'forwards' });
+        confirmationMotions.push(fold);
+        await fold.finished.catch(() => {});
+        if (run !== confirmationRun) return;
+        renderReceipt();
+        fold.cancel();
+        const unfold = dialog.animate([
+            { transform: 'perspective(1000px) rotateY(-88deg) scale(0.98)' },
+            { offset: 0.8, transform: 'perspective(1000px) rotateY(3deg)' },
+            { transform: 'none' },
+        ], { duration: 300, easing: 'cubic-bezier(0.2, 0.7, 0.3, 1)' });
+        confirmationMotions.push(unfold);
+        await unfold.finished.catch(() => {});
+        if (run !== confirmationRun) return;
+        stopConfirmation();
+    }
 
     function originTransform() {
         const origin = note.getBoundingClientRect();
@@ -104,7 +195,13 @@ export function initPileNote(note) {
     function open() {
         if (dialog.open) return;
         if (sent) {
+            stopConfirmation();
             sent = false;
+            form.hidden = false;
+            form.inert = false;
+            receipt.hidden = true;
+            dialog.setAttribute('aria-labelledby', 'note-editor-title');
+            pileIcon.innerHTML = originalPileIcon;
             input.value = '';
             input.readOnly = nameInput.readOnly = false;
             avatarToggle.disabled = sendButton.disabled = false;
@@ -133,6 +230,8 @@ export function initPileNote(note) {
     async function close() {
         if (!dialog.open || closing) return;
         closing = true;
+        stopConfirmation();
+        if (sent) renderReceipt();
         motion?.cancel();
         if (!reduceMotion.matches) {
             motion = dialog.animate([
@@ -145,6 +244,8 @@ export function initPileNote(note) {
     }
 
     function release() {
+        stopConfirmation();
+        if (sent) renderReceipt();
         motion?.cancel();
         closing = false;
         closeAvatarChoices();
@@ -154,7 +255,7 @@ export function initPileNote(note) {
     }
 
     note.addEventListener('click', open);
-    dialog.querySelector('.note-editor__close').addEventListener('click', close);
+    dialog.querySelectorAll('.note-editor__close').forEach(button => button.addEventListener('click', close));
     dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
     dialog.addEventListener('close', release);
     dialog.addEventListener('click', event => {
@@ -201,13 +302,7 @@ export function initPileNote(note) {
             const result = await response.json().catch(() => null);
             if (!response.ok || !result?.ok) throw new Error(result?.error || 'Could not send your note. Please try again.');
             sent = true;
-            title.textContent = preview.textContent = 'Sent';
-            note.classList.add('is-sent');
-            dialog.classList.add('is-sent');
-            note.setAttribute('aria-label', 'Note sent. Write another note');
-            sendButton.innerHTML = 'Sent <span aria-hidden="true">✓</span>';
-            status.textContent = 'Thanks for the note!';
-            status.hidden = false;
+            await confirmSent();
         } catch (error) {
             status.textContent = ['TimeoutError', 'AbortError'].includes(error.name)
                 ? 'The connection took too long. Please try again.'
