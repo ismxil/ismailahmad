@@ -1,3 +1,4 @@
+import { initBookingModal } from './booking-modal.js';
 import { initDock } from './dock.js';
 import { experienceItems } from './experience.js';
 import { articleSignature } from './icons.js';
@@ -32,5 +33,6 @@ experienceItems.forEach(item => {
 });
 
 initDock();
+initBookingModal();
 renderWandering(document.getElementById('wander-wall'));
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());

@@ -11,6 +11,8 @@
 .about-content { font-size: 15px; line-height: 1.5; letter-spacing: 0; color: var(--text-primary); }
 .about-label { font: inherit; font-size: 14px; letter-spacing: 0; color: var(--text-tertiary); }
 .about-bio p + p { margin-top: 16px; }
+/* A shorter measure than the column, so the lines stop short of the margin. */
+.about-bio p { max-width: 600px; }
 .about-signature {
     width: 86px;
     height: 54px;
