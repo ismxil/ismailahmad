@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href="https://www.ismailahmad.com/books" />
+    <title>Books — Ismail Ahmad</title>
+    <meta name="description" content="What Ismail Ahmad is reading, has read and wants to read, from Goodreads." />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=profile-20261020" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=profile-20261020" />
+    <link rel="apple-touch-icon" href="/assets/favicon-180.png?v=profile-20261020" />
+
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('theme');
+                var dark = saved ? saved === 'dark'
+                    : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (dark) document.documentElement.classList.add('dark');
+            } catch (e) { }
+        })();
+    </script>
+
+    <link rel="preload" href="/assets/fonts/suisse/SuisseIntl-Regular.woff2" as="font" type="font/woff2"
+        crossorigin />
+    <link rel="preload" href="/assets/fonts/suisse/SuisseIntl-Medium.woff2" as="font" type="font/woff2"
+        crossorigin />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/v2/tokens.css" />
+    <link rel="stylesheet" href="/css/v2/app.css" />
+    <link rel="stylesheet" href="/css/v2/books.css" />
+    <script type="module" src="/js/generated/analytics.js"></script>
+</head>
+
+<body class="books-page">
+    <main class="shell">
+
+        <header class="site-header site-header--sticky">
+            <nav aria-label="Breadcrumb" class="crumbs">
+                <a class="crumb" href="/" aria-label="Ismail Ahmad, home">
+                    <svg class="sig" viewBox="0 0 396 343" fill="none" aria-hidden="true">
+                        <path
+                            d="M81.835,2477.796C81.835,2477.796 454.435,2205.149 415.719,2153C391.288,2120.092 319.22,2165.049 264.098,2227.977C185.773,2317.394 137.217,2440.199 152,2466C195.388,2541.727 425.12,2278.143 398.36,2246.234C380.475,2224.908 259.394,2377.005 303.697,2394.225C317.936,2394.225 342.875,2367.296 362.519,2336.515C362.519,2336.515 340.584,2392.821 348,2383.894C357.934,2371.936 371.523,2347.692 378,2354.454C384.298,2361.03 367.523,2385 375,2382C382.477,2379 389.012,2356.526 394.083,2357.822C401.202,2359.641 384.576,2384.823 391.288,2381.407C398,2377.991 415.719,2353.418 415.719,2357.822C415.719,2362.225 399.711,2392.818 415.413,2381.407C431.115,2369.995 440.179,2361.437 440.179,2361.437C440.179,2361.437 422.227,2378.92 425.613,2381.407C429,2383.894 454.025,2362.844 456,2357.822C457.975,2352.799 439.964,2381.131 448.039,2383.894C454.796,2386.207 459.93,2371.936 466,2371.936C466,2371.936 463,2384.407 472,2378.407"
+                            transform="matrix(1,0,0,1,-79.334514,-2139.421278)" />
+                    </svg>
+                </a>
+                <span class="crumbs__sep" aria-hidden="true">/</span>
+                <span class="crumbs__current">books</span>
+            </nav>
+
+            <div class="header-actions">
+                <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle colour theme">
+                    <svg aria-hidden="true" focusable="false" class="icon-btn__sun" xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><g fill="currentColor" class="nc-icon-wrapper"><circle cx="10" cy="10" r="4" stroke-width="0" fill="currentColor"></circle><line x1="10" y1="2" x2="10" y2="3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="15.657" y1="4.343" x2="14.596" y2="5.404" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="18" y1="10" x2="16.5" y2="10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="15.657" y1="15.657" x2="14.596" y2="14.596" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="10" y1="18" x2="10" y2="16.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="4.343" y1="15.657" x2="5.404" y2="14.596" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="2" y1="10" x2="3.5" y2="10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="4.343" y1="4.343" x2="5.404" y2="5.404" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line></g></svg>
+                    <svg aria-hidden="true" focusable="false" class="icon-btn__moon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><g fill="currentColor" class="nc-icon-wrapper"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle><path d="m11.7664,3.2336c.1472.5652.2336,1.155.2336,1.7664,0,3.866-3.134,7-7,7-.6113,0-1.2011-.0864-1.7664-.2336.7839,3.0092,3.5117,5.2336,6.7664,5.2336,3.866,0,7-3.134,7-7,0-3.2546-2.2244-5.9825-5.2336-6.7664Z" stroke-width="0" fill="currentColor"></path></g></svg>
+                </button>
+                <button type="button" class="menu-trigger" data-dock-open aria-haspopup="dialog" aria-controls="dock" aria-expanded="false" title="Search pages and actions (K)" aria-label="Search pages and actions"><svg class="menu-trigger__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><span class="menu-trigger__label">Menu <kbd>K</kbd></span></button>
+            </div>
+        </header>
+
+
+        <section class="books-head" aria-labelledby="books-heading">
+            <h1 id="books-heading">Books</h1>
+            <p id="books-summary" aria-live="polite">From my Goodreads.</p>
+        </section>
+        <ul class="books-grid" id="books-grid"></ul>
+
+
+        <footer class="site-footer">
+            <span class="site-footer__left">
+                <svg class="sig sig--sm site-footer__mark" viewBox="0 0 396 343" fill="none" aria-hidden="true">
+                    <path
+                        d="M81.835,2477.796C81.835,2477.796 454.435,2205.149 415.719,2153C391.288,2120.092 319.22,2165.049 264.098,2227.977C185.773,2317.394 137.217,2440.199 152,2466C195.388,2541.727 425.12,2278.143 398.36,2246.234C380.475,2224.908 259.394,2377.005 303.697,2394.225C317.936,2394.225 342.875,2367.296 362.519,2336.515C362.519,2336.515 340.584,2392.821 348,2383.894C357.934,2371.936 371.523,2347.692 378,2354.454C384.298,2361.03 367.523,2385 375,2382C382.477,2379 389.012,2356.526 394.083,2357.822C401.202,2359.641 384.576,2384.823 391.288,2381.407C398,2377.991 415.719,2353.418 415.719,2357.822C415.719,2362.225 399.711,2392.818 415.413,2381.407C431.115,2369.995 440.179,2361.437 440.179,2361.437C440.179,2361.437 422.227,2378.92 425.613,2381.407C429,2383.894 454.025,2362.844 456,2357.822C457.975,2352.799 439.964,2381.131 448.039,2383.894C454.796,2386.207 459.93,2371.936 466,2371.936C466,2371.936 463,2384.407 472,2378.407"
+                        transform="matrix(1,0,0,1,-79.334514,-2139.421278)" />
+                </svg>
+                © <span id="footer-year">2026</span> ismailahmad
+            </span>
+            <span class="site-footer__hint">Press <kbd>K</kbd> for the menu</span>
+        </footer>
+    </main>
+
+    <script type="module">
+        import { initBooksPage } from '/js/v2/books.js';
+        import { initDock } from '/js/v2/dock.js';
+        import { initStickyHeader } from '/js/v2/sticky-header.js';
+        initBooksPage();
+        initDock();
+        initStickyHeader();
+
+        const btn = document.getElementById('theme-toggle');
+        btn.addEventListener('click', () => {
+            const dark = document.documentElement.classList.toggle('dark');
+            try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) { }
+        });
+        document.getElementById('footer-year').textContent = String(new Date().getFullYear());
+    </script>
+</body>
+
+</html>

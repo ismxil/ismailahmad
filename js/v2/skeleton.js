@@ -58,6 +58,19 @@ export function wanderWallSkeleton(count = 7) {
     </li>`);
 }
 
+/** Books: a cover at 2:3, then a title and an author. */
+export function booksSkeleton(count = 4) {
+    return repeat(count, () => `<li class="book" aria-hidden="true">
+        <span class="book__link skeleton-card">
+            <span class="book__cover skeleton"></span>
+            <span class="book__text">
+                ${line('78%', 'height:16px')}
+                ${line('52%', 'height:14px')}
+            </span>
+        </span>
+    </li>`);
+}
+
 /** The blog index: a run of entries, each a heading, a line or two, a date. */
 export function blogListSkeleton(count = 5) {
     return `<ul class="blog-list" aria-hidden="true">${repeat(count, (i) => `<li>
