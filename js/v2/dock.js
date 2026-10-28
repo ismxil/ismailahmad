@@ -15,7 +15,7 @@ const PAGES = [
     { label: 'Work', kind: 'page', href: 'work' },
     { label: 'Archive', kind: 'page', href: 'archive' },
     { label: 'About', kind: 'page', href: 'about' },
-    { label: 'CV', kind: 'page', href: 'assets/cv.pdf' },
+    { label: 'CV', kind: 'page', href: 'cv' },
     { label: 'Blog', kind: 'page', href: 'blog' },
     { label: 'Personal', kind: 'section', href: '#personal' },
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
