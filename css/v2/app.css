@@ -2119,29 +2119,10 @@ kbd {
     justify-content: center;
     align-items: center;
     gap: 8px;
-    width: min(440px, calc(100vw - 24px));
+    width: max-content;
     margin: 0 auto;
 }
 .dock-float[hidden] { display: none; }
-.dock-launcher {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1;
-    min-width: 0;
-    height: 48px;
-    padding: 0 12px 0 18px;
-    border: 0;
-    border-radius: 999px;
-    background: var(--raised);
-    color: var(--text-tertiary);
-    box-shadow: var(--popover-shadow);
-    font: 15px/1.5 var(--font-sans);
-    cursor: pointer;
-}
-.dock-launcher[hidden] { display: none; }
-.dock-launcher span { flex: 1; min-width: 0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dock-launcher kbd { border-radius: 999px; padding-inline: 7px; }
 
 /* Talk to me: a pill of polished chrome. A brushed silver body, a bevelled
    rim from stacked inset shadows, and a holographic streak — white core
@@ -2175,7 +2156,7 @@ kbd {
         0 8px 22px -8px rgb(0 0 0 / 0.45);
     transition: scale 0.15s ease-out, box-shadow 0.2s ease-out;
 }
-.talk-pill svg { width: 14px; height: 14px; flex-shrink: 0; filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.6)); }
+.talk-pill svg { width: 17px; height: 17px; flex-shrink: 0; filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.6)); }
 .talk-pill::before {
     content: '';
     position: absolute;
@@ -2217,7 +2198,6 @@ kbd {
 @media (max-width: 400px) {
     .talk-pill { padding-inline: 14px 16px; }
 }
-.dock-launcher kbd { font: 12px var(--font-sans); padding: 2px 5px; border-radius: 4px; background: var(--control); }
 @media (min-width: 640px) {
     .command-menu { bottom: 24px; }
 }
