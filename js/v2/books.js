@@ -117,7 +117,7 @@ const compare = {
 function readState() {
     const params = new URLSearchParams(location.search);
     return {
-        shelf: params.get('shelf') || 'all',
+        shelf: params.get('shelf') || 'currently-reading',
         sort: compare[params.get('sort')] ? params.get('sort') : 'recent',
         topic: params.get('topic') || '',
     };
@@ -125,7 +125,7 @@ function readState() {
 
 function writeState(state) {
     const params = new URLSearchParams();
-    if (state.shelf !== 'all') params.set('shelf', state.shelf);
+    if (state.shelf !== 'currently-reading') params.set('shelf', state.shelf);
     if (state.sort !== 'recent') params.set('sort', state.sort);
     if (state.topic) params.set('topic', state.topic);
     const query = params.toString();
@@ -133,24 +133,23 @@ function writeState(state) {
 }
 
 /**
- * The floating filter. Shelves are one row of segments; sort and topic each
- * open a short menu upwards, out of the way of the covers.
+ * The floating filter: status, sort and topic each open a short menu
+ * upwards, out of the way of the covers.
  */
-function filterHTML(books, topics) {
-    const shelves = SHELVES.filter(s => books.some(b => b.shelf === s.id));
-    const segment = (id, label) =>
-        `<button type="button" class="book-filter__shelf" data-shelf="${id}" aria-pressed="false">${id === 'all' ? '' : `<span class="book-filter__dot" data-shelf="${id}"></span>`}${escape(label)}<span class="book-filter__count"></span></button>`;
+function filterHTML(topics) {
+    const statuses = [{ id: 'all', label: 'All' }, ...SHELVES.map(s => ({
+        ...s, label: s.id === 'currently-reading' ? 'Currently reading' : s.label,
+    }))];
     const menu = (name, label, options) => `<div class="book-filter__menu">
-            <button type="button" class="book-filter__toggle" data-menu="${name}" aria-expanded="false" aria-controls="book-filter-${name}">
+            <button type="button" class="book-filter__toggle" data-menu="${name}" aria-haspopup="menu" aria-label="${label}" aria-expanded="false" aria-controls="book-filter-${name}">
                 <span class="book-filter__toggle-label">${label}</span><span class="book-filter__value" data-value="${name}"></span>${chevron}
             </button>
-            <div class="book-filter__options" id="book-filter-${name}" role="menu" hidden>
+            <div class="book-filter__options" id="book-filter-${name}" role="menu" aria-label="${label}" hidden>
+                <div class="book-filter__menu-title" aria-hidden="true">${label}</div>
                 ${options.map(o => `<button type="button" role="menuitemradio" aria-checked="false" data-${name}="${escape(o.id)}">${escape(o.label)}</button>`).join('')}
             </div>
         </div>`;
-    return `<div class="book-filter__shelves" role="group" aria-label="Shelf">
-            ${segment('all', 'All')}${shelves.map(s => segment(s.id, s.label)).join('')}
-        </div>
+    return `${menu('shelf', 'Status', statuses)}
         <span class="book-filter__rule" aria-hidden="true"></span>
         ${menu('sort', 'Sort', SORTS)}
         ${topics.length ? menu('topic', 'Topic', [{ id: '', label: 'Any topic' }, ...topics.map(t => ({ id: t, label: topicLabel(t) }))]) : ''}`;
@@ -175,13 +174,13 @@ export async function initBooksPage() {
     const topics = [...tally.keys()].sort((a, b) => tally.get(b) - tally.get(a) || a.localeCompare(b));
 
     const state = readState();
-    if (state.shelf !== 'all' && !books.some(b => b.shelf === state.shelf)) state.shelf = 'all';
+    if (state.shelf !== 'all' && !SHELVES.some(s => s.id === state.shelf)) state.shelf = 'currently-reading';
     if (!topics.includes(state.topic)) state.topic = '';
 
     const filter = document.createElement('nav');
     filter.className = 'book-filter';
     filter.setAttribute('aria-label', 'Filter books');
-    filter.innerHTML = filterHTML(books, topics);
+    filter.innerHTML = filterHTML(topics);
     document.body.append(filter);
     liftAboveFooter(filter);
 
@@ -190,19 +189,20 @@ export async function initBooksPage() {
         const inTopic = state.topic ? books.filter(b => b.tags.includes(state.topic)) : books;
         const shown = inTopic.filter(b => state.shelf === 'all' || b.shelf === state.shelf).sort(compare[state.sort]);
 
-        filter.querySelectorAll('.book-filter__shelf').forEach(button => {
-            const id = button.dataset.shelf;
-            button.setAttribute('aria-pressed', String(id === state.shelf));
-            button.querySelector('.book-filter__count').textContent =
-                id === 'all' ? inTopic.length : inTopic.filter(b => b.shelf === id).length;
+        filter.querySelectorAll('[role="menuitemradio"]').forEach(option => {
+            const name = ['shelf', 'sort', 'topic'].find(key => option.dataset[key] != null);
+            option.setAttribute('aria-checked', String(state[name] === option.dataset[name]));
         });
-        filter.querySelectorAll('[data-sort], [data-topic]').forEach(option => {
-            const [name, value] = option.dataset.sort != null ? ['sort', option.dataset.sort] : ['topic', option.dataset.topic];
-            option.setAttribute('aria-checked', String(state[name] === value));
-        });
+        filter.querySelector('[data-value="shelf"]').textContent = state.shelf === 'all' ? 'All'
+            : state.shelf === 'currently-reading' ? 'Currently reading' : shelfLabel[state.shelf];
         filter.querySelector('[data-value="sort"]').textContent = SORTS.find(s => s.id === state.sort).label;
         const topicValue = filter.querySelector('[data-value="topic"]');
         if (topicValue) topicValue.textContent = state.topic ? topicLabel(state.topic) : 'Any';
+        filter.querySelectorAll('.book-filter__toggle').forEach(toggle => {
+            const label = toggle.querySelector('.book-filter__toggle-label').textContent;
+            const value = toggle.querySelector('.book-filter__value').textContent;
+            toggle.setAttribute('aria-label', `${label}: ${value}`);
+        });
 
         grid.innerHTML = shown.length
             ? shown.map((b, i) => bookHTML(b, { eager: i < 8 })).join('')
@@ -228,15 +228,9 @@ export async function initBooksPage() {
     }
 
     filter.addEventListener('click', (e) => {
-        const shelf = e.target.closest('.book-filter__shelf');
         const toggle = e.target.closest('.book-filter__toggle');
         const option = e.target.closest('[role="menuitemradio"]');
-        if (shelf) {
-            closeMenus();
-            state.shelf = shelf.dataset.shelf;
-            render();
-            if (window.scrollY > grid.offsetTop) grid.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        } else if (toggle) {
+        if (toggle) {
             const open = toggle.getAttribute('aria-expanded') !== 'true';
             closeMenus(toggle);
             toggle.setAttribute('aria-expanded', String(open));
@@ -244,12 +238,16 @@ export async function initBooksPage() {
             options.hidden = !open;
             if (open) options.querySelector('[aria-checked="true"]')?.focus();
         } else if (option) {
-            if (option.dataset.sort != null) state.sort = option.dataset.sort;
+            if (option.dataset.shelf != null) state.shelf = option.dataset.shelf;
+            else if (option.dataset.sort != null) state.sort = option.dataset.sort;
             else state.topic = option.dataset.topic;
             const toggleFor = option.closest('.book-filter__menu').querySelector('.book-filter__toggle');
             closeMenus();
             render();
             toggleFor.focus();
+            if (option.dataset.shelf != null && window.scrollY > grid.offsetTop) {
+                grid.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+            }
         }
     });
     filter.addEventListener('keydown', (e) => {

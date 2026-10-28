@@ -131,14 +131,13 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    width: max-content;
-    max-width: calc(100vw - 24px);
-    padding: 5px;
+    width: min(440px, calc(100vw - 24px));
+    padding: 4px;
     translate: -50% 0;
-    border-radius: var(--r-xl);
+    border-radius: 999px;
     background: var(--raised);
     box-shadow: var(--popover-shadow);
-    font: 14px/1.4 var(--font-sans);
+    font: 13px/1.4 var(--font-sans);
     animation: book-filter-in 320ms cubic-bezier(0.33, 1, 0.68, 1) both;
 }
 @keyframes book-filter-in {
@@ -148,11 +147,11 @@
 .book-filter button {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    height: 38px;
-    padding: 0 12px;
+    gap: 5px;
+    height: 32px;
+    padding: 0 10px;
     border: 0;
-    border-radius: 15px;
+    border-radius: 999px;
     background: none;
     color: var(--text-secondary);
     font: inherit;
@@ -163,18 +162,16 @@
 .book-filter button:hover { background: var(--surface); color: var(--text-primary); }
 .book-filter button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
-.book-filter__shelves { display: flex; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
-.book-filter__shelves::-webkit-scrollbar { display: none; }
-.book-filter__shelf[aria-pressed='true'] { background: var(--control); color: var(--text-primary); }
-.book-filter__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--shelf); }
-.book-filter__count { color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+.book-filter__rule { flex-shrink: 0; width: 1px; height: 16px; margin: 0 3px; background: var(--border-strong); }
 
-.book-filter__rule { flex-shrink: 0; width: 1px; height: 20px; margin: 0 4px; background: var(--border-strong); }
-
-.book-filter__menu { position: relative; flex-shrink: 0; }
+.book-filter__menu { position: relative; min-width: 0; }
+.book-filter__menu:first-child { flex: 1; }
+.book-filter__menu:first-child .book-filter__options { left: 0; right: auto; }
+.book-filter__toggle { width: 100%; }
+.book-filter__toggle svg, .book-filter__toggle-label { flex-shrink: 0; }
 .book-filter__toggle-label { color: var(--text-tertiary); }
-.book-filter__value { color: var(--text-primary); }
-.book-filter__toggle svg { width: 14px; height: 14px; color: var(--text-tertiary); transition: rotate 160ms ease; }
+.book-filter__value { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary); }
+.book-filter__toggle svg { width: 12px; height: 12px; color: var(--text-tertiary); transition: rotate 160ms ease; }
 .book-filter__toggle[aria-expanded='false'] svg { rotate: 180deg; }
 
 .book-filter__options {
@@ -193,6 +190,7 @@
     animation: book-filter-menu 160ms ease-out both;
 }
 .book-filter__options[hidden] { display: none; }
+.book-filter__menu-title { display: none; }
 @keyframes book-filter-menu {
     from { opacity: 0; translate: 0 4px; }
 }
@@ -206,13 +204,30 @@
     background: var(--text-primary);
 }
 
-/* On a phone the shelves scroll inside the pill; sort and topic keep
-   their place at the end, showing only their value. */
+/* On a phone, show values in the bar and titles inside the full-width menus. */
 @media (max-width: 639px) {
-    .book-filter { width: calc(100vw - 24px); }
-    .book-filter__shelves { flex: 1; mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); }
-    .book-filter button { padding: 0 10px; }
+    .book-filter {
+        width: max-content;
+        max-width: calc(100vw - 24px);
+        padding: 4px 8px;
+        gap: 2px;
+    }
+    .book-filter__rule { display: none; }
+    .book-filter__menu,
+    .book-filter__menu:first-child { position: static; flex: 0 1 auto; }
+    .book-filter .book-filter__toggle {
+        position: relative;
+        height: 32px;
+        padding: 0 12px;
+        gap: 5px;
+    }
     .book-filter__toggle-label { display: none; }
+    .book-filter__value { max-width: 100%; font-size: 12px; line-height: 17px; }
+    .book-filter__toggle svg { flex-shrink: 0; width: 10px; height: 10px; }
+    .book-filter__menu-title { display: block; padding: 8px 14px; color: var(--text-tertiary); font-size: 12px; line-height: 18px; }
+    .book-filter .book-filter__options,
+    .book-filter__menu:first-child .book-filter__options { left: 0; right: 0; min-width: 0; padding: 6px; }
+    .book-filter__options button { min-height: 44px; padding-inline: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -220,5 +235,5 @@
     .book-filter, .book-filter__options { animation: none; }
 }
 
-/* The home page's last section: more air before the search pill lands. */
+/* The home page's last section: more air before the Talk to me pill lands. */
 #books + .page-search-slot { padding-top: 96px; min-height: 144px; }
