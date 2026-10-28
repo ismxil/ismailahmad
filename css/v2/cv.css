@@ -21,9 +21,14 @@
    results that matter picked out in full ink, and links inline. */
 .cv-job .cv-row__meta h3 { font: inherit; font-size: 15px; font-weight: 500; color: var(--text-primary); }
 .cv-job .cv-row__body p + p { margin-top: 12px; }
+.cv-job .cv-row__body .cv-job__role + p { margin-top: 0; }
 .cv-job .cv-row__body b { font-weight: inherit; color: var(--text-primary); }
 .cv-job .cv-row__body p a { color: var(--text-primary); }
-.cv .cv-visit { display: inline-block; margin-top: 12px; color: var(--text-primary); }
+.cv-job__icon { display: block; width: 40px; height: 40px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 0 0 1px var(--border); }
+.cv .cv-job .cv-row__meta h3 a { text-decoration: none; }
+.cv .cv-job .cv-row__meta h3 a:hover { text-decoration: underline; }
+.cv-job .cv-row__meta h3 a span { color: var(--text-tertiary); font-size: 13px; }
+.cv-job .cv-row__body .cv-job__role { color: var(--text-primary); font-weight: 500; margin-bottom: 6px; }
 .cv-job + .cv-job { margin-top: 48px; }
 
 .cv-details { margin-top: 32px; }
