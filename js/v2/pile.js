@@ -3,9 +3,8 @@ import { getBooks } from './books.js';
 /**
  * The pile at the foot of About. Each item carries its resting place on the
  * canvas as "x y rotation" (data-pile, or data-pile-m on a phone). When the
- * pile comes into view everything falls from above and bounces into place;
- * after that each item can be dragged, and "Drop again" throws the lot up
- * and lets it fall back.
+ * reader nears the footer everything falls from above and bounces into
+ * place; after that each item can be dragged.
  */
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -61,43 +60,20 @@ export function initPile(stage) {
         }));
     }
 
-    function liftOff() {
-        if (reduceMotion.matches) { layout(); return Promise.resolve(); }
-        return Promise.all(order().reverse().map((item, i) => {
-            const y = item.offsetTop;
-            const rotation = item.style.transform;
-            return item.animate([
-                { transform: rotation },
-                { transform: `translateY(${-(y + item.offsetHeight + 300)}px) ${rotation.replace(/-?[\d.]+deg/, d => `${parseFloat(d) + (Math.random() - 0.5) * 60}deg`)}` },
-            ], { duration: 420, delay: i * 25, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' }).finished;
-        })).then(() => {
-            layout();
-            live().forEach(item => item.getAnimations().forEach(a => a.cancel()));
-        });
-    }
-
     layout();
     if (!reduceMotion.matches) pile.classList.add('is-waiting');
     new ResizeObserver(layout).observe(stage);
     phone.addEventListener('change', layout);
 
     // Everything is in place for screen readers and no-JS readers alike; the
-    // fall is only a show, played once the pile is properly in view.
+    // fall is only a show, played once, as the reader nears the footer.
+    const footer = document.querySelector('.site-footer') || stage;
     const watcher = new IntersectionObserver(entries => {
         if (!entries.some(e => e.isIntersecting)) return;
         watcher.disconnect();
         drop();
-    }, { threshold: 0.3 });
-    watcher.observe(stage);
-
-    let busy = false;
-    document.getElementById('pile-again')?.addEventListener('click', async () => {
-        if (busy) return;
-        busy = true;
-        await liftOff();
-        await drop();
-        busy = false;
-    });
+    }, { rootMargin: '0px 0px 120px 0px' });
+    watcher.observe(footer);
 
     // Dragging. A press that barely moves stays a click, so the CD still
     // plays and the client icons still open.
