@@ -92,7 +92,7 @@
 @media (max-width: 639px) {
     .cv-row { grid-template-columns: 1fr; gap: 2px; }
     .cv-download { display: none; }
-    .cv-actions { flex-wrap: nowrap; justify-content: space-between; gap: 12px; font-size: 14px; white-space: nowrap; }
+    .cv-actions { flex-direction: column; align-items: flex-start; gap: 12px; }
     .cv-intro { gap: 16px; }
     /* On a phone a role reads title, company, dates, then the prose. */
     .cv-job { display: flex; flex-direction: column; gap: 0; }
