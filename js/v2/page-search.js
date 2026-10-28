@@ -1,5 +1,5 @@
 /**
- * Page search, opened with "/". The page's floating pill is Talk to me.
+ * Page search, opened with "/".
  *
  * Searches only what is on the page you are looking at: a case page offers
  * its own sections, the home page its sections and the work, experience
@@ -76,7 +76,7 @@ function collectTargets() {
     });
 }
 
-import { bindBookingTrigger } from './booking-modal.js';
+import { setTalkPillHidden } from './talk-pill.js';
 
 export function initPageSearch() {
     const targets = collectTargets();
@@ -98,48 +98,6 @@ export function initPageSearch() {
         <button type="button" data-menu-close aria-label="Close"><kbd>esc</kbd></button>
         </div><div class="command-menu__results" id="page-search-results"></div>`;
     document.body.appendChild(dialog);
-
-    // The floating pill is an invitation to talk; search stays on "/".
-    const talk = document.createElement('a');
-    talk.className = 'talk-pill';
-    talk.href = 'https://cal.com/ismxil/intro30min';
-    talk.innerHTML = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17,8v-1c0-1.6569-1.3431-3-3-3H6c-1.6569,0-3,1.3431-3,3v1h14Z" fill="currentColor" stroke="none"/><path d="M6 4V2M14 4V2M14 17v-6M11 14h6"/><path d="m17,9.2395v-2.2395c0-1.6569-1.3431-3-3-3H6c-1.6569,0-3,1.3431-3,3v6c0,1.6569,1.3431,3,3,3h2.1492"/></svg><span>Talk to me</span>`;
-    bindBookingTrigger(talk);
-    const float = document.createElement('div');
-    float.className = 'dock-float';
-    float.append(talk);
-    // Reserve its landing space above the footer; float over the viewport elsewhere.
-    const footer = document.querySelector('.site-footer');
-    let slot = document.querySelector('[data-page-search-slot]');
-    if (!slot) {
-        slot = document.createElement('div');
-        slot.className = 'page-search-slot';
-        slot.setAttribute('data-page-search-slot', '');
-    }
-    if (footer) footer.before(slot);
-    else if (!slot.isConnected) (document.querySelector('.shell') || document.body).append(slot);
-    document.body.appendChild(float);
-
-    // As the copyright enters the viewport, lift the pill above it.
-    // Keep the pill outside the shell so page animations cannot trap fixed positioning.
-    let positionFrame = 0;
-    function positionPill() {
-        positionFrame = 0;
-        const base = window.innerWidth >= 640 ? 24 : 16;
-        const footerTop = footer?.getBoundingClientRect().top ?? window.innerHeight;
-        float.style.setProperty('--search-bottom', `${Math.max(base, window.innerHeight - footerTop + 16)}px`);
-    }
-    function schedulePosition() {
-        if (!positionFrame) positionFrame = window.requestAnimationFrame(positionPill);
-    }
-    window.addEventListener('scroll', schedulePosition, { passive: true });
-    window.addEventListener('resize', schedulePosition);
-    if ('ResizeObserver' in window) {
-        const observer = new window.ResizeObserver(schedulePosition);
-        observer.observe(document.body);
-        if (footer) observer.observe(footer);
-    }
-    positionPill();
 
     const input = dialog.querySelector('input');
     const results = dialog.querySelector('#page-search-results');
@@ -180,7 +138,7 @@ export function initPageSearch() {
     // 'close' event alone does not fire reliably here.
     function release() {
         document.body.style.overflow = previousOverflow;
-        float.hidden = false;
+        setTalkPillHidden(false);
         if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
     }
 
@@ -196,7 +154,7 @@ export function initPageSearch() {
         input.value = '';
         render();
         dialog.showModal();
-        float.hidden = true;
+        setTalkPillHidden(true);
         document.body.style.overflow = 'hidden';
         input.focus();
     }

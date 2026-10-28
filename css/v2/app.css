@@ -2436,3 +2436,7 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
     body::after { animation: none; }
 }
+
+@media print {
+    .dock-float, .page-search-slot { display: none !important; }
+}

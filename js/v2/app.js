@@ -12,6 +12,7 @@ import { initContactCard } from './contact-card.js';
 import { initPresence, initStatus } from './presence.js';
 import { initDock } from './dock.js';
 import { initPageSearch } from './page-search.js';
+import { initTalkPill } from './talk-pill.js';
 import { initChipStacks } from './chip-stack.js';
 
 /* ── Theme ───────────────────────────────────────────────── */
@@ -51,6 +52,7 @@ async function boot() {
         renderBooksPreview(document.getElementById('books-list')),
     ]);
     initPageSearch();
+    initTalkPill();
 
     const year = document.getElementById('footer-year');
     if (year) year.textContent = String(new Date().getFullYear());
