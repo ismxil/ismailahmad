@@ -17,6 +17,7 @@ const PAGES = [
     { label: 'About', kind: 'page', href: 'about' },
     { label: 'CV', kind: 'page', href: 'cv' },
     { label: 'Blog', kind: 'page', href: 'blog' },
+    { label: 'Books', kind: 'page', href: 'books' },
     { label: 'Personal', kind: 'section', href: '#personal' },
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
 ];
