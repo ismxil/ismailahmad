@@ -182,7 +182,6 @@ export async function initBooksPage() {
     filter.setAttribute('aria-label', 'Filter books');
     filter.innerHTML = filterHTML(topics);
     document.body.append(filter);
-    liftAboveFooter(filter);
 
     let first = true;
     function render() {
@@ -209,7 +208,7 @@ export async function initBooksPage() {
             : '<li class="books-empty">Nothing on this shelf for that topic.</li>';
         watchImageSkeletons(grid);
         const shelf = state.shelf === 'all' ? 'books' : `${shelfLabel[state.shelf].toLowerCase()}`;
-        summary.textContent = `${shown.length} ${state.shelf === 'all' ? (shown.length === 1 ? 'book' : 'books') : shelf}${state.topic ? ` on ${topicLabel(state.topic).toLowerCase()}` : ''}, from my Goodreads.`;
+        summary.textContent = `${shown.length} ${state.shelf === 'all' ? (shown.length === 1 ? 'book' : 'books') : shelf}${state.topic ? ` on ${topicLabel(state.topic).toLowerCase()}` : ''}.`;
         if (!first) {
             writeState(state);
             if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -236,7 +235,7 @@ export async function initBooksPage() {
             toggle.setAttribute('aria-expanded', String(open));
             const options = document.getElementById(toggle.getAttribute('aria-controls'));
             options.hidden = !open;
-            if (open) options.querySelector('[aria-checked="true"]')?.focus();
+            if (open) options.querySelector('[aria-checked="true"]')?.focus({ preventScroll: true });
         } else if (option) {
             if (option.dataset.shelf != null) state.shelf = option.dataset.shelf;
             else if (option.dataset.sort != null) state.sort = option.dataset.sort;
@@ -244,10 +243,7 @@ export async function initBooksPage() {
             const toggleFor = option.closest('.book-filter__menu').querySelector('.book-filter__toggle');
             closeMenus();
             render();
-            toggleFor.focus();
-            if (option.dataset.shelf != null && window.scrollY > grid.offsetTop) {
-                grid.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-            }
+            toggleFor.focus({ preventScroll: true });
         }
     });
     filter.addEventListener('keydown', (e) => {
@@ -255,31 +251,15 @@ export async function initBooksPage() {
         if (e.key === 'Escape') {
             const toggle = e.target.closest('.book-filter__menu')?.querySelector('.book-filter__toggle');
             closeMenus();
-            toggle?.focus();
+            toggle?.focus({ preventScroll: true });
         } else if (options && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
             e.preventDefault();
             const items = [...options.querySelectorAll('button')];
             const next = (items.indexOf(e.target) + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
-            items[next].focus();
+            items[next].focus({ preventScroll: true });
         }
     });
     document.addEventListener('click', (e) => { if (!filter.contains(e.target)) closeMenus(); });
 
     render();
-}
-
-/** Like the page search pill: it floats, and rises as the footer comes in. */
-function liftAboveFooter(el) {
-    const footer = document.querySelector('.site-footer');
-    let frame = 0;
-    function place() {
-        frame = 0;
-        const base = window.innerWidth >= 640 ? 24 : 12;
-        const top = footer?.getBoundingClientRect().top ?? window.innerHeight;
-        el.style.setProperty('--filter-bottom', `${Math.max(base, window.innerHeight - top + 16)}px`);
-    }
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
-    addEventListener('scroll', schedule, { passive: true });
-    addEventListener('resize', schedule);
-    place();
 }
