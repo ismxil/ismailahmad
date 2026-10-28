@@ -13,10 +13,10 @@ const PAGES = [
     // Navigation: where most people are headed. The sitemap follows with
     // everything else, and the cases and companies are appended to it.
     { label: 'Work', kind: 'page', href: 'work', group: 'nav' },
-    { label: 'Case studies', kind: 'pdf', href: 'https://pdf.ismailahmad.com/', group: 'nav', external: true },
     { label: 'About', kind: 'page', href: 'about', group: 'nav' },
-    { label: 'CV', kind: 'page', href: 'cv', group: 'nav' },
     { label: 'Blog', kind: 'page', href: 'blog', group: 'nav' },
+    { label: 'CV', kind: 'page', href: 'cv', group: 'nav' },
+    { label: 'Case studies', kind: 'pdf', href: 'https://pdf.ismailahmad.com/', group: 'nav', external: true },
     { label: 'Books', kind: 'page', href: 'books', group: 'nav' },
     { label: 'Archive', kind: 'page', href: 'archive' },
     { label: 'Personal', kind: 'section', href: '#personal' },
