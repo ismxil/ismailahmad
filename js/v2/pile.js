@@ -1,10 +1,11 @@
 import { getBooks } from './books.js';
+import { initPileNote } from './pile-note.js';
 
 /**
  * The pile at the foot of About. Each item carries its resting place on the
  * canvas as "x y rotation" (data-pile, or data-pile-m on a phone). When the
  * reader nears the footer everything falls from above and bounces into
- * place; after that each item can be dragged.
+ * place; after that each item can be pulled and springs back.
  */
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -56,7 +57,7 @@ export function initPile(stage) {
                 { offset: 0.62, transform: `translateY(0) rotate(${r}deg)`, easing: 'cubic-bezier(0.2, 0.6, 0.4, 1)' },
                 { offset: 0.8, transform: `translateY(${-bounce}px) rotate(${r + (spin - r) * 0.08}deg)`, easing: 'cubic-bezier(0.6, 0, 0.9, 0.6)' },
                 { transform: `rotate(${r}deg)` },
-            ], { duration: 1050, delay: i * 70, fill: 'backwards' }).finished;
+            ], { duration: 1050, delay: i * 70, fill: 'backwards' }).finished.catch(() => {});
         }));
     }
 
@@ -75,12 +76,14 @@ export function initPile(stage) {
     }, { rootMargin: '0px 0px 120px 0px' });
     watcher.observe(footer);
 
-    // Dragging. A press that barely moves stays a click, so the CD still
-    // plays and the client icons still open.
-    let moved = false;
+    // A gentle elastic pull returns each object to its place. Taps still
+    // open the note or play the CD, and vertical touch gestures scroll.
+    const rubberBand = distance => distance * 0.8 / (1 + Math.abs(distance) / 500);
     all.forEach(item => {
+        let moved = false;
         item.addEventListener('pointerdown', event => {
-            if (event.button !== 0 || event.target.closest('textarea, .pile-note button')) return;
+            if (event.button !== 0) return;
+            item.getAnimations().forEach(animation => animation.cancel());
             const start = { x: event.clientX, y: event.clientY, left: item.offsetLeft, top: item.offsetTop };
             moved = false;
             item.style.zIndex = String(++top);
@@ -91,10 +94,23 @@ export function initPile(stage) {
                 if (!moved && Math.hypot(dx, dy) < 4) return;
                 moved = true;
                 item.classList.add('is-dragging');
-                item.style.left = `${start.left + dx}px`;
-                item.style.top = `${start.top + dy}px`;
+                item.style.left = `${start.left + rubberBand(dx)}px`;
+                item.style.top = `${start.top + rubberBand(dy)}px`;
             };
             const end = () => {
+                const dx = item.offsetLeft - start.left;
+                const dy = item.offsetTop - start.top;
+                const { r } = restingPlace(item);
+                item.style.left = `${start.left}px`;
+                item.style.top = `${start.top}px`;
+                if (moved && !reduceMotion.matches) {
+                    item.animate([
+                        { transform: `translate(${dx}px, ${dy}px) rotate(${r}deg)` },
+                        { offset: 0.55, transform: `translate(${-dx * 0.12}px, ${-dy * 0.12}px) rotate(${r - dx * 0.015}deg)` },
+                        { offset: 0.78, transform: `translate(${dx * 0.035}px, ${dy * 0.035}px) rotate(${r}deg)` },
+                        { transform: `rotate(${r}deg)` },
+                    ], { duration: 620, easing: 'cubic-bezier(0.2, 0.7, 0.3, 1)' });
+                }
                 item.classList.remove('is-dragging');
                 item.removeEventListener('pointermove', move);
                 item.removeEventListener('pointerup', end);
@@ -112,6 +128,8 @@ export function initPile(stage) {
         }, true);
         item.addEventListener('dragstart', event => event.preventDefault());
     });
+
+    initPileNote(stage.querySelector('.pile-note'));
 
     // The CD plays the two TWO LANES tracks in turn, spinning while it does,
     // with each track's cover on the disc.
