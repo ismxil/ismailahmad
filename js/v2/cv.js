@@ -1,3 +1,4 @@
+import { initBookingModal } from './booking-modal.js';
 import { initDock } from './dock.js';
 
 document.getElementById('theme-toggle').addEventListener('click', () => {
@@ -20,4 +21,5 @@ addEventListener('beforeprint', () => { earlier.dataset.wasOpen = earlier.open; 
 addEventListener('afterprint', () => { earlier.open = earlier.dataset.wasOpen === 'true'; });
 
 initDock();
+initBookingModal();
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());
