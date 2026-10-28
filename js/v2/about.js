@@ -2,6 +2,7 @@ import { initBookingModal } from './booking-modal.js';
 import { initDock } from './dock.js';
 import { experienceItems } from './experience.js';
 import { renderBooksPreview } from './books.js';
+import { initPile } from './pile.js';
 import { articleSignature } from './icons.js';
 import { renderWandering } from './wandering.js';
 
@@ -38,3 +39,4 @@ initBookingModal();
 renderWandering(document.getElementById('wander-wall'));
 renderBooksPreview(document.getElementById('about-books'));
 document.getElementById('footer-year').textContent = String(new Date().getFullYear());
+initPile(document.getElementById('pile'));

@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="/css/v2/tokens.css" />
     <link rel="stylesheet" href="/css/v2/app.css" />
     <link rel="stylesheet" href="/css/v2/about.css" />
+    <link rel="stylesheet" href="/css/v2/pile.css" />
     <link rel="stylesheet" href="/css/v2/books.css" />
     <script type="module" src="/js/generated/analytics.js"></script>
 </head>
@@ -108,6 +109,31 @@
                 </div>
             </div>
         </article>
+        <section class="pile" aria-label="A few of my things">
+            <div class="pile__stage" id="pile">
+              <div class="pile__canvas">
+                <figure class="pile__item pile-photo pile-photo--wide" data-pile="150 10 -5" data-pile-m="20 10 -4"><img src="/assets/about/pile/event.jpg" alt="Working on a laptop at an evening event" width="900" height="600" draggable="false" loading="lazy" /></figure>
+                <button type="button" class="pile__item pile-cd" data-pile="0 160 -10" data-pile-m="400 40 8" aria-label="Play Essence by TWO LANES" aria-pressed="false"><span class="pile-cd__disc"><img src="/assets/audio/01-cover.jpg" alt="" draggable="false" loading="lazy" /></span></button>
+                <figure class="pile__item pile-photo pile-photo--tall" data-pile="470 60 3" data-pile-m="40 250 -3"><img src="/assets/about/pile/gallery.jpg" alt="Looking at prints in a gallery" width="900" height="1200" draggable="false" loading="lazy" /></figure>
+                <figure class="pile__item pile-photo pile-photo--award" data-pile="790 10 6" data-pile-m="350 280 5"><img src="/assets/about/pile/if-award.jpg" alt="At the iF Design Award 2025 winners wall" width="900" height="1042" draggable="false" loading="lazy" /></figure>
+                <figure class="pile__item pile-photo pile-photo--round" data-pile="846 336 0" data-pile-m="60 640 0"><img src="/assets/about/pile/portrait.jpg" alt="Portrait of Ismail in black and white" width="422" height="500" draggable="false" loading="lazy" /></figure>
+                <div class="pile__item pile-book" data-pile="250 330 7" data-pile-m="250 700 -8" data-book="0"></div>
+                <div class="pile__item pile-book" data-pile="370 356 -9" data-pile-m="400 770 7" data-book="1"></div>
+                <div class="pile__item pile-tools" data-pile="0 376 -4" data-pile-m="20 800 -4"><p>Tools I reach for:</p><ul><li><svg viewBox="0 0 38 57" aria-hidden="true"><path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/><path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z"/><path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z"/><path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/><path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg><span>Figma</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="#d97757" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="12" x2="12" y2="3" transform="rotate(0 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(30 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(60 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(90 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(120 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(150 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(180 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(210 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(240 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(270 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(300 12 12)"/><line x1="12" y1="12" x2="12" y2="3" transform="rotate(330 12 12)"/></svg><span>Claude</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#111"/><path d="M12 4.5 18.5 8v8L12 19.5 5.5 16V8z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M5.5 8 12 12l6.5-4M12 12v7.5" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg><span>Cursor</span></li></ul></div>
+                <form class="pile__item pile-note" data-pile="650 326 -6" data-pile-m="360 560 -6" action="mailto:work@ismailahmad.com" method="get">
+                    <label class="visually-hidden" for="pile-note-text">Leave a note</label>
+                    <textarea id="pile-note-text" name="body" placeholder="Leave a note" rows="5"></textarea>
+                    <input type="hidden" name="subject" value="A note from your About page" />
+                    <button type="submit" aria-label="Send the note"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 17 3l-4 14-3-6z"/><path d="m10 11 7-8"/></svg></button>
+                </form>
+                <a class="pile__item pile-app" data-pile="300 236 -12" data-pile-m="330 214 -10" href="https://lemfi.com" target="_blank" rel="noopener" aria-label="Lemfi"><img src="/assets/clients/icons/lemfi.svg" alt="" draggable="false" /></a>
+                <a class="pile__item pile-app" data-pile="478 470 -8" data-pile-m="522 246 9" href="https://sterling.ng" target="_blank" rel="noopener" aria-label="Sterling Bank"><img src="/assets/clients/icons/sterling.svg" alt="" draggable="false" /></a>
+                <a class="pile__item pile-app" data-pile="566 500 7" data-pile-m="22 560 -8" href="https://www.db.com" target="_blank" rel="noopener" aria-label="Deutsche Bank"><img src="/assets/clients/icons/deutsche-bank.svg" alt="" draggable="false" /></a>
+                <a class="pile__item pile-app" data-pile="972 252 11" data-pile-m="252 598 7" href="https://www.motel-one.com" target="_blank" rel="noopener" aria-label="Motel One"><img src="/assets/clients/icons/motel-one.svg" alt="" draggable="false" /></a>
+                <a class="pile__item pile-app" data-pile="632 16 8" data-pile-m="520 886 -6" href="https://www.accenture.com" target="_blank" rel="noopener" aria-label="Accenture Song"><img src="/assets/clients/icons/accenture.svg" alt="" draggable="false" /></a>
+              </div>
+            </div>
+        </section>
         <footer class="site-footer">
             <span class="site-footer__left">
                 <svg class="sig sig--sm site-footer__mark" viewBox="0 0 396 343" fill="none" aria-hidden="true">
