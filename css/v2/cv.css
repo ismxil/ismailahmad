@@ -24,7 +24,7 @@
 .cv-job .cv-row__body .cv-job__role + p { margin-top: 0; }
 .cv-job .cv-row__body b { font-weight: inherit; color: var(--text-primary); }
 .cv-job .cv-row__body p a { color: var(--text-primary); }
-.cv-job__icon { display: block; width: 40px; height: 40px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 0 0 1px var(--border); }
+.cv-job__icon { display: block; flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 0 0 1px var(--border); }
 .cv .cv-job .cv-row__meta h3 a { text-decoration: none; }
 .cv .cv-job .cv-row__meta h3 a:hover { text-decoration: underline; }
 .cv-job .cv-row__meta h3 a span { color: var(--text-tertiary); font-size: 13px; }
@@ -91,11 +91,18 @@
 
 @media (max-width: 639px) {
     .cv-row { grid-template-columns: 1fr; gap: 2px; }
+    .cv-download { display: none; }
+    .cv-actions { flex-wrap: nowrap; justify-content: space-between; gap: 12px; font-size: 14px; white-space: nowrap; }
+    .cv-intro { gap: 16px; }
+    /* On a phone a role reads title, company, dates, then the prose. */
+    .cv-job { display: flex; flex-direction: column; gap: 0; }
+    .cv-job .cv-row__meta, .cv-job .cv-row__body { display: contents; }
+    .cv-job .cv-row__body .cv-job__role { order: -2; margin-bottom: 2px; }
+    .cv-job__company { order: -1; display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .cv-job__icon { width: 20px; height: 20px; border-radius: 5px; margin: 0; }
+    .cv-job .cv-row__meta p { order: -1; }
+    .cv-job .cv-row__meta p:last-child { margin-bottom: 10px; }
     .cv-details .cv-row, #cv-languages ~ .cv-row { grid-template-columns: 88px minmax(0, 1fr); gap: 12px; }
-}
-@media (max-width: 479px) {
-    .cv-download span { display: none; }
-    .cv-download { padding-inline: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
