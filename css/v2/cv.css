@@ -1,0 +1,79 @@
+/* The CV as a page: the PDF's content in the site's reading column,
+   and a print sheet that drops the chrome. */
+.cv { margin-top: 32px; font-size: 15px; line-height: 1.5; color: var(--text-primary); }
+.cv a { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--border-strong); }
+.cv a:hover { text-decoration-color: currentColor; }
+.cv-muted { color: var(--text-tertiary); }
+.cv-label { font: inherit; font-size: 14px; color: var(--text-tertiary); margin-bottom: 16px; }
+
+.cv-intro { display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center; }
+.cv-intro__photo { width: 88px; height: 88px; border-radius: 50%; overflow: hidden; background: var(--surface); }
+/* The portrait is half-length; zoomed so the face fills the circle. */
+.cv-intro__photo img { width: 190%; height: auto; max-width: none; margin: -14% 0 0 -48%; display: block; }
+.cv-intro h1 { font-size: 25px; font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; }
+.cv-intro__title { color: var(--text-secondary); }
+.cv-contact { display: flex; flex-direction: column; gap: 2px; font-size: 14px; text-align: right; }
+
+.cv-section { margin-top: 48px; }
+.cv-summary p { font-size: 17px; line-height: 1.55; }
+
+.cv-role { display: grid; grid-template-columns: 168px minmax(0, 1fr); gap: 24px; }
+.cv-role + .cv-role { margin-top: 32px; }
+.cv-role__meta { font-size: 14px; color: var(--text-tertiary); }
+.cv-role__meta h3 { font: inherit; font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+.cv .cv-role__meta a { text-decoration: none; }
+.cv .cv-role__meta a:hover { text-decoration: underline; }
+.cv-role__meta a span { color: var(--text-tertiary); font-size: 13px; }
+.cv-role__title { font-weight: 500; margin-bottom: 8px; }
+.cv-role ul { display: flex; flex-direction: column; gap: 8px; padding-left: 16px; list-style: disc; color: var(--text-secondary); }
+.cv-role li::marker { color: var(--text-tertiary); }
+
+.cv-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; }
+.cv-columns .cv-section { margin-top: 48px; }
+.cv-list { display: flex; flex-direction: column; gap: 4px; }
+.cv-list:has(strong) { gap: 14px; }
+.cv-list strong { display: block; font-weight: 500; }
+.cv-list span { display: block; color: var(--text-secondary); }
+.cv-list span + span { color: var(--text-tertiary); font-size: 14px; }
+.cv-languages div { display: flex; justify-content: space-between; gap: 12px; }
+.cv-languages dd { color: var(--text-tertiary); white-space: nowrap; }
+
+.cv-awards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 32px; }
+
+.cv-brands { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 32px; }
+.cv-brands img { height: 16px; width: auto; display: block; }
+.dark .cv-brands img { filter: brightness(1.6); }
+
+.cv-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 56px; }
+.cv .cv-button {
+    display: inline-flex; align-items: center; min-height: 38px; padding: 8px 16px;
+    border-radius: 10px; background: var(--btn-bg); color: var(--btn-fg);
+    font-weight: 500; font-size: 14px; text-decoration: none;
+}
+.cv .cv-button:hover { opacity: 0.88; }
+
+.cv-download { text-decoration: none; color: var(--text-primary); }
+.cv-download svg { flex-shrink: 0; }
+.cv-download:hover { background: var(--control-hover); }
+
+@media (max-width: 719px) {
+    .cv-intro { grid-template-columns: auto 1fr; }
+    .cv-contact { grid-column: 1 / -1; text-align: left; }
+    .cv-role { grid-template-columns: 1fr; gap: 8px; }
+    .cv-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cv-awards { grid-template-columns: 1fr; }
+}
+@media (max-width: 479px) {
+    .cv-columns { grid-template-columns: 1fr; }
+    .cv-download span { display: none; }
+    .cv-download { padding-inline: 8px; }
+}
+
+/* Printing the page gives a clean sheet, close to the PDF. */
+@media print {
+    .site-header, .site-footer, .dock-spacer, .cv-actions, #dock { display: none !important; }
+    .shell { max-width: none; padding: 0; animation: none; }
+    .cv { margin-top: 0; font-size: 11pt; }
+    .cv-role { break-inside: avoid; }
+    .cv a { text-decoration: none; }
+}

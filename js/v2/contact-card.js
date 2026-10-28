@@ -27,7 +27,7 @@ const LINKS = [
     { label: 'Instagram', href: 'https://instagram.com/ismxilahmad' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/ismxil' },
     { label: 'GitHub', href: 'https://github.com/ismxil' },
-    { label: 'CV', href: '/assets/cv.pdf' },
+    { label: 'CV', href: '/cv' },
 ];
 
 const VOLUME = 0.5;

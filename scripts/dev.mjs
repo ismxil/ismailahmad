@@ -120,4 +120,5 @@ http.createServer(async (req, res) => {
     console.log(`Blog:    http://blog.localhost:${port}`);
     console.log(`Archive: http://archives.localhost:${port}`);
     console.log(`Lagos:   http://tiny-lagos.localhost:${port}`);
+    console.log(`CV:      http://cv.localhost:${port}`);
 });
