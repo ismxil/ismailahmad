@@ -1975,7 +1975,10 @@ dialog[tabindex="-1"]:focus-visible {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 96px 0 8px;
+    padding: 96px 0 calc(32px + env(safe-area-inset-bottom));
+    flex-shrink: 0;
+    gap: 12px;
+    flex-wrap: wrap;
     font-size: 13px;
     color: var(--text-tertiary);
 }
@@ -2010,7 +2013,6 @@ kbd {
 }
 
 /* ── Command menu ────────────────────────────────────────── */
-.dock-spacer { height: 96px; flex-shrink: 0; }
 .header-actions { gap: 8px; }
 .menu-trigger {
     display: inline-flex;
@@ -2420,12 +2422,8 @@ body::after {
 }
 
 .page-search-slot + .site-footer {
-    flex-shrink: 0;
     margin-top: 0;
-    padding: 28px 0 24px;
-    font-size: 12px;
-    gap: 12px;
-    flex-wrap: wrap;
+    padding-top: 28px;
 }
 
 .page-search-slot {

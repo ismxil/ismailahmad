@@ -262,4 +262,28 @@ export async function initBooksPage() {
     document.addEventListener('click', (e) => { if (!filter.contains(e.target)) closeMenus(); });
 
     render();
+    liftAboveFooter(filter);
+}
+
+/** Float over the books, then settle above the footer rather than below it. */
+function liftAboveFooter(filter) {
+    const footer = document.querySelector('.site-footer');
+    let frame = 0;
+    function place() {
+        frame = 0;
+        const base = window.innerWidth >= 640 ? 24 : 12;
+        const top = footer?.getBoundingClientRect().top ?? window.innerHeight;
+        filter.style.setProperty('--filter-bottom', `${Math.max(base, window.innerHeight - top + 16)}px`);
+    }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('resize', schedule);
+    if ('ResizeObserver' in window) {
+        const observer = new ResizeObserver(schedule);
+        observer.observe(document.body);
+        if (footer) observer.observe(footer);
+        const grid = document.getElementById('books-grid');
+        if (grid) observer.observe(grid);
+    }
+    place();
 }

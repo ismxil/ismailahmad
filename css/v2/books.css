@@ -120,13 +120,13 @@
 .books-page .books-grid { margin-top: 40px; }
 .books-empty { grid-column: 1 / -1; color: var(--text-tertiary); font-size: 15px; }
 /* Room for the filter to float over the last row. */
-.books-page .site-footer { margin-top: 120px; padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+.books-page .site-footer { margin-top: 120px; }
 
 /* The filter: one pill floating at the foot of the screen. */
 .book-filter {
     position: fixed;
     left: 50%;
-    bottom: max(12px, env(safe-area-inset-bottom));
+    bottom: max(var(--filter-bottom, 24px), env(safe-area-inset-bottom));
     z-index: 30;
     display: flex;
     align-items: center;
