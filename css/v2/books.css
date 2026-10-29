@@ -123,7 +123,7 @@
     align-content: start;
 }
 .books-page .books-empty { min-height: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; }
-.books-empty__avatar { display: block; width: 64px; height: 64px; border-radius: 50%; }
+.books-empty__avatar, .books-empty > .image-skeleton { display: block; width: 64px; height: 64px; flex-shrink: 0; border-radius: 50%; }
 .books-empty p { margin: 0; text-wrap: balance; }
 .books-empty { grid-column: 1 / -1; color: var(--text-tertiary); font-size: 15px; }
 /* Room for the filter to float over the last row. */
