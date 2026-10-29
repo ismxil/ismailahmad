@@ -297,3 +297,7 @@
 @media (max-width: 359px) {
     .note-editor__name::placeholder { font-size: 12px; }
 }
+
+/* The clock shares the pile’s falling and elastic drag behavior. */
+.pile-clock { width: 164px; height: 171px; }
+.pile-clock svg { display: block; width: 100%; height: 100%; pointer-events: none; }

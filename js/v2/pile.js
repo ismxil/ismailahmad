@@ -1,4 +1,5 @@
 import { getBooks } from './books.js';
+import { initPileClock } from './pile-clock.js';
 import { initPileNote } from './pile-note.js';
 
 /**
@@ -129,6 +130,7 @@ export function initPile(stage) {
         item.addEventListener('dragstart', event => event.preventDefault());
     });
 
+    initPileClock(stage.querySelector('.pile-clock'));
     initPileNote(stage.querySelector('.pile-note'));
 
     // The CD plays the two TWO LANES tracks in turn, spinning while it does,
