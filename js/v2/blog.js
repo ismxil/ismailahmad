@@ -5,6 +5,7 @@ import { initPageSearch } from './page-search.js';
 import { getPosts, escapeHTML, formatDate } from './blog-data.js';
 import { renderBody } from '../generated/post-body.js';
 import { renderSubscribe } from './subscribe.js';
+import { anchorIds, contentsHTML, trackContents } from './contents.js';
 import { blogListSkeleton, articleSkeleton, articleHeadSkeleton, watchImageSkeletons } from './skeleton.js';
 
 initDock();
@@ -41,6 +42,31 @@ async function renderReadNext(post) {
     </a>`;
 }
 
+/**
+ * The article's top two heading levels, listed beside the column on
+ * desktop. Headings get ids here so each section can be linked to.
+ */
+function renderContents() {
+    // innerText, so a line break inside a heading reads as a space
+    const label = (h) => h.innerText.replace(/\s+/g, ' ').trim();
+    const headings = [...mount.querySelectorAll('.post-h1, .post-h2')].filter(label);
+    const ids = anchorIds(headings.map(label), ['introduction']);
+    headings.forEach((h, i) => { h.id = ids[i]; });
+    // Only nest when the piece actually uses both levels
+    const nested = headings.some((h) => h.classList.contains('post-h1'));
+    const article = mount.closest('article');
+    article.querySelector('.blog-header').id = 'introduction';
+    article.insertAdjacentHTML('afterbegin', contentsHTML({ href: '/blog', label: 'Writing' }, [
+        { id: 'introduction', label: 'Introduction' },
+        ...headings.map((h, i) => ({
+            id: ids[i],
+            label: label(h),
+            sub: nested && h.classList.contains('post-h2'),
+        })),
+    ]));
+    trackContents(article);
+}
+
 // Replaces the "Loading…" line the HTML ships with, so the column has
 // the shape of the piece rather than one sentence of text.
 mount.innerHTML = isArticle ? articleSkeleton() : blogListSkeleton();
@@ -72,6 +98,7 @@ try {
         document.getElementById('post-meta').textContent = `${formatDate(post.publishedAt)} · ${post.author || 'Ismail Ahmad'}`;
         mount.innerHTML = renderBody(post.body || []);
         watchImageSkeletons(mount);
+        renderContents();
 
         const signatureTemplate = document.createElement('template');
         signatureTemplate.innerHTML = articleSignature;

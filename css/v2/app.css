@@ -2442,3 +2442,82 @@ body::after {
 @media print {
     .dock-float, .page-search-slot { display: none !important; }
 }
+
+/* ── Contents ────────────────────────────────────────────────
+   A quiet index pinned to the left margin of case studies and articles.
+   Desktop only: it needs a wide viewport beside the reading column and
+   a mouse, so tablets in landscape keep the bare page. */
+
+.page-toc {
+    display: none;
+}
+
+@media (min-width: 1180px) and (hover: hover) and (pointer: fine) {
+    .page-toc {
+        position: fixed;
+        top: 96px;
+        left: 32px;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: calc((100vw - var(--content-width)) / 2 - 64px);
+        max-width: 220px;
+        max-height: calc(100vh - 128px);
+        overflow-y: auto;
+        font-size: 14px;
+        line-height: 1.35;
+    }
+
+    html:has(.page-toc) {
+        scroll-behavior: smooth;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html:has(.page-toc) {
+        scroll-behavior: auto;
+    }
+}
+
+.page-toc a {
+    color: var(--text-tertiary);
+    transition: color 0.15s ease;
+}
+
+.page-toc a:hover,
+.page-toc a[aria-current] {
+    color: var(--text-primary);
+}
+
+.page-toc__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+}
+
+.page-toc__back svg {
+    width: 14px;
+    height: 14px;
+    transition: translate 0.15s ease-out;
+}
+
+.page-toc__back:hover svg {
+    translate: -2px 0;
+}
+
+.page-toc__list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.page-toc__list a {
+    display: block;
+    padding: 2px 0;
+}
+
+.page-toc__sub {
+    padding-left: 12px;
+}
