@@ -207,7 +207,7 @@ export async function initBooksPage() {
 
         grid.innerHTML = shown.length
             ? shown.map((b, i) => bookHTML(b, { eager: i < 8 })).join('')
-            : '<li class="books-empty">Nothing on this shelf for that topic.</li>';
+            : '<li class="books-empty"><img class="books-empty__avatar" src="/assets/note-avatars/sunny.webp" width="64" height="64" alt="" /><p>Nothing on this shelf for that topic.</p></li>';
         watchImageSkeletons(grid);
         const shelf = state.shelf === 'all' ? 'books' : `${shelfLabel[state.shelf].toLowerCase()}`;
         summary.textContent = `${shown.length} ${state.shelf === 'all' ? (shown.length === 1 ? 'book' : 'books') : shelf}${state.topic ? ` on ${topicLabel(state.topic).toLowerCase()}` : ''}.`;
