@@ -1,4 +1,4 @@
-import { NOTE_AVATARS, noteAvatarSVG } from './note-avatars.js';
+import { NOTE_AVATARS, noteAvatarMarkup } from './note-avatars.js';
 
 /** Lift the sticky note into a writing surface. The draft lives in this page. */
 export function initPileNote(note) {
@@ -24,9 +24,9 @@ export function initPileNote(note) {
             <footer class="note-editor__footer">
                 <div class="note-editor__identity">
                     <div class="note-avatar">
-                        <button type="button" class="note-avatar__toggle" aria-label="Avatar: Sunny. Choose another avatar" aria-expanded="false" aria-controls="note-avatar-choices">${noteAvatarSVG(NOTE_AVATARS[0])}</button>
+                        <button type="button" class="note-avatar__toggle" aria-label="Avatar: Sunny. Choose another avatar" aria-expanded="false" aria-controls="note-avatar-choices">${noteAvatarMarkup(NOTE_AVATARS[0])}</button>
                         <div class="note-avatar__choices" id="note-avatar-choices" role="group" aria-label="Choose an avatar" hidden>
-                            ${NOTE_AVATARS.map((avatar, i) => `<button type="button" data-avatar="${avatar.id}" aria-label="${avatar.label}" aria-pressed="${i === 0}" title="${avatar.label}">${noteAvatarSVG(avatar)}</button>`).join('')}
+                            ${NOTE_AVATARS.map((avatar, i) => `<button type="button" data-avatar="${avatar.id}" aria-label="${avatar.label}" aria-pressed="${i === 0}" title="${avatar.label}">${noteAvatarMarkup(avatar)}</button>`).join('')}
                         </div>
                     </div>
                     <input class="note-editor__name" name="name" placeholder="What's your name?" aria-label="Your name (optional)" maxlength="80" autocomplete="name" />
@@ -83,7 +83,7 @@ export function initPileNote(note) {
         if (!choice) return;
         avatarId = choice.dataset.avatar;
         const avatar = NOTE_AVATARS.find(avatar => avatar.id === avatarId);
-        avatarToggle.innerHTML = noteAvatarSVG(avatar);
+        avatarToggle.innerHTML = noteAvatarMarkup(avatar);
         avatarToggle.setAttribute('aria-label', `Avatar: ${avatar.label}. Choose another avatar`);
         avatarChoices.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button === choice)));
         changed();
