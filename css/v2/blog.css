@@ -259,3 +259,7 @@
         transition: none;
     }
 }
+
+/* Clear the sticky header pill when jumping from the contents */
+.blog-header,
+.post-body [id] { scroll-margin-top: 88px; }

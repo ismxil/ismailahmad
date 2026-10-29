@@ -11,6 +11,7 @@ import { caseSkeleton, watchImageSkeletons } from './skeleton.js';
 
 import { getCases } from './case-data.js';
 import { cadanaHero } from './cadana-hero.js';
+import { anchorIds, contentsHTML, trackContents } from './contents.js';
 
 /**
  * Case data stores repo-relative paths ("assets/..."). This page is served
@@ -90,67 +91,14 @@ function headingOf(b) {
     return (b.type === 'section' || b.type === 'overlay') ? b.label || '' : '';
 }
 
-/** Stable, readable fragment ids — repeated labels get a numeric suffix. */
 function assignAnchors(blocks) {
-    const used = new Set(['overview']);
-    (blocks || []).forEach((b) => {
-        const heading = headingOf(b);
-        if (!heading) return;
-        const base = heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
-        let id = base;
-        for (let n = 2; used.has(id); n++) id = `${base}-${n}`;
-        used.add(id);
-        b.anchor = id;
-    });
+    const headed = (blocks || []).filter(headingOf);
+    anchorIds(headed.map(headingOf), ['overview']).forEach((id, i) => { headed[i].anchor = id; });
+    return headed;
 }
 
 function anchor(b) {
     return b.anchor ? ` id="${escape(b.anchor)}"` : '';
-}
-
-function contents(blocks) {
-    const items = (blocks || []).filter((b) => b.anchor);
-    if (!items.length) return '';
-    return `<nav class="case-toc" aria-label="On this page">
-        <a class="case-toc__back" href="/work">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
-                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M13 8H3M7 4 3 8l4 4" />
-            </svg>
-            Work
-        </a>
-        <ul class="case-toc__list">
-            <li><a href="#overview">Overview</a></li>
-            ${items.map((b) => `<li><a href="#${escape(b.anchor)}">${escape(headingOf(b))}</a></li>`).join('')}
-        </ul>
-    </nav>`;
-}
-
-/** Marks the section being read: the last heading to pass the upper third. */
-function trackContents(mount) {
-    const links = [...mount.querySelectorAll('.case-toc__list a')];
-    const targets = links.map((a) => mount.querySelector(a.getAttribute('href')));
-    if (!links.length || targets.some((t) => !t)) return;
-
-    let frame = 0;
-    function update() {
-        frame = 0;
-        const line = window.innerHeight / 3;
-        let current = 0;
-        targets.forEach((t, i) => { if (t.getBoundingClientRect().top <= line) current = i; });
-        // At the very bottom, the final section may be too short to reach the line
-        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
-            current = targets.length - 1;
-        }
-        links.forEach((a, i) => {
-            if (i === current) a.setAttribute('aria-current', 'location');
-            else a.removeAttribute('aria-current');
-        });
-    }
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
-    update();
 }
 
 /* ── Block renderers ─────────────────────────────────────── */
@@ -276,10 +224,13 @@ async function renderContent() {
     if (crumb) crumb.textContent = item.name;
 
     const next = cases[(cases.indexOf(item) + 1) % cases.length];
-    assignAnchors(item.blocks);
+    const headed = assignAnchors(item.blocks);
 
     mount.innerHTML = `
-        ${contents(item.blocks)}
+        ${contentsHTML({ href: '/work', label: 'Work' }, [
+            { id: 'overview', label: 'Overview' },
+            ...headed.map((b) => ({ id: b.anchor, label: headingOf(b) })),
+        ])}
 
         <div class="case-hero" id="overview">${item.slug === 'cadana'
             ? cadanaHero(escape(item.name))
