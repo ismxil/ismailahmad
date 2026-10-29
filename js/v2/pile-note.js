@@ -31,7 +31,7 @@ export function initPileNote(note) {
                     </div>
                     <input class="note-editor__name" name="name" placeholder="What's your name?" aria-label="Your name (optional)" maxlength="80" autocomplete="name" />
                 </div>
-                <button type="submit" class="note-editor__send">Send <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 17 3l-4 14-3-6z"/><path d="m10 11 7-8"/></svg></button>
+                <button type="submit" class="note-editor__send">Send <svg viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M16.161,2.062c-.339-.29-.812-.375-1.231-.227L2.631,6.228h0c-.436,.156-.747,.538-.815,.995-.067,.458,.122,.913,.494,1.188l1.439,1.064,3.413-2.588c.332-.251,.802-.185,1.051,.145,.25,.33,.186,.8-.145,1.051l-3.067,2.326v3.86c0,.473,.262,.899,.683,1.114,.181,.092,.375,.137,.568,.137,.259,0,.516-.081,.734-.24l.74-.539c.335-.244,.409-.713,.165-1.048-.242-.334-.711-.411-1.048-.165l-.343,.25v-2.268l5.911,4.369c.22,.162,.479,.245,.741,.245,.154,0,.311-.029,.461-.088,.402-.159,.69-.509,.77-.935l2.196-11.859c.083-.444-.073-.885-.418-1.179Z"/></svg></button>
             </footer>
         </form>
         <section class="note-editor__receipt" aria-labelledby="note-receipt-title" tabindex="-1" hidden>
@@ -147,7 +147,7 @@ export function initPileNote(note) {
         flight.setAttribute('aria-hidden', 'true');
         flight.style.left = `${button.x - paper.x + button.width / 2 - 24}px`;
         flight.style.top = `${button.y - paper.y + button.height / 2 - 24}px`;
-        flight.innerHTML = '<svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m24 26 31-18-12 32-6-13Z" fill="#fffdf3"/><path d="M37 27 55 8"/><path d="M6 26h10M2 33h14M8 40h8" opacity=".4"/></svg>';
+        flight.innerHTML = '<svg viewBox="0 0 64 48" fill="none" aria-hidden="true"><path d="M6 26h10M2 33h14M8 40h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".4"/><g transform="translate(24 2) scale(2)" fill="currentColor"><path d="M16.161,2.062c-.339-.29-.812-.375-1.231-.227L2.631,6.228h0c-.436,.156-.747,.538-.815,.995-.067,.458,.122,.913,.494,1.188l1.439,1.064,3.413-2.588c.332-.251,.802-.185,1.051,.145,.25,.33,.186,.8-.145,1.051l-3.067,2.326v3.86c0,.473,.262,.899,.683,1.114,.181,.092,.375,.137,.568,.137,.259,0,.516-.081,.734-.24l.74-.539c.335-.244,.409-.713,.165-1.048-.242-.334-.711-.411-1.048-.165l-.343,.25v-2.268l5.911,4.369c.22,.162,.479,.245,.741,.245,.154,0,.311-.029,.461-.088,.402-.159,.69-.509,.77-.935l2.196-11.859c.083-.444-.073-.885-.418-1.179Z"/></g></svg>';
         dialog.append(flight);
         const swoosh = flight.animate([
             { transform: 'translate(-4px, 0) rotate(-8deg) scale(0.65)', opacity: 0 },
