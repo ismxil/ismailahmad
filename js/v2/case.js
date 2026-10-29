@@ -82,6 +82,77 @@ function actions(list) {
         .join('')}</p>`;
 }
 
+/* ── Contents ────────────────────────────────────────────── */
+
+/** Results always carry their heading, the other text blocks only when labelled. */
+function headingOf(b) {
+    if (b.type === 'results') return 'Results';
+    return (b.type === 'section' || b.type === 'overlay') ? b.label || '' : '';
+}
+
+/** Stable, readable fragment ids — repeated labels get a numeric suffix. */
+function assignAnchors(blocks) {
+    const used = new Set(['overview']);
+    (blocks || []).forEach((b) => {
+        const heading = headingOf(b);
+        if (!heading) return;
+        const base = heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+        let id = base;
+        for (let n = 2; used.has(id); n++) id = `${base}-${n}`;
+        used.add(id);
+        b.anchor = id;
+    });
+}
+
+function anchor(b) {
+    return b.anchor ? ` id="${escape(b.anchor)}"` : '';
+}
+
+function contents(blocks) {
+    const items = (blocks || []).filter((b) => b.anchor);
+    if (!items.length) return '';
+    return `<nav class="case-toc" aria-label="On this page">
+        <a class="case-toc__back" href="/work">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M13 8H3M7 4 3 8l4 4" />
+            </svg>
+            Work
+        </a>
+        <ul class="case-toc__list">
+            <li><a href="#overview">Overview</a></li>
+            ${items.map((b) => `<li><a href="#${escape(b.anchor)}">${escape(headingOf(b))}</a></li>`).join('')}
+        </ul>
+    </nav>`;
+}
+
+/** Marks the section being read: the last heading to pass the upper third. */
+function trackContents(mount) {
+    const links = [...mount.querySelectorAll('.case-toc__list a')];
+    const targets = links.map((a) => mount.querySelector(a.getAttribute('href')));
+    if (!links.length || targets.some((t) => !t)) return;
+
+    let frame = 0;
+    function update() {
+        frame = 0;
+        const line = window.innerHeight / 3;
+        let current = 0;
+        targets.forEach((t, i) => { if (t.getBoundingClientRect().top <= line) current = i; });
+        // At the very bottom, the final section may be too short to reach the line
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+            current = targets.length - 1;
+        }
+        links.forEach((a, i) => {
+            if (i === current) a.setAttribute('aria-current', 'location');
+            else a.removeAttribute('aria-current');
+        });
+    }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    update();
+}
+
 /* ── Block renderers ─────────────────────────────────────── */
 
 const BLOCKS = {
@@ -93,7 +164,7 @@ const BLOCKS = {
         (b.images || []).map((im) => (im.video ? videoFigure(im) : figure(im.src, im.alt))).join('')
     }</div>`,
 
-    section: (b) => `<section class="case-block">
+    section: (b) => `<section class="case-block"${anchor(b)}>
         ${b.label ? `<h2 class="case-block__title">${escape(b.label)}</h2>` : ''}
         <div class="case-prose">${paragraphs(b.body)}</div>
         ${actions(b.actions)}
@@ -116,7 +187,7 @@ const BLOCKS = {
         </li>`).join('')
     }</ul>`,
 
-    results: (b) => `<section class="case-block">
+    results: (b) => `<section class="case-block"${anchor(b)}>
         <h2 class="case-block__title">Results</h2>
         ${b.summary ? `<div class="case-prose">${paragraphs(b.summary)}</div>` : ''}
         <ul class="case-metrics">${
@@ -127,7 +198,7 @@ const BLOCKS = {
         }</ul>
     </section>`,
 
-    overlay: (b, slug) => `<section class="case-overlay">
+    overlay: (b, slug) => `<section class="case-overlay"${anchor(b)}>
         ${figure(b.src, b.alt)}
         <div class="case-overlay__content">
             ${b.label ? `<h2 class="case-overlay__label">${escape(b.label)}</h2>` : ''}
@@ -205,9 +276,12 @@ async function renderContent() {
     if (crumb) crumb.textContent = item.name;
 
     const next = cases[(cases.indexOf(item) + 1) % cases.length];
+    assignAnchors(item.blocks);
 
     mount.innerHTML = `
-        <div class="case-hero">${item.slug === 'cadana'
+        ${contents(item.blocks)}
+
+        <div class="case-hero" id="overview">${item.slug === 'cadana'
             ? cadanaHero(escape(item.name))
             : item.heroVideo
             ? `<video src="${escape(asset(item.heroVideo))}"${item.hero ? ` poster="${escape(asset(item.hero))}"` : ''}
@@ -246,6 +320,7 @@ async function renderContent() {
 
     watchImageSkeletons(mount);
     playWhenVisible(mount);
+    trackContents(mount);
 
     // Keep clean URLs when they are available, fall back to the query form
     if (window.location.pathname.startsWith('/work/')) {
