@@ -23,10 +23,7 @@
 }
 .project-switcher__trigger:is(:hover, :focus-visible, [aria-expanded="true"]) { background: var(--control); }
 .project-switcher__trigger:focus-visible, .project-switcher__menu a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.project-switcher__chevron { flex-shrink: 0; color: var(--text-tertiary); }
-.project-switcher__avatar { display: block; width: 28px; height: 28px; flex-shrink: 0; border-radius: 6px; object-fit: cover; }
-.project-switcher__avatar--current { width: 18px; height: 18px; border-radius: 4px; }
-.project-switcher__initial { display: grid; place-items: center; background: var(--surface); color: var(--text-secondary); font-size: 13px; }
+.project-switcher__cover { display: block; width: 64px; height: 42px; flex-shrink: 0; border-radius: 5px; object-fit: cover; }
 
 .case-page .crumbs__link { padding: 4px 6px; margin-inline: -6px; border-radius: 6px; }
 .case-page .crumbs__link:hover { background: var(--control); }

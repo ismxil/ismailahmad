@@ -1,15 +1,16 @@
-const icons = {
-    sterling: 'sterling', lemfi: 'lemfi', cadana: 'cadana',
-    gomoney: 'gomoney', etihad: 'etihad',
-};
+import { caseAsset } from './case-data.js';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 }[c]));
 
-function avatar(project, className = '') {
-    return icons[project.slug]
-        ? `<img class="project-switcher__avatar ${className}" src="/assets/clients/icons/${icons[project.slug]}.svg" width="28" height="28" alt="" />`
-        : `<span class="project-switcher__avatar project-switcher__initial ${className}" aria-hidden="true">${escape(project.name?.slice(0, 1) || 'P')}</span>`;
+function cover(project) {
+    let src = caseAsset(project.cover);
+    if (src.startsWith('https://cdn.sanity.io/images/')) {
+        const thumbnail = new URL(src);
+        for (const [key, value] of Object.entries({ w: '128', h: '84', fit: 'crop', auto: 'format' })) thumbnail.searchParams.set(key, value);
+        src = thumbnail.href;
+    }
+    return src ? `<img class="project-switcher__cover" src="${escape(src)}" width="64" height="42" alt="" loading="lazy" />` : '';
 }
 
 const check = '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
@@ -29,10 +30,8 @@ export function initProjectSwitcher(projects, currentSlug) {
     trigger.setAttribute('aria-label', `Switch project, ${current.name}`);
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('aria-controls', 'project-switcher-menu');
-    trigger.innerHTML = `${avatar(current, 'project-switcher__avatar--current')}
-        <svg class="project-switcher__chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>`;
     crumb.replaceWith(host);
-    trigger.insertBefore(crumb, trigger.lastElementChild);
+    trigger.append(crumb);
     host.append(trigger);
 
     // Mount outside the sticky header so its backdrop/filter cannot clip or
@@ -44,10 +43,10 @@ export function initProjectSwitcher(projects, currentSlug) {
     menu.hidden = true;
     menu.innerHTML = `<ul>${projects.filter(project => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(project.slug)).map(project => `<li>
         <a class="project-switcher__project" href="/work/${escape(project.slug)}"${project.slug === currentSlug ? ' aria-current="page"' : ''}>
-            ${avatar(project)}
             <span class="project-switcher__text"><span class="project-switcher__name">${escape(project.name)}</span>
                 <span class="project-switcher__type">${escape(project.type || 'Case study')}</span></span>
             <span class="project-switcher__status">${project.locked ? lock : project.slug === currentSlug ? check : ''}</span>
+            ${cover(project)}
         </a>
     </li>`).join('')}</ul>
         <a class="project-switcher__all" href="/work">All work<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></a>`;

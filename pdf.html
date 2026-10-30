@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/v2/tokens.css" />
     <link rel="stylesheet" href="/css/v2/app.css" />
+    <link rel="stylesheet" href="/css/v2/access.css" />
     <link rel="stylesheet" href="/css/v2/pdf.css" />
     <script type="module" src="/js/generated/analytics.js"></script>
 </head>
@@ -48,12 +49,7 @@
         <a href="https://www.ismailahmad.com/cv">← Back to CV</a>
         <h1 id="portfolio-gate-title">Portfolio ’26</h1>
         <p>Enter your access code to view my case studies.</p>
-        <form id="portfolio-access">
-            <label for="portfolio-code">Access code</label>
-            <input id="portfolio-code" name="code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required />
-            <button type="submit">View portfolio</button>
-            <p id="portfolio-error" role="status" aria-live="polite"></p>
-        </form>
+        <button id="portfolio-open" class="case-access__submit" type="button">Enter access code</button>
         <a href="mailto:work@ismailahmad.com?subject=Portfolio%20access">Request access ↗</a>
     </section>
     <header class="pdf-bar">
