@@ -99,7 +99,8 @@ test('Blog index shares the article handler without an extra serverless function
     await article({ method: 'GET', query: { index: '1' } }, res);
     assert.equal(res.statusCode, 200);
     const doc = new JSDOM(res.body).window.document;
-    assert.equal(doc.body.dataset.page, 'blog');
+    assert.equal(doc.title, 'Blog — Ismail Ahmad');
+    assert(doc.getElementById('blog-content'));
     assert.equal(doc.querySelector('link[rel="canonical"]').href, 'https://blog.ismailahmad.com/');
     assert.match(res.headers['Content-Type'], /text\/html/);
 });
