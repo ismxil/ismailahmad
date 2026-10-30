@@ -8,7 +8,7 @@ const blogHost = rule => rule.has?.some(h => h.type === 'host' && h.value === 'b
 
 test('Blog host serves article metadata and never redirects to the portfolio domain', () => {
     const article = routes.rewrites.find(r => blogHost(r) && r.source.startsWith('/:slug'));
-    assert.equal(article?.destination, '/api/article?slug=:slug');
+    assert.equal(article?.destination, '/api/posts?render=article&slug=:slug');
     for (const rule of routes.redirects) {
         if (rule.has && !blogHost(rule)) continue;
         assert(!/^https?:\/\/(?:www\.)?ismailahmad\.com(?:[/:]|$)/.test(rule.destination),
@@ -18,7 +18,7 @@ test('Blog host serves article metadata and never redirects to the portfolio dom
 
 test('Blog root and existing CV, PDF and Lagos subdomains retain their own handlers', () => {
     for (const [host, path] of [
-        ['blog.ismailahmad.com', '/api/article'],
+        ['blog.ismailahmad.com', '/api/posts'],
         ['cv.ismailahmad.com', '/cv'],
         ['pdf.ismailahmad.com', '/pdf'],
         ['tiny-lagos.ismailahmad.com', '/lagos'],

@@ -11,7 +11,7 @@ const roots = { 'tiny-lagos.': '/lagos', 'cv.': '/cv', 'pdf.': '/pdf' };
 
 export default function middleware(request) {
     const host = (request.headers.get('host') || '').split(':')[0];
-    if (host === 'blog.ismailahmad.com') return rewrite(new URL('/api/article?index=1' + (new URL(request.url).search ? '&' + new URL(request.url).search.slice(1) : ''), request.url));
+    if (host === 'blog.ismailahmad.com') return rewrite(new URL('/api/posts?index=1' + (new URL(request.url).search ? '&' + new URL(request.url).search.slice(1) : ''), request.url));
     const prefix = Object.keys(roots).find(p => host.startsWith(p));
     if (prefix) return rewrite(new URL(roots[prefix], request.url));
 }

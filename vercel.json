@@ -8,7 +8,7 @@
           "value": "blog.ismailahmad.com"
         }
       ],
-      "destination": "/api/article?slug=:slug"
+      "destination": "/api/posts?render=article&slug=:slug"
     },
     {
       "source": "/work/:slug",
@@ -16,7 +16,7 @@
     },
     {
       "source": "/blog/:slug",
-      "destination": "/api/article?slug=:slug"
+      "destination": "/api/posts?render=article&slug=:slug"
     },
     {
       "source": "/personal/:slug",
@@ -99,7 +99,7 @@
     }
   ],
   "functions": {
-    "api/article.js": {
+    "api/posts.js": {
       "includeFiles": "*.html"
     }
   }

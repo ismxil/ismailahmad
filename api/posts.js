@@ -1,3 +1,4 @@
+import article from '../lib/article.js';
 import { sanityConfig } from '../js/sanity-config.js';
 
 // Imported image blocks keep the Substack CDN path they came from as
@@ -7,6 +8,7 @@ export const publishedFilter = '_type == "post" && !(_id in path("drafts.**")) &
 const summary = 'title,"slug":slug.current,excerpt,publishedAt,author,"cover":coverImage.asset->url,"coverAlt":coverImage.alt';
 
 export default async function handler(req, res) {
+    if (req.query?.render === 'article' || req.query?.index === '1') return article(req, res);
     if (req.method !== 'GET') {
         res.setHeader('Allow', 'GET');
         return res.status(405).json({ error: 'Method not allowed' });
