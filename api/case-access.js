@@ -1,3 +1,4 @@
+import { servePortfolioAsset } from '../lib/portfolio-assets.js';
 import { allowedOrigin, codeMatches, cookieName, createSession, protectedCase, sessionCookie, SESSION_SECONDS, validSession, validSlug } from '../lib/case-access.js';
 import { omitNull } from './cases.js';
 import { publicPreview } from '../lib/case-content.js';
@@ -51,6 +52,10 @@ export default async function handler(req, res) {
             const preview = req.query?.preview === '1' ? publicPreview(item) : null;
             if (preview) return res.status(200).json({ case: omitNull(preview) });
             return res.status(401).json({ error: 'Enter your access code to view this case study.' });
+        }
+        if (slug === 'portfolio') {
+            if (req.method === 'GET' && req.query?.asset) return servePortfolioAsset(req.query.asset, res);
+            return res.status(200).json({ unlocked: true });
         }
         const { accessCode, previewEndKey, ...content } = item;
         return res.status(200).json({ case: omitNull(content) });

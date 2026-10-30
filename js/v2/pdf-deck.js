@@ -3,7 +3,7 @@
 // link annotations, as percentages of the slide, so they stay clickable.
 export const deck = {
     title: "Ismail Ahmad — Portfolio '26",
-    pdf: '/assets/pdf/ismail-ahmad-portfolio.pdf',
+    pdf: '/api/case-access?slug=portfolio&asset=pdf',
     slides: [
         { title: 'Portfolio', links: [{ href: 'https://www.ismailahmad.com', x: 87.25, y: 1.57, w: 11.15, h: 5.93 }] },
         { title: 'My experience' },
@@ -41,5 +41,5 @@ export const deck = {
 };
 
 const pad = n => String(n).padStart(2, '0');
-export const slideSrc = n => `/assets/pdf/slides/${pad(n)}.webp`;
-export const thumbSrc = n => `/assets/pdf/thumbs/${pad(n)}.webp`;
+export const slideSrc = n => `/api/case-access?slug=portfolio&asset=slides/${pad(n)}.webp`;
+export const thumbSrc = n => `/api/case-access?slug=portfolio&asset=thumbs/${pad(n)}.webp`;

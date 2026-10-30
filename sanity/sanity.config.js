@@ -8,7 +8,11 @@ export default defineConfig({
   title: 'Ismail Ahmad — Content',
   projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'x7x0om5p',
   dataset: process.env.SANITY_STUDIO_DATASET || 'production',
-  plugins: [structureTool(), visionTool()],
+  plugins: [structureTool({ structure: S => S.list().title('Content').items([
+    S.listItem().title('Availability').child(S.document().schemaType('siteSettings').documentId('site-settings')),
+    S.listItem().title('PDF portfolio access').child(S.document().schemaType('protectedPortfolio').documentId('protected.portfolio')),
+    ...S.documentTypeListItems().filter(item => !['siteSettings', 'protectedPortfolio'].includes(item.getId())),
+  ]) }), visionTool()],
   schema: {
     types: schemaTypes,
   },

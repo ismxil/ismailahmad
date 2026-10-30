@@ -101,6 +101,9 @@
   "functions": {
     "api/posts.js": {
       "includeFiles": "*.html"
+    },
+    "api/case-access.js": {
+      "includeFiles": "assets/pdf/**"
     }
   }
 }
