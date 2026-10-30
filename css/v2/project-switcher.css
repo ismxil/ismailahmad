@@ -1,0 +1,71 @@
+/* Breadcrumb project navigation, using the site's existing surfaces and type. */
+.project-switcher {
+    display: inline-flex;
+    min-width: 0;
+    overflow: visible;
+}
+.project-switcher__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    min-width: 0;
+    padding: 4px 6px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-primary);
+    font: inherit;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+    transition: background 120ms ease;
+}
+.project-switcher__trigger:is(:hover, :focus-visible, [aria-expanded="true"]) { background: var(--control); }
+.project-switcher__trigger:focus-visible, .project-switcher__menu a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.project-switcher__chevron { flex-shrink: 0; color: var(--text-tertiary); }
+.project-switcher__avatar { display: block; width: 28px; height: 28px; flex-shrink: 0; border-radius: 6px; object-fit: cover; }
+.project-switcher__avatar--current { width: 18px; height: 18px; border-radius: 4px; }
+.project-switcher__initial { display: grid; place-items: center; background: var(--surface); color: var(--text-secondary); font-size: 13px; }
+
+.case-page .crumbs__link { padding: 4px 6px; margin-inline: -6px; border-radius: 6px; }
+.case-page .crumbs__link:hover { background: var(--control); }
+
+.project-switcher__menu {
+    position: fixed;
+    z-index: 60;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 6px;
+    border-radius: var(--r-md);
+    background: var(--raised);
+    color: var(--text-primary);
+    box-shadow: var(--popover-shadow);
+    font-size: 14px;
+    animation: project-switcher-open 120ms ease-out;
+}
+.project-switcher__menu[hidden] { display: none; }
+.project-switcher__project {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 50px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    transition: background 120ms ease;
+}
+.project-switcher__project[aria-current="page"] { background: var(--accent-soft); }
+.project-switcher__project:is(:hover, :focus-visible) { background: var(--control); }
+.project-switcher__text { display: flex; flex: 1; flex-direction: column; min-width: 0; line-height: 1.35; }
+.project-switcher__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-switcher__type { margin-top: 2px; color: var(--text-tertiary); font-size: 12px; }
+.project-switcher__status { display: flex; flex-shrink: 0; width: 16px; color: var(--text-secondary); }
+.project-switcher__all { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; padding: 10px 9px 5px; border-top: 1px solid var(--border); color: var(--text-secondary); }
+.project-switcher__all:hover { color: var(--text-primary); }
+
+@keyframes project-switcher-open { from { opacity: 0; translate: 0 -3px; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .project-switcher__menu { animation: none; }
+    .project-switcher__trigger, .project-switcher__project { transition: none; }
+}
+@media print { .project-switcher__menu, .project-switcher__chevron { display: none; } }
