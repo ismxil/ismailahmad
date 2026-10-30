@@ -1,17 +1,7 @@
 import { sanityConfig } from '../js/sanity-config.js';
+import { caseFields, publicCase } from '../lib/case-content.js';
 
-export const caseQuery = `*[_type == "caseStudy" && !(_id in path("drafts.**")) && !(_id in path("versions.**")) && defined(slug.current)] | order(coalesce(order, 999999) asc, _createdAt asc) {
-    "slug": slug.current, name, headline, lede, url, role, years, type, scope, industry,
-    "cover": cover.asset->url, "hero": hero.asset->url, "heroVideo": heroVideo.asset->url,
-    "rotatingCovers": rotatingCovers[].asset->url,
-    "coverVideo": coverVideo.asset->url,
-    blocks[]{type,label,body,alt,note,summary,"src":image.asset->url,"video":video.asset->url,
-        images[]{"src":coalesce(asset->url, poster.asset->url),"video":video.asset->url,alt},
-        items[]{quote,name,role,"avatar":avatar.asset->url},
-        metrics[]{value,title,text,accent,"icon":icon.asset->url},
-        actions[]{label,href}
-    }
-}`;
+export const caseQuery = `*[_type == "caseStudy" && !(_id in path("drafts.**")) && !(_id in path("versions.**")) && defined(slug.current)] | order(coalesce(order, 999999) asc, _createdAt asc) {${caseFields}}`;
 
 // Optional Sanity fields are null; omit them to retain the renderer's data shape.
 export function omitNull(value) {
@@ -34,7 +24,7 @@ export default async function handler(req, res) {
         if (!response.ok) throw new Error('CMS unavailable');
         const { result } = await response.json();
         if (!Array.isArray(result)) throw new Error('Invalid CMS response');
-        return res.status(200).json({ cases: omitNull(result) });
+        return res.status(200).json({ cases: omitNull(result.map(publicCase)) });
     } catch {
         return res.status(502).json({ error: 'Case studies are temporarily unavailable. Please try again.' });
     }

@@ -15,6 +15,79 @@
     padding-bottom: 0;
 }
 
+/* Access uses the site's type and surfaces; the code is a single pasteable input. */
+.case-access {
+    --case-error: #dc2626;
+    min-height: calc(100dvh - 230px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 0;
+    text-align: center;
+}
+.case-access__mark {
+    display: block;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 28px;
+    object-fit: contain;
+}
+.dark .case-access { --case-error: #f87171; }
+.dark :is(.case-access__mark, .case-unlock__mark) { filter: invert(1); }
+.case-access h1 { font-size: 24px; line-height: 1.2; letter-spacing: -0.012em; }
+.case-access__description { margin-top: 14px; color: var(--text-secondary); font-size: 15px; }
+.case-access__form { width: min(100%, 344px); margin-top: 36px; }
+.access-code { position: relative; }
+.access-code__input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: var(--r-xl);
+    background: transparent;
+    color: transparent;
+    caret-color: transparent;
+    font-size: 24px;
+    cursor: text;
+}
+.access-code__input:focus-visible { outline: none; box-shadow: none; }
+.access-code__input::selection { color: transparent; background: transparent; }
+.access-code__digits { display: flex; gap: 12px; }
+.access-code__group { display: flex; flex: 1; justify-content: center; gap: 4px; padding: 13px 12px; background: var(--surface); border: 2px solid transparent; border-radius: var(--r-xl); }
+.access-code__digit { width: 1ch; color: var(--border-strong); font-size: 42px; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.access-code__digit.is-filled { color: var(--text-primary); }
+.access-code:not(.is-invalid):focus-within[data-active="first"] .access-code__group:first-child,
+.access-code:not(.is-invalid):focus-within[data-active="last"] .access-code__group:last-child { border-color: var(--text-primary); background: var(--control); box-shadow: 0 0 0 3px var(--ring); }
+.access-code.is-invalid .access-code__group { border-color: var(--case-error); box-shadow: 0 0 0 3px color-mix(in srgb, var(--case-error) 12%, transparent); }
+.case-access__form:has([aria-invalid="true"]) .case-access__error { color: var(--case-error); }
+.case-access__error { margin-top: 14px; font-size: 14px; color: var(--text-secondary); }
+.case-access__error[hidden] { display: none; }
+.case-access__submit { width: 100%; min-height: 46px; margin-top: 20px; border: 0; border-radius: var(--r-md); background: var(--btn-bg); color: var(--btn-fg); font: 500 14px var(--font-sans); cursor: pointer; }
+.case-access__submit:disabled { opacity: 0.65; cursor: wait; }
+.case-access__help { margin-top: 28px; font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+.case-access__request { padding: 0; border: 0; background: none; color: var(--text-primary); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.case-access__request .pile-note__open { display: none; }
+
+.case-access-dialog { width: min(560px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); margin: auto; padding: 0; border: 0; border-radius: 24px; background: var(--background); color: var(--text-primary); box-shadow: 0 24px 100px #0003; }
+.case-access-dialog::backdrop { background: #0005; backdrop-filter: blur(6px); }
+.case-access-dialog .case-access { min-height: 0; padding: 56px 24px 40px; }
+.case-access-dialog .case-access h1 { font-size: 24px; }
+.case-access-dialog__close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: var(--surface); color: var(--text-secondary); cursor: pointer; }
+
+.case-unlock { position: relative; min-height: 680px; overflow: hidden; border-radius: var(--r-lg); }
+.case-unlock__preview { display: flex; flex-direction: column; gap: 40px; filter: blur(16px); opacity: 0.45; pointer-events: none; user-select: none; mask-image: linear-gradient(#000 10%, transparent 95%); }
+.case-unlock__preview img { width: 100%; height: 440px; object-fit: cover; }
+.case-unlock__lines { display: grid; gap: 16px; padding-inline: 24px; }
+.case-unlock__lines span { height: 12px; border-radius: 4px; background: var(--text-tertiary); }
+.case-unlock__lines span:last-child { width: 65%; }
+.case-unlock__prompt { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; padding-top: 170px; }
+.case-unlock__mark { width: 56px; height: 56px; }
+.case-unlock__button { min-height: 46px; padding: 12px 20px; border: 0; border-radius: 999px; background: var(--btn-bg); color: var(--btn-fg); font: 500 15px var(--font-sans); cursor: pointer; box-shadow: var(--tray-shadow); }
+@media (max-width: 559px) { .case-unlock { min-height: 520px; } .case-unlock__preview img { height: 320px; } .case-unlock__prompt { padding-top: 120px; } }
+
 /* ── Hero ────────────────────────────────────────────────── */
 
 /* Breaks the reading column and runs to the viewport edges, as the
@@ -198,6 +271,11 @@
     display: block;
     width: 100%;
     height: auto;
+}
+
+.case-figure--sized img {
+    height: 100%;
+    object-fit: var(--case-image-fit, cover);
 }
 
 .case-pair {

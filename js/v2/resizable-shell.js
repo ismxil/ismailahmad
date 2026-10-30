@@ -22,7 +22,7 @@ if (shell) {
         const hint = document.createElement('span');
         hint.className = 'shell-resize__hint';
         hint.setAttribute('aria-hidden', 'true');
-        hint.innerHTML = 'Drag to resize<span>Double-click to reset</span>';
+        hint.textContent = 'Drag';
         handle.append(hint);
         frame.append(handle);
     }
@@ -38,6 +38,9 @@ if (shell) {
         frame.style.width = `${rect.width}px`;
         shell.style.setProperty('--shell-left', `${rect.left}px`);
         shell.toggleAttribute('data-shell-toc-hidden', rect.left < 200);
+        frame.querySelectorAll('.shell-resize__hint').forEach(hint => {
+            hint.textContent = requestedWidth == null ? 'Drag' : 'Double-click to reset';
+        });
         shell.toggleAttribute('data-shell-compact', desktop.matches && rect.width < 1024);
         for (const handle of frame.children) {
             handle.setAttribute('aria-valuemin', String(minimum));

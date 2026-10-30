@@ -111,6 +111,14 @@ Web Analytics must be enabled for the project before deploying.
 
 ## Checks
 
+Case studies use `/api/cases` for public content. Etihad's public document
+contains card metadata; its story lives in the private `protected.etihad`
+Sanity document. Keep the access and preview handlers, shared projections,
+browser loader, and access tests together when deploying. Removing the loader
+leaves that public card without a hero or body. Sterling is public and includes
+its full story. `sanity/scripts/publish-sterling.mjs` records the recovery from
+the retained private backup; it does not change Etihad.
+
 `npm test` checks rich-text conversion, safe rendering and API behavior. If a
 migration snapshot exists locally, it also checks every imported article against
 the original feed text and image count. `npm run build --prefix sanity` checks
