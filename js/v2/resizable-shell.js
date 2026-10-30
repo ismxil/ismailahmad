@@ -8,7 +8,6 @@ if (shell) {
     const mediaOnly = Boolean(shell.querySelector('#case'));
     if (mediaOnly) shell.setAttribute('data-resize-media', '');
     const desktop = matchMedia('(min-width: 900px) and (pointer: fine)');
-    const minimum = 480;
     const frame = document.createElement('div');
     frame.className = 'shell-resize';
     frame.setAttribute('role', 'group');
@@ -35,6 +34,8 @@ if (shell) {
     let drag;
     let requestedWidth;
     const maximum = () => document.documentElement.clientWidth;
+    const minimum = () => Math.min(maximum(),
+        parseFloat(getComputedStyle(shell).getPropertyValue('--content-width')) || 720);
     const frameWidth = () => mediaOnly && desktop.matches && requestedWidth != null
         ? Math.min(requestedWidth, maximum()) : shell.getBoundingClientRect().width;
 
@@ -51,7 +52,13 @@ if (shell) {
         });
         shell.toggleAttribute('data-shell-compact', desktop.matches && rect.width < 1024);
         for (const handle of frame.children) {
-            handle.setAttribute('aria-valuemin', String(minimum));
+            const outsideSpace = handle.dataset.side === 'left' ? left : maximum() - left - width;
+            const hint = handle.querySelector('.shell-resize__hint');
+            hint.hidden = false;
+            const room = outsideSpace >= hint.offsetWidth + 24;
+            hint.hidden = !room;
+            handle.toggleAttribute('data-hint-room', room);
+            handle.setAttribute('aria-valuemin', String(minimum()));
             handle.setAttribute('aria-valuemax', String(maximum()));
             handle.setAttribute('aria-valuenow', String(Math.round(width)));
             handle.setAttribute('aria-valuetext', `${Math.round(width)} pixels${requestedWidth == null ? ', default width' : ''}`);
@@ -59,7 +66,9 @@ if (shell) {
     }
 
     function resize(width) {
-        requestedWidth = Math.round(Math.min(maximum(), Math.max(minimum, width)));
+        const next = Math.round(Math.min(maximum(), Math.max(minimum(), width)));
+        if (requestedWidth == null && next === Math.round(frameWidth())) return;
+        requestedWidth = next;
         shell.style.setProperty('--resized-width', `${requestedWidth}px`);
         shell.classList.add('is-custom-width');
         sync();
