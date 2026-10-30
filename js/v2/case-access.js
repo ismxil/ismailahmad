@@ -2,22 +2,23 @@
 
 
 export function renderAccessGate(mount, item, unlocked, { focus = true } = {}) {
+    const portfolio = item.slug === 'portfolio';
+    const submitLabel = portfolio ? 'View portfolio' : 'View case study';
     mount.innerHTML = `<section class="case-access" aria-labelledby="case-access-title">
         <img class="case-access__mark" src="/assets/icons/lock.svg" width="56" height="56" alt="" />
         <h1 id="case-access-title">Enter access code</h1>
         <p class="case-access__description">Please enter 6-digit access code.</p>
         <form class="case-access__form" novalidate>
-            <label class="visually-hidden" for="case-access-code">Six-digit access code</label>
             <div class="access-code" data-active="first">
-                <input id="case-access-code" class="access-code__input" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required aria-describedby="case-access-error" spellcheck="false" />
+                <input id="case-access-code" aria-label="Six-digit access code" class="access-code__input" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required aria-describedby="case-access-error" spellcheck="false" />
                 <div class="access-code__digits" aria-hidden="true">
                     ${[0, 1].map(() => `<span class="access-code__group">${Array.from({ length: 3 }, () => '<span class="access-code__digit">0</span>').join('')}</span>`).join('')}
                 </div>
             </div>
             <p id="case-access-error" class="case-access__error" role="alert" hidden></p>
-            <button class="case-access__submit" type="submit">View case study</button>
+            <button class="case-access__submit" type="submit">${submitLabel}</button>
         </form>
-        <p class="case-access__help">Some of my work aren’t public for confidentiality reasons.<br><a class="case-access__request" href="mailto:work@ismailahmad.com?subject=Etihad%20case%20study%20access">Request access.</a></p>
+        <p class="case-access__help">Some of my work aren’t public for confidentiality reasons.<br><a class="case-access__request" href="mailto:work@ismailahmad.com?subject=${portfolio ? 'Portfolio%20access' : 'Etihad%20case%20study%20access'}">Request access.</a></p>
     </section>`;
     const form = mount.querySelector('form');
     const input = form.querySelector('input');
@@ -64,13 +65,13 @@ export function renderAccessGate(mount, item, unlocked, { focus = true } = {}) {
                 cache: 'no-store', signal: AbortSignal.timeout(15000),
             });
             const data = await response.json();
-            if (!response.ok || !data.case) {
+            if (!response.ok || !(portfolio ? data.unlocked : data.case)) {
                 const failure = new Error(data.error || 'Could not open this case study. Please try again.');
                 failure.invalidCode = response.status === 401;
                 throw failure;
             }
             input.value = '';
-            unlocked(data.case);
+            unlocked(portfolio ? data : data.case);
         } catch (failure) {
             error.textContent = ['TimeoutError', 'AbortError', 'TypeError'].includes(failure.name)
                 ? 'Could not connect. Please try again.' : failure.message;
@@ -83,7 +84,7 @@ export function renderAccessGate(mount, item, unlocked, { focus = true } = {}) {
                 shake.finished.catch(() => {});
             }
             input.readOnly = button.disabled = false;
-            button.textContent = 'View case study';
+            button.textContent = submitLabel;
             input.focus();
             input.select();
         } finally {
