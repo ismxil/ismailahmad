@@ -21,7 +21,7 @@ Do not edit, delete, refactor, replace, or bypass code implementing this behavio
 unless the owner explicitly asks for that blog change in the current task.
 Permission to work on another page, merge a branch, or deploy the site is not
 permission to change this behavior. This includes `vercel.json`, `middleware.js`,
-`api/article.js`, `lib/blog-index.js`, article metadata, CMS cover projections,
+`api/posts.js`, `lib/article.js`, `lib/blog-index.js`, article metadata, CMS cover projections,
 canonical URLs, and blog links. Shared files may be edited for explicitly
 requested unrelated work only if all protected blog behavior is preserved.
 

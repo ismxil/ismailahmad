@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
-import article, { articleHTML } from '../api/article.js';
+import article, { articleHTML } from '../lib/article.js';
 
 function response() {
     return { headers: {}, statusCode: 200, setHeader(k, v) { this.headers[k] = v; }, end(body) { this.body = body; } };
@@ -90,8 +90,8 @@ test('Article route retains slug validation, missing-post status and upstream fa
 
 test('Clean blog URLs route to server metadata and package the HTML template', async () => {
     const routes = JSON.parse(await readFile('vercel.json', 'utf8'));
-    assert.equal(routes.rewrites.find(r => r.source === '/blog/:slug').destination, '/api/article?slug=:slug');
-    assert.equal(routes.functions['api/article.js'].includeFiles, '*.html');
+    assert.equal(routes.rewrites.find(r => r.source === '/blog/:slug').destination, '/api/posts?render=article&slug=:slug');
+    assert.equal(routes.functions['api/posts.js'].includeFiles, '*.html');
 });
 
 test('Blog index shares the article handler without an extra serverless function', async () => {
@@ -103,4 +103,17 @@ test('Blog index shares the article handler without an extra serverless function
     assert(doc.getElementById('blog-content'));
     assert.equal(doc.querySelector('link[rel="canonical"]').href, 'https://blog.ismailahmad.com/');
     assert.match(res.headers['Content-Type'], /text\/html/);
+});
+
+test('Existing posts endpoint dispatches HTML requests and still serves JSON', async t => {
+    const { default: posts } = await import('../api/posts.js');
+    const post = { title: 'Eureka', slug: 'eureka', excerpt: 'An idea', cover: 'https://example.com/cover.jpg' };
+    t.mock.method(globalThis, 'fetch', async () => ({ ok: true, json: async () => ({ result: post }) }));
+    const html = response();
+    await posts({ method: 'GET', query: { render: 'article', slug: 'eureka' } }, html);
+    assert.equal(new JSDOM(html.body).window.document.querySelector('meta[property="og:title"]').content, 'Eureka');
+    const json = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, status(n) { this.statusCode = n; return this; }, json(data) { this.data = data; } };
+    await posts({ method: 'GET', query: { slug: 'eureka' } }, json);
+    assert.equal(json.statusCode, 200);
+    assert.equal(json.data.post.slug, 'eureka');
 });
