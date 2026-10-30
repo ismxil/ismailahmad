@@ -81,7 +81,7 @@ async function renderContent(mount, { shuffleCovers = false, featuredSlugs } = {
                     ${art(c, shuffleCovers)}
                 </span>
                 <span class="case-card__text">
-                    <span class="case-card__title">${escape(c.name)}${ARROW}</span>
+                    <span class="case-card__title">${escape(c.name)}${c.locked ? '<svg class="case-card__lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Protected case study"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>' : ARROW}</span>
                     <span class="case-card__desc">${escape(c.headline)}</span>
                     <span class="case-card__meta">${escape(c.type)} · ${escape(c.years)}</span>
                 </span>

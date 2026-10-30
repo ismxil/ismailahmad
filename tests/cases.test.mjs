@@ -20,6 +20,17 @@ test('An empty published collection stays empty, without resurrecting local case
     const res=response();await handler({method:'GET'},res);assert.deepEqual(res.data,{cases:[]});
 });
 
+test('Protected case cards expose their lock and preview flags without leaking the story', async t => {
+    const privateItem = { slug: 'etihad', name: 'ECB', locked: true, hasPreview: true,
+        cover: 'cover.png', hero: 'private.png', lede: ['Private introduction'], blocks: [{ body: 'Private story' }] };
+    const publicItem = { slug: 'sterling', name: 'Sterling', locked: false, hero: 'public.png', blocks: [{ body: 'Public story' }] };
+    t.mock.method(globalThis, 'fetch', async () => ({ ok: true, json: async () => ({ result: [privateItem, publicItem] }) }));
+    const res = response(); await handler({ method: 'GET' }, res);
+    assert.deepEqual(res.data.cases[0], { slug: 'etihad', name: 'ECB', cover: 'cover.png', hasPreview: true, locked: true });
+    assert.deepEqual(res.data.cases[1], publicItem);
+    assert(!JSON.stringify(res.data).includes('Private'));
+});
+
 test('A failed CMS returns an error instead of silently substituting stale cases', async t => {
     t.mock.method(globalThis,'fetch',async()=>{throw new Error('private error')});
     const res=response();await handler({method:'GET'},res);assert.equal(res.statusCode,502);assert(!res.data.error.includes('private'));

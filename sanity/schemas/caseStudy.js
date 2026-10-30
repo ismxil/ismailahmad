@@ -3,12 +3,18 @@ const text = (name, title = name) => ({ name, title, type: 'text', rows: 5 });
 const artwork = (name, title) => ({ name, title, type: 'image', options: { hotspot: true } });
 const list = (name, title) => ({ name, title, type: 'array', of: [{ type: 'string' }] });
 const only = (...types) => ({ parent }) => !types.includes(parent?.type);
+const imageGeometry = [
+    { name: 'aspectRatio', title: 'Display aspect ratio', type: 'number', description: 'Optional width divided by height. Leave empty to use the image’s original proportions.', validation: Rule => Rule.positive().max(10) },
+    { name: 'objectFit', title: 'Image fit', type: 'string', options: { list: ['cover', 'contain', 'fill'] }, description: 'Used only when a display aspect ratio is set. Defaults to cover.' },
+];
 const action = { name: 'caseAction', type: 'object', fields: [string('label', 'Link text'), { name: 'href', title: 'URL', type: 'url', validation: Rule => Rule.uri({ scheme: ['https', 'http'] }) }] };
 
 export default {
     name: 'caseStudy', title: 'Case study', type: 'document',
     groups: [{ name: 'overview', title: 'Overview', default: true }, { name: 'details', title: 'Details' }, { name: 'content', title: 'Content' }],
     fields: [
+        { name: 'requiresAccessCode', title: 'Passcode protected', type: 'boolean', group: 'overview', readOnly: true, hidden: ({ document }) => !document?.requiresAccessCode, description: 'Edit the content and access code under Protected case studies. This entry controls the public card and its sort order.' },
+        { name: 'hasPublicPreview', type: 'boolean', hidden: true, readOnly: true },
         { ...string('name', 'Project name'), group: 'overview', validation: Rule => Rule.required() },
         { name: 'slug', title: 'URL slug', type: 'slug', group: 'overview', options: { source: 'name', maxLength: 120 }, description: 'Keep this unchanged for existing projects so their /work/ links keep working.', validation: Rule => Rule.required() },
         { ...text('headline', 'Headline'), group: 'overview', validation: Rule => Rule.required() },
@@ -16,7 +22,7 @@ export default {
         { ...artwork('cover', 'Project card cover'), group: 'overview', validation: Rule => Rule.required() },
         { name: 'rotatingCovers', title: 'Rotating cover images', type: 'array', group: 'overview', of: [{ type: 'image' }], description: 'Choose images for the homepage card. Drag to change the rotation order. Leave empty to use Project card cover; a single image stays still.' },
         { name: 'coverVideo', title: 'Cover video', type: 'file', group: 'overview', options: { accept: 'video/mp4,video/webm,video/quicktime' }, description: 'Optional. Plays muted on a loop on the project card and replaces the rotating images. Project card cover stays as the still shown while it loads. Keep it short and under ~10 MB.' },
-        { ...artwork('hero', 'Hero image'), group: 'overview', description: 'The large image at the top of the case page. With a hero video, the still shown while it loads.', validation: Rule => Rule.custom((value, { document }) => (value?.asset || document?.heroVideo?.asset ? true : 'Add a hero image or a hero video.')) },
+        { ...artwork('hero', 'Hero image'), group: 'overview', description: 'The large image at the top of the case page. With a hero video, the still shown while it loads.', validation: Rule => Rule.custom((value, { document }) => (document?.requiresAccessCode || value?.asset || document?.heroVideo?.asset ? true : 'Add a hero image or a hero video.')) },
         { name: 'heroVideo', title: 'Hero video', type: 'file', group: 'overview', options: { accept: 'video/mp4,video/webm,video/quicktime' }, description: 'Optional. Plays muted on a loop at the top of the case page in place of the hero image. Keep it short and under ~20 MB.' },
         { name: 'order', title: 'Sort order', type: 'number', group: 'overview', description: 'Lower numbers appear first on Home, Work, and next-project links.' },
         ...[string('role', 'Role'), string('years', 'Years'), string('type', 'Project type'), list('scope', 'Scope'), list('industry', 'Industry'), { name: 'url', title: 'Project website', type: 'url' }].map(field => ({ ...field, group: 'details' })),
@@ -37,9 +43,10 @@ export default {
                     { name: 'video', title: 'Video', type: 'file', hidden: only('video'), options: { accept: 'video/mp4,video/webm,video/quicktime' }, description: 'Plays muted on a loop while on screen. Keep it short and under ~20 MB.' },
                     { ...artwork('image', 'Image'), hidden: only('image', 'overlay', 'video'), description: 'For a video section: optional still shown while the video loads.' },
                     { ...string('alt', 'Image description'), hidden: only('image', 'overlay', 'video') },
+                    ...imageGeometry.map(field => ({ ...field, hidden: only('image') })),
                     { ...text('note', 'Note'), hidden: only('overlay') },
                     { name: 'images', title: 'Images', type: 'array', hidden: only('pair'), description: 'Two items, side by side. Each can be an image or a video.', of: [
-                        { type: 'image', title: 'Image', options: { hotspot: true }, fields: [string('alt', 'Image description')] },
+                        { type: 'image', title: 'Image', options: { hotspot: true }, fields: [string('alt', 'Image description'), ...imageGeometry] },
                         { name: 'casePairVideo', type: 'object', title: 'Video', fields: [
                             { name: 'video', title: 'Video', type: 'file', options: { accept: 'video/mp4,video/webm,video/quicktime' }, description: 'Plays muted on a loop while on screen.', validation: Rule => Rule.required() },
                             { ...artwork('poster', 'Image'), description: 'Optional still shown while the video loads.' },
@@ -56,5 +63,8 @@ export default {
         },
     ],
     orderings: [{ title: 'Sort order', name: 'orderAsc', by: [{ field: 'order', direction: 'asc' }] }],
+    validation: Rule => Rule.custom(document => document?.requiresAccessCode &&
+        (document.blocks?.length || document.lede?.length || document.hero?.asset || document.heroVideo?.asset)
+        ? 'Keep protected content under Protected case studies; this entry is only the public project card.' : true),
     preview: { select: { title: 'name', subtitle: 'headline', media: 'cover' } },
 };
