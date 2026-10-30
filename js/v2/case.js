@@ -11,6 +11,7 @@ import { caseSkeleton, watchImageSkeletons } from './skeleton.js';
 
 import { getCases } from './case-data.js';
 import { cadanaHero } from './cadana-hero.js';
+import { anchorIds, contentsHTML, trackContents } from './contents.js';
 
 /**
  * Case data stores repo-relative paths ("assets/..."). This page is served
@@ -82,6 +83,24 @@ function actions(list) {
         .join('')}</p>`;
 }
 
+/* ── Contents ────────────────────────────────────────────── */
+
+/** Results always carry their heading, the other text blocks only when labelled. */
+function headingOf(b) {
+    if (b.type === 'results') return 'Results';
+    return (b.type === 'section' || b.type === 'overlay') ? b.label || '' : '';
+}
+
+function assignAnchors(blocks) {
+    const headed = (blocks || []).filter(headingOf);
+    anchorIds(headed.map(headingOf), ['overview']).forEach((id, i) => { headed[i].anchor = id; });
+    return headed;
+}
+
+function anchor(b) {
+    return b.anchor ? ` id="${escape(b.anchor)}"` : '';
+}
+
 /* ── Block renderers ─────────────────────────────────────── */
 
 const BLOCKS = {
@@ -93,7 +112,7 @@ const BLOCKS = {
         (b.images || []).map((im) => (im.video ? videoFigure(im) : figure(im.src, im.alt))).join('')
     }</div>`,
 
-    section: (b) => `<section class="case-block">
+    section: (b) => `<section class="case-block"${anchor(b)}>
         ${b.label ? `<h2 class="case-block__title">${escape(b.label)}</h2>` : ''}
         <div class="case-prose">${paragraphs(b.body)}</div>
         ${actions(b.actions)}
@@ -116,7 +135,7 @@ const BLOCKS = {
         </li>`).join('')
     }</ul>`,
 
-    results: (b) => `<section class="case-block">
+    results: (b) => `<section class="case-block"${anchor(b)}>
         <h2 class="case-block__title">Results</h2>
         ${b.summary ? `<div class="case-prose">${paragraphs(b.summary)}</div>` : ''}
         <ul class="case-metrics">${
@@ -127,7 +146,7 @@ const BLOCKS = {
         }</ul>
     </section>`,
 
-    overlay: (b, slug) => `<section class="case-overlay">
+    overlay: (b, slug) => `<section class="case-overlay"${anchor(b)}>
         ${figure(b.src, b.alt)}
         <div class="case-overlay__content">
             ${b.label ? `<h2 class="case-overlay__label">${escape(b.label)}</h2>` : ''}
@@ -205,9 +224,15 @@ async function renderContent() {
     if (crumb) crumb.textContent = item.name;
 
     const next = cases[(cases.indexOf(item) + 1) % cases.length];
+    const headed = assignAnchors(item.blocks);
 
     mount.innerHTML = `
-        <div class="case-hero">${item.slug === 'cadana'
+        ${contentsHTML({ href: '/work', label: 'Work' }, [
+            { id: 'overview', label: 'Overview' },
+            ...headed.map((b) => ({ id: b.anchor, label: headingOf(b) })),
+        ])}
+
+        <div class="case-hero" id="overview">${item.slug === 'cadana'
             ? cadanaHero(escape(item.name))
             : item.heroVideo
             ? `<video src="${escape(asset(item.heroVideo))}"${item.hero ? ` poster="${escape(asset(item.hero))}"` : ''}
@@ -246,6 +271,7 @@ async function renderContent() {
 
     watchImageSkeletons(mount);
     playWhenVisible(mount);
+    trackContents(mount);
 
     // Keep clean URLs when they are available, fall back to the query form
     if (window.location.pathname.startsWith('/work/')) {

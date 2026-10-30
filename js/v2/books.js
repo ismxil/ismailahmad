@@ -117,7 +117,7 @@ const compare = {
 function readState() {
     const params = new URLSearchParams(location.search);
     return {
-        shelf: params.get('shelf') || 'all',
+        shelf: params.get('shelf') || 'currently-reading',
         sort: compare[params.get('sort')] ? params.get('sort') : 'recent',
         topic: params.get('topic') || '',
     };
@@ -125,7 +125,7 @@ function readState() {
 
 function writeState(state) {
     const params = new URLSearchParams();
-    if (state.shelf !== 'all') params.set('shelf', state.shelf);
+    if (state.shelf !== 'currently-reading') params.set('shelf', state.shelf);
     if (state.sort !== 'recent') params.set('sort', state.sort);
     if (state.topic) params.set('topic', state.topic);
     const query = params.toString();
@@ -133,24 +133,23 @@ function writeState(state) {
 }
 
 /**
- * The floating filter. Shelves are one row of segments; sort and topic each
- * open a short menu upwards, out of the way of the covers.
+ * The floating filter: status, sort and topic each open a short menu
+ * upwards, out of the way of the covers.
  */
-function filterHTML(books, topics) {
-    const shelves = SHELVES.filter(s => books.some(b => b.shelf === s.id));
-    const segment = (id, label) =>
-        `<button type="button" class="book-filter__shelf" data-shelf="${id}" aria-pressed="false">${id === 'all' ? '' : `<span class="book-filter__dot" data-shelf="${id}"></span>`}${escape(label)}<span class="book-filter__count"></span></button>`;
+function filterHTML(topics) {
+    const statuses = [{ id: 'all', label: 'All' }, ...SHELVES.map(s => ({
+        ...s, label: s.id === 'currently-reading' ? 'Currently reading' : s.label,
+    }))];
     const menu = (name, label, options) => `<div class="book-filter__menu">
-            <button type="button" class="book-filter__toggle" data-menu="${name}" aria-expanded="false" aria-controls="book-filter-${name}">
+            <button type="button" class="book-filter__toggle" data-menu="${name}" aria-haspopup="menu" aria-label="${label}" aria-expanded="false" aria-controls="book-filter-${name}">
                 <span class="book-filter__toggle-label">${label}</span><span class="book-filter__value" data-value="${name}"></span>${chevron}
             </button>
-            <div class="book-filter__options" id="book-filter-${name}" role="menu" hidden>
+            <div class="book-filter__options" id="book-filter-${name}" role="menu" aria-label="${label}" hidden>
+                <div class="book-filter__menu-title" aria-hidden="true">${label}</div>
                 ${options.map(o => `<button type="button" role="menuitemradio" aria-checked="false" data-${name}="${escape(o.id)}">${escape(o.label)}</button>`).join('')}
             </div>
         </div>`;
-    return `<div class="book-filter__shelves" role="group" aria-label="Shelf">
-            ${segment('all', 'All')}${shelves.map(s => segment(s.id, s.label)).join('')}
-        </div>
+    return `${menu('shelf', 'Status', statuses)}
         <span class="book-filter__rule" aria-hidden="true"></span>
         ${menu('sort', 'Sort', SORTS)}
         ${topics.length ? menu('topic', 'Topic', [{ id: '', label: 'Any topic' }, ...topics.map(t => ({ id: t, label: topicLabel(t) }))]) : ''}`;
@@ -175,41 +174,44 @@ export async function initBooksPage() {
     const topics = [...tally.keys()].sort((a, b) => tally.get(b) - tally.get(a) || a.localeCompare(b));
 
     const state = readState();
-    if (state.shelf !== 'all' && !books.some(b => b.shelf === state.shelf)) state.shelf = 'all';
+    if (state.shelf !== 'all' && !SHELVES.some(s => s.id === state.shelf)) state.shelf = 'currently-reading';
     if (!topics.includes(state.topic)) state.topic = '';
 
     const filter = document.createElement('nav');
     filter.className = 'book-filter';
     filter.setAttribute('aria-label', 'Filter books');
-    filter.innerHTML = filterHTML(books, topics);
+    filter.innerHTML = filterHTML(topics);
     document.body.append(filter);
-    liftAboveFooter(filter);
+    const placement = liftAboveFooter(filter, grid, summary);
 
     let first = true;
     function render() {
+        const anchor = first ? null : placement.capture();
         const inTopic = state.topic ? books.filter(b => b.tags.includes(state.topic)) : books;
         const shown = inTopic.filter(b => state.shelf === 'all' || b.shelf === state.shelf).sort(compare[state.sort]);
 
-        filter.querySelectorAll('.book-filter__shelf').forEach(button => {
-            const id = button.dataset.shelf;
-            button.setAttribute('aria-pressed', String(id === state.shelf));
-            button.querySelector('.book-filter__count').textContent =
-                id === 'all' ? inTopic.length : inTopic.filter(b => b.shelf === id).length;
+        filter.querySelectorAll('[role="menuitemradio"]').forEach(option => {
+            const name = ['shelf', 'sort', 'topic'].find(key => option.dataset[key] != null);
+            option.setAttribute('aria-checked', String(state[name] === option.dataset[name]));
         });
-        filter.querySelectorAll('[data-sort], [data-topic]').forEach(option => {
-            const [name, value] = option.dataset.sort != null ? ['sort', option.dataset.sort] : ['topic', option.dataset.topic];
-            option.setAttribute('aria-checked', String(state[name] === value));
-        });
+        filter.querySelector('[data-value="shelf"]').textContent = state.shelf === 'all' ? 'All'
+            : state.shelf === 'currently-reading' ? 'Currently reading' : shelfLabel[state.shelf];
         filter.querySelector('[data-value="sort"]').textContent = SORTS.find(s => s.id === state.sort).label;
         const topicValue = filter.querySelector('[data-value="topic"]');
         if (topicValue) topicValue.textContent = state.topic ? topicLabel(state.topic) : 'Any';
+        filter.querySelectorAll('.book-filter__toggle').forEach(toggle => {
+            const label = toggle.querySelector('.book-filter__toggle-label').textContent;
+            const value = toggle.querySelector('.book-filter__value').textContent;
+            toggle.setAttribute('aria-label', `${label}: ${value}`);
+        });
 
         grid.innerHTML = shown.length
             ? shown.map((b, i) => bookHTML(b, { eager: i < 8 })).join('')
-            : '<li class="books-empty">Nothing on this shelf for that topic.</li>';
+            : '<li class="books-empty"><img class="books-empty__avatar" src="/assets/note-avatars/sunny.webp" width="64" height="64" alt="" /><p>Nothing on this shelf for that topic.</p></li>';
         watchImageSkeletons(grid);
         const shelf = state.shelf === 'all' ? 'books' : `${shelfLabel[state.shelf].toLowerCase()}`;
-        summary.textContent = `${shown.length} ${state.shelf === 'all' ? (shown.length === 1 ? 'book' : 'books') : shelf}${state.topic ? ` on ${topicLabel(state.topic).toLowerCase()}` : ''}, from my Goodreads.`;
+        summary.textContent = `${shown.length} ${state.shelf === 'all' ? (shown.length === 1 ? 'book' : 'books') : shelf}${state.topic ? ` on ${topicLabel(state.topic).toLowerCase()}` : ''}.`;
+        placement.restore(anchor);
         if (!first) {
             writeState(state);
             if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -228,28 +230,23 @@ export async function initBooksPage() {
     }
 
     filter.addEventListener('click', (e) => {
-        const shelf = e.target.closest('.book-filter__shelf');
         const toggle = e.target.closest('.book-filter__toggle');
         const option = e.target.closest('[role="menuitemradio"]');
-        if (shelf) {
-            closeMenus();
-            state.shelf = shelf.dataset.shelf;
-            render();
-            if (window.scrollY > grid.offsetTop) grid.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        } else if (toggle) {
+        if (toggle) {
             const open = toggle.getAttribute('aria-expanded') !== 'true';
             closeMenus(toggle);
             toggle.setAttribute('aria-expanded', String(open));
             const options = document.getElementById(toggle.getAttribute('aria-controls'));
             options.hidden = !open;
-            if (open) options.querySelector('[aria-checked="true"]')?.focus();
+            if (open) options.querySelector('[aria-checked="true"]')?.focus({ preventScroll: true });
         } else if (option) {
-            if (option.dataset.sort != null) state.sort = option.dataset.sort;
+            if (option.dataset.shelf != null) state.shelf = option.dataset.shelf;
+            else if (option.dataset.sort != null) state.sort = option.dataset.sort;
             else state.topic = option.dataset.topic;
             const toggleFor = option.closest('.book-filter__menu').querySelector('.book-filter__toggle');
             closeMenus();
             render();
-            toggleFor.focus();
+            toggleFor.focus({ preventScroll: true });
         }
     });
     filter.addEventListener('keydown', (e) => {
@@ -257,12 +254,12 @@ export async function initBooksPage() {
         if (e.key === 'Escape') {
             const toggle = e.target.closest('.book-filter__menu')?.querySelector('.book-filter__toggle');
             closeMenus();
-            toggle?.focus();
+            toggle?.focus({ preventScroll: true });
         } else if (options && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
             e.preventDefault();
             const items = [...options.querySelectorAll('button')];
             const next = (items.indexOf(e.target) + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
-            items[next].focus();
+            items[next].focus({ preventScroll: true });
         }
     });
     document.addEventListener('click', (e) => { if (!filter.contains(e.target)) closeMenus(); });
@@ -270,18 +267,51 @@ export async function initBooksPage() {
     render();
 }
 
-/** Like the page search pill: it floats, and rises as the footer comes in. */
-function liftAboveFooter(el) {
+/** Float over the books, then settle above the footer rather than below it. */
+function liftAboveFooter(filter, grid, summary) {
     const footer = document.querySelector('.site-footer');
     let frame = 0;
+    const base = () => window.innerWidth >= 640 ? 24 : 12;
+    const footerTop = () => footer?.getBoundingClientRect().top ?? window.innerHeight;
+    function reserveViewport() {
+        // offsetTop ignores the brief result-change transform animation.
+        let top = 0;
+        for (let element = grid; element; element = element.offsetParent) top += element.offsetTop;
+        grid.style.setProperty('--books-grid-top', `${top}px`);
+    }
     function place() {
         frame = 0;
-        const base = window.innerWidth >= 640 ? 24 : 12;
-        const top = footer?.getBoundingClientRect().top ?? window.innerHeight;
-        el.style.setProperty('--filter-bottom', `${Math.max(base, window.innerHeight - top + 16)}px`);
+        filter.style.setProperty('--filter-bottom', `${Math.max(base(), window.innerHeight - footerTop() + 16)}px`);
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
     addEventListener('scroll', schedule, { passive: true });
-    addEventListener('resize', schedule);
+    const resize = () => { reserveViewport(); schedule(); };
+    addEventListener('resize', resize);
+    if ('ResizeObserver' in window) {
+        const observer = new ResizeObserver(schedule);
+        observer.observe(document.body);
+        if (footer) observer.observe(footer);
+        observer.observe(grid);
+        new ResizeObserver(resize).observe(summary);
+    }
+    reserveViewport();
     place();
+    return {
+        capture() {
+            const top = footerTop();
+            return { footerTop: top, raised: top < window.innerHeight - base() + 16 };
+        },
+        restore(anchor) {
+            reserveViewport();
+            if (anchor?.raised) {
+                // Keep the footer and controls at their current viewport position.
+                window.scrollTo({ top: window.scrollY + footerTop() - anchor.footerTop, behavior: 'instant' });
+            } else if (anchor && footerTop() < window.innerHeight - base() + 16) {
+                // A much shorter list can clamp a deep scroll to the page end.
+                // Start those new results at the top before the next paint.
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            }
+            place();
+        },
+    };
 }

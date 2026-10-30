@@ -1,5 +1,13 @@
+@font-face {
+    font-family: 'Reckless';
+    src: url('../../assets/fonts/reckless/Reckless-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* A pile of my things at the foot of About — photos, books, a CD, a note,
-   the tools I use and a few clients — that falls into place when it comes
+   the tools I use — that falls into place when it comes
    into view and can be pushed around.
 
    The pile is laid out on a fixed canvas (1040 × 600, or 600 × 1000 on a
@@ -63,25 +71,39 @@
 }
 
 .pile-cd { width: 172px; height: 172px; border-radius: 50%; background: none; }
+/* The cover is printed across the whole disc, with a white rim, a light
+   sheen across the surface and the hole in the middle. */
 .pile-cd__disc {
     position: absolute;
     inset: 0;
+    overflow: hidden;
     border-radius: 50%;
-    background:
-        radial-gradient(circle, #0000 0 15%, #ffffffb3 15.5% 17%, #0000 17.5%),
-        conic-gradient(from 30deg, #e8e8ea, #c8f0ff, #f4d6ff, #fff6c8, #d0ffe6, #e8e8ea, #ffd6e8, #c8e0ff, #e8e8ea);
-    box-shadow: inset 0 0 0 1px #00000014;
+    box-shadow: 0 0 0 2px #fff, inset 0 0 0 1px #00000014;
 }
 .pile-cd__disc img {
-    position: absolute;
-    inset: 22%;
-    width: 56%;
-    height: 56%;
-    border-radius: 50%;
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     pointer-events: none;
-    /* The hole in the middle. */
-    mask: radial-gradient(circle, #0000 0 17%, #000 18%);
+    mask: radial-gradient(circle, #0000 0 7.5%, #000 8%);
+}
+.pile-cd__disc::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(from 20deg, #fff0, #ffffff40 8%, #fff0 18%, #fff0 50%, #ffffff33 58%, #fff0 68%);
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+}
+.pile-cd__disc::after {
+    content: '';
+    position: absolute;
+    inset: 38%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #0000 0 20%, #ffffffd9 21% 30%, #ffffff38 31% 100%);
+    box-shadow: 0 0 0 1px #ffffff40;
+    pointer-events: none;
 }
 .pile-cd.is-playing .pile-cd__disc { animation: pile-spin 3.2s linear infinite; }
 @keyframes pile-spin { to { transform: rotate(1turn); } }
@@ -108,29 +130,30 @@
 .pile-tools svg { width: 16px; height: 16px; flex-shrink: 0; }
 
 .pile-note {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
     width: 212px;
     height: 212px;
     padding: 18px;
-    border-radius: 4px 4px 22px 4px;
+    border-radius: 16px;
     background: #fbe89c;
     color: #4a3f1a;
     cursor: grab;
+    text-align: left;
+    font: 16px/1.4 'Reckless', Georgia, serif;
 }
-.pile-note textarea {
-    width: 100%;
-    height: 140px;
-    border: 0;
-    padding: 0;
-    resize: none;
-    background: none;
-    color: inherit;
-    font: 16px/1.4 var(--font-sans);
-    cursor: text;
-    touch-action: auto;
+.pile-note__preview {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    max-height: 140px;
 }
-.pile-note textarea::placeholder { color: #8a7a3d; }
-.pile-note textarea:focus { outline: none; }
-.pile-note button {
+.pile-note__open {
     position: absolute;
     right: 14px;
     bottom: 14px;
@@ -138,17 +161,116 @@
     place-items: center;
     width: 38px;
     height: 38px;
-    border: 0;
     border-radius: 50%;
     background: #fffdf3;
     color: #4a3f1a;
+}
+.pile-note__open svg { width: 18px; height: 18px; }
+.pile-note.is-editing { visibility: hidden; }
+.pile-note:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+
+.note-editor {
+    width: min(560px, calc(100vw - 32px));
+    height: min(560px, calc(100dvh - 32px));
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 28px;
+    border: 0;
+    border-radius: 16px;
+    background: #fbe89c;
+    color: #4a3f1a;
+    box-shadow: 0 24px 100px #0003;
+    overflow: hidden;
+}
+.note-editor::backdrop { background: #16130f70; backdrop-filter: blur(6px); }
+.note-editor__form { height: 100%; display: flex; flex-direction: column; gap: 24px; margin: 0; }
+.note-editor__form[hidden], .note-editor__receipt[hidden] { display: none; }
+.note-editor__receipt { position: relative; height: 100%; outline: none; }
+.note-editor__receipt > .note-editor__close { position: absolute; top: 0; right: 0; }
+.note-editor__receipt-body { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; }
+.note-editor__receipt-mark { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; background: #fffdf380; }
+.note-editor__receipt-mark svg { width: 48px; height: 48px; }
+.note-editor__receipt h2 { color: #4a3f1a; font: 500 30px/1.2 var(--font-sans); }
+.note-editor__receipt p { margin: 0; color: #75652f; font: 14px/1.4 var(--font-sans); }
+.note-editor__flight { position: absolute; width: 64px; height: 48px; z-index: 2; color: #4a3f1a; pointer-events: none; }
+.note-editor__flight svg { width: 100%; height: 100%; }
+.note-editor__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.note-editor__header h2 { color: #4a3f1a; margin: 0; font: 500 18px/1.4 var(--font-sans); }
+.note-editor__close {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #fffdf380;
+    color: inherit;
     cursor: pointer;
 }
-.pile-note button svg { width: 18px; height: 18px; }
-
-.pile-app { width: 64px; height: 64px; }
-.pile-app img { display: block; width: 100%; height: 100%; border-radius: 15px; pointer-events: none; }
-
+.note-editor__close svg { width: 20px; height: 20px; }
+.note-editor textarea {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    resize: none;
+    background: transparent;
+    color: inherit;
+    font: 18px/1.6 'Reckless', Georgia, serif;
+    box-shadow: none;
+    outline: none;
+}
+.note-editor textarea::placeholder { color: #8a7a3d; }
+.note-editor__footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.note-editor__identity { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.note-editor__name { min-width: 0; width: 100%; padding: 8px 0; border: 0; background: transparent; color: #4a3f1a; font: 14px/1.4 var(--font-sans); }
+.note-editor__name::placeholder { color: #75652f; opacity: 1; }
+.note-editor__name, .note-editor__name:focus-visible { outline: none; box-shadow: none; border-radius: 0; }
+.note-avatar { position: relative; flex-shrink: 0; }
+.note-avatar__toggle { display: block; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+.note-avatar img { width: 100%; height: 100%; border-radius: 50%; }
+.note-avatar__choices { position: absolute; z-index: 1; left: -4px; bottom: 54px; display: grid; grid-template-columns: repeat(4, 44px); gap: 10px; width: max-content; height: auto; padding: 10px; border-radius: 16px; background: #fff7d6; box-shadow: 0 6px 24px #4a3f1a30; animation: note-avatar-in 240ms cubic-bezier(0.2, 0.8, 0.3, 1.2) both; transform-origin: 20px 100%; }
+.note-avatar__choices[hidden] { display: none; }
+.note-avatar__choices button { width: 44px; height: 44px; padding: 2px; border: 0; border-radius: 50%; background: #fffdf3; box-shadow: 0 3px 10px #4a3f1a30; cursor: pointer; }
+.note-avatar__choices button[aria-pressed='true'] { outline: 2px solid #4a3f1a; outline-offset: 2px; }
+@keyframes note-avatar-in { from { opacity: 0; transform: scale(0.65) translateY(12px); } to { opacity: 1; transform: none; } }
+.note-editor__status { margin: 0; color: #4a3f1a; font: 13px/1.4 var(--font-sans); }
+.note-editor__status[hidden] { display: none; }
+.note-editor__honeypot { display: none; }
+.note-editor__send svg { width: 16px; height: 16px; }
+.note-editor.is-sent, .pile-note.is-sent { background: #dceca5; }
+.note-editor__send:disabled { cursor: default; opacity: 0.8; }
+@media (prefers-reduced-motion: reduce) { .note-avatar__choices { animation: none; } }
+.note-editor__send {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: #fffdf3;
+    color: #4a3f1a;
+    font: 500 14px/1.4 var(--font-sans);
+    cursor: pointer;
+}
+.note-editor button:focus-visible { outline: 2px solid #4a3f1a; outline-offset: 3px; }
+@media (max-width: 639px) {
+    .note-editor { padding: 20px; }
+    .note-editor__form { gap: 18px; }
+    .note-editor__footer { gap: 10px; }
+    .note-editor__send { padding-inline: 14px; }
+    .note-editor__identity { gap: 8px; }
+    .note-editor__name { font-size: 16px; }
+}
+@media print {
+    .note-editor { display: none !important; }
+}
 
 /* On a touch screen the pile covers most of the view, so an upward swipe
    still scrolls the page; items move with a sideways push. */
@@ -171,3 +293,11 @@
     clip-path: inset(50%);
     white-space: nowrap;
 }
+
+@media (max-width: 359px) {
+    .note-editor__name::placeholder { font-size: 12px; }
+}
+
+/* The clock shares the pile’s falling and elastic drag behavior. */
+.pile-clock { width: 164px; height: 171px; }
+.pile-clock svg { display: block; width: 100%; height: 100%; pointer-events: none; }

@@ -542,3 +542,8 @@
         max-width: 100%;
     }
 }
+
+/* Clear the sticky header pill when jumping from the contents */
+.case-page :is(#overview, .case-body [id]) {
+    scroll-margin-top: 88px;
+}

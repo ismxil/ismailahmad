@@ -85,6 +85,20 @@ Migration backups and reports stay in the gitignored `.context/blog-migration/`
 directory. An interrupted import can be rerun safely. Images uploaded before an
 interruption may remain as unused Sanity assets.
 
+## Portfolio notes
+
+The About-page sticky note submits to `POST /api/notes`. Resend delivers notes to
+`work@ismailahmad.com`, with the visitor’s optional name and selected avatar.
+The Resend Vercel Marketplace integration supplies `RESEND_API_KEY` and
+`RESEND_EMAIL_DOMAIN`; its sending domain must have verified DNS records.
+API keys stay on the server. Duplicate retries use the same idempotency key.
+
+For local delivery checks, pull development variables into a gitignored env file
+and start the local server with `node --env-file=<file> scripts/dev.mjs`.
+Drafts stay in memory for the current page visit; no persistent browser storage
+is used. The UI confirms Sent only after the email provider accepts the note, then clears
+the message and flips to a clean confirmation face.
+
 ## Analytics
 
 `@vercel/analytics` initializes once on each public page. It records basic page

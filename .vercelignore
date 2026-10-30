@@ -1,0 +1,8 @@
+.context/
+.env*
+.git/
+node_modules/
+public/
+sanity/
+content/
+.DS_Store

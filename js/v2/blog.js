@@ -5,6 +5,7 @@ import { initPageSearch } from './page-search.js';
 import { getPosts, escapeHTML, formatDate } from './blog-data.js';
 import { renderBody } from '../generated/post-body.js';
 import { renderSubscribe } from './subscribe.js';
+import { anchorIds, contentsHTML, trackContents } from './contents.js';
 import { blogListSkeleton, articleSkeleton, articleHeadSkeleton, watchImageSkeletons } from './skeleton.js';
 
 initDock();
@@ -16,6 +17,7 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
 
 const mount = document.getElementById('blog-content');
 const isArticle = document.body.dataset.page === 'article';
+const articleBase = location.hostname === 'blog.ismailahmad.com' ? '' : '/blog';
 const slug = isArticle ? decodeURIComponent(location.pathname.split('/').filter(Boolean).pop()) : null;
 
 /**
@@ -30,7 +32,7 @@ async function renderReadNext(post) {
     const index = posts.findIndex(item => item.slug === post.slug);
     const next = posts[(index + 1) % posts.length];
     if (!next || next.slug === post.slug) return;
-    mount.innerHTML = `<a href="/blog/${encodeURIComponent(next.slug)}">
+    mount.innerHTML = `<a href="${articleBase}/${encodeURIComponent(next.slug)}">
         <span class="read-next__label">Read next</span>
         <span class="read-next__name">${escapeHTML(next.title)}
             <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
@@ -39,6 +41,31 @@ async function renderReadNext(post) {
             </svg>
         </span>
     </a>`;
+}
+
+/**
+ * The article's top two heading levels, listed beside the column on
+ * desktop. Headings get ids here so each section can be linked to.
+ */
+function renderContents() {
+    // innerText, so a line break inside a heading reads as a space
+    const label = (h) => h.innerText.replace(/\s+/g, ' ').trim();
+    const headings = [...mount.querySelectorAll('.post-h1, .post-h2')].filter(label);
+    const ids = anchorIds(headings.map(label), ['introduction']);
+    headings.forEach((h, i) => { h.id = ids[i]; });
+    // Only nest when the piece actually uses both levels
+    const nested = headings.some((h) => h.classList.contains('post-h1'));
+    const article = mount.closest('article');
+    article.querySelector('.blog-header').id = 'introduction';
+    article.insertAdjacentHTML('afterbegin', contentsHTML({ href: '/blog', label: 'Writing' }, [
+        { id: 'introduction', label: 'Introduction' },
+        ...headings.map((h, i) => ({
+            id: ids[i],
+            label: label(h),
+            sub: nested && h.classList.contains('post-h2'),
+        })),
+    ]));
+    trackContents(article);
 }
 
 // Replaces the "Loading…" line the HTML ships with, so the column has
@@ -60,9 +87,9 @@ const finishLoading = beginContentLoad(isArticle ? mount.closest('article') : mo
 try {
     if (isArticle) {
         const post = await getPosts(slug);
-        const canonical = document.createElement('link');
+        const canonical = document.querySelector('link[rel="canonical"]') || document.createElement('link');
         canonical.rel = 'canonical';
-        canonical.href = `https://www.ismailahmad.com/blog/${encodeURIComponent(post.slug)}`;
+        canonical.href = `https://blog.ismailahmad.com/${encodeURIComponent(post.slug)}`;
         document.head.appendChild(canonical);
         document.title = `${post.title} — Ismail Ahmad`;
         document.querySelector('meta[name="description"]').content = post.excerpt || post.title;
@@ -72,6 +99,7 @@ try {
         document.getElementById('post-meta').textContent = `${formatDate(post.publishedAt)} · ${post.author || 'Ismail Ahmad'}`;
         mount.innerHTML = renderBody(post.body || []);
         watchImageSkeletons(mount);
+        renderContents();
 
         const signatureTemplate = document.createElement('template');
         signatureTemplate.innerHTML = articleSignature;
@@ -99,7 +127,7 @@ try {
     } else {
         const posts = await getPosts();
         mount.innerHTML = posts.length ? `<ul class="blog-list">${posts.map(post => `<li>
-            <a href="/blog/${encodeURIComponent(post.slug)}">
+            <a href="${articleBase}/${encodeURIComponent(post.slug)}">
                 <h2>${escapeHTML(post.title)}</h2>
                 ${post.excerpt ? `<p>${escapeHTML(post.excerpt)}</p>` : ''}
                 <time datetime="${escapeHTML(post.publishedAt)}">${formatDate(post.publishedAt)}</time>

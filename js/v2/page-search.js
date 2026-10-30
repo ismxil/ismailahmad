@@ -1,5 +1,5 @@
 /**
- * Page search — the floating pill, opened with "/".
+ * Page search, opened with "/".
  *
  * Searches only what is on the page you are looking at: a case page offers
  * its own sections, the home page its sections and the work, experience
@@ -76,6 +76,8 @@ function collectTargets() {
     });
 }
 
+import { setTalkPillHidden } from './talk-pill.js';
+
 export function initPageSearch() {
     const targets = collectTargets();
     // Nothing worth searching on a page with one thing on it
@@ -96,46 +98,6 @@ export function initPageSearch() {
         <button type="button" data-menu-close aria-label="Close"><kbd>esc</kbd></button>
         </div><div class="command-menu__results" id="page-search-results"></div>`;
     document.body.appendChild(dialog);
-
-    const launcher = document.createElement('button');
-    launcher.type = 'button';
-    launcher.className = 'dock-launcher';
-    launcher.setAttribute('aria-haspopup', 'dialog');
-    launcher.setAttribute('aria-controls', 'page-search');
-    launcher.setAttribute('aria-expanded', 'false');
-    launcher.innerHTML = `${icon}<span>Search this page…</span><kbd>/</kbd>`;
-    // Reserve its landing space above the footer; float over the viewport elsewhere.
-    const footer = document.querySelector('.site-footer');
-    let slot = document.querySelector('[data-page-search-slot]');
-    if (!slot) {
-        slot = document.createElement('div');
-        slot.className = 'page-search-slot';
-        slot.setAttribute('data-page-search-slot', '');
-    }
-    if (footer) footer.before(slot);
-    else if (!slot.isConnected) (document.querySelector('.shell') || document.body).append(slot);
-    document.body.appendChild(launcher);
-
-    // As the copyright enters the viewport, lift search above it.
-    // Keep the launcher outside the shell so page animations cannot trap fixed positioning.
-    let positionFrame = 0;
-    function positionLauncher() {
-        positionFrame = 0;
-        const base = window.innerWidth >= 640 ? 24 : 16;
-        const footerTop = footer?.getBoundingClientRect().top ?? window.innerHeight;
-        launcher.style.setProperty('--search-bottom', `${Math.max(base, window.innerHeight - footerTop + 16)}px`);
-    }
-    function schedulePosition() {
-        if (!positionFrame) positionFrame = window.requestAnimationFrame(positionLauncher);
-    }
-    window.addEventListener('scroll', schedulePosition, { passive: true });
-    window.addEventListener('resize', schedulePosition);
-    if ('ResizeObserver' in window) {
-        const observer = new window.ResizeObserver(schedulePosition);
-        observer.observe(document.body);
-        if (footer) observer.observe(footer);
-    }
-    positionLauncher();
 
     const input = dialog.querySelector('input');
     const results = dialog.querySelector('#page-search-results');
@@ -176,8 +138,7 @@ export function initPageSearch() {
     // 'close' event alone does not fire reliably here.
     function release() {
         document.body.style.overflow = previousOverflow;
-        launcher.hidden = false;
-        launcher.setAttribute('aria-expanded', 'false');
+        setTalkPillHidden(false);
         if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
     }
 
@@ -193,8 +154,7 @@ export function initPageSearch() {
         input.value = '';
         render();
         dialog.showModal();
-        launcher.hidden = true;
-        launcher.setAttribute('aria-expanded', 'true');
+        setTalkPillHidden(true);
         document.body.style.overflow = 'hidden';
         input.focus();
     }
@@ -216,7 +176,6 @@ export function initPageSearch() {
         history.replaceState(null, '', `#${target.id}`);
     }
 
-    launcher.addEventListener('click', open);
     dialog.querySelector('[data-menu-close]').addEventListener('click', close);
     dialog.addEventListener('cancel', close);
     dialog.addEventListener('close', release);

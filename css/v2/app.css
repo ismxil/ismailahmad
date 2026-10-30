@@ -1975,7 +1975,10 @@ dialog[tabindex="-1"]:focus-visible {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 96px 0 8px;
+    padding: 96px 0 calc(32px + env(safe-area-inset-bottom));
+    flex-shrink: 0;
+    gap: 12px;
+    flex-wrap: wrap;
     font-size: 13px;
     color: var(--text-tertiary);
 }
@@ -2010,7 +2013,6 @@ kbd {
 }
 
 /* ── Command menu ────────────────────────────────────────── */
-.dock-spacer { height: 96px; flex-shrink: 0; }
 .header-actions { gap: 8px; }
 .menu-trigger {
     display: inline-flex;
@@ -2025,7 +2027,11 @@ kbd {
     font: 500 14px/1.4 var(--font-sans);
     cursor: pointer;
 }
-.menu-trigger__icon { display: none; }
+.menu-trigger__icon { display: none; transition: transform 180ms ease; }
+.menu-trigger[aria-expanded='true'] .menu-trigger__icon { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) {
+    .menu-trigger__icon { transition: none; }
+}
 @media (max-width: 639px) {
     .menu-trigger .menu-trigger__icon { display: block; }
     .menu-trigger__label { display: none; }
@@ -2065,6 +2071,8 @@ kbd {
 
 .command-menu__results a { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; padding: 9px 10px; border-radius: 10px; }
 .dock__kind { color: var(--text-tertiary); font-size: 12px; }
+.command-menu__group { margin: 12px 10px 2px; font-size: 12px; color: var(--text-tertiary); }
+.command-menu__group:first-child { margin-top: 4px; }
 .command-menu__results a.is-selected, .command-menu__results a:hover { background: var(--control); }
 .command-menu__empty { padding: 16px 8px; color: var(--text-secondary); }
 
@@ -2109,28 +2117,93 @@ kbd {
 }
 
 .dock__mark { width: 17px; height: 17px; flex-shrink: 0; color: var(--text-tertiary); }
-.dock-launcher {
+.dock-float {
     position: fixed;
     inset: auto 0 max(var(--search-bottom, 16px), env(safe-area-inset-bottom));
     z-index: 30;
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 12px;
-    width: min(300px, calc(100vw - 24px));
-    height: 48px;
+    gap: 8px;
+    width: max-content;
     margin: 0 auto;
-    padding: 0 10px 0 16px;
-    border: 0;
-    border-radius: var(--r-xl);
-    background: var(--raised);
-    color: var(--text-tertiary);
-    box-shadow: var(--popover-shadow);
-    font: 15px/1.5 var(--font-sans);
-    cursor: pointer;
 }
-.dock-launcher[hidden] { display: none; }
-.dock-launcher span { flex: 1; text-align: left; }
-.dock-launcher kbd { font: 12px var(--font-sans); padding: 2px 5px; border-radius: 4px; background: var(--control); }
+.dock-float[hidden] { display: none; }
+
+/* Talk to me: a pill of polished chrome. A brushed silver body, a bevelled
+   rim from stacked inset shadows, and a holographic streak — white core
+   with rainbow fringes — that sweeps across now and then. */
+.talk-pill {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    flex-shrink: 0;
+    height: 48px;
+    padding: 0 22px 0 18px;
+    border-radius: 999px;
+    color: #17171c;
+    font: 500 15px/1 var(--font-sans);
+    letter-spacing: -0.005em;
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.65);
+    background:
+        linear-gradient(118deg, transparent 58%, rgb(255 90 90 / 0.28) 61%, rgb(255 220 60 / 0.35) 62.5%,
+            rgb(255 255 255 / 0.9) 64.5%, rgb(90 225 255 / 0.4) 66.5%, rgb(120 110 255 / 0.3) 68%, transparent 71%),
+        linear-gradient(100deg, #8e8f97 0%, #c6c7ce 20%, #eeeef2 42%, #b4b5bd 60%, #e6e6eb 82%, #9fa0a8 100%);
+    box-shadow:
+        inset 0 0 0 1px rgb(255 255 255 / 0.55),
+        inset 0 0 0 3px #a6a7af,
+        inset 0 0 0 4px rgb(255 255 255 / 0.5),
+        inset 0 3px 6px rgb(255 255 255 / 0.7),
+        inset 0 -4px 8px rgb(0 0 0 / 0.16),
+        0 1px 2px rgb(0 0 0 / 0.2),
+        0 8px 22px -8px rgb(0 0 0 / 0.45);
+    transition: scale 0.15s ease-out, box-shadow 0.2s ease-out;
+}
+.talk-pill svg { width: 17px; height: 17px; flex-shrink: 0; filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.6)); }
+.talk-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    z-index: -1;
+    width: 300%;
+    background: linear-gradient(115deg,
+        transparent 34%,
+        rgb(255 70 70 / 0.35) 38%, rgb(255 214 0 / 0.45) 39.5%,
+        rgb(255 255 255 / 0.95) 41.5%,
+        rgb(80 230 255 / 0.5) 43.5%, rgb(110 100 255 / 0.4) 45%,
+        transparent 49%,
+        transparent 53%,
+        rgb(255 255 255 / 0.7) 55%, rgb(90 220 255 / 0.35) 56.5%,
+        transparent 59%);
+    translate: -62% 0;
+    animation: talk-sheen 5.5s cubic-bezier(0.45, 0, 0.2, 1) 1.2s infinite;
+}
+.talk-pill:hover {
+    box-shadow:
+        inset 0 0 0 1px rgb(255 255 255 / 0.6),
+        inset 0 0 0 3px #a6a7af,
+        inset 0 0 0 4px rgb(255 255 255 / 0.55),
+        inset 0 3px 6px rgb(255 255 255 / 0.75),
+        inset 0 -4px 8px rgb(0 0 0 / 0.16),
+        0 1px 2px rgb(0 0 0 / 0.2),
+        0 12px 28px -8px rgb(0 0 0 / 0.5);
+}
+.talk-pill:hover::before { animation-duration: 1.6s; }
+.talk-pill:active { scale: 0.97; }
+.talk-pill[aria-busy='true'] { cursor: progress; }
+@keyframes talk-sheen {
+    0% { translate: -62% 0; }
+    45%, 100% { translate: 4% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .talk-pill::before { animation: none; translate: -22% 0; }
+}
+@media (max-width: 400px) {
+    .talk-pill { padding-inline: 14px 16px; }
+}
 @media (min-width: 640px) {
     .command-menu { bottom: 24px; }
 }
@@ -2349,12 +2422,8 @@ body::after {
 }
 
 .page-search-slot + .site-footer {
-    flex-shrink: 0;
     margin-top: 0;
-    padding: 28px 0 24px;
-    font-size: 12px;
-    gap: 12px;
-    flex-wrap: wrap;
+    padding-top: 28px;
 }
 
 .page-search-slot {
@@ -2364,15 +2433,91 @@ body::after {
     padding: 48px 0 0;
 }
 
-.page-search-slot .dock-launcher {
-    position: fixed;
-    inset: auto 0 max(var(--search-bottom, 16px), env(safe-area-inset-bottom));
-    z-index: 30;
-    inset: auto;
-    width: min(300px, 100%);
-}
 
 
 @media (prefers-reduced-motion: reduce) {
     body::after { animation: none; }
+}
+
+@media print {
+    .dock-float, .page-search-slot { display: none !important; }
+}
+
+/* ── Contents ────────────────────────────────────────────────
+   A quiet index pinned to the left margin of case studies and articles.
+   Desktop only: it needs a wide viewport beside the reading column and
+   a mouse, so tablets in landscape keep the bare page. */
+
+.page-toc {
+    display: none;
+}
+
+@media (min-width: 1180px) and (hover: hover) and (pointer: fine) {
+    .page-toc {
+        position: fixed;
+        top: 96px;
+        left: 32px;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: calc((100vw - var(--content-width)) / 2 - 64px);
+        max-width: 220px;
+        max-height: calc(100vh - 128px);
+        overflow-y: auto;
+        font-size: 14px;
+        line-height: 1.35;
+    }
+
+    html:has(.page-toc) {
+        scroll-behavior: smooth;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html:has(.page-toc) {
+        scroll-behavior: auto;
+    }
+}
+
+.page-toc a {
+    color: var(--text-tertiary);
+    transition: color 0.15s ease;
+}
+
+.page-toc a:hover,
+.page-toc a[aria-current] {
+    color: var(--text-primary);
+}
+
+.page-toc__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+}
+
+.page-toc__back svg {
+    width: 14px;
+    height: 14px;
+    transition: translate 0.15s ease-out;
+}
+
+.page-toc__back:hover svg {
+    translate: -2px 0;
+}
+
+.page-toc__list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.page-toc__list a {
+    display: block;
+    padding: 2px 0;
+}
+
+.page-toc__sub {
+    padding-left: 12px;
 }
