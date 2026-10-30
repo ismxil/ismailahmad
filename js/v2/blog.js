@@ -17,6 +17,7 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
 
 const mount = document.getElementById('blog-content');
 const isArticle = document.body.dataset.page === 'article';
+const articleBase = location.hostname === 'blog.ismailahmad.com' ? '' : '/blog';
 const slug = isArticle ? decodeURIComponent(location.pathname.split('/').filter(Boolean).pop()) : null;
 
 /**
@@ -31,7 +32,7 @@ async function renderReadNext(post) {
     const index = posts.findIndex(item => item.slug === post.slug);
     const next = posts[(index + 1) % posts.length];
     if (!next || next.slug === post.slug) return;
-    mount.innerHTML = `<a href="/blog/${encodeURIComponent(next.slug)}">
+    mount.innerHTML = `<a href="${articleBase}/${encodeURIComponent(next.slug)}">
         <span class="read-next__label">Read next</span>
         <span class="read-next__name">${escapeHTML(next.title)}
             <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
@@ -86,9 +87,9 @@ const finishLoading = beginContentLoad(isArticle ? mount.closest('article') : mo
 try {
     if (isArticle) {
         const post = await getPosts(slug);
-        const canonical = document.createElement('link');
+        const canonical = document.querySelector('link[rel="canonical"]') || document.createElement('link');
         canonical.rel = 'canonical';
-        canonical.href = `https://www.ismailahmad.com/blog/${encodeURIComponent(post.slug)}`;
+        canonical.href = `https://blog.ismailahmad.com/${encodeURIComponent(post.slug)}`;
         document.head.appendChild(canonical);
         document.title = `${post.title} — Ismail Ahmad`;
         document.querySelector('meta[name="description"]').content = post.excerpt || post.title;
@@ -126,7 +127,7 @@ try {
     } else {
         const posts = await getPosts();
         mount.innerHTML = posts.length ? `<ul class="blog-list">${posts.map(post => `<li>
-            <a href="/blog/${encodeURIComponent(post.slug)}">
+            <a href="${articleBase}/${encodeURIComponent(post.slug)}">
                 <h2>${escapeHTML(post.title)}</h2>
                 ${post.excerpt ? `<p>${escapeHTML(post.excerpt)}</p>` : ''}
                 <time datetime="${escapeHTML(post.publishedAt)}">${formatDate(post.publishedAt)}</time>

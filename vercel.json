@@ -1,12 +1,22 @@
 {
   "rewrites": [
     {
+      "source": "/:slug([a-z0-9]+(?:-[a-z0-9]+)*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "/api/article?slug=:slug"
+    },
+    {
       "source": "/work/:slug",
       "destination": "/case"
     },
     {
       "source": "/blog/:slug",
-      "destination": "/post"
+      "destination": "/api/article?slug=:slug"
     },
     {
       "source": "/personal/:slug",
@@ -17,6 +27,50 @@
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "redirects": [
+    {
+      "source": "/writing/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/writing",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "has": [
+        {
+          "type": "host",
+          "value": "blog.ismailahmad.com"
+        }
+      ],
+      "destination": "/",
+      "permanent": true
+    },
     {
       "source": "/profile",
       "destination": "/about",
@@ -34,72 +88,6 @@
       "permanent": true
     },
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "blog.ismailahmad.com"
-        }
-      ],
-      "destination": "https://www.ismailahmad.com/blog",
-      "permanent": true
-    },
-    {
-      "source": "/writing",
-      "has": [
-        {
-          "type": "host",
-          "value": "blog.ismailahmad.com"
-        }
-      ],
-      "destination": "https://www.ismailahmad.com/blog",
-      "permanent": true
-    },
-    {
-      "source": "/blog",
-      "has": [
-        {
-          "type": "host",
-          "value": "blog.ismailahmad.com"
-        }
-      ],
-      "destination": "https://www.ismailahmad.com/blog",
-      "permanent": true
-    },
-    {
-      "source": "/writing/:slug",
-      "has": [
-        {
-          "type": "host",
-          "value": "blog.ismailahmad.com"
-        }
-      ],
-      "destination": "https://www.ismailahmad.com/blog/:slug",
-      "permanent": true
-    },
-    {
-      "source": "/blog/:slug",
-      "has": [
-        {
-          "type": "host",
-          "value": "blog.ismailahmad.com"
-        }
-      ],
-      "destination": "https://www.ismailahmad.com/blog/:slug",
-      "permanent": true
-    },
-    {
-      "source": "/:slug",
-      "has": [
-        {
-          "type": "host",
-          "value": "blog.ismailahmad.com"
-        }
-      ],
-      "destination": "https://www.ismailahmad.com/blog/:slug",
-      "permanent": true
-    },
-    {
       "source": "/writing",
       "destination": "/blog",
       "permanent": true
@@ -109,5 +97,13 @@
       "destination": "/blog/:slug",
       "permanent": true
     }
-  ]
+  ],
+  "functions": {
+    "api/article.js": {
+      "includeFiles": "post.html"
+    },
+    "api/blog-index.js": {
+      "includeFiles": "blog.html"
+    }
+  }
 }
