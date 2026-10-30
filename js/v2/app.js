@@ -46,7 +46,10 @@ async function boot() {
     // Blog, archive and books arrive over the network; wait for them so the
     // page search indexes the entries rather than empty lists.
     await Promise.allSettled([
-        renderWork(document.getElementById('work-list'), { shuffleCovers: true }),
+        renderWork(document.getElementById('work-list'), {
+            shuffleCovers: true,
+            featuredSlugs: ['sterling', 'cadana', 'lemfi', 'gomoney'],
+        }),
         renderBlogPreview(document.getElementById('blog-list')),
         renderArchive(document.getElementById('archive-grid')),
         renderBooksPreview(document.getElementById('books-list')),
