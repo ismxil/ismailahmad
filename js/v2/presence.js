@@ -1,3 +1,4 @@
+import { sanityConfig } from '../sanity-config.js';
 import { coffeeIcon, walkingIcon, sleepingIcon } from './icons.js';
 
 /**
@@ -35,27 +36,34 @@ export function initPresence() {
     portrait.addEventListener('focusin', paint);
 }
 
-/**
- * Availability. Change STATUS to switch the dot's colour and the line
- * that opens out of it on hover; the colours live in app.css.
- */
 export const STATUS = 'available';
-
 export const STATUSES = {
     available: { label: 'Available', detail: 'Open to work' },
-    partial: { label: 'Partly available', detail: 'Open to select projects' },
-    booked: { label: 'Booked', detail: 'Fully booked for now' },
-    away: { label: 'Not looking', detail: 'Not taking on new work' },
+    limited: { label: 'Limited', detail: 'Open to select projects' },
+    busy: { label: 'Busy', detail: 'Fully booked for now' },
 };
 
-export function initStatus(key = STATUS) {
-    const identity = document.querySelector('.identity');
-    const status = STATUSES[key];
-    if (!identity || !status) return;
-
-    identity.dataset.status = key;
-    const dot = identity.querySelector('.identity__status');
-    const detail = identity.querySelector('[data-status-detail]');
-    if (dot) dot.setAttribute('aria-label', `${status.label}: ${status.detail}`);
-    if (detail) detail.textContent = status.detail;
+export async function initStatus(key) {
+    const paint = value => {
+        const status = STATUSES[value];
+        if (!status) return;
+        const identity = document.querySelector('.identity');
+        if (identity) {
+            identity.dataset.status = value;
+            identity.querySelector('.identity__status')?.setAttribute('aria-label', `${status.label}: ${status.detail}`);
+            const detail = identity.querySelector('[data-status-detail]');
+            if (detail) detail.textContent = status.label;
+        }
+        const contact = document.querySelector('[data-availability-contact]');
+        if (contact) contact.textContent = { available: "I'm available for work.", limited: "I have limited availability for new projects.", busy: "I'm currently fully booked." }[value];
+    };
+    paint(key || STATUS);
+    if (key) return;
+    try {
+        const url = new URL(`https://${sanityConfig.projectId}.api.sanity.io/v${sanityConfig.apiVersion}/data/query/${sanityConfig.dataset}`);
+        url.searchParams.set('query', '*[_id == "site-settings"][0].availability');
+        url.searchParams.set('perspective', 'published');
+        const response = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+        if (response.ok) paint((await response.json()).result);
+    } catch { /* Keep the default when the CMS is unavailable. */ }
 }

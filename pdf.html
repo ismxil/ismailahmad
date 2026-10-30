@@ -17,7 +17,7 @@
     <meta property="og:title" content="Ismail Ahmad — Portfolio '26" />
     <meta property="og:description" content="Senior Product Designer. Fintech, banking, payments and hospitality work, slide by slide." />
     <meta property="og:url" content="https://pdf.ismailahmad.com/" />
-    <meta property="og:image" content="https://www.ismailahmad.com/assets/pdf/thumbs/01.webp" />
+    <meta property="og:image" content="https://www.ismailahmad.com/assets/og-1200.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Theme is resolved before first paint so dark mode never flashes white -->
@@ -35,7 +35,6 @@
     <link rel="preload" href="/assets/fonts/suisse/SuisseIntl-Regular.woff2" as="font" type="font/woff2"
         crossorigin />
     <link rel="preload" href="/assets/fonts/suisse/SuisseIntl-Medium.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/assets/pdf/slides/01.webp" as="image" type="image/webp" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/v2/tokens.css" />
     <link rel="stylesheet" href="/css/v2/app.css" />
@@ -44,7 +43,19 @@
 </head>
 
 
-<body class="pdf-page">
+<body class="pdf-page is-locked">
+    <section class="portfolio-gate" aria-labelledby="portfolio-gate-title">
+        <a href="https://www.ismailahmad.com/cv">← Back to CV</a>
+        <h1 id="portfolio-gate-title">Portfolio ’26</h1>
+        <p>Enter your access code to view my case studies.</p>
+        <form id="portfolio-access">
+            <label for="portfolio-code">Access code</label>
+            <input id="portfolio-code" name="code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required />
+            <button type="submit">View portfolio</button>
+            <p id="portfolio-error" role="status" aria-live="polite"></p>
+        </form>
+        <a href="mailto:work@ismailahmad.com?subject=Portfolio%20access">Request access ↗</a>
+    </section>
     <header class="pdf-bar">
         <div class="pdf-bar__start">
             <a class="crumb" href="https://www.ismailahmad.com/" aria-label="Ismail Ahmad, home">
@@ -67,7 +78,7 @@
                     <svg aria-hidden="true" focusable="false" class="icon-btn__sun" xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><g fill="currentColor" class="nc-icon-wrapper"><circle cx="10" cy="10" r="4" stroke-width="0" fill="currentColor"></circle><line x1="10" y1="2" x2="10" y2="3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="15.657" y1="4.343" x2="14.596" y2="5.404" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="18" y1="10" x2="16.5" y2="10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="15.657" y1="15.657" x2="14.596" y2="14.596" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="10" y1="18" x2="10" y2="16.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="4.343" y1="15.657" x2="5.404" y2="14.596" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="2" y1="10" x2="3.5" y2="10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line><line x1="4.343" y1="4.343" x2="5.404" y2="5.404" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-color="color-2"></line></g></svg>
                     <svg aria-hidden="true" focusable="false" class="icon-btn__moon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><g fill="currentColor" class="nc-icon-wrapper"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle><path d="m11.7664,3.2336c.1472.5652.2336,1.155.2336,1.7664,0,3.866-3.134,7-7,7-.6113,0-1.2011-.0864-1.7664-.2336.7839,3.0092,3.5117,5.2336,6.7664,5.2336,3.866,0,7-3.134,7-7,0-3.2546-2.2244-5.9825-5.2336-6.7664Z" stroke-width="0" fill="currentColor"></path></g></svg>
                 </button>
-            <a class="menu-trigger pdf-download" href="/assets/pdf/ismail-ahmad-portfolio.pdf" download="Ismail-Ahmad-Portfolio.pdf"><svg class="menu-trigger__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg><span class="menu-trigger__label">Download PDF</span></a>
+            <a class="menu-trigger pdf-download" href="/api/case-access?slug=portfolio&amp;asset=pdf" download="Ismail-Ahmad-Portfolio.pdf"><svg class="menu-trigger__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg><span class="menu-trigger__label">Download PDF</span></a>
         </div>
     </header>
 
@@ -78,7 +89,7 @@
         </button>
         <div class="pdf-frame">
             <figure class="pdf-slide" id="slide">
-                <img id="slide-img" src="/assets/pdf/slides/01.webp" alt="Page 1: Portfolio" width="2560" height="1440" />
+                <img id="slide-img"  alt="Page 1: Portfolio" width="2560" height="1440" />
                 <div class="pdf-slide__links" id="slide-links"></div>
             </figure>
         </div>
@@ -142,7 +153,7 @@
         <ol class="pdf-grid__list" id="grid-list"></ol>
     </dialog>
 
-    <script type="module" src="/js/v2/pdf.js"></script>
+    <script type="module" src="/js/v2/pdf-access.js"></script>
 </body>
 
 </html>

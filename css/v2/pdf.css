@@ -176,3 +176,18 @@
     .pdf-speaker__now .pdf-slide { width: 100%; }
     .pdf-page.is-speaker .pdf-scroll { display: none; }
 }
+
+/* The deck is initialized only after the server accepts the access code. */
+.pdf-page.is-locked > :not(.portfolio-gate) { display: none !important; }
+.portfolio-gate { width: min(360px, calc(100% - 48px)); margin: 18vh auto 48px; color: var(--text-primary); }
+.portfolio-gate h1 { font-size: 24px; margin: 36px 0 12px; }
+.portfolio-gate p { color: var(--text-secondary); line-height: 1.5; }
+.portfolio-gate a { color: var(--text-secondary); font-size: 14px; }
+.portfolio-gate form { display: grid; gap: 12px; margin: 28px 0 16px; }
+.portfolio-gate label { font-size: 14px; }
+.portfolio-gate input { width: 100%; box-sizing: border-box; background: var(--background); color: var(--text-primary); border: 1px solid var(--border-strong); border-radius: 8px; padding: 12px; font: inherit; letter-spacing: .3em; }
+.portfolio-gate button { background: var(--text-primary); color: var(--background); border: 0; border-radius: 8px; padding: 12px; font: inherit; cursor: pointer; }
+.portfolio-gate button:disabled { opacity: .6; }
+.portfolio-gate #portfolio-error { min-height: 21px; font-size: 14px; }
+
+.pdf-page.is-locked { overflow: auto; }

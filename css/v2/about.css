@@ -31,9 +31,6 @@
 .about-contact { grid-column: 1 / -1; margin-top: 8px; }
 .about-details__sidebar { display: flex; flex-direction: column; gap: 28px; }
 .about-details__columns > section { min-width: 0; }
-.about-experience { display: flex; flex-direction: column; gap: 24px; margin-top: 6px; }
-.about-experience__years { color: var(--text-tertiary); font-size: 14px; }
-.about-experience__company { font-weight: 500; }
 .about-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 12px; }
 .about-links a { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--border-strong); }
 .about-links a:hover { text-decoration-color: currentColor; }

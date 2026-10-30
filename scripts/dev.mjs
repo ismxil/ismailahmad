@@ -70,6 +70,7 @@ http.createServer(async (req, res) => {
         res.json = value => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(value)); return res; };
         return apiHandlers[url.pathname](req, res);
     }
+    if (url.pathname.startsWith('/assets/pdf/') || url.pathname === '/portfolio.pdf') { res.writeHead(404); return res.end(); }
     let path;
     try { path = decodeURIComponent(url.pathname); } catch { res.writeHead(400); return res.end(); }
 

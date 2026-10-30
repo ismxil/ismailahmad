@@ -453,12 +453,12 @@ ul {
     --status-soft: var(--live-soft);
 }
 
-.identity[data-status="partial"] {
+.identity[data-status="limited"] {
     --status: var(--partial);
     --status-soft: var(--partial-soft);
 }
 
-.identity[data-status="booked"] {
+.identity[data-status="busy"] {
     --status: var(--booked);
     --status-soft: var(--booked-soft);
 }
@@ -512,7 +512,7 @@ ul {
 }
 
 .identity[data-status="available"] .identity__status::before,
-.identity[data-status="partial"] .identity__status::before {
+.identity[data-status="limited"] .identity__status::before {
     animation: ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 

@@ -1,6 +1,6 @@
 import { initBookingModal } from './booking-modal.js';
 import { initDock } from './dock.js';
-import { experienceItems } from './experience.js';
+import { initStatus } from './presence.js';
 import { initPile } from './pile.js';
 import { articleSignature } from './icons.js';
 import { renderWandering } from './wandering.js';
@@ -18,20 +18,7 @@ themeButton.addEventListener('click', () => {
     try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (error) {}
 });
 
-const experience = document.getElementById('about-experience');
-experienceItems.forEach(item => {
-    const entry = document.createElement('div');
-    const years = document.createElement('p');
-    years.className = 'about-experience__years';
-    years.textContent = item.years;
-    const company = document.createElement('p');
-    company.className = 'about-experience__company';
-    company.textContent = item.company;
-    const role = document.createElement('p');
-    role.textContent = item.role;
-    entry.append(years, company, role);
-    experience.appendChild(entry);
-});
+initStatus();
 
 initDock();
 initBookingModal();

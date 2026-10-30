@@ -23,10 +23,10 @@ await build({
 await rm('public', { recursive: true, force: true });
 await mkdir('public');
 for (const directory of ['assets', 'css', 'js', 'data']) {
-    await cp(directory, `public/${directory}`, { recursive: true, filter: path => !path.endsWith('.DS_Store') });
+    await cp(directory, `public/${directory}`, { recursive: true, filter: path => !path.endsWith('.DS_Store') && path !== 'assets/pdf' });
 }
 for (const file of await readdir('.')) {
-    if (/\.(html|css|js|pdf)$/.test(file) && !['tailwind.config.js', 'middleware.js'].includes(file)) {
+    if (/\.(html|css|js|pdf)$/.test(file) && !['tailwind.config.js', 'middleware.js', 'portfolio.pdf'].includes(file)) {
         await cp(file, `public/${file}`);
     }
 }
