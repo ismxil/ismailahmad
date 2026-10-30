@@ -15,6 +15,7 @@ import { anchorIds, contentsHTML, trackContents } from './contents.js';
 import { openAccessDialog, renderAccessGate } from './case-access.js';
 import { initPageSearch } from './page-search.js';
 import { cardStudio, initCardStudio } from './card-studio.js';
+import { initProjectSwitcher } from './project-switcher.js';
 
 /**
  * Case data stores repo-relative paths ("assets/..."). This page is served
@@ -227,6 +228,7 @@ async function renderContent() {
     document.querySelector('meta[name="description"]').content = item.headline || item.name;
     const crumb = document.getElementById('crumb-case');
     if (crumb) crumb.textContent = item.name;
+    initProjectSwitcher(cases, item.slug);
 
     const next = cases[(cases.indexOf(item) + 1) % cases.length];
     if (item.locked) {
