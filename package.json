@@ -4,6 +4,9 @@
     "@sanity/webhook": "^4.0.4",
     "@vercel/analytics": "^2.0.1",
     "@vercel/functions": "^3.10.2",
+    "inter-ui": "4.1.1",
+    "lucide": "1.64.0",
+    "pdf-lib": "1.17.1",
     "resend": "^6.35.0"
   },
   "devDependencies": {

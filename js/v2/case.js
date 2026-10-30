@@ -14,6 +14,7 @@ import { cadanaHero } from './cadana-hero.js';
 import { anchorIds, contentsHTML, trackContents } from './contents.js';
 import { openAccessDialog, renderAccessGate } from './case-access.js';
 import { initPageSearch } from './page-search.js';
+import { cardStudio, initCardStudio } from './card-studio.js';
 
 /**
  * Case data stores repo-relative paths ("assets/..."). This page is served
@@ -165,7 +166,9 @@ const BLOCKS = {
 
 function renderBlocks(blocks, slug) {
     return (blocks || [])
-        .map((b) => (BLOCKS[b.type] ? BLOCKS[b.type](b, slug) : ''))
+        .map((b) => slug === 'sterling' && b._key === 'artwork-12'
+            ? cardStudio()
+            : (BLOCKS[b.type] ? BLOCKS[b.type](b, slug) : ''))
         .join('');
 }
 
@@ -300,6 +303,7 @@ function renderItem(mount, item, next) {
     watchImageSkeletons(mount);
     playWhenVisible(mount);
     trackContents(mount);
+    initCardStudio(mount);
 
     mount.querySelector('.case-unlock__button')?.addEventListener('click', () => openAccessDialog(item, content => {
         const firstPrivateBlock = item.blocks.length;

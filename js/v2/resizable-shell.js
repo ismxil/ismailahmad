@@ -3,6 +3,10 @@
 const shell = document.querySelector('[data-resizable-shell]');
 
 if (shell) {
+    // Case-study text stays in its reading column; only the media follows
+    // the rails. Home and archive continue resizing their entire shell.
+    const mediaOnly = Boolean(shell.querySelector('#case'));
+    if (mediaOnly) shell.setAttribute('data-resize-media', '');
     const desktop = matchMedia('(min-width: 900px) and (pointer: fine)');
     const minimum = 480;
     const frame = document.createElement('div');
@@ -31,13 +35,17 @@ if (shell) {
     let drag;
     let requestedWidth;
     const maximum = () => document.documentElement.clientWidth;
+    const frameWidth = () => mediaOnly && desktop.matches && requestedWidth != null
+        ? Math.min(requestedWidth, maximum()) : shell.getBoundingClientRect().width;
 
     function sync() {
         const rect = shell.getBoundingClientRect();
-        frame.style.left = `${rect.left}px`;
-        frame.style.width = `${rect.width}px`;
+        const width = frameWidth();
+        const left = rect.left + (rect.width - width) / 2;
+        frame.style.left = `${left}px`;
+        frame.style.width = `${width}px`;
         shell.style.setProperty('--shell-left', `${rect.left}px`);
-        shell.toggleAttribute('data-shell-toc-hidden', rect.left < 200);
+        shell.toggleAttribute('data-shell-toc-hidden', left < 200);
         frame.querySelectorAll('.shell-resize__hint').forEach(hint => {
             hint.textContent = requestedWidth == null ? 'Drag' : 'Double-click to reset';
         });
@@ -45,8 +53,8 @@ if (shell) {
         for (const handle of frame.children) {
             handle.setAttribute('aria-valuemin', String(minimum));
             handle.setAttribute('aria-valuemax', String(maximum()));
-            handle.setAttribute('aria-valuenow', String(Math.round(rect.width)));
-            handle.setAttribute('aria-valuetext', `${Math.round(rect.width)} pixels${requestedWidth == null ? ', default width' : ''}`);
+            handle.setAttribute('aria-valuenow', String(Math.round(width)));
+            handle.setAttribute('aria-valuetext', `${Math.round(width)} pixels${requestedWidth == null ? ', default width' : ''}`);
         }
     }
 
@@ -76,7 +84,9 @@ if (shell) {
     frame.addEventListener('pointerdown', event => {
         const handle = event.target.closest('button');
         if (!desktop.matches || !handle || event.button !== 0 || !event.isPrimary) return;
-        drag = { handle, id: event.pointerId, x: event.clientX, width: shell.getBoundingClientRect().width };
+        event.preventDefault();
+        handle.focus({ preventScroll: true });
+        drag = { handle, id: event.pointerId, x: event.clientX, width: frameWidth() };
         handle.setPointerCapture(event.pointerId);
         frame.classList.add('is-dragging');
         document.documentElement.classList.add('is-resizing');
@@ -93,7 +103,7 @@ if (shell) {
     window.addEventListener('blur', finish);
     frame.addEventListener('dblclick', reset);
     frame.addEventListener('keydown', event => {
-        const width = shell.getBoundingClientRect().width;
+        const width = frameWidth();
         const step = event.shiftKey ? 100 : 40;
         if (event.key === 'ArrowRight' || event.key === 'ArrowUp') resize(width + step);
         else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') resize(width - step);
