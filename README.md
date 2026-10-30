@@ -116,6 +116,9 @@ Sterling's Card Studio is an interactive iframe served from
 `vendor/card-studio/`; `npm run build` bundles it with its fonts and export
 tools. No separate editor deployment is required. On case-study pages the
 resize rails change media widths while the reading column stays fixed.
+The rails stop at the normal content width. The embedded editor scales its
+complete desktop layout to fit; phones show `assets/card-studio/preview.png`
+and a link to open the editor separately.
 
 Case studies use `/api/cases` for public content. Etihad's public document
 contains card metadata; its story lives in the private `protected.etihad`

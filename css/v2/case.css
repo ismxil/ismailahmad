@@ -280,13 +280,25 @@
 
 .case-studio { margin: 0; scroll-margin-top: 88px; }
 .case-studio__frame {
-    height: clamp(560px, 52vw, 820px);
+    position: relative;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: var(--r-lg);
     background: #202020;
     box-shadow: var(--tray-shadow);
 }
-.case-studio iframe { display: block; width: 100%; height: 100%; border: 0; }
+.case-studio iframe {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 1440px;
+    height: 810px;
+    border: 0;
+    transform: scale(var(--studio-scale, 0.466667));
+    transform-origin: top left;
+}
+.case-studio__poster { display: none; width: 100%; height: 100%; object-fit: cover; }
+.case-studio__caption-mobile { display: none; }
 .case-studio__caption {
     display: flex;
     flex-wrap: wrap;
@@ -299,6 +311,11 @@
     color: var(--text-tertiary);
 }
 .case-studio__caption a { color: var(--text-primary); text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 767px) {
+    .case-studio iframe, .case-studio__caption-live { display: none; }
+    .case-studio__poster, .case-studio__caption-mobile { display: block; }
+}
 
 @media print {
     .case-studio__frame { display: none; }
