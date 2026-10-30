@@ -30,11 +30,12 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/v2/tokens.css" />
     <link rel="stylesheet" href="/css/v2/app.css" />
+    <link rel="stylesheet" href="/css/v2/resizable-shell.css" />
     <script type="module" src="/js/generated/analytics.js"></script>
 </head>
 
 <body>
-    <main class="shell shell--wide">
+    <main class="shell shell--wide" data-resizable-shell>
 
         <header class="site-header site-header--sticky">
             <nav aria-label="Breadcrumb" class="crumbs">
@@ -75,6 +76,7 @@
         </footer>
     </main>
 
+    <script type="module" src="/js/v2/resizable-shell.js"></script>
     <script type="module">
         import { renderArchive } from '/js/v2/archive.js';
         import { initDock } from '/js/v2/dock.js';

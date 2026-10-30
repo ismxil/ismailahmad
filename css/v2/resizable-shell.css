@@ -1,0 +1,79 @@
+/* Only home and archive opt in. Width stays at the existing page default
+   until a visitor moves an edge; touch layouts keep the original shell. */
+.shell-resize { display: none; }
+
+@media (min-width: 900px) and (pointer: fine) {
+    [data-resizable-shell] { container-type: inline-size; }
+    [data-resizable-shell].is-custom-width { max-width: var(--resized-width); }
+
+    .shell-resize {
+        display: block;
+        position: fixed;
+        inset-block: 0;
+        z-index: 20;
+        border-inline: 1px solid var(--border);
+        pointer-events: none;
+    }
+
+    .shell-resize__handle {
+        position: absolute;
+        top: 50%;
+        width: 24px;
+        height: 64px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--text-tertiary);
+        transform: translate(-50%, -50%);
+        pointer-events: auto;
+        touch-action: none;
+        cursor: ew-resize;
+    }
+    .shell-resize__handle--left { left: 0; }
+    .shell-resize__handle--right { left: 100%; }
+
+    .shell-resize__handle::before {
+        content: '';
+        display: block;
+        width: 5px;
+        height: 36px;
+        margin: auto;
+        border: 1px solid var(--border-strong);
+        border-radius: 6px;
+        background: var(--background);
+        transition: background 150ms, border-color 150ms;
+    }
+    .shell-resize__handle:hover::before,
+    .shell-resize__handle:focus-visible::before,
+    .shell-resize.is-dragging .shell-resize__handle::before {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+    }
+    .shell-resize__handle:focus-visible { outline-offset: -3px; }
+
+    html.is-resizing, html.is-resizing * {
+        cursor: ew-resize !important;
+        user-select: none !important;
+    }
+
+    /* A narrowed archive becomes a gallery of small plates again. */
+    .shell--wide[data-shell-compact] { padding-inline: var(--gutter); }
+    .shell--wide[data-shell-compact] .archive-grid { columns: 3; column-gap: 12px; }
+    .shell--wide[data-shell-compact] .archive-grid li { margin-bottom: 12px; }
+    .shell--wide[data-shell-compact] .archive-tile { border-radius: var(--r-lg); cursor: zoom-in; }
+    .shell--wide[data-shell-compact] .archive-tile:hover { box-shadow: var(--tray-shadow-hover); scale: 1.01; }
+
+    @container (max-width: 591px) {
+        [data-resizable-shell] .archive-grid,
+        .shell--wide[data-shell-compact] .archive-grid { columns: 2; }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .shell-resize__handle::before { transition: none; }
+}
+
+@media print {
+    .shell-resize { display: none; }
+    [data-resizable-shell].is-custom-width { max-width: var(--content-width); }
+}

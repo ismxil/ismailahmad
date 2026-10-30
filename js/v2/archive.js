@@ -179,7 +179,8 @@ function open(i) {
 const compact = window.matchMedia('(max-width: 1023px)');
 
 function zoomable(tile) {
-    return compact.matches || !tile.closest('.shell--wide');
+    const wideShell = tile.closest('.shell--wide');
+    return compact.matches || !wideShell || wideShell.getBoundingClientRect().width < 1024;
 }
 
 function syncTiles(mount) {
@@ -247,6 +248,8 @@ async function renderContent(mount, { limit = HOME_LIMIT } = {}) {
         else if (!still.matches) video.play().catch(() => {});
     });
     compact.addEventListener('change', () => syncTiles(mount));
+    // Page edges can move without the browser viewport changing.
+    new ResizeObserver(() => syncTiles(mount)).observe(mount);
 
     mount.addEventListener('click', (e) => {
         const tile = e.target.closest('.archive-tile');
