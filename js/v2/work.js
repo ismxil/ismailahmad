@@ -60,7 +60,7 @@ function art(c, shuffleCovers) {
                         decoding="async" />`;
 }
 
-async function renderContent(mount, { shuffleCovers = false } = {}) {
+async function renderContent(mount, { shuffleCovers = false, featuredSlugs } = {}) {
     if (!mount) return;
     // Stand the grid up before the request, so the section has its height
     // from the first paint and the cards do not drop in under the fold.
@@ -68,6 +68,7 @@ async function renderContent(mount, { shuffleCovers = false } = {}) {
     let cases;
     try {
         cases = await getCases();
+        if (featuredSlugs) cases = cases.filter(project => featuredSlugs.includes(project.slug));
     } catch {
         mount.innerHTML = '<li><p class="section__note">Case studies are temporarily unavailable. <a href="/work">Try again</a>.</p></li>';
         return;

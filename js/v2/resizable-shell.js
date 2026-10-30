@@ -1,5 +1,5 @@
 /** A centred, resizable page frame. No saved preference: every visit starts
- * at the page's original width. Loaded only by home and archive. */
+ * at the page's original width. Loaded only by pages that opt in. */
 const shell = document.querySelector('[data-resizable-shell]');
 
 if (shell) {
@@ -19,7 +19,11 @@ if (shell) {
         handle.setAttribute('aria-label', `Resize page from ${side} edge`);
         handle.setAttribute('aria-orientation', 'horizontal');
         handle.setAttribute('aria-description', 'Drag to resize. Arrow keys adjust width. Home or double-click resets. End expands fully.');
-        handle.title = 'Drag to resize · Double-click to reset';
+        const hint = document.createElement('span');
+        hint.className = 'shell-resize__hint';
+        hint.setAttribute('aria-hidden', 'true');
+        hint.innerHTML = 'Drag to resize<span>Double-click to reset</span>';
+        handle.append(hint);
         frame.append(handle);
     }
     document.body.append(frame);
@@ -32,6 +36,8 @@ if (shell) {
         const rect = shell.getBoundingClientRect();
         frame.style.left = `${rect.left}px`;
         frame.style.width = `${rect.width}px`;
+        shell.style.setProperty('--shell-left', `${rect.left}px`);
+        shell.toggleAttribute('data-shell-toc-hidden', rect.left < 200);
         shell.toggleAttribute('data-shell-compact', desktop.matches && rect.width < 1024);
         for (const handle of frame.children) {
             handle.setAttribute('aria-valuemin', String(minimum));

@@ -1,4 +1,4 @@
-/* Only home and archive opt in. Width stays at the existing page default
+/* Pages opt in explicitly. Width stays at the existing page default
    until a visitor moves an edge; touch layouts keep the original shell. */
 .shell-resize { display: none; }
 
@@ -13,7 +13,12 @@
         z-index: 20;
         border-inline: 1px solid var(--border);
         pointer-events: none;
+        transition: border-color 160ms ease;
     }
+
+    .shell-resize:has(.shell-resize__handle--left:is(:hover, :focus-visible)) { border-left-color: var(--accent); }
+    .shell-resize:has(.shell-resize__handle--right:is(:hover, :focus-visible)) { border-right-color: var(--accent); }
+    .shell-resize.is-dragging { border-inline-color: var(--accent); }
 
     .shell-resize__handle {
         position: absolute;
@@ -41,15 +46,45 @@
         border: 1px solid var(--border-strong);
         border-radius: 6px;
         background: var(--background);
-        transition: background 150ms, border-color 150ms;
+        transition: background 160ms, border-color 160ms, scale 180ms ease;
     }
     .shell-resize__handle:hover::before,
     .shell-resize__handle:focus-visible::before,
     .shell-resize.is-dragging .shell-resize__handle::before {
         border-color: var(--accent);
         background: var(--accent-soft);
+        scale: 1.18;
     }
     .shell-resize__handle:focus-visible { outline-offset: -3px; }
+
+    .shell-resize__hint {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        padding: 9px 12px;
+        border-radius: var(--r-sm);
+        background: var(--raised);
+        box-shadow: var(--popover-shadow);
+        color: var(--text-primary);
+        font: 12px/1.45 var(--font-sans);
+        white-space: nowrap;
+        text-align: left;
+        pointer-events: none;
+        opacity: 0;
+        translate: 0 4px;
+        transition: opacity 160ms ease, translate 160ms ease;
+    }
+    .shell-resize__hint span { display: block; color: var(--text-tertiary); font-size: 11px; }
+    .shell-resize__handle--left .shell-resize__hint { left: 20px; }
+    .shell-resize__handle--right .shell-resize__hint { right: 20px; }
+    .shell-resize__handle:is(:hover, :focus-visible) .shell-resize__hint { opacity: 1; translate: 0 0; }
+    .shell-resize.is-dragging .shell-resize__hint { opacity: 0; }
+
+    /* A case study's contents stays in the available left margin. */
+    .case-page [data-resizable-shell] .page-toc { width: calc(var(--shell-left) - 64px); }
+    .case-page [data-shell-toc-hidden] .page-toc { display: none; }
+
+    [data-resizable-shell] .section__count { transition: scale 180ms ease; }
+    [data-resizable-shell] .section__head:is(:hover, :focus-within) .section__count { scale: 1.12; }
 
     html.is-resizing, html.is-resizing * {
         cursor: ew-resize !important;
@@ -70,7 +105,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .shell-resize__handle::before { transition: none; }
+    .shell-resize,
+    .shell-resize__handle::before,
+    .shell-resize__hint,
+    [data-resizable-shell] .section__count { transition: none; }
+    .shell-resize__handle::before,
+    [data-resizable-shell] .section__head .section__count { scale: 1 !important; }
 }
 
 @media print {
