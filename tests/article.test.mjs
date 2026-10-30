@@ -91,5 +91,15 @@ test('Article route retains slug validation, missing-post status and upstream fa
 test('Clean blog URLs route to server metadata and package the HTML template', async () => {
     const routes = JSON.parse(await readFile('vercel.json', 'utf8'));
     assert.equal(routes.rewrites.find(r => r.source === '/blog/:slug').destination, '/api/article?slug=:slug');
-    assert.equal(routes.functions['api/article.js'].includeFiles, 'post.html');
+    assert.equal(routes.functions['api/article.js'].includeFiles, '*.html');
+});
+
+test('Blog index shares the article handler without an extra serverless function', async () => {
+    const res = response();
+    await article({ method: 'GET', query: { index: '1' } }, res);
+    assert.equal(res.statusCode, 200);
+    const doc = new JSDOM(res.body).window.document;
+    assert.equal(doc.body.dataset.page, 'blog');
+    assert.equal(doc.querySelector('link[rel="canonical"]').href, 'https://blog.ismailahmad.com/');
+    assert.match(res.headers['Content-Type'], /text\/html/);
 });

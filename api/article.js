@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import posts from './posts.js';
+import blogIndex from '../lib/blog-index.js';
 import { escapeHTML, safeURL } from '../js/v2/blog-data.js';
 
 // Social crawlers need metadata in the HTTP response, before browser JS runs.
@@ -11,6 +12,7 @@ export default async function article(req, res) {
         res.statusCode = 405;
         return res.end('Method not allowed');
     }
+    if (req.query?.index === '1') return blogIndex(req, res);
     const upstream = {
         statusCode: 200, headers: {},
         setHeader(name, value) { this.headers[name] = value; },

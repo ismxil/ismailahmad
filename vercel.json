@@ -100,10 +100,7 @@
   ],
   "functions": {
     "api/article.js": {
-      "includeFiles": "post.html"
-    },
-    "api/blog-index.js": {
-      "includeFiles": "blog.html"
+      "includeFiles": "*.html"
     }
   }
 }

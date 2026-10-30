@@ -18,7 +18,7 @@ test('Blog host serves article metadata and never redirects to the portfolio dom
 
 test('Blog root and existing CV, PDF and Lagos subdomains retain their own handlers', () => {
     for (const [host, path] of [
-        ['blog.ismailahmad.com', '/api/blog-index'],
+        ['blog.ismailahmad.com', '/api/article'],
         ['cv.ismailahmad.com', '/cv'],
         ['pdf.ismailahmad.com', '/pdf'],
         ['tiny-lagos.ismailahmad.com', '/lagos'],
@@ -27,6 +27,10 @@ test('Blog root and existing CV, PDF and Lagos subdomains retain their own handl
         const destination = new URL(response.headers.get('x-middleware-rewrite'));
         assert.equal(destination.hostname, host);
         assert.equal(destination.pathname, path);
+        if (host === 'blog.ismailahmad.com') {
+            assert.equal(destination.searchParams.get('index'), '1');
+            assert.equal(destination.searchParams.get('utm_source'), 'test');
+        }
     }
     assert.equal(middleware(new Request('https://www.ismailahmad.com/', {
         headers: { host: 'www.ismailahmad.com' },
