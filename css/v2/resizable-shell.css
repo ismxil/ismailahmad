@@ -4,7 +4,17 @@
 
 @media (min-width: 900px) and (pointer: fine) {
     [data-resizable-shell] { container-type: inline-size; }
-    [data-resizable-shell].is-custom-width { max-width: var(--resized-width); }
+    [data-resizable-shell].is-custom-width:not([data-resize-media]) { max-width: var(--resized-width); }
+
+    [data-resize-media].is-custom-width .case-hero {
+        width: var(--resized-width);
+        max-width: none;
+        margin-inline: calc((100% - var(--resized-width)) / 2);
+    }
+    [data-resize-media].is-custom-width .case-body > :is(.case-figure, .case-pair, .case-studio) {
+        width: calc(var(--resized-width) - 2 * var(--gutter));
+        margin-inline: calc((100% - var(--resized-width) + 2 * var(--gutter)) / 2);
+    }
 
     .shell-resize {
         display: block;

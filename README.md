@@ -111,6 +111,12 @@ Web Analytics must be enabled for the project before deploying.
 
 ## Checks
 
+Sterling's Card Studio is an interactive iframe served from
+`/assets/card-studio/index.html`. Its pinned source lives in
+`vendor/card-studio/`; `npm run build` bundles it with its fonts and export
+tools. No separate editor deployment is required. On case-study pages the
+resize rails change media widths while the reading column stays fixed.
+
 Case studies use `/api/cases` for public content. Etihad's public document
 contains card metadata; its story lives in the private `protected.etihad`
 Sanity document. Keep the access and preview handlers, shared projections,
