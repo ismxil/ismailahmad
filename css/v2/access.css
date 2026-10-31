@@ -20,7 +20,7 @@
 .dark :is(.case-access__mark, .case-unlock__mark) { filter: invert(1); }
 .case-access h1 { font-size: 24px; line-height: 1.2; letter-spacing: -0.012em; }
 .case-access__description { margin-top: 14px; color: var(--text-secondary); font-size: 15px; }
-.case-access__form { width: min(100%, 344px); margin-top: 36px; }
+.case-access__form { width: min(100%, 344px); margin-top: 24px; }
 .access-code { position: relative; }
 .access-code__input {
     position: absolute;
@@ -48,7 +48,7 @@
 .case-access__form:has([aria-invalid="true"]) .case-access__error { color: var(--case-error); }
 .case-access__error { margin-top: 14px; font-size: 14px; color: var(--text-secondary); }
 .case-access__error[hidden] { display: none; }
-.case-access__submit { width: 100%; min-height: 46px; margin-top: 20px; border: 0; border-radius: var(--r-md); background: var(--btn-bg); color: var(--btn-fg); font: 500 14px var(--font-sans); cursor: pointer; }
+.case-access__submit { width: 100%; min-height: 46px; margin-top: 24px; border: 0; border-radius: var(--r-md); background: var(--btn-bg); color: var(--btn-fg); font: 500 14px var(--font-sans); cursor: pointer; }
 .case-access__submit:disabled { opacity: 0.65; cursor: wait; }
 .case-access__help { margin-top: 28px; font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
 .case-access__request { padding: 0; border: 0; background: none; color: var(--text-primary); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
@@ -61,3 +61,21 @@
 .case-access-dialog__close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: var(--surface); color: var(--text-secondary); cursor: pointer; }
 
 .case-access-dialog:focus-visible { outline: none; }
+
+/* Desktop access floats over the blurred page, without a visible card. */
+@media (min-width: 768px) {
+    .case-access-dialog { background: transparent; box-shadow: none; border-radius: 0; }
+    .case-access-dialog::backdrop {
+        background: rgb(from var(--background) r g b / .65);
+        backdrop-filter: blur(32px);
+        -webkit-backdrop-filter: blur(32px);
+    }
+    .case-access-dialog .case-access { padding: 64px 24px 48px; }
+    .case-access-dialog .case-access__mark { width: 24px; height: 24px; margin-bottom: 24px; opacity: .5; }
+    .case-access-dialog .case-access__form { width: min(100%, 280px); }
+    .case-access-dialog .case-access__submit { width: auto; min-width: 160px; padding-inline: 24px; border-radius: 16px; }
+    .case-access-dialog .case-access__help { margin-top: 32px; }
+    .case-access-dialog .access-code:not(.is-invalid):focus-within .access-code__group { border-color: transparent; box-shadow: none; }
+    .case-access-dialog .access-code:not(.is-invalid):focus-within[data-active="first"] .access-code__group:first-child,
+    .case-access-dialog .access-code:not(.is-invalid):focus-within[data-active="last"] .access-code__group:last-child { box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-primary) 22%, transparent); }
+}
