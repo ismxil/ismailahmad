@@ -13,7 +13,6 @@ export function initPileVinyl(player) {
     const disc = player.querySelector('.vinyl__disc');
     const record = player.querySelector('.vinyl__record');
     const status = player.querySelector('.vinyl__status');
-    const hint = player.querySelector('.vinyl__hint');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     let audio, track = 0, engaged = false, dragging = false, angle = PARK, landing = 24;
     let rotation = 0, speed = 0, volume = 0, frame = 0, previous = 0, visible = true, generation = 0;
@@ -28,7 +27,6 @@ export function initPileVinyl(player) {
         arm.setAttribute('aria-pressed', String(engaged));
         record.setAttribute('aria-pressed', String(engaged));
         record.setAttribute('aria-label', `${engaged ? 'Pause' : 'Play'} ${title}`);
-        hint.textContent = engaged ? 'Lift the arm to pause' : 'Drag the arm to play';
         if (message) status.textContent = message;
     }
     function wake() {
