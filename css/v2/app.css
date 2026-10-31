@@ -1344,24 +1344,22 @@ dialog[tabindex="-1"]:focus-visible {
 /* ── Case cards ─────────────────────────────────────────── */
 
 .case-grid {
-    columns: 1;
-    column-gap: 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px 20px;
+    align-items: start;
 }
 
 .case-grid > li {
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 32px;
-    break-inside: avoid;
-    vertical-align: top;
+    min-width: 0;
 }
 
 @media (min-width: 560px) {
     .case-grid {
-        columns: 2;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    /* Alternate tall and wide covers without forcing shared row heights. */
+    /* Keep the cover shapes while reading Sanity order left to right. */
     .case-grid > li:nth-child(4n + 1) .case-card__art,
     .case-grid > li:nth-child(4n) .case-card__art {
         aspect-ratio: 1;

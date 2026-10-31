@@ -49,7 +49,6 @@ async function boot() {
     await Promise.allSettled([
         renderWork(document.getElementById('work-list'), {
             shuffleCovers: true,
-            featuredSlugs: ['sterling', 'cadana', 'lemfi', 'gomoney'],
         }),
         renderBlogPreview(document.getElementById('blog-list')),
         renderArchive(document.getElementById('archive-grid')),
