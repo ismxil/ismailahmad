@@ -77,5 +77,5 @@
     .case-access-dialog .case-access__help { margin-top: 32px; }
     .case-access-dialog .access-code:not(.is-invalid):focus-within .access-code__group { border-color: transparent; box-shadow: none; }
     .case-access-dialog .access-code:not(.is-invalid):focus-within[data-active="first"] .access-code__group:first-child,
-    .case-access-dialog .access-code:not(.is-invalid):focus-within[data-active="last"] .access-code__group:last-child { box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-primary) 22%, transparent); }
+    .case-access-dialog .access-code:not(.is-invalid):focus-within[data-active="last"] .access-code__group:last-child { border-color: transparent; box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-primary) 22%, transparent); }
 }
