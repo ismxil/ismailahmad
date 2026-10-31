@@ -20,7 +20,7 @@ export const experienceItems = [
     },
     {
         company: 'Accenture Song',
-        role: 'Senior Product Designer, UX',
+        role: 'Senior Product Designer',
         years: '2023 — 2024',
         location: 'Berlin',
         logo: 'assets/clients/accenture.svg',
@@ -29,7 +29,7 @@ export const experienceItems = [
     },
     {
         company: 'Lemfi',
-        role: 'Senior Product Designer, Mobile Lead',
+        role: 'Senior Product Designer',
         years: '2022 — 2023',
         location: 'California, remote',
         icon: 'assets/clients/icons/lemfi.svg',
