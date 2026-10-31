@@ -6,6 +6,14 @@
     [data-resizable-shell] { container-type: inline-size; }
     [data-resizable-shell].is-custom-width:not([data-resize-media]) { max-width: var(--resized-width); }
 
+    /* Home's text lists and bookshelf keep their original centred measure
+       while the surrounding project and archive galleries can expand. */
+    [data-resizable-shell].is-custom-width > [data-resize-fixed] {
+        width: 100%;
+        max-width: calc(var(--content-width) - 2 * var(--gutter));
+        margin-inline: auto;
+    }
+
     [data-resize-media].is-custom-width .case-hero {
         width: var(--resized-width);
         max-width: none;
