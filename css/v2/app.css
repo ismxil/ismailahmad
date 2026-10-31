@@ -2521,3 +2521,12 @@ body::after {
 .page-toc__sub {
     padding-left: 12px;
 }
+
+/* Home's quiet local-time detail, beside the signature. */
+.site-header:has(.header-location) > nav { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.header-location { color: var(--text-tertiary); font-size: 12px; white-space: nowrap; }
+.header-location time { font-variant-numeric: tabular-nums; }
+@media (max-width: 379px) {
+    .site-header:has(.header-location) > nav { gap: 8px; }
+    .header-location { font-size: 10px; }
+}

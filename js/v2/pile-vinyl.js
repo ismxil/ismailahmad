@@ -11,6 +11,7 @@ export function initPileVinyl(player) {
     const arm = player.querySelector('[data-tonearm]');
     const svg = player.querySelector('svg');
     const disc = player.querySelector('.vinyl__disc');
+    const record = player.querySelector('.vinyl__record');
     const status = player.querySelector('.vinyl__status');
     const hint = player.querySelector('.vinyl__hint');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -25,6 +26,8 @@ export function initPileVinyl(player) {
         const title = `${TRACKS[track].title} by TWO LANES`;
         arm.setAttribute('aria-label', `${engaged ? 'Lift tonearm to pause' : 'Lower tonearm to play'} ${title}`);
         arm.setAttribute('aria-pressed', String(engaged));
+        record.setAttribute('aria-pressed', String(engaged));
+        record.setAttribute('aria-label', `${engaged ? 'Pause' : 'Play'} ${title}`);
         hint.textContent = engaged ? 'Lift the arm to pause' : 'Drag the arm to play';
         if (message) status.textContent = message;
     }
@@ -101,6 +104,7 @@ export function initPileVinyl(player) {
         }
     }
     function toggle() { if (engaged) stop(); else { landing = 24; start(); } }
+    record.addEventListener('click', toggle);
     function point(event) {
         const matrix = svg.getScreenCTM();
         if (!matrix) return null;
@@ -134,12 +138,15 @@ export function initPileVinyl(player) {
             player.classList.remove('is-arm-dragging', 'is-lifting');
             if (e.type === 'pointercancel') { stop(); return; }
             if (!moved) { if (wasEngaged) stop(); else { landing = 24; start(); } return; }
-            // The stylus, rather than the cursor, must land on the playable grooves.
+            // Forgive drops over the label or near the rim, then seat the stylus
+            // on the grooves. Also accept the pointer landing on the record.
             const radians = angle * Math.PI / 180;
             const x = 215 - 12 * Math.cos(radians) - 152 * Math.sin(radians);
             const y = 22 - 12 * Math.sin(radians) + 152 * Math.cos(radians);
             const radius = Math.hypot(x - 95, y - 101);
-            if (radius >= 35 && radius <= 91 && angle >= 16) {
+            const dropped = point(e);
+            const pointerOnRecord = dropped && Math.hypot(dropped.x - 95, dropped.y - 101) <= 100;
+            if ((radius <= 103 && angle >= 14) || pointerOnRecord) {
                 landing = clamp(angle, 22, 35);
                 start();
             } else stop();

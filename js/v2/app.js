@@ -1,3 +1,4 @@
+import { initLocalTime } from './local-time.js';
 /**
  * v2 entry point — wires the home page together.
  */
@@ -66,3 +67,5 @@ if (document.readyState === 'loading') {
 } else {
     boot();
 }
+
+initLocalTime();

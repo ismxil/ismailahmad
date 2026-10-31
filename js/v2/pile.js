@@ -84,7 +84,7 @@ export function initPile(stage) {
     all.forEach(item => {
         let moved = false;
         item.addEventListener('pointerdown', event => {
-            if (event.button !== 0 || event.target.closest('[data-tonearm]')) return;
+            if (event.button !== 0 || event.target.closest('[data-tonearm], .vinyl__record')) return;
             item.getAnimations().forEach(animation => animation.cancel());
             const start = { x: event.clientX, y: event.clientY, left: item.offsetLeft, top: item.offsetTop };
             moved = false;

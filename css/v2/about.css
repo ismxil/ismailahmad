@@ -42,3 +42,7 @@
     .about-bio { margin-top: 32px; }
     .about-details { margin-top: 48px; }
 }
+
+.about-experience { display: flex; flex-direction: column; gap: 24px; margin-top: 6px; }
+.about-experience__years { color: var(--text-tertiary); font-size: 14px; }
+.about-experience__company { font-weight: 500; }
