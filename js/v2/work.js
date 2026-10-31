@@ -1,3 +1,4 @@
+import { selectWork } from './work-selection.js';
 import { withContentTransition } from './page-transition.js';
 import { caseCardsSkeleton, watchImageSkeletons } from './skeleton.js';
 
@@ -65,14 +66,15 @@ async function renderContent(mount, { shuffleCovers = false } = {}) {
     // Stand the grid up before the request, so the section has its height
     // from the first paint and the cards do not drop in under the fold.
     mount.innerHTML = caseCardsSkeleton();
-    let cases;
+    let published;
     try {
-        cases = await getCases();
+        published = await getCases();
     } catch {
         mount.innerHTML = '<li><p class="section__note">Case studies are temporarily unavailable. <a href="/work">Try again</a>.</p></li>';
         return;
     }
 
+    const { visible: cases, total } = selectWork(published, mount.hasAttribute('data-work-preview'));
     mount.innerHTML = cases
         .map((c) => `<li>
             <a class="case-card" href="/work/${c.slug}">
@@ -104,7 +106,7 @@ async function renderContent(mount, { shuffleCovers = false } = {}) {
     if (shuffleCovers) rotateCovers(mount, cases);
 
     const count = document.querySelector('[data-count="work"]');
-    if (count) count.textContent = String(cases.length);
+    if (count) count.textContent = String(total);
 }
 
 // One visible cover changes at a time. Decode first so slow connections

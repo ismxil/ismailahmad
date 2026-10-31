@@ -45,3 +45,14 @@ requested unrelated work only if all protected blog behavior is preserved.
 These are owner-requested repository instructions. Do not remove or relax them
 without the owner's explicit instruction. They are instructions and checks, not
 an access-control mechanism that technically prevents a tool from writing files.
+
+## Protected homepage Work preview — explicit owner instruction
+
+- Home shows only the first four published projects in Sanity sort order. Never
+  expand the home preview when adding projects or fixing the project count.
+- The home Work badge counts ALL published projects on the Work page, including
+  those outside the four-card home preview. It must grow automatically with CMS
+  content; do not hardcode the count or derive it from visible home cards.
+- The Work page displays the full published collection in Sanity sort order.
+- Preserve this distinction and the regression tests unless the owner explicitly
+  requests a different homepage project limit.
