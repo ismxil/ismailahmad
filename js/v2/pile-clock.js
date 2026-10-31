@@ -56,7 +56,7 @@ export function initPileClock(clock) {
         <path d="M110 224h20v7h-20Z" fill="url(#clock-stand)" stroke="#a6aa9f" stroke-width=".4"/>
         ${ticks}
         <g fill="#171a16" font-family="'Suisse Intl', Arial, sans-serif" font-size="16" letter-spacing="-1">${numbers}</g>
-        <text x="120" y="77" text-anchor="middle" fill="#171914" font-family="Arial, sans-serif" font-size="8.5" font-weight="700" textLength="29" lengthAdjust="spacingAndGlyphs">BR<tspan font-size="11">A</tspan>UN</text>
+        <image href="/assets/about/braun-logo.svg" x="104" y="64" width="32" height="15" />
         <text x="120" y="85" text-anchor="middle" fill="#282b23" font-family="Arial, sans-serif" font-size="6.5">quartz</text>
         <g filter="url(#clock-hand-shadow)">
             <g data-clock-hour><path d="M115.5 120V55q4.5-2 9 0v65Z" fill="#11130f" stroke="#30332b" stroke-width=".5"/></g>
