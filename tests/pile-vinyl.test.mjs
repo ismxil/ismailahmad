@@ -53,3 +53,16 @@ test('Keyboard playback advances tracks and leaving the page stops the record', 
     assert.equal(instances[0].paused,true);
     assert.equal(arm.getAttribute('aria-pressed'),'false');
 });
+
+test('The vinyl surface is a working play and pause button', async t => {
+    const { player, arm, instances } = await setup(t);
+    const record = player.querySelector('.vinyl__record');
+    record.click();
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(instances[0].paused, false);
+    assert.equal(record.getAttribute('aria-pressed'), 'true');
+    assert.equal(arm.getAttribute('aria-pressed'), 'true');
+    record.click();
+    assert.equal(record.getAttribute('aria-pressed'), 'false');
+    assert.match(record.getAttribute('aria-label'), /^Play/);
+});
