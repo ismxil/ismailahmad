@@ -171,7 +171,11 @@ export function initPileVinyl(player) {
             else if (audio) { volume = 1; audio.volume = 1; }
         } else { previous = 0; wake(); }
     });
-    window.addEventListener('pagehide', () => { stop({ immediate: true, announce: false }); cancelAnimationFrame(frame); frame = 0; });
+    window.addEventListener('pagehide', () => {
+        stop({ immediate: true, announce: false });
+        cancelAnimationFrame(frame);
+        frame = previous = speed = 0;
+    });
     setAngle(PARK);
     labels();
 }
