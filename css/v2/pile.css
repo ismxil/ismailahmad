@@ -70,43 +70,23 @@
     pointer-events: none;
 }
 
-.pile-cd { width: 172px; height: 172px; border-radius: 50%; background: none; }
-/* The cover is printed across the whole disc, with a white rim, a light
-   sheen across the surface and the hole in the middle. */
-.pile-cd__disc {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px #fff, inset 0 0 0 1px #00000014;
-}
-.pile-cd__disc img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none;
-    mask: radial-gradient(circle, #0000 0 7.5%, #000 8%);
-}
-.pile-cd__disc::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: conic-gradient(from 20deg, #fff0, #ffffff40 8%, #fff0 18%, #fff0 50%, #ffffff33 58%, #fff0 68%);
-    mix-blend-mode: soft-light;
-    pointer-events: none;
-}
-.pile-cd__disc::after {
-    content: '';
-    position: absolute;
-    inset: 38%;
-    border-radius: 50%;
-    background: radial-gradient(circle, #0000 0 20%, #ffffffd9 21% 30%, #ffffff38 31% 100%);
-    box-shadow: 0 0 0 1px #ffffff40;
-    pointer-events: none;
-}
-.pile-cd.is-playing .pile-cd__disc { animation: pile-spin 3.2s linear infinite; }
-@keyframes pile-spin { to { transform: rotate(1turn); } }
+/* Black vinyl, pressed grooves, a paper centre label and a separate steel arm. */
+.pile-vinyl { width: 248px; height: 212px; background: none; }
+.vinyl__record { position: absolute; left: 0; top: 6px; width: 190px; height: 190px; border-radius: 50%; background: #090a0b; box-shadow: 0 2px 3px #0008, 0 8px 16px #0003; }
+.vinyl__disc { position: absolute; inset: 0; overflow: hidden; border-radius: 50%; background: repeating-radial-gradient(circle at center, #17181a 0 1px, #090a0b 1px 2px, #202124 2px 2.6px, #101113 2.6px 4px); border: 2px solid #252628; box-shadow: inset 0 0 0 3px #111214; will-change: transform; }
+.vinyl__record::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 25deg, #fff0 0 12%, #fff2 16%, #fff0 23% 58%, #fff1 65%, #fff0 74%); pointer-events: none; }
+.vinyl__disc img { position: absolute; inset: 33%; width: 34%; height: 34%; object-fit: cover; border-radius: 50%; pointer-events: none; box-shadow: 0 0 0 2px #08090a, 0 0 0 4px #28292b; }
+.vinyl__label { position: absolute; top: 39%; left: 35%; width: 30%; text-align: center; color: #fff; font: 500 5px var(--font-sans); letter-spacing: 1px; text-shadow: 0 1px 2px #000; }
+.vinyl__spindle { position: absolute; top: calc(50% - 3px); left: calc(50% - 3px); z-index: 1; width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(125deg, #fff, #6b6d71 65%, #d7d7d8); box-shadow: 0 1px 2px #0009; }
+.vinyl__hardware { position: absolute; inset: 0; width: 248px; height: 196px; overflow: visible; pointer-events: none; }
+[data-tonearm] { pointer-events: auto; cursor: grab; transform-origin: 215px 22px; transition: transform 600ms cubic-bezier(.22,.7,.25,1), filter 250ms ease; touch-action: none; }
+[data-tonearm]:focus-visible { outline: none; filter: drop-shadow(0 0 3px var(--accent)); }
+.pile-vinyl.is-lifting [data-tonearm] { filter: drop-shadow(3px 6px 3px #0005); }
+.pile-vinyl.is-arm-dragging [data-tonearm] { transition: filter 150ms ease; cursor: grabbing; }
+.vinyl__hint { position: absolute; top: 202px; left: 0; width: 190px; text-align: center; font: 12px var(--font-sans); color: var(--text-tertiary); opacity: 0; transition: opacity 200ms ease; pointer-events: none; }
+.pile-vinyl:is(:hover, :focus-within) .vinyl__hint { opacity: 1; }
+@media (hover: none) { .vinyl__hint { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { [data-tonearm], .vinyl__hint { transition: none; } }
 
 .pile-tools {
     width: 232px;

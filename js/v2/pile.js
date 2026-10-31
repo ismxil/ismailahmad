@@ -1,4 +1,5 @@
 import { getBooks } from './books.js';
+import { initPileVinyl } from './pile-vinyl.js';
 import { initPileClock } from './pile-clock.js';
 import { initPileNote } from './pile-note.js';
 
@@ -19,7 +20,7 @@ export function initPile(stage) {
     // A book slot goes away if Goodreads has nothing to put in it.
     const live = () => all.filter(item => item.isConnected);
     let scale = 1;
-    let top = all.length;
+    let top = all.length + 1;
 
     const restingPlace = item => {
         const [x, y, r] = (phone.matches && item.dataset.pileM || item.dataset.pile).split(' ').map(Number);
@@ -52,7 +53,7 @@ export function initPile(stage) {
             const height = y + item.offsetHeight + 240 + Math.random() * 200;
             const spin = r + (Math.random() - 0.5) * 50;
             const bounce = 10 + Math.random() * 16;
-            item.style.zIndex = String(i + 1);
+            item.style.zIndex = String(item.matches('.pile-vinyl') ? all.length + 1 : i + 1);
             return item.animate([
                 { transform: `translateY(${-height}px) rotate(${spin}deg)`, easing: 'cubic-bezier(0.5, 0, 0.9, 0.55)' },
                 { offset: 0.62, transform: `translateY(0) rotate(${r}deg)`, easing: 'cubic-bezier(0.2, 0.6, 0.4, 1)' },
@@ -83,7 +84,7 @@ export function initPile(stage) {
     all.forEach(item => {
         let moved = false;
         item.addEventListener('pointerdown', event => {
-            if (event.button !== 0) return;
+            if (event.button !== 0 || event.target.closest('[data-tonearm]')) return;
             item.getAnimations().forEach(animation => animation.cancel());
             const start = { x: event.clientX, y: event.clientY, left: item.offsetLeft, top: item.offsetTop };
             moved = false;
@@ -133,33 +134,7 @@ export function initPile(stage) {
     initPileClock(stage.querySelector('.pile-clock'));
     initPileNote(stage.querySelector('.pile-note'));
 
-    // The CD plays the two TWO LANES tracks in turn, spinning while it does,
-    // with each track's cover on the disc.
-    const cd = stage.querySelector('.pile-cd');
-    const tracks = [
-        { title: 'Immersion', src: '/assets/audio/02-immersion.m4a', cover: '/assets/audio/02-cover.jpg' },
-        { title: 'Inner Motion', src: '/assets/audio/03-inner_motion.m4a', cover: '/assets/audio/03-cover.jpg' },
-    ];
-    let track = 0;
-    let audio;
-    const label = () => cd.setAttribute('aria-label', `${audio && !audio.paused ? 'Pause' : 'Play'} ${tracks[track].title} by TWO LANES`);
-    cd?.addEventListener('click', () => {
-        if (!audio) {
-            audio = new Audio(tracks[track].src);
-            audio.addEventListener('ended', () => {
-                track = (track + 1) % tracks.length;
-                audio.src = tracks[track].src;
-                cd.querySelector('img').src = tracks[track].cover;
-                audio.play().catch(() => {});
-                label();
-            });
-        }
-        const playing = audio.paused;
-        if (playing) audio.play().catch(() => {}); else audio.pause();
-        cd.classList.toggle('is-playing', playing);
-        cd.setAttribute('aria-pressed', String(playing));
-        label();
-    });
+    initPileVinyl(stage.querySelector('.pile-vinyl'));
 
     // Two five-star books from the Goodreads shelves.
     getBooks().then(books => {
