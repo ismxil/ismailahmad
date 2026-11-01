@@ -178,12 +178,4 @@
 }
 
 /* The deck is initialized only after the server accepts the access code. */
-.pdf-page.is-locked > :not(.portfolio-gate):not(.case-access-dialog) { display: none !important; }
-.portfolio-gate { width: min(360px, calc(100% - 48px)); margin: 18vh auto 48px; color: var(--text-primary); }
-.portfolio-gate h1 { font-size: 24px; margin: 36px 0 12px; }
-.portfolio-gate p { color: var(--text-secondary); line-height: 1.5; }
-.portfolio-gate a { color: var(--text-secondary); font-size: 14px; }
-/* Keep the fallback prompt quiet behind the shared access dialog. */
-.pdf-page:has(.case-access-dialog[open]) .portfolio-gate { visibility: hidden; }
-.portfolio-gate > .case-access__submit { margin: 28px 0; }
-.pdf-page.is-locked { overflow: auto; }
+.pdf-page.is-locked > :not(.case-access-dialog) { display: none !important; }

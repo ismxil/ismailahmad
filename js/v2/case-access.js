@@ -98,7 +98,7 @@ export function renderAccessGate(mount, item, unlocked, { focus = true } = {}) {
 }
 
 /** The preview remains in place while the reader enters the access code. */
-export function openAccessDialog(item, unlocked) {
+export function openAccessDialog(item, unlocked, { onDismiss } = {}) {
     const dialog = document.createElement('dialog');
     dialog.className = 'case-access-dialog';
     dialog.setAttribute('aria-labelledby', 'case-access-title');
@@ -108,6 +108,7 @@ export function openAccessDialog(item, unlocked) {
     const previousOverflow = document.body.style.overflow;
     let destroyGate;
     let cleaned = false;
+    let accepted = false;
     function cleanUp() {
         if (cleaned) return;
         cleaned = true;
@@ -115,18 +116,24 @@ export function openAccessDialog(item, unlocked) {
         document.body.style.overflow = previousOverflow;
         dialog.remove();
         if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+        if (!accepted) onDismiss?.();
     }
     destroyGate = renderAccessGate(dialog.querySelector('.case-access-dialog__body'), item, content => {
+        if (cleaned) return;
+        accepted = true;
         dialog.close();
         cleanUp();
         unlocked(content);
     }, { focus: false });
-    dialog.querySelector('.case-access-dialog__close').addEventListener('click', () => dialog.close());
+    function dismiss() {
+        dialog.close();
+        cleanUp();
+    }
+    dialog.querySelector('.case-access-dialog__close').addEventListener('click', dismiss);
+    dialog.addEventListener('cancel', event => { event.preventDefault(); dismiss(); });
     dialog.addEventListener('close', cleanUp, { once: true });
     dialog.addEventListener('click', event => {
-        if (event.target !== dialog) return;
-        const rect = dialog.getBoundingClientRect();
-        if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+        if (event.target === dialog) dismiss();
     });
     document.body.style.overflow = 'hidden';
     dialog.showModal();
