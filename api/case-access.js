@@ -47,7 +47,11 @@ export default async function handler(req, res) {
             if (!codeMatches(code, item.accessCode)) return res.status(401).json({ error: 'That code isn’t right. Please try again.' });
             const token = createSession(slug, item.accessCode);
             const secure = process.env.VERCEL || process.env.NODE_ENV === 'production' ? '; Secure' : '';
-            res.setHeader('Set-Cookie', `${cookieName(slug)}=${token}; HttpOnly; SameSite=Strict; Path=/api/case-access; Max-Age=${SESSION_SECONDS}${secure}`);
+            // Portfolio links unlock on the main site before opening the PDF subdomain.
+            const host = String(req.headers?.host || '').split(':')[0].toLowerCase();
+            const domain = slug === 'portfolio' && ['ismailahmad.com', 'www.ismailahmad.com', 'pdf.ismailahmad.com', 'cv.ismailahmad.com'].includes(host)
+                ? '; Domain=ismailahmad.com' : '';
+            res.setHeader('Set-Cookie', `${cookieName(slug)}=${token}; HttpOnly; SameSite=Strict; Path=/api/case-access; Max-Age=${SESSION_SECONDS}${secure}${domain}`);
         } else if (!validSession(sessionCookie(req, slug), slug, item.accessCode)) {
             const preview = req.query?.preview === '1' ? publicPreview(item) : null;
             if (preview) return res.status(200).json({ case: omitNull(preview) });

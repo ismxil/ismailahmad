@@ -29,3 +29,21 @@ test('Protected file selection rejects traversal, unsupported files and nonexist
     for(const path of ['../portfolio.pdf','slides/33.webp','slides/00.webp','slides/01.svg','pdf/../pdf','/etc/passwd']) assert.equal(portfolioAssetPath(path),null);
     assert.equal(portfolioAssetPath('slides/32.webp'),'assets/pdf/slides/32.webp');
 });
+
+test('portfolio access carries from the CV and main site to PDF, while previews stay host-only', async t => {
+    const old = { ...process.env };
+    process.env.SANITY_CASE_READ_TOKEN = 'test';
+    process.env.CASE_ACCESS_SECRET = 'portfolio-test-secret-at-least-thirty-two-characters';
+    process.env.VERCEL_URL = 'preview.vercel.app';
+    t.after(() => { process.env = old; });
+    t.mock.method(globalThis, 'fetch', async () => ({ ok: true, json: async () => ({ result: { slug: 'portfolio', accessCode: '123456' } }) }));
+    for (const host of ['ismailahmad.com', 'www.ismailahmad.com', 'cv.ismailahmad.com', 'pdf.ismailahmad.com', 'preview.vercel.app']) {
+        const res = response();
+        await handler({ method: 'POST', headers: { host, origin: `https://${host}`, 'x-forwarded-for': host }, body: { slug: 'portfolio', code: '123456' } }, res);
+        assert.equal(res.statusCode, 200, host);
+        const cookie = res.headers['Set-Cookie'];
+        assert.match(cookie, /HttpOnly; SameSite=Strict; Path=\/api\/case-access/);
+        if (host.endsWith('vercel.app')) assert.doesNotMatch(cookie, /Domain=/);
+        else assert.match(cookie, /; Domain=ismailahmad.com/);
+    }
+});

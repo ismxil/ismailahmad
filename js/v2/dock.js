@@ -8,6 +8,7 @@
 
 import { projectItems } from './projects.js';
 import { getCases } from './case-data.js';
+import { initPortfolioLinks } from './portfolio-links.js';
 
 const PAGES = [
     // Navigation: where most people are headed. The sitemap follows with
@@ -32,6 +33,7 @@ const GROUPS = { nav: 'Navigation', sitemap: 'Sitemap' };
  * only the page you are on.
  */
 export function initDock() {
+    initPortfolioLinks();
     if (document.getElementById('dock')) return;
     const dock = document.createElement('dialog');
     dock.id = 'dock';
@@ -58,6 +60,7 @@ export function initDock() {
     let matches = [];
     let previousFocus;
     let previousOverflow = '';
+    let released = true;
     getCases().then(cases => {
         targets.splice(PAGES.length, 0, ...cases.map(c => ({ label: c.name, kind: 'case', href: `/work/${c.slug}` })));
         if (dock.open) render();
@@ -105,6 +108,7 @@ export function initDock() {
 
     function open() {
         if (dock.open) return;
+        released = false;
         previousFocus = document.activeElement;
         previousOverflow = document.body.style.overflow;
         input.value = '';
@@ -121,6 +125,8 @@ export function initDock() {
     // and the launcher hidden after the menu had gone. It is idempotent, so
     // calling it from the explicit path and the events is safe.
     function release() {
+        if (released) return;
+        released = true;
         document.body.style.overflow = previousOverflow;
         triggers.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
         if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
