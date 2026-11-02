@@ -5,7 +5,7 @@ import { coffeeIcon, walkingIcon, sleepingIcon } from './icons.js';
  * The bubble above the portrait: what Ismail is probably up to right now.
  *
  * The hour is the reader's own, so the line lands with their day rather
- * than a clock they cannot see. The message stays visible above the cursor-following avatar.
+ * than a clock they cannot see. The message appears above the cursor-following avatar on hover or keyboard focus.
  * Refresh it when the reader returns or leaves the page open across an hour.
  */
 const STATES = [
