@@ -1,4 +1,14 @@
-import { NOTE_AVATARS, noteAvatarMarkup } from './note-avatars.js';
+import { NOTE_AVATARS } from './note-avatars.js';
+
+const PAPERS = [
+    { label: 'Yellow', color: '#f5d34e' },
+    { label: 'Blue', color: '#74caf9' },
+    { label: 'Pink', color: '#d99ae5' },
+    { label: 'Green', color: '#00e935' },
+];
+const AVATAR_ASSETS = { sky: '01', lilac: '02', scout: '03', sunny: '04', peach: '05', night: '06', mint: '07', buddy: '08', star: '09', hello: '10', shades: '11', bowtie: '12' };
+const PICKER_AVATARS = [...NOTE_AVATARS].sort((a, b) => AVATAR_ASSETS[a.id].localeCompare(AVATAR_ASSETS[b.id]));
+const editorAvatar = avatar => `<img class="note-avatar__art" src="/assets/note-ui/avatar-${AVATAR_ASSETS[avatar.id]}.svg" width="52" height="52" alt="" />`;
 
 /** Lift the sticky note into a writing surface. The draft lives in this page. */
 export function initPileNote(note) {
@@ -12,31 +22,42 @@ export function initPileNote(note) {
     dialog.innerHTML = `
         <form class="note-editor__form">
             <header class="note-editor__header">
-                <h2 id="note-editor-title">Leave a note</h2>
+                <h2 id="note-editor-title">leave me a note :)</h2>
+                <div class="note-editor__tools">
+                    <div class="note-colors">
+                        <button type="button" class="note-colors__toggle" aria-label="Change note color" aria-expanded="false" aria-controls="note-color-choices"><img src="/assets/note-ui/palette.svg" width="32" height="32" alt="" /></button>
+                        <div id="note-color-choices" class="note-colors__choices" role="group" aria-label="Note color" hidden>
+                            ${PAPERS.map(paper => `<button type="button" data-note-color="${paper.color}" style="--swatch: ${paper.color}" aria-label="${paper.label} paper" aria-pressed="${paper.label === 'Green'}"></button>`).join('')}
+                        </div>
+                    </div>
                 <button type="button" class="note-editor__close" aria-label="Close note">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>
+                    <img src="/assets/note-ui/close.svg" width="14.122" height="14.122" alt="" />
                 </button>
+                </div>
             </header>
             <label class="visually-hidden" for="pile-note-text">Your note</label>
-            <textarea id="pile-note-text" name="body" placeholder="What’s on your mind?" maxlength="5000" required></textarea>
+            <textarea id="pile-note-text" name="body" placeholder="What’s on&#10;your mind?" maxlength="5000" required></textarea>
             <div class="note-editor__honeypot" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off" /></label></div>
             <p class="note-editor__status" role="status" hidden></p>
             <footer class="note-editor__footer">
                 <div class="note-editor__identity">
                     <div class="note-avatar">
-                        <button type="button" class="note-avatar__toggle" aria-label="Avatar: Sunny. Choose another avatar" aria-expanded="false" aria-controls="note-avatar-choices">${noteAvatarMarkup(NOTE_AVATARS[0])}</button>
+                        <button type="button" class="note-avatar__toggle" aria-label="Avatar: Sunny. Choose another avatar" aria-expanded="false" aria-controls="note-avatar-choices">${editorAvatar(NOTE_AVATARS[0])}</button>
                         <div class="note-avatar__choices" id="note-avatar-choices" role="group" aria-label="Choose an avatar" hidden>
-                            ${NOTE_AVATARS.map((avatar, i) => `<button type="button" data-avatar="${avatar.id}" aria-label="${avatar.label}" aria-pressed="${i === 0}" title="${avatar.label}">${noteAvatarMarkup(avatar)}</button>`).join('')}
+                            ${PICKER_AVATARS.map((avatar, i) => `<button type="button" data-avatar="${avatar.id}" aria-label="${avatar.label}" aria-pressed="${avatar.id === 'sunny'}" title="${avatar.label}">${editorAvatar(avatar)}</button>`).join('')}
                         </div>
                     </div>
-                    <input class="note-editor__name" name="name" placeholder="What's your name?" aria-label="Your name (optional)" maxlength="80" autocomplete="name" />
+                    <div class="note-editor__name-field">
+                        <input class="note-editor__name" name="name" placeholder="Enter your name" aria-label="Your name (optional)" maxlength="80" autocomplete="name" />
+                        <button type="button" class="note-editor__clear-name" aria-label="Clear name" hidden>×</button>
+                    </div>
                 </div>
-                <button type="submit" class="note-editor__send">Send <svg viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M16.161,2.062c-.339-.29-.812-.375-1.231-.227L2.631,6.228h0c-.436,.156-.747,.538-.815,.995-.067,.458,.122,.913,.494,1.188l1.439,1.064,3.413-2.588c.332-.251,.802-.185,1.051,.145,.25,.33,.186,.8-.145,1.051l-3.067,2.326v3.86c0,.473,.262,.899,.683,1.114,.181,.092,.375,.137,.568,.137,.259,0,.516-.081,.734-.24l.74-.539c.335-.244,.409-.713,.165-1.048-.242-.334-.711-.411-1.048-.165l-.343,.25v-2.268l5.911,4.369c.22,.162,.479,.245,.741,.245,.154,0,.311-.029,.461-.088,.402-.159,.69-.509,.77-.935l2.196-11.859c.083-.444-.073-.885-.418-1.179Z"/></svg></button>
+                <button type="submit" class="note-editor__send">send <span class="note-editor__send-icon"><img src="/assets/note-ui/send.svg" width="14.7982" height="14.3604" alt="" /></span></button>
             </footer>
         </form>
         <section class="note-editor__receipt" aria-labelledby="note-receipt-title" tabindex="-1" hidden>
             <button type="button" class="note-editor__close" aria-label="Close confirmation">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>
+                <img src="/assets/note-ui/close.svg" width="14.122" height="14.122" alt="" />
             </button>
             <div class="note-editor__receipt-body">
                 <span class="note-editor__receipt-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m13 24 8 8 15-17"/></svg></span>
@@ -55,6 +76,50 @@ export function initPileNote(note) {
     const sendButton = dialog.querySelector('.note-editor__send');
     const status = dialog.querySelector('.note-editor__status');
     const title = dialog.querySelector('#note-editor-title');
+    const colorToggle = dialog.querySelector('.note-colors__toggle');
+    const colorChoices = dialog.querySelector('.note-colors__choices');
+    const clearName = dialog.querySelector('.note-editor__clear-name');
+    const nameField = dialog.querySelector('.note-editor__name-field');
+    function closeColors(returnFocus = false) {
+        colorChoices.hidden = true;
+        colorToggle.setAttribute('aria-expanded', 'false');
+        if (returnFocus) colorToggle.focus();
+    }
+    colorToggle.addEventListener('click', () => {
+        const open = colorChoices.hidden;
+        closeAvatarChoices();
+        colorChoices.hidden = !open;
+        colorToggle.setAttribute('aria-expanded', String(open));
+        if (open) colorChoices.querySelector('[aria-pressed="true"]').focus();
+    });
+    colorChoices.addEventListener('click', event => {
+        const choice = event.target.closest('[data-note-color]');
+        if (!choice) return;
+        dialog.style.setProperty('--note-paper', choice.dataset.noteColor);
+        note.style.setProperty('--note-preview-paper', choice.dataset.noteColor);
+        colorChoices.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button === choice)));
+        closeColors(true);
+    });
+    colorChoices.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+            event.preventDefault(); event.stopPropagation(); closeColors(true);
+        } else if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(event.key)) {
+            event.preventDefault();
+            const choices = [...colorChoices.querySelectorAll('button')];
+            const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
+            choices[(choices.indexOf(document.activeElement) + direction + choices.length) % choices.length].focus();
+        }
+    });
+    function updateName() {
+        clearName.hidden = !nameInput.value;
+        nameField.classList.toggle('has-name', !!nameInput.value);
+        nameField.style.width = nameInput.value ? `${Math.max(88, Math.min(240, nameInput.value.length * 8 + 56))}px` : '139px';
+    }
+    clearName.addEventListener('click', () => {
+        nameInput.value = '';
+        updateName(); changed(); nameInput.focus();
+    });
+    nameInput.addEventListener('input', updateName);
     const originalSendLabel = sendButton.innerHTML;
     const pileIcon = note.querySelector('.pile-note__open');
     const originalPileIcon = pileIcon.innerHTML;
@@ -74,6 +139,7 @@ export function initPileNote(note) {
     }
     avatarToggle.addEventListener('click', () => {
         const open = avatarChoices.hidden;
+        closeColors();
         avatarChoices.hidden = !open;
         avatarToggle.setAttribute('aria-expanded', String(open));
         if (open) avatarChoices.querySelector('[aria-pressed="true"]').focus();
@@ -83,7 +149,7 @@ export function initPileNote(note) {
         if (!choice) return;
         avatarId = choice.dataset.avatar;
         const avatar = NOTE_AVATARS.find(avatar => avatar.id === avatarId);
-        avatarToggle.innerHTML = noteAvatarMarkup(avatar);
+        avatarToggle.innerHTML = editorAvatar(avatar);
         avatarToggle.setAttribute('aria-label', `Avatar: ${avatar.label}. Choose another avatar`);
         avatarChoices.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button === choice)));
         changed();
@@ -204,9 +270,10 @@ export function initPileNote(note) {
             pileIcon.innerHTML = originalPileIcon;
             input.value = '';
             input.readOnly = nameInput.readOnly = false;
-            avatarToggle.disabled = sendButton.disabled = false;
+            avatarToggle.disabled = sendButton.disabled = clearName.disabled = false;
             sendButton.innerHTML = originalSendLabel;
-            title.textContent = preview.textContent = 'Leave a note';
+            title.textContent = 'leave me a note :)';
+            preview.textContent = 'Leave me a note :)';
             note.classList.remove('is-sent');
             dialog.classList.remove('is-sent');
             note.setAttribute('aria-label', 'Leave a note');
@@ -249,6 +316,7 @@ export function initPileNote(note) {
         motion?.cancel();
         closing = false;
         closeAvatarChoices();
+        closeColors();
         note.classList.remove('is-editing');
         document.body.style.overflow = previousOverflow;
         if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
@@ -260,6 +328,7 @@ export function initPileNote(note) {
     dialog.addEventListener('close', release);
     dialog.addEventListener('click', event => {
         if (!event.target.closest('.note-avatar')) closeAvatarChoices();
+        if (!event.target.closest('.note-colors')) closeColors();
         if (event.target !== dialog) return;
         const box = dialog.getBoundingClientRect();
         if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) close();
@@ -267,7 +336,7 @@ export function initPileNote(note) {
     input.addEventListener('input', () => {
         changed();
         input.setCustomValidity('');
-        preview.textContent = input.value.trim() || 'Leave a note';
+        preview.textContent = input.value.trim() || 'Leave me a note :)';
         note.setAttribute('aria-label', input.value.trim() ? 'Edit your note' : 'Leave a note');
     });
     dialog.querySelector('form').addEventListener('submit', async event => {
@@ -279,9 +348,10 @@ export function initPileNote(note) {
             return;
         }
         closeAvatarChoices();
+        closeColors();
         requestId ||= crypto.randomUUID();
         sending = true;
-        sendButton.disabled = avatarToggle.disabled = true;
+        sendButton.disabled = avatarToggle.disabled = clearName.disabled = true;
         input.readOnly = nameInput.readOnly = true;
         sendButton.textContent = 'Sending…';
         status.hidden = true;
@@ -309,7 +379,7 @@ export function initPileNote(note) {
                 : error.message === 'Failed to fetch' ? 'Could not connect. Please try again.' : error.message;
             status.hidden = false;
             sendButton.innerHTML = originalSendLabel;
-            sendButton.disabled = avatarToggle.disabled = false;
+            sendButton.disabled = avatarToggle.disabled = clearName.disabled = false;
             input.readOnly = nameInput.readOnly = false;
         } finally {
             sending = false;

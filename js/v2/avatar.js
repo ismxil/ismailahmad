@@ -1,5 +1,6 @@
 // The atlas is rendered from the owner's Blender model: 13 yaw angles ×
-// 9 pitch angles. This keeps real head rotation without a WebGL dependency.
+// 9 pitch angles, using the full mesh and the owner’s detailed chrome texture.
+// This keeps real head rotation without a WebGL dependency.
 export function initCursorAvatar() {
     const avatar = document.querySelector('[data-cursor-avatar]');
     if (!avatar) return;
@@ -11,7 +12,8 @@ export function initCursorAvatar() {
     atlas.src = '/assets/avatar/ahmad-directions.webp';
     atlas.onload = () => {
         const canvas = document.createElement('canvas');
-        canvas.width = canvas.height = 128;
+        const size = atlas.naturalWidth / 13;
+        canvas.width = canvas.height = size;
         canvas.setAttribute('aria-hidden', 'true');
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
@@ -28,8 +30,8 @@ export function initCursorAvatar() {
             const column = Math.round(6 + x * 6);
             const row = Math.round(4 + y * 4);
             if (column !== lastColumn || row !== lastRow) {
-                ctx.clearRect(0, 0, 128, 128);
-                ctx.drawImage(atlas, column * 128, row * 128, 128, 128, 0, 0, 128, 128);
+                ctx.clearRect(0, 0, size, size);
+                ctx.drawImage(atlas, column * size, row * size, size, size, 0, 0, size, size);
                 lastColumn = column; lastRow = row;
             }
             if (visible && (Math.abs(targetX - x) > .005 || Math.abs(targetY - y) > .005)) {

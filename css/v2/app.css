@@ -361,8 +361,8 @@ ul {
     white-space: nowrap;
     /* Never in the way of the click that opens the contact card. */
     pointer-events: none;
-    opacity: 1;
-    translate: 0 0;
+    opacity: 0;
+    translate: 0 4px;
     transition: opacity 0.18s ease-out, translate 0.18s ease-out;
 }
 
@@ -387,8 +387,12 @@ ul {
     height: 16px;
 }
 
-/* Keep the message visible without requiring avatar hover. */
-.identity__presence .presence__steam path { animation: steam 2.4s ease-in-out infinite; }
+/* Show the message only while hovering or using the keyboard. */
+@media (hover: hover) {
+    .identity__portrait:hover .identity__presence { opacity: 1; translate: 0 0; }
+}
+.identity__portrait:has(:focus-visible) .identity__presence { opacity: 1; translate: 0 0; }
+.identity__portrait:is(:hover, :focus-within) .identity__presence .presence__steam path { animation: steam 2.4s ease-in-out infinite; }
 .identity__presence .presence__steam path:last-child { animation-delay: 0.6s; }
 
 @keyframes steam {
