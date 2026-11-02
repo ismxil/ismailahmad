@@ -5,9 +5,8 @@ import { coffeeIcon, walkingIcon, sleepingIcon } from './icons.js';
  * The bubble above the portrait: what Ismail is probably up to right now.
  *
  * The hour is the reader's own, so the line lands with their day rather
- * than a clock they cannot see. Hovering and the photo swap are pure CSS;
- * this only keeps the words true, reading the clock again on every hover
- * rather than once at load.
+ * than a clock they cannot see. The message stays visible above the cursor-following avatar.
+ * Refresh it when the reader returns or leaves the page open across an hour.
  */
 const STATES = [
     { until: 7, text: 'finding it hard to sleep?', icon: sleepingIcon },
@@ -32,7 +31,10 @@ export function initPresence() {
 
     paint();
     // The reader may leave the page open across a change of hour.
-    portrait.addEventListener('pointerenter', paint);
+    setInterval(paint, 60_000);
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) paint();
+    });
     portrait.addEventListener('focusin', paint);
 }
 
