@@ -7,6 +7,7 @@ const PAPERS = [
     { label: 'Green', color: '#00e935' },
 ];
 const AVATAR_ASSETS = { sky: '01', lilac: '02', scout: '03', sunny: '04', peach: '05', night: '06', mint: '07', buddy: '08', star: '09', hello: '10', shades: '11', bowtie: '12' };
+const AVATAR_COLORS = { sky: '#80bbff', lilac: '#da9aef', scout: '#c1c6ab', sunny: '#f5d34e', peach: '#ebb4aa', night: '#d6d6e0', mint: '#cde7cd', buddy: '#fa965f', star: '#f0ac0e', hello: '#199b73', shades: '#f5d34e', bowtie: '#d6d6e0' };
 const PICKER_AVATARS = [...NOTE_AVATARS].sort((a, b) => AVATAR_ASSETS[a.id].localeCompare(AVATAR_ASSETS[b.id]));
 const editorAvatar = avatar => `<img class="note-avatar__art" src="/assets/note-ui/avatar-${AVATAR_ASSETS[avatar.id]}.svg" width="52" height="52" alt="" />`;
 
@@ -31,7 +32,7 @@ export function initPileNote(note) {
                         </div>
                     </div>
                 <button type="button" class="note-editor__close" aria-label="Close note">
-                    <img src="/assets/note-ui/close.svg" width="14.122" height="14.122" alt="" />
+                    <span class="note-editor__close-icon" aria-hidden="true"></span>
                 </button>
                 </div>
             </header>
@@ -49,15 +50,15 @@ export function initPileNote(note) {
                     </div>
                     <div class="note-editor__name-field">
                         <input class="note-editor__name" name="name" placeholder="Enter your name" aria-label="Your name (optional)" maxlength="80" autocomplete="name" />
-                        <button type="button" class="note-editor__clear-name" aria-label="Clear name" hidden>×</button>
+                        <button type="button" class="note-editor__clear-name" aria-label="Clear name" hidden><span aria-hidden="true"></span></button>
                     </div>
                 </div>
-                <button type="submit" class="note-editor__send">send <span class="note-editor__send-icon"><img src="/assets/note-ui/send.svg" width="14.7982" height="14.3604" alt="" /></span></button>
+                <button type="submit" class="note-editor__send">send <span class="note-editor__send-icon" aria-hidden="true"></span></button>
             </footer>
         </form>
         <section class="note-editor__receipt" aria-labelledby="note-receipt-title" tabindex="-1" hidden>
             <button type="button" class="note-editor__close" aria-label="Close confirmation">
-                <img src="/assets/note-ui/close.svg" width="14.122" height="14.122" alt="" />
+                <span class="note-editor__close-icon" aria-hidden="true"></span>
             </button>
             <div class="note-editor__receipt-body">
                 <span class="note-editor__receipt-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m13 24 8 8 15-17"/></svg></span>
@@ -150,6 +151,7 @@ export function initPileNote(note) {
         avatarId = choice.dataset.avatar;
         const avatar = NOTE_AVATARS.find(avatar => avatar.id === avatarId);
         avatarToggle.innerHTML = editorAvatar(avatar);
+        dialog.style.setProperty('--note-avatar-color', AVATAR_COLORS[avatarId]);
         avatarToggle.setAttribute('aria-label', `Avatar: ${avatar.label}. Choose another avatar`);
         avatarChoices.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button === choice)));
         changed();
