@@ -15,6 +15,7 @@ import { initDock } from './dock.js';
 import { initPageSearch } from './page-search.js';
 import { initTalkPill } from './talk-pill.js';
 import { initChipStacks } from './chip-stack.js';
+import { initConnect } from './connect.js';
 
 /* ── Theme ───────────────────────────────────────────────── */
 
@@ -39,6 +40,7 @@ async function boot() {
     initChipStacks();
     renderProjects(document.getElementById('personal-list'));
     initContactCard();
+    initConnect();
     initBookingModal();
     initPresence();
     initStatus();

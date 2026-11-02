@@ -1,6 +1,6 @@
 /* Pages opt in explicitly. Width stays at the existing page default
    until a visitor moves an edge; touch layouts keep the original shell. */
-.shell-resize { display: none; }
+.shell-resize { display: none; --resize-accent: #00e935; --resize-accent-soft: #00e93526; }
 
 @media (min-width: 900px) and (pointer: fine) {
     [data-resizable-shell] { container-type: inline-size; }
@@ -34,9 +34,9 @@
         transition: border-color 160ms ease;
     }
 
-    .shell-resize:has(.shell-resize__handle--left:is(:hover, :focus-visible)) { border-left-color: var(--accent); }
-    .shell-resize:has(.shell-resize__handle--right:is(:hover, :focus-visible)) { border-right-color: var(--accent); }
-    .shell-resize.is-dragging { border-inline-color: var(--accent); }
+    .shell-resize:has(.shell-resize__handle--left:is(:hover, :focus-visible)) { border-left-color: var(--resize-accent); }
+    .shell-resize:has(.shell-resize__handle--right:is(:hover, :focus-visible)) { border-right-color: var(--resize-accent); }
+    .shell-resize.is-dragging { border-inline-color: var(--resize-accent); }
 
     .shell-resize__handle {
         position: absolute;
@@ -73,13 +73,13 @@
     .shell-resize__handle:hover::before,
     .shell-resize__handle:focus-visible::before,
     .shell-resize.is-dragging .shell-resize__handle::before {
-        border-color: var(--accent);
-        background: color-mix(in srgb, var(--background) 88%, var(--accent));
+        border-color: var(--resize-accent);
+        background: color-mix(in srgb, var(--background) 88%, var(--resize-accent));
         transform: translate(-50%, -50%) scale(1.18);
     }
     /* Focus belongs to the visible grip, not its larger pointer hit area. */
     .shell-resize__handle:focus-visible { outline: none; }
-    .shell-resize__handle:focus-visible::before { box-shadow: 0 0 0 3px var(--accent-soft); }
+    .shell-resize__handle:focus-visible::before { box-shadow: 0 0 0 3px var(--resize-accent-soft); }
 
     .shell-resize__hint {
         position: absolute;

@@ -1,0 +1,34 @@
+/* The contact panel shares the command menu's surface, width and backdrop. */
+.chip--button { border: 0; font-family: inherit; font-weight: inherit; cursor: pointer; }
+.connect-dialog__head { justify-content: space-between; }
+.connect-dialog__head h2 { font-size: 15px; font-weight: 500; }
+.connect-dialog__head button { min-width: 32px; min-height: 32px; }
+.connect-dialog__body { padding: 8px; overflow-y: auto; overscroll-behavior: contain; }
+.connect-dialog__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 12px; }
+.connect-dialog h3 { margin: 0; color: var(--text-primary); font-size: 15px; font-weight: 400; }
+.connect-dialog__detail { margin: 3px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+a.connect-dialog__detail { display: inline-block; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a.connect-dialog__detail:hover { text-decoration-line: underline; }
+.connect-dialog__action, .connect-dialog__socials { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--border-strong); border-radius: 999px; background: transparent; color: var(--text-primary); }
+.connect-dialog__action { gap: 6px; min-height: 36px; min-width: 78px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+.connect-dialog__action svg, .connect-dialog__socials svg, .connect-dialog__other svg { width: 16px; height: 16px; flex-shrink: 0; }
+.connect-dialog__socials a { display: grid; place-items: center; width: 38px; min-height: 36px; }
+.connect-dialog__socials a:first-child { border-radius: 999px 0 0 999px; }
+.connect-dialog__socials a:last-child { border-inline-start: 1px solid var(--border-strong); border-radius: 0 999px 999px 0; }
+.connect-dialog__action:hover, .connect-dialog__socials a:hover { background: var(--control); }
+.connect-dialog__other { padding: 12px 4px 4px; border-radius: var(--r-md); background: var(--surface); }
+.connect-dialog__other h3 { padding: 0 8px 6px; font-size: 12px; color: var(--text-tertiary); }
+.connect-dialog__other a { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 8px; border-radius: 10px; font-size: 14px; }
+.connect-dialog__other a:hover { background: var(--control); }
+.connect-dialog__other svg { color: var(--text-tertiary); }
+.connect-dialog__status { margin: 0; padding: 0 12px 12px; font-size: 12px; color: var(--text-secondary); }
+.connect-dialog :is(a, button):focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+@media (pointer: coarse) {
+    .connect-dialog__action, .connect-dialog__socials a { min-height: 44px; }
+    .connect-dialog__socials a { width: 40px; }
+    .connect-dialog__other a { min-height: 44px; }
+}
+@media (max-width: 359px) {
+    .connect-dialog__row { padding-inline: 8px; gap: 8px; }
+    .connect-dialog__detail { font-size: 12px; }
+}
