@@ -217,6 +217,103 @@
     object-fit: var(--case-image-fit, cover);
 }
 
+@font-face {
+    font-family: SterlingYouth;
+    src: url('/assets/card-studio/fonts/Youth-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+.sterling-card {
+    position: relative;
+    aspect-ratio: 1671 / 1182;
+    min-height: 300px;
+    background: #dedede;
+    color: #515151;
+}
+.sterling-card__scene {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    perspective: 1100px;
+}
+.sterling-card__object { z-index: 1; }
+.sterling-card__scene.is-webgl:has(.sterling-card__object:focus-visible) .sterling-card__canvas { filter: brightness(1.12); }
+.sterling-card__object {
+    position: relative;
+    display: block;
+    width: 44%;
+    aspect-ratio: 1.586;
+    padding: 0;
+    border: 0;
+    border-radius: 3.715% / 5.891%;
+    background: transparent;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--card-x, 0deg)) rotateY(var(--card-y, 0deg));
+    transition: transform 360ms ease-out;
+    cursor: grab;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+}
+.sterling-card__object.is-dragging { cursor: grabbing; transition: none; }
+.sterling-card__object:focus { outline: none; }
+.sterling-card__object:focus-visible { filter: brightness(1.12) drop-shadow(0 0 12px #7b151c80); }
+.sterling-card__face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    container-type: inline-size;
+    background: #bf323d;
+    box-shadow: 0 30px 90px -20px #b52a3438, 0 45px 150px 10px #b52a3426;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.sterling-card__face::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 130% 150% at var(--light-x, 50%) var(--light-y, 35%), #ffffff52 0%, #ffffff26 35%, #ffffff08 70%, transparent 100%),
+        linear-gradient(115deg, #ffffff0d, transparent 45%, #49061133);
+}
+.sterling-card__face::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .17;
+    background-image: url('/assets/sterling-card-grain.svg');
+    mix-blend-mode: soft-light;
+}
+.sterling-card__front { transform: translateZ(1px); }
+.sterling-card__back { transform: rotateY(180deg) translateZ(1px); }
+.sterling-card .sterling-card__brand { position: absolute; top: 6%; right: 4.5%; width: 28%; height: auto; }
+.sterling-card .sterling-card__chip { position: absolute; top: 37.42%; left: 11.33%; width: 14.6%; height: auto; }
+.sterling-card .sterling-card__network { position: absolute; bottom: 6%; right: 4.5%; width: 19%; height: auto; }
+.sterling-card__stripe { position: absolute; background: #100f0f; }
+.sterling-card .sterling-card__back-art { position: absolute; object-fit: contain; }
+.sterling-card__text { position: absolute; overflow: hidden; white-space: nowrap; color: #fff; font-family: SterlingYouth, sans-serif; font-weight: 700; line-height: 1.2; }
+.sterling-card__help {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+@media (max-width: 600px) {
+    .sterling-card__object { width: 70%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sterling-card__object { transition: none; }
+}
+
 .case-studio { margin: 0; scroll-margin-top: 88px; }
 .case-studio__frame {
     position: relative;
