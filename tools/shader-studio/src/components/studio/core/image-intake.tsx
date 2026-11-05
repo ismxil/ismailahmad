@@ -1,0 +1,119 @@
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useHotkeys } from './hotkeys'
+
+export interface IntakeImage { file: File; name: string; url: string; type: string; size: number }
+
+export interface ImageIntakeOptions {
+  accept?: string
+  scope?: 'window' | 'element'
+  hotkey?: string | false
+  paste?: boolean
+  enabled?: boolean
+  /** called when a dropped / pasted / picked file can't be used — toast it (break-it S10) */
+  onReject?: (file: File | null, reason: 'type' | 'empty') => void
+}
+
+export interface ImageIntake {
+  /** a file is being dragged over the drop target */
+  over: boolean
+  /** open the file picker */
+  open: () => void
+  /** spread on the drop target when scope = 'element' (harmless otherwise) */
+  dropProps: {
+    onDragEnter: (e: React.DragEvent) => void
+    onDragOver: (e: React.DragEvent) => void
+    onDragLeave: (e: React.DragEvent) => void
+    onDrop: (e: React.DragEvent) => void
+  }
+  /** the hidden file input; render it once */
+  input: ReactNode
+  /** the last image taken in (its url stays valid until the next one) */
+  current: IntakeImage | null
+}
+
+const accepts = (accept: string, f: File) =>
+  accept.split(',').map((s) => s.trim()).some((a) => (a.endsWith('/*') ? f.type.startsWith(a.slice(0, -1)) : a.startsWith('.') ? f.name.toLowerCase().endsWith(a.toLowerCase()) : f.type === a))
+
+const hasFiles = (dt: DataTransfer | null) => !!dt && [...dt.types].includes('Files')
+const typing = (t: EventTarget | null) => { const el = t as HTMLElement | null; return !!el && (el.isContentEditable || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') }
+
+export function useImageIntake(onImage: (img: IntakeImage) => void, opts: ImageIntakeOptions = {}): ImageIntake {
+  const { accept = 'image/*', scope = 'window', hotkey = 'mod+o', paste = true, enabled = true } = opts
+  const [over, setOver] = useState(false)
+  const [current, setCurrent] = useState<IntakeImage | null>(null)
+  const input = useRef<HTMLInputElement>(null)
+  const cb = useRef(onImage)
+  cb.current = onImage
+  const rejectRef = useRef(opts.onReject)
+  rejectRef.current = opts.onReject
+  const lastURL = useRef<string | null>(null)
+
+  const take = (files: Iterable<File> | ArrayLike<File> | null | undefined) => {
+    const list = Array.from(files ?? [])
+    const f = list.find((x) => accepts(accept, x))
+    if (!f) { if (list.length) rejectRef.current?.(list[0], 'type'); return false }
+    if (f.size === 0) { rejectRef.current?.(f, 'empty'); return false }
+    if (lastURL.current) URL.revokeObjectURL(lastURL.current)
+    const url = URL.createObjectURL(f)
+    lastURL.current = url
+    const img = { file: f, name: f.name || `Pasted image.${f.type.split('/')[1] ?? 'png'}`, url, type: f.type, size: f.size }
+    setCurrent(img)
+    cb.current(img)
+    return true
+  }
+  const takeRef = useRef(take)
+  takeRef.current = take
+
+  useEffect(() => () => { if (lastURL.current) URL.revokeObjectURL(lastURL.current) }, [])
+
+  useEffect(() => {
+    if (!enabled) return
+    const onPaste = (e: ClipboardEvent) => {
+      if (!paste || typing(e.target)) return
+      if (takeRef.current(e.clipboardData?.files)) e.preventDefault()
+    }
+    window.addEventListener('paste', onPaste)
+    if (scope !== 'window') return () => window.removeEventListener('paste', onPaste)
+    let depth = 0
+    const enter = (e: DragEvent) => { if (!hasFiles(e.dataTransfer)) return; e.preventDefault(); depth++; setOver(true) }
+    const overEv = (e: DragEvent) => { if (!hasFiles(e.dataTransfer)) return; e.preventDefault(); if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy' }
+    const leave = (e: DragEvent) => { if (!hasFiles(e.dataTransfer)) return; depth = Math.max(0, depth - 1); if (!depth) setOver(false) }
+    const drop = (e: DragEvent) => {
+      if (!hasFiles(e.dataTransfer)) return
+      depth = 0
+      setOver(false)
+      // an element underneath (an ImageDrop well) already took it
+      if (e.defaultPrevented) return
+      e.preventDefault()
+      takeRef.current(e.dataTransfer?.files)
+    }
+    window.addEventListener('dragenter', enter)
+    window.addEventListener('dragover', overEv)
+    window.addEventListener('dragleave', leave)
+    window.addEventListener('drop', drop)
+    return () => {
+      window.removeEventListener('paste', onPaste)
+      window.removeEventListener('dragenter', enter)
+      window.removeEventListener('dragover', overEv)
+      window.removeEventListener('dragleave', leave)
+      window.removeEventListener('drop', drop)
+    }
+  }, [enabled, paste, scope])
+
+  const open = () => input.current?.click()
+  useHotkeys(hotkey && enabled ? { [hotkey]: { run: open, label: 'Open image…', group: 'File' } } : {}, [hotkey, enabled])
+
+  const el = scope === 'element' && enabled
+  return {
+    over,
+    open,
+    current,
+    dropProps: {
+      onDragEnter: (e) => { if (el && hasFiles(e.dataTransfer)) { e.preventDefault(); setOver(true) } },
+      onDragOver: (e) => { if (el && hasFiles(e.dataTransfer)) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy' } },
+      onDragLeave: (e) => { if (el && !e.currentTarget.contains(e.relatedTarget as Node | null)) setOver(false) },
+      onDrop: (e) => { if (!el || !hasFiles(e.dataTransfer)) return; e.preventDefault(); setOver(false); take(e.dataTransfer.files) },
+    },
+    input: <input ref={input} type="file" accept={accept} hidden onChange={(e) => { take(e.target.files); e.target.value = '' }} />,
+  }
+}

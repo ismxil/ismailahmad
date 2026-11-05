@@ -1,0 +1,37 @@
+{
+  "name": "billboard-shader-studio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5280",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "rueca:update": "sh scripts/update-rueca.sh",
+    "publish": "tsc -b && vite build --base /create/ --outDir ../../create --emptyOutDir"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.9.0",
+    "@xyflow/react": "^12.12.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "inter-ui": "^4.1.1",
+    "lucide-react": "^1.68.0",
+    "mediabunny": "^1.65.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwind-merge": "^3.7.0",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.4",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.4",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.5"
+  }
+}

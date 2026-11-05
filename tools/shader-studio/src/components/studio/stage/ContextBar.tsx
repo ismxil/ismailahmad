@@ -1,0 +1,90 @@
+import { useLayoutEffect, useRef, type ComponentType, type ReactNode } from 'react'
+import { cn } from '../core/cn'
+import { IconButton } from '../ui/button'
+import { Menu, type MenuItem } from '../ui/controls'
+
+type IconCmp = ComponentType<{ size?: number; strokeWidth?: number }>
+export type ContextAction =
+  | { type?: 'action'; id?: string; icon: IconCmp; label: string; shortcut?: string; onClick: () => void; active?: boolean; disabled?: boolean }
+  | { type: 'menu'; id?: string; icon: IconCmp; label: string; items: MenuItem[]; active?: boolean; align?: 'start' | 'center' | 'end' }
+  | { type: 'divider' }
+  | { type: 'custom'; id?: string; node: ReactNode }
+
+export interface ContextBarProps {
+  anchor: { x: number; y: number; w: number; h: number }
+  actions?: (ContextAction | false | null | undefined)[]
+  children?: ReactNode
+  /** distance below the anchor (px) */
+  gap?: number
+  /** keep-out margins inside the positioned parent */
+  inset?: { top?: number; right?: number; bottom?: number; left?: number }
+  label?: string
+  className?: string
+}
+
+function tidy(list: ContextBarProps['actions']) {
+  const out: ContextAction[] = []
+  for (const a of list ?? []) {
+    if (!a) continue
+    if (a.type === 'divider' && (!out.length || out.at(-1)!.type === 'divider')) continue
+    out.push(a)
+  }
+  while (out.length && out.at(-1)!.type === 'divider') out.pop()
+  return out
+}
+
+const HIDDEN = { left: -9999, top: -9999, opacity: 0 } // until the first layout pass places it
+
+export function ContextBar({ anchor, actions, children, gap = 34, inset = {}, label = 'Selection actions', className }: ContextBarProps) {
+  const el = useRef<HTMLDivElement>(null)
+  const { top: it = 8, right: ir = 8, bottom: ib = 8, left: il = 8 } = inset
+  useLayoutEffect(() => {
+    const node = el.current
+    const parent = node?.offsetParent as HTMLElement | null
+    if (!node || !parent) return
+    const W = parent.clientWidth, H = parent.clientHeight
+    const w = node.offsetWidth, h = node.offsetHeight
+    let top = anchor.y + anchor.h + gap
+    if (top + h > H - ib) top = anchor.y - h - Math.max(8, gap - 4)
+    if (top < it) top = Math.min(H - h - ib, Math.max(it, anchor.y + 8))
+    const left = Math.min(W - w - ir, Math.max(il, anchor.x + anchor.w / 2 - w / 2))
+    // placed straight on the node: a state update here re-rendered the bar (and its buttons) on every camera move
+    node.style.left = `${left}px`; node.style.top = `${top}px`; node.style.opacity = '1'
+  })
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+    if (!keys.includes(e.key)) return
+    const items = [...(el.current?.querySelectorAll<HTMLElement>('button:not([disabled])') ?? [])]
+    const i = items.indexOf(document.activeElement as HTMLElement)
+    const next = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : e.key === 'ArrowRight' ? Math.min(items.length - 1, i + 1) : Math.max(0, i - 1)
+    items[next]?.focus()
+    e.preventDefault()
+    e.stopPropagation()
+  }
+  return (
+    <div
+      ref={el}
+      role="toolbar"
+      aria-label={label}
+      aria-orientation="horizontal"
+      data-chrome
+      onPointerDown={(e) => e.stopPropagation()}
+      onKeyDown={onKeyDown}
+      className={cn('cluster pointer-events-auto absolute flex h-bar items-center gap-0.5 px-1 transition-opacity duration-150', className)}
+      style={HIDDEN}
+    >
+      {tidy(actions).map((a, i) => {
+        if (a.type === 'divider') return <ContextBarDivider key={`d${i}`} />
+        if (a.type === 'custom') return <span key={a.id ?? `c${i}`} className="contents">{a.node}</span>
+        if (a.type === 'menu') return <Menu key={a.id ?? a.label} align={a.align ?? 'center'} items={a.items} trigger={<IconButton icon={a.icon} label={a.label} active={a.active} />} />
+        return <IconButton key={a.id ?? a.label} icon={a.icon} label={a.label} shortcut={a.shortcut} active={a.active} disabled={a.disabled} onClick={a.onClick} />
+      })}
+      {children}
+    </div>
+  )
+}
+
+function ContextBarDivider() {
+  return <div role="separator" aria-orientation="vertical" className="mx-0.5 h-4 w-px bg-line" />
+}
+ContextBar.Divider = ContextBarDivider

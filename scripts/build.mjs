@@ -22,7 +22,8 @@ await build({
 
 await rm('public', { recursive: true, force: true });
 await mkdir('public');
-for (const directory of ['assets', 'css', 'js', 'data']) {
+// create/ is the prebuilt shader studio at /create (npm run shader:publish builds it from tools/shader-studio)
+for (const directory of ['assets', 'css', 'js', 'data', 'create']) {
     await cp(directory, `public/${directory}`, { recursive: true, filter: path => !path.endsWith('.DS_Store') && path !== 'assets/pdf' });
 }
 for (const file of await readdir('.')) {
