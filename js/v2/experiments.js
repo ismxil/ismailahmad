@@ -36,7 +36,8 @@ export const experimentItems = [
         alt: 'Shader Studio with a glossy black 3D smiley on a green poster',
         href: '/create',
         external: true,
-    },    {
+    },
+    {
         name: 'Prompts',
         caption: 'Useful prompts, collected',
         image: '/assets/experiments/prompts.webp?v=1',
