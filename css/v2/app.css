@@ -1485,6 +1485,19 @@ dialog[tabindex="-1"]:focus-visible {
     padding: 4px;
     margin: -4px;
     scroll-padding-inline: 4px;
+    /* Soft edges instead of a hard cut where plates run out of view. */
+    --fade-before: 0px;
+    --fade-after: 0px;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade-before), #000 calc(100% - var(--fade-after)), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 var(--fade-before), #000 calc(100% - var(--fade-after)), transparent);
+}
+
+.experiment-rail[data-more-before] {
+    --fade-before: 48px;
+}
+
+.experiment-rail[data-more-after] {
+    --fade-after: 96px;
 }
 
 .experiment-rail::-webkit-scrollbar {
@@ -1492,7 +1505,8 @@ dialog[tabindex="-1"]:focus-visible {
 }
 
 .experiment {
-    flex: 0 0 clamp(200px, 40%, 280px);
+    /* One whole plate and half of the next, which the fade carries off. */
+    flex: 0 0 calc((100% - 12px) / 1.5);
     scroll-snap-align: start;
 }
 
@@ -1509,7 +1523,7 @@ dialog[tabindex="-1"]:focus-visible {
 
 .experiment__media {
     display: block;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
     border-radius: var(--r-lg);
     background: var(--surface);
@@ -1546,7 +1560,7 @@ dialog[tabindex="-1"]:focus-visible {
 
 @media (max-width: 639px) {
     .experiment {
-        flex-basis: 68%;
+        flex-basis: 82%;
     }
 }
 

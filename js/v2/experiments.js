@@ -15,6 +15,13 @@ export const experimentItems = [
         external: true,
     },
     {
+        name: 'Sterling Classic card',
+        caption: 'Tilt, spin and flip the card',
+        image: '/assets/experiments/sterling-card.webp',
+        alt: 'A red Sterling Classic Verve card floating on a grey stage',
+        href: '/work/sterling',
+    },
+    {
         name: 'Tiny Lagos',
         caption: 'A painted map of the city',
         image: '/assets/experiments/tiny-lagos.webp',
@@ -26,23 +33,9 @@ export const experimentItems = [
         name: 'Shader Studio',
         caption: 'Animated posters from a smiley',
         image: '/assets/experiments/shader-studio.webp',
-        alt: 'A glossy black 3D smiley on a green poster',
+        alt: 'Shader Studio with a glossy black 3D smiley on a green poster',
         href: '/create',
         external: true,
-    },
-    {
-        name: 'The desk',
-        caption: 'Spin a record, leave a note',
-        image: '/assets/experiments/desk.webp',
-        alt: 'A vinyl player, photographs and books on the About page',
-        href: '/about#pile',
-    },
-    {
-        name: 'Version 1',
-        caption: 'The first version of this site',
-        image: '/assets/experiments/version-one.webp',
-        alt: 'The first version of this site with a large name heading',
-        href: '/v1',
     },
 ];
 
@@ -57,7 +50,7 @@ export function renderExperiments(mount) {
             return `<li class="experiment">
                 <a class="experiment__link" href="${escape(item.href)}"${target}>
                     <span class="experiment__media">
-                        <img src="${escape(item.image)}" alt="${escape(item.alt)}" width="640" height="800" loading="lazy" decoding="async" />
+                        <img src="${escape(item.image)}" alt="${escape(item.alt)}" width="960" height="600" loading="lazy" decoding="async" />
                     </span>
                     <span class="experiment__title">${escape(item.name)}</span>
                     <span class="experiment__caption">${escape(item.caption)}</span>
@@ -86,6 +79,11 @@ export function renderExperiments(mount) {
         const max = mount.scrollWidth - mount.clientWidth - 1;
         prev.disabled = mount.scrollLeft <= 1;
         next.disabled = mount.scrollLeft >= max;
+        // Fade only an edge that cuts through a plate. Stepping snaps each
+        // plate flush to the left, so that edge is only cut at the very end,
+        // where the last plate sits flush right instead.
+        mount.toggleAttribute('data-more-before', !prev.disabled && next.disabled);
+        mount.toggleAttribute('data-more-after', !next.disabled);
         section.toggleAttribute('data-rail-static', max <= 0);
     }
     const scroll = (dir) => mount.scrollBy({ left: dir * step(), behavior: still.matches ? 'auto' : 'smooth' });
