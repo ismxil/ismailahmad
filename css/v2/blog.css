@@ -13,14 +13,115 @@
 .blog-header h1 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.2; letter-spacing: -0.025em; text-wrap: balance; }
 .blog-header p { margin-top: 16px; }
 
-/* 20px matches .archive-grid's gap below the nav — the heading that used
-   to space this list has gone. */
-.blog-list { display: grid; gap: 32px; margin: 20px 0 96px; }
+/* ── The index: search, layout toggle, list ──────────────── */
+
+.blog-tools {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0 24px;
+}
+
+.blog-tools__search {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-tertiary);
+}
+
+.blog-tools__search svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+.blog-tools__search input {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text-primary);
+    font: inherit;
+    /* 16px minimum — iOS zooms the viewport on focus below this */
+    font-size: 16px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.blog-tools__search input::placeholder { color: var(--text-tertiary); }
+.blog-tools__search input::-webkit-search-cancel-button { display: none; }
+.blog-tools__search:focus-within { color: var(--text-secondary); }
+
+.blog-tools__views { display: flex; gap: 4px; flex-shrink: 0; }
+
+.blog-tools__view {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: color 0.15s ease-out, opacity 0.15s ease-out, background-color 0.15s ease-out;
+}
+
+.blog-tools__view svg { width: 20px; height: 20px; }
+.blog-tools__view:hover { opacity: 1; background: var(--control); }
+.blog-tools__view[aria-pressed="true"] { color: var(--text-primary); opacity: 1; }
+.blog-tools__view:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+.blog-list { margin: 0 0 96px; }
+.blog-list > li[hidden] { display: none; }
 .blog-list a { display: block; }
 .blog-list h2 { font-size: 20px; line-height: 1.3; letter-spacing: -0.012em; text-wrap: balance; }
-.blog-list a:hover h2 { text-decoration: underline; text-underline-offset: 4px; }
-.blog-list p { margin-top: 8px; font-size: 16px; line-height: 1.6; }
-.blog-list time, .post-meta { display: block; margin-top: 12px; color: var(--text-tertiary); font-size: 14px; line-height: 1.5; }
+.blog-list p { margin-top: 12px; color: var(--text-secondary); font-size: 16px; line-height: 1.6; }
+.blog-list__year, .blog-list__day { display: none; }
+.blog-empty { margin: 8px 0 96px; color: var(--text-tertiary); font-size: 16px; }
+
+/* Expanded: title, date, then the excerpt — one entry per breath. */
+.blog-list:not([data-view="compact"]) { display: grid; gap: 48px; }
+.blog-list:not([data-view="compact"]) a:hover h2 { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--border-strong); }
+.blog-list:not([data-view="compact"]) .blog-list__date { margin-top: 6px; }
+
+/* Compact: year · title · day, ruled like a ledger. */
+.blog-list[data-view="compact"] { display: flex; flex-direction: column; }
+.blog-list[data-view="compact"] > li:not([hidden]) ~ li:not([hidden]) { border-top: 1px solid var(--border); }
+.blog-list[data-view="compact"] a {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 16px;
+    padding: 14px 0;
+}
+.blog-list[data-view="compact"] h2 {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    text-wrap: pretty;
+    transition: color 0.15s ease-out;
+}
+.blog-list[data-view="compact"] :is(.blog-list__year, .blog-list__day) {
+    display: block;
+    color: var(--text-tertiary);
+    font-size: 16px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+}
+.blog-list[data-view="compact"] :is(.blog-list__date, p) { display: none; }
+.blog-list[data-view="compact"]:has(a:hover) h2 { color: var(--text-tertiary); }
+.blog-list[data-view="compact"] a:hover h2 { color: var(--text-primary); }
+
+@media (max-width: 479px) {
+    .blog-list[data-view="compact"] a { grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; }
+}
+
+.blog-list__date, .post-meta { display: block; margin-top: 12px; color: var(--text-tertiary); font-size: 14px; line-height: 1.5; }
 
 .post-body { color: var(--text-primary); font-size: 16px; line-height: 1.7; overflow-wrap: anywhere; text-wrap: pretty; }
 .post-body > * + * { margin-top: 24px; }
@@ -263,3 +364,114 @@
 /* Clear the sticky header pill when jumping from the contents */
 .blog-header,
 .post-body [id] { scroll-margin-top: 88px; }
+
+/* ── Contents on phones and tablets ──────────────────────────
+   A progress ring in the lower-left corner, dimmed until touched, so the
+   index is one tap away without covering the text. Hidden wherever the
+   margin index (.page-toc) is shown. */
+
+.toc-pill {
+    position: fixed;
+    left: max(16px, env(safe-area-inset-left));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+@media (min-width: 1180px) and (hover: hover) and (pointer: fine) {
+    .toc-pill { display: none; }
+}
+
+.toc-pill__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(from var(--raised) r g b / 0.72);
+    box-shadow: var(--tray-shadow);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: var(--text-primary);
+    cursor: pointer;
+    opacity: 0.55;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.2s ease-out, scale 0.15s ease-out;
+}
+
+.toc-pill__button:active { scale: 0.94; }
+.toc-pill.is-open .toc-pill__button,
+.toc-pill__button:focus-visible { opacity: 1; }
+
+.toc-pill__button svg { width: 22px; height: 22px; rotate: -90deg; }
+.toc-pill__button circle { fill: none; stroke-width: 2.5; }
+.toc-pill__track { stroke: var(--border-strong); }
+.toc-pill__progress { stroke: currentColor; stroke-linecap: round; }
+
+.toc-pill__panel {
+    width: min(300px, calc(100vw - 32px));
+    max-height: min(60vh, 420px);
+    overflow-y: auto;
+    padding: 6px;
+    border-radius: var(--r-xl);
+    background: var(--raised);
+    box-shadow: var(--popover-shadow);
+    transform-origin: bottom left;
+    animation: toc-pill-in 0.18s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.toc-pill__panel[hidden] { display: none; }
+
+@keyframes toc-pill-in {
+    from { opacity: 0; scale: 0.96; translate: 0 6px; }
+}
+
+.toc-pill__list a {
+    position: relative;
+    display: block;
+    padding: 10px 12px 10px 30px;
+    border-radius: 14px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.35;
+}
+
+.toc-pill__list a::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: calc(10px + 0.675em - 3px);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.35;
+}
+
+.toc-pill__sub a { padding-left: 42px; }
+.toc-pill__sub a::before { left: 25px; }
+
+.toc-pill__list a[aria-current] {
+    background: var(--control);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.toc-pill__list a[aria-current]::before { opacity: 1; }
+
+html:has(.toc-pill) { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+    html:has(.toc-pill) { scroll-behavior: auto; }
+    .toc-pill__panel { animation: none; }
+}
+
+@media print {
+    .toc-pill { display: none; }
+}
