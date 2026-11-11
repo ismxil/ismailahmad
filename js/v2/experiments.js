@@ -9,7 +9,7 @@ export const experimentItems = [
     {
         name: 'Card Studio',
         caption: 'Design a Sterling bank card',
-        image: '/assets/experiments/card-studio.webp',
+        image: '/assets/experiments/card-studio.webp?v=2',
         alt: 'Card Studio editing a red Sterling card with Verve branding',
         href: '/assets/card-studio/index.html',
         external: true,
@@ -17,14 +17,14 @@ export const experimentItems = [
     {
         name: 'Sterling Classic card',
         caption: 'Tilt, spin and flip the card',
-        image: '/assets/experiments/sterling-card.webp',
+        image: '/assets/experiments/sterling-card.webp?v=2',
         alt: 'A red Sterling Classic Verve card floating on a grey stage',
         href: '/work/sterling',
     },
     {
         name: 'Tiny Lagos',
         caption: 'A painted map of the city',
-        image: '/assets/experiments/tiny-lagos.webp',
+        image: '/assets/experiments/tiny-lagos.webp?v=2',
         alt: 'Painted miniature map of Lagos with the airport and Marina',
         href: 'https://tiny-lagos.ismailahmad.com/',
         external: true,
@@ -32,7 +32,7 @@ export const experimentItems = [
     {
         name: 'Shader Studio',
         caption: 'Animated posters from a smiley',
-        image: '/assets/experiments/shader-studio.webp',
+        image: '/assets/experiments/shader-studio.webp?v=2',
         alt: 'Shader Studio with a glossy black 3D smiley on a green poster',
         href: '/create',
         external: true,

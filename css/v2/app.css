@@ -335,13 +335,42 @@ ul {
 /* Rendered from the supplied Blender head. Only the head turns; its
    green background and the surrounding controls stay still. */
 .identity__avatar[data-cursor-avatar] { background: #00e935; }
-.identity__avatar.has-cursor-avatar > img { visibility: hidden; }
+.identity__avatar.has-cursor-avatar > img:not(.identity__avatar-alt) { visibility: hidden; }
 .identity__avatar canvas {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
+}
+
+/* The smiling photo waits on top of the chrome head and crossfades in on
+   hover, so the swap has nothing to load and nothing to flash. */
+.identity__avatar .identity__avatar-alt {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out;
+}
+
+/* Only where there is a pointer: on a phone the tap opens the contact
+   card, and a hover state would simply stick. */
+@media (hover: hover) {
+    .identity__avatar:hover .identity__avatar-alt,
+    .identity__avatar:focus-visible .identity__avatar-alt {
+        opacity: 1;
+    }
+}
+
+/* The intro's last sentence breaks before "or connect" where the measure
+   is wide enough to hold both lines; on a phone the forced break left a
+   ragged "my archive," line, so the text just wraps. */
+@media (max-width: 639px) {
+    .intro__break {
+        display: none;
+    }
 }
 
 .identity__presence {
