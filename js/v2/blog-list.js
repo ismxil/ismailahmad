@@ -4,6 +4,12 @@
  * of year, title and day. The layout choice is remembered.
  */
 import { escapeHTML } from './blog-data.js';
+import { initPageSearch } from './page-search.js';
+import { attachSearchClear } from './search-clear.js';
+
+// A mouse and a wide screen get the site's "/" search dialog; touch
+// screens keep the inline field above the list.
+const DESKTOP = '(min-width: 640px) and (hover: hover) and (pointer: fine)';
 
 const VIEW_KEY = 'blog-view';
 const VIEWS = ['expanded', 'compact'];
@@ -38,12 +44,19 @@ const compactIcon = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" 
 export function blogToolsHTML(view) {
     const button = (name, label, icon) => `<button type="button" class="blog-tools__view"
         data-view="${name}" aria-pressed="${view === name}" aria-label="${label}" title="${label}">${icon}</button>`;
-    return `<div class="blog-tools" data-blog-tools>
-        <label class="blog-tools__search">
+    const desktop = matchMedia(DESKTOP).matches;
+    const search = desktop
+        ? `<button type="button" class="blog-tools__search blog-tools__trigger" aria-haspopup="dialog"
+            aria-label="Search writing">
+            ${searchIcon}<span>Search</span><kbd>/</kbd>
+        </button>`
+        : `<label class="blog-tools__search">
             ${searchIcon}
             <input type="search" placeholder="Search" aria-label="Search writing"
                 autocomplete="off" spellcheck="false" enterkeyhint="search" />
-        </label>
+        </label>`;
+    return `<div class="blog-tools" data-blog-tools>
+        ${search}
         <div class="blog-tools__views" role="group" aria-label="Layout">
             ${button('expanded', 'Show excerpts', expandedIcon)}
             ${button('compact', 'Compact list', compactIcon)}
@@ -71,6 +84,24 @@ export function initBlogTools(mount) {
     const tools = document.querySelector('[data-blog-tools]');
     const list = mount.querySelector('.blog-list');
     if (!tools || !list) return;
+    tools.querySelectorAll('[data-view]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const view = button.dataset.view;
+            list.dataset.view = view;
+            tools.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+            try { localStorage.setItem(VIEW_KEY, view); } catch {}
+        });
+    });
+
+    const trigger = tools.querySelector('.blog-tools__trigger');
+    if (trigger) {
+        // The dialog indexes the rendered list, and owns the "/" key.
+        const open = initPageSearch();
+        if (open) trigger.addEventListener('click', open);
+        else trigger.hidden = true;
+        return;
+    }
+
     const input = tools.querySelector('input');
     const empty = mount.querySelector('.blog-empty');
     const items = [...list.children];
@@ -87,24 +118,17 @@ export function initBlogTools(mount) {
         empty.textContent = shown ? '' : `Nothing matches “${input.value.trim()}”.`;
     }
     input.addEventListener('input', filter);
+    const syncClear = attachSearchClear(input);
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             input.value = '';
+            syncClear();
             filter();
             input.blur();
         } else if (e.key === 'Enter') {
             const first = items.find((item) => !item.hidden)?.querySelector('a');
             if (first) first.click();
         }
-    });
-
-    tools.querySelectorAll('[data-view]').forEach((button) => {
-        button.addEventListener('click', () => {
-            const view = button.dataset.view;
-            list.dataset.view = view;
-            tools.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
-            try { localStorage.setItem(VIEW_KEY, view); } catch {}
-        });
     });
 
     // "/" jumps to the field, the way it opened page search before

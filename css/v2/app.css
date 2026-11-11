@@ -2224,6 +2224,35 @@ kbd {
 .command-menu__bar input { flex: 1; min-width: 0; border: 0; padding: 0; outline: none; background: transparent; color: inherit; font: inherit; /* 16px minimum — iOS zooms the viewport on focus below this */ font-size: 16px; }
 .command-menu__bar input::placeholder { color: var(--text-tertiary); }
 .command-menu__bar button { background: transparent; color: var(--text-secondary); border: 0; cursor: pointer; }
+
+/* Search fields draw their own clear button (js/v2/search-clear.js); the
+   browser's — a blue × in Chrome — is hidden everywhere. */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
+/* The circled ×: the esc key cap's colours (--control under
+   --text-secondary), so closing and clearing feel as quiet as it did. */
+.x-icon { display: block; width: 20px; height: 20px; }
+.x-icon__disc { fill: var(--control); transition: fill 0.15s ease-out; }
+.x-icon__mark { fill: none; stroke: var(--text-secondary); stroke-width: 1.6; stroke-linecap: round; transition: stroke 0.15s ease-out; }
+
+button.search-clear,
+.command-menu__bar button.command-menu__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+}
+button.search-clear[hidden] { display: none; }
+:is(button.search-clear, .command-menu__close):hover .x-icon__disc { fill: var(--control-hover); }
+:is(button.search-clear, .command-menu__close):hover .x-icon__mark { stroke: var(--text-primary); }
+:is(button.search-clear, .command-menu__close):focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
 .command-menu kbd { padding: 2px 5px; border-radius: 4px; background: var(--control); font: 12px/1.4 var(--font-sans); }
 .command-menu__results { max-height: 280px; overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 8px; }
 
