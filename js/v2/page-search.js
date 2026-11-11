@@ -1,3 +1,4 @@
+import { closeIcon } from './search-clear.js';
 /**
  * Page search, opened with "/".
  *
@@ -78,10 +79,11 @@ function collectTargets() {
 
 import { setTalkPillHidden } from './talk-pill.js';
 
+/** Returns an `open` function, or null when the page has too little to search. */
 export function initPageSearch() {
     const targets = collectTargets();
     // Nothing worth searching on a page with one thing on it
-    if (targets.length < 2) return;
+    if (targets.length < 2) return null;
 
     const icon = `<svg class="dock__mark" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
@@ -95,7 +97,7 @@ export function initPageSearch() {
     dialog.innerHTML = `<div class="command-menu__bar">${icon}
         <input id="page-search-input" type="search" placeholder="Search this page…"
             aria-label="Search this page" autocomplete="off" spellcheck="false" />
-        <button type="button" data-menu-close aria-label="Close"><kbd>esc</kbd></button>
+        <button type="button" data-menu-close class="command-menu__close" aria-label="Close" title="Close (esc)">${closeIcon}</button>
         </div><div class="command-menu__results" id="page-search-results"></div>`;
     document.body.appendChild(dialog);
 
@@ -216,4 +218,6 @@ export function initPageSearch() {
         e.preventDefault();
         if (dialog.open) close(); else open();
     });
+
+    return open;
 }

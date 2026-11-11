@@ -1,3 +1,4 @@
+import { closeIcon } from './search-clear.js';
 /**
  * Compact bottom menu shared by the home and project pages.
  *
@@ -43,7 +44,7 @@ export function initDock() {
     const searchIcon = '<svg class="dock__mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>';
     dock.innerHTML = `<div class="command-menu__bar">${searchIcon}
         <input id="dock-input" type="search" placeholder="Jump to…" aria-label="Jump to" autocomplete="off" spellcheck="false" />
-        <button type="button" data-menu-close aria-label="Close menu"><kbd>esc</kbd></button>
+        <button type="button" data-menu-close class="command-menu__close" aria-label="Close menu" title="Close (esc)">${closeIcon}</button>
         </div><div class="command-menu__results" id="dock-results"></div>`;
     document.body.appendChild(dock);
     const input = dock.querySelector('input');
