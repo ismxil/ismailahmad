@@ -4,6 +4,7 @@ import { initLocalTime } from './local-time.js';
  */
 
 import { renderProjects } from './projects.js';
+import { renderExperiments } from './experiments.js';
 import { renderWork } from './work.js';
 import { renderBlogPreview } from './blog-preview.js';
 import { renderArchive } from './archive.js';
@@ -39,6 +40,7 @@ async function boot() {
     initTheme();
     initChipStacks();
     renderProjects(document.getElementById('personal-list'));
+    renderExperiments(document.getElementById('experiments-list'));
     initContactCard();
     initConnect();
     initBookingModal();

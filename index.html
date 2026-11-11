@@ -134,10 +134,10 @@ connect
             </div>
         </section>
 
-        <!-- ── Currently focusing on ─────────────────────────────────── -->
+        <!-- ── Projects ───────────────────────────────────── -->
         <section class="section" id="personal" data-resize-fixed>
             <div class="section__head">
-                <h2 class="section__title">Currently focusing on</h2>
+                <h2 class="section__title">Projects</h2>
             </div>
             <div class="section__body">
                 <ul id="personal-list"></ul>
@@ -160,6 +160,31 @@ connect
             </div>
             <div class="section__body">
                 <ul id="blog-list"></ul>
+            </div>
+        </section>
+
+        <!-- ── Experiments ────────────────────────────────── -->
+        <section class="section" id="experiments">
+            <div class="section__head">
+                <h2 class="section__title">Experiments</h2>
+                <span class="section__count" data-count="experiments"></span>
+                <span class="section__more-wrap rail-nav">
+                    <button type="button" class="rail-nav__btn" data-rail="prev" aria-label="Previous experiments" aria-controls="experiments-list">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M10.75 4.75 6.5 9l4.25 4.25" />
+                        </svg>
+                    </button>
+                    <button type="button" class="rail-nav__btn" data-rail="next" aria-label="Next experiments" aria-controls="experiments-list">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M7.25 4.75 11.5 9l-4.25 4.25" />
+                        </svg>
+                    </button>
+                </span>
+            </div>
+            <div class="section__body">
+                <ul class="experiment-rail" id="experiments-list" aria-label="Experiments you can play with"></ul>
             </div>
         </section>
 
