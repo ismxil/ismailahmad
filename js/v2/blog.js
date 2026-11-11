@@ -1,11 +1,11 @@
 import { beginContentLoad } from './page-transition.js';
 import { articleSignature } from './icons.js';
 import { initDock } from './dock.js';
-import { initPageSearch } from './page-search.js';
 import { getPosts, escapeHTML, formatDate } from './blog-data.js';
 import { renderBody } from '../generated/post-body.js';
 import { renderSubscribe } from './subscribe.js';
-import { anchorIds, contentsHTML, trackContents } from './contents.js';
+import { anchorIds, contentsHTML, contentsPillHTML, trackContents, initContentsPill } from './contents.js';
+import { blogListHTML, blogToolsHTML, initBlogTools, readBlogView } from './blog-list.js';
 import { blogListSkeleton, articleSkeleton, articleHeadSkeleton, watchImageSkeletons } from './skeleton.js';
 
 initDock();
@@ -57,19 +57,25 @@ function renderContents() {
     const nested = headings.some((h) => h.classList.contains('post-h1'));
     const article = mount.closest('article');
     article.querySelector('.blog-header').id = 'introduction';
-    article.insertAdjacentHTML('afterbegin', contentsHTML({ href: '/blog', label: 'Writing' }, [
+    const items = [
         { id: 'introduction', label: 'Introduction' },
         ...headings.map((h, i) => ({
             id: ids[i],
             label: label(h),
             sub: nested && h.classList.contains('post-h2'),
         })),
-    ]));
-    trackContents(article);
+    ];
+    article.insertAdjacentHTML('afterbegin', contentsHTML({ href: '/blog', label: 'Writing' }, items));
+    // Phones and tablets get the same index behind a small, dimmed
+    // progress ring in the corner, so it never sits over the prose.
+    document.body.insertAdjacentHTML('beforeend', contentsPillHTML(items));
+    initContentsPill(document.querySelector('.toc-pill'), mount);
+    trackContents(document);
 }
 
 // Replaces the "Loading…" line the HTML ships with, so the column has
 // the shape of the piece rather than one sentence of text.
+if (!isArticle) mount.insertAdjacentHTML('beforebegin', blogToolsHTML(readBlogView()));
 mount.innerHTML = isArticle ? articleSkeleton() : blogListSkeleton();
 if (isArticle) {
     const head = articleHeadSkeleton();
@@ -126,15 +132,8 @@ try {
         renderReadNext(post).catch(() => {});
     } else {
         const posts = await getPosts();
-        mount.innerHTML = posts.length ? `<ul class="blog-list">${posts.map(post => `<li>
-            <a href="${articleBase}/${encodeURIComponent(post.slug)}">
-                <h2>${escapeHTML(post.title)}</h2>
-                ${post.excerpt ? `<p>${escapeHTML(post.excerpt)}</p>` : ''}
-                <time datetime="${escapeHTML(post.publishedAt)}">${formatDate(post.publishedAt)}</time>
-            </a></li>`).join('')}</ul>` : '<p>No articles published yet.</p>';
-        // Index only once the list exists. An article page gets no page
-        // search at all — a search field over prose is a distraction.
-        initPageSearch();
+        mount.innerHTML = posts.length ? blogListHTML(posts, articleBase) : '<p>No articles published yet.</p>';
+        if (posts.length) initBlogTools(mount);
     }
 } catch (error) {
     if (isArticle) {
