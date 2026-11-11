@@ -1428,6 +1428,138 @@ dialog[tabindex="-1"]:focus-visible {
     color: var(--text-tertiary);
 }
 
+/* ── Experiments ─────────────────────────────────────────── */
+
+.rail-nav {
+    margin-inline-start: auto;
+    display: inline-flex;
+    gap: 6px;
+    /* The head aligns to the text baseline; the buttons sit on its centre. */
+    align-self: center;
+}
+
+.rail-nav__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: var(--control);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s ease-out, color 0.15s ease-out, opacity 0.15s ease-out;
+}
+
+.rail-nav__btn:hover:not(:disabled) {
+    background: var(--control-hover);
+    color: var(--text-primary);
+}
+
+.rail-nav__btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.rail-nav__btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Every plate fits once the rail is wide enough, so the buttons have
+   nothing to do. */
+[data-rail-static] .rail-nav {
+    visibility: hidden;
+}
+
+.experiment-rail {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    /* Room for the plate shadow and the focus ring, which overflow clips. */
+    padding: 4px;
+    margin: -4px;
+    scroll-padding-inline: 4px;
+}
+
+.experiment-rail::-webkit-scrollbar {
+    display: none;
+}
+
+.experiment {
+    flex: 0 0 clamp(200px, 40%, 280px);
+    scroll-snap-align: start;
+}
+
+.experiment__link {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--r-lg);
+}
+
+.experiment__link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.experiment__media {
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--tray-shadow);
+    transition: box-shadow 0.2s ease-out;
+}
+
+.experiment__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.experiment__link:hover .experiment__media {
+    box-shadow: var(--tray-shadow-hover);
+}
+
+.experiment__link:hover .experiment__media img {
+    scale: 1.03;
+}
+
+.experiment__title {
+    margin-top: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.experiment__caption {
+    margin-top: 2px;
+    font-size: 14px;
+    color: var(--text-tertiary);
+}
+
+@media (max-width: 639px) {
+    .experiment {
+        flex-basis: 68%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .experiment__media img {
+        transition: none;
+    }
+
+    .experiment__link:hover .experiment__media img {
+        scale: 1;
+    }
+}
+
 /* ── Archive ─────────────────────────────────────────────── */
 
 .archive-grid {

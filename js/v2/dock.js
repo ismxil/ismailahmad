@@ -21,7 +21,8 @@ const PAGES = [
     { label: 'CV', kind: 'page', href: 'cv', group: 'nav' },
     { label: 'Case studies', kind: 'pdf', href: 'https://pdf.ismailahmad.com/', group: 'nav', external: true },
     { label: 'Books', kind: 'page', href: 'books', group: 'nav' },
-    { label: 'Personal', kind: 'section', href: '#personal' },
+    { label: 'Projects', kind: 'section', href: '#personal' },
+    { label: 'Experiments', kind: 'section', href: '#experiments' },
     { label: 'Version 1 of this site', kind: 'page', href: 'v1.html' },
 ];
 
