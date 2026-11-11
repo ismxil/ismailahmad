@@ -7,6 +7,14 @@
 
 export const experimentItems = [
     {
+        name: 'Prompts',
+        caption: 'Useful prompts, collected',
+        image: '/assets/experiments/prompts.webp?v=1',
+        alt: 'The Prompts site showing a browser QA prompt with a copy button',
+        href: 'https://prompt.ismailahmad.com/',
+        external: true,
+    },
+    {
         name: 'Card Studio',
         caption: 'Design a Sterling bank card',
         image: '/assets/experiments/card-studio.webp?v=2',
